@@ -1,0 +1,457 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b54b:0:0:0:0:0 with SMTP id a11csp4995416ljn;
+        Thu, 27 Feb 2020 11:01:29 -0800 (PST)
+X-Received: by 2002:a05:6102:757:: with SMTP id v23mr465752vsg.35.1582830089337;
+        Thu, 27 Feb 2020 11:01:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1582830089; cv=none;
+        d=google.com; s=arc-20160816;
+        b=ZmB2+wEozAOxkpRosuns8bchpGKWMi68/NfdLDxDgoSfN0/7MbDy0I1QZv5ZB2I1+c
+         FpV12bnm0BLFiXYI3okrxvEbd4sAfU9YCWXrrtAh0wr9zbecGVet5m229v3AVArxi4YA
+         pLQikLnh3x0A1ZoVmqie44MEFEEecxN2OimxIpfUdBpwkFzH/k7PzSvrq+8D32qdjZsL
+         vr8u8olWldpwdriZcbUnTnDtyj1S7aZGwSm2Jg8daKck4lVTyi1JVnNZ4MYjWN3sqqcu
+         rVjwqOL7gcwQ15dEqn1+uYftTIHaUdvxSZJUgAaapIDDWXRUJZuaPuTCGixIjLoZOhDS
+         AxJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=oYBbdVIfjojco95t1SzoCsQmgAV6HMLkRE9Wc4sT4QU=;
+        b=HIKznA0DOUFZM8v1aNm0Ytgo+RrlEcNo4r2Xw8WXAtQoQR5PSIAZgqlCQ5YixxlXwE
+         npTsFJ6TuhG6TOZqLMaOowDhWyL64vJ2Vvifb2zgesnHWtRHRe3K7q/1qwfwZh6AdokK
+         Pp9fysuYiOHOfD8YWh5zoEvwQM8WQ/Ohw+/OawLU2j6XkKeWbDh/VgNY9DewLfcr95eZ
+         NxkP/FLfyb3MK7oSZKtiU9dLsLNgQb1yqsUxTRCkZleqqhKy+UO0a915tZim0Z0kvkPv
+         XCAmLQtDV6ccsl46EhrUsedqdtJUxu+QPwtuXY8cid/jCVG71RiuaxvmPz88kq2kco4h
+         7LVg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=HLaU1R7H;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+Return-Path: <gperez@ideo.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id y4sor186215uap.71.2020.02.27.11.01.29
+        for <josh@josh.is>
+        (Google Transport Security);
+        Thu, 27 Feb 2020 11:01:29 -0800 (PST)
+Received-SPF: pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=HLaU1R7H;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ideo.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oYBbdVIfjojco95t1SzoCsQmgAV6HMLkRE9Wc4sT4QU=;
+        b=HLaU1R7HryHWh7Nnd+dAI0ANsLdry9o1jq45wpT4klcFo43ZqxtnrXWQKvfG4JUCEn
+         Rsrcu4HhJHHBduPjMf67AmybzYzDSbLFjOrtGefonySnvxm4lPtBvJrqmd5NMq19EJ4O
+         ARmNZSszMa8kFXERY7QFkr75QGT+LY4aLseEY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oYBbdVIfjojco95t1SzoCsQmgAV6HMLkRE9Wc4sT4QU=;
+        b=b8hZFR532uGb4K+dv7drC8+RRjciw1g8Keq9xRbdPB94EmfOHUVkLpP3pQGHQykazK
+         ZVwwHXrlVq9c0WKr4q2dXUkn1qhaQoxo+vvRH7TjKpjmLuNf8ddxz0lxRQQLDSCEv+T4
+         SAvKx/nL7735VHOiwZ2scdn+u9tuc/siwekcXyJ7nRFNdsfCQkDlFHb1ixUnEoDNIAEU
+         E9gCopuNgfVfExyYnlI4JjxmDipWMzXPOAx/BXSXWKy25qptD7kvCzlIbqmG0R0yhOyD
+         /ii0X0H83BfwgtGedtdd1Hvpo/8QoH8yWUNMj4ORB1FaCh+FccsEpQrUENfvr5s2HLBC
+         j6HA==
+X-Gm-Message-State: ANhLgQ1Onf5P4pjLJnfpfMoSajdZbZH/0L1twtkzupppbs55TYkKRDg8
+	m0Sm99RrV1QwZCmNnxIwDEA+8N1jKf3haRbIwu7LjwIWQhQ=
+X-Google-Smtp-Source: ADFU+vvieZBu4n/6Xjkv2JoPWEhcihFJGze7s/9UDGD/RJb1L85D7OQeHLeNMCsPeKNlWyO8FvGaekFxXPX7sw/T7vc=
+X-Received: by 2002:ab0:7802:: with SMTP id x2mr89858uaq.100.1582830088117;
+ Thu, 27 Feb 2020 11:01:28 -0800 (PST)
+MIME-Version: 1.0
+References: <CACNgykPENo8goDQN4W+MWnAGBf_pb0Mhd4SzXAkvLEJ39-HBKg@mail.gmail.com>
+ <CAN_Aqyp6hpQTZCh2v_AnUcvRn=Wo_iT3j1Jmn0qaB7ew3CESWw@mail.gmail.com>
+ <CACNgykNK4GRMRsLqcWRicjFRuvJF0LaQwt0mvEvm1udnTVNp_A@mail.gmail.com>
+ <CAN_AqyoJouPsUjvFN4stKegLE0rHY=Nc-VOR_AQa9Ji3kxgL8A@mail.gmail.com>
+ <CACNgykNMAaN2ddwqEdnFwS-9EZKR15nZREuj5A1zi8nUd99+aA@mail.gmail.com>
+ <CACNgykNtaYUcO4YSgr+9xwad9KpoThcd7650o+6p0ZK5Oiby6g@mail.gmail.com>
+ <CAN_AqyqcA44N2KJv8aAMQa07cQc-bWKMd61rAXEOWLbbK6aJJQ@mail.gmail.com> <CACNgykOMLa_xSuQEU5FZLnF6dkG2bCc8h-M48d-VOLB8UGG9fg@mail.gmail.com>
+In-Reply-To: <CACNgykOMLa_xSuQEU5FZLnF6dkG2bCc8h-M48d-VOLB8UGG9fg@mail.gmail.com>
+From: Gregory Perez <gperez@ideo.com>
+Date: Thu, 27 Feb 2020 14:00:52 -0500
+Message-ID: <CAN_AqyrrBOj-weQX3C-bggNrSwgEET188OF+F_mxh-cA6wCyEA@mail.gmail.com>
+Subject: Re: IDEO / W50 lunches
+To: Josh Klein <josh@josh.is>
+Cc: Mani Nilchiani <mnilchiani@ideo.com>, David Goligorsky <dgoligorsky@ideo.com>, 
+	Duane Bray <dbray@ideo.com>
+Content-Type: multipart/alternative; boundary="00000000000024a803059f9359f7"
+
+--00000000000024a803059f9359f7
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hey Josh,
+
+
+As we discussed when you were last here, we wanted to find ways we could
+help you get what you need based on what we've agreed upon within your IDEO
+engagement. We won't be able to continue development of the remaining
+features on your site. However, we would like to schedule some time with
+you and with any others who may be able to jump in with you on coding the
+remaining features to do a proper handover of what needs to be done.
+
+
+In chatting with Mani, he mentioned a few issues we can discuss all
+together:
+
+
+   - He has not had direct access to your Media Temple host because of the
+   way user permissions are set up. So let's talk about workflow and other
+   issues to make it clear to anyone else helping you deploy. At the moment
+   it sounds like he=E2=80=99s having to identify parts of the code that ne=
+ed change,
+   make those changes, share it with you so you can upload to your server i=
+n
+   order to be able to test and iterate on the changes (this makes for a sl=
+ow
+   & difficult process.)
+   - You are now using what is effectively a =E2=80=9Cstaging server=E2=80=
+=9D which means
+   that yet another content / code migration would be in order, to launch y=
+our
+   new site publicly. Mani recommends working on the site in the current
+   location on your VPS, and remap your domain to point to the aforemention=
+ed
+   location to further reduce workflow friction.
+   - We also think the Trello board is the most efficient way to
+   communicate the burndown of things to do, so we can walk through those
+   things in depth together as well.
+
+I'm hoping this handoff and walkthrough could be one way to get closer to
+what you need. Based on our contract, we wanted to ensure we offered design
+support for your website revamp during your time at IDEO (vs. development
+and deployment) so I believe we should be able to close on this together.
+
+
+Let's figure out timing for when we can do the handoff soon =3D g.
+
+
+
+*Gregory A. Perez*
+Senior Design Director / IDEO / gperez@ideo.com / +1 (347) 281-3649
+
+
+On Wed, Feb 26, 2020 at 11:07 AM Josh Klein <josh@josh.is> wrote:
+
+> Just checking in; what's status?
+>
+> - J
+>
+> On Thu, Feb 20, 2020 at 5:09 PM Gregory Perez <gperez@ideo.com> wrote:
+>
+>> Hey Josh,
+>>
+>> Mani's back in the studio on Monday, we're going to huddle up and see
+>> what we can do. Stay tuned! =3D g.
+>>
+>> *Gregory A. Perez*
+>> Senior Design Director / IDEO / gperez@ideo.com / +1 (347) 281-3649
+>>
+>>
+>> On Thu, Feb 20, 2020 at 3:08 PM Josh Klein <josh@josh.is> wrote:
+>>
+>>> Just following up - let me know if I can provide any further info.
+>>>
+>>> best,
+>>> Josh
+>>> =E1=90=A7
+>>>
+>>> On Fri, Feb 14, 2020 at 9:24 AM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> Greg,
+>>>>
+>>>> Thanks for the meeting yesterday; really appreciate your interest in
+>>>> making things right. I revisited Mani's Trello board and there are thr=
+ee
+>>>> fixes remaining:
+>>>>
+>>>> - Contents appears with Books and TV appearing both at once
+>>>> - Speakings fixes [JK: I believe this means the popup videos]
+>>>> - Articles and Interviews are appearing with summaries instead of as
+>>>> lists of links
+>>>>
+>>>> And then of course deployment to my host. In the meantime, I reviewed
+>>>> the contract and it doesn't say anything about business development or
+>>>> bringing in clients. Totally understand how that's out of line with wh=
+ere
+>>>> IDEO NY ended up and what it needs now, but I'm glad to report I didn'=
+t
+>>>> miss contractually!
+>>>>
+>>>> Here's to wrapping things up so we can have more good stories to tell
+>>>> in 2020,
+>>>> Josh
+>>>>
+>>>> On Mon, Feb 3, 2020 at 9:19 AM Gregory Perez <gperez@ideo.com> wrote:
+>>>>
+>>>>> Can't do tomorrow... but can do 9a on Wednesday if you can. =3D g.
+>>>>> *Gregory A. Perez*
+>>>>> Senior Design Director / IDEO / gperez@ideo.com / +1 (347) 281-3649
+>>>>>
+>>>>>
+>>>>> On Mon, Feb 3, 2020 at 9:05 AM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> NP, I know the feeling! Any chance you could meet tomorrow 9am?
+>>>>>>
+>>>>>> - J
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Fri, Jan 31, 2020 at 9:44 AM Gregory Perez <gperez@ideo.com>
+>>>>>> wrote:
+>>>>>>
+>>>>>>> YO! Sorry for the delay on responses, up to my eyeballs.
+>>>>>>>
+>>>>>>> Can we get together sometime next week and jam on this?
+>>>>>>>
+>>>>>>> *Gregory A. Perez*
+>>>>>>> Senior Design Director / IDEO / gperez@ideo.com / +1 (347) 281-3649
+>>>>>>>
+>>>>>>>
+>>>>>>> On Fri, Jan 31, 2020 at 7:52 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> Let me know if you've got anything I can pass to W50 for the
+>>>>>>>> executive lunch series pilot - even just a couple ideas around for=
+mat
+>>>>>>>> (tensions session, instant prototyping, cross-disciplinary examina=
+tion, ??)
+>>>>>>>> would be great. I'm going to ping my W50 contacts about what they'=
+ve heard
+>>>>>>>> from members in the meantime.
+>>>>>>>>
+>>>>>>>> All best,
+>>>>>>>> Josh
+>>>>>>>> =E1=90=A7
+>>>>>>>>
+>>>>>>>
+
+--00000000000024a803059f9359f7
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:arial,he=
+lvetica,sans-serif">
+
+
+
+
+
+<p class=3D"gmail-p1" style=3D"margin:0px;font-variant-numeric:normal;font-=
+variant-east-asian:normal;font-stretch:normal;line-height:normal;font-famil=
+y:&quot;Helvetica Neue&quot;"><span style=3D"background-color:rgb(255,255,2=
+55)">Hey Josh,</span></p><p class=3D"gmail-p1" style=3D"margin:0px;font-var=
+iant-numeric:normal;font-variant-east-asian:normal;font-stretch:normal;line=
+-height:normal;font-family:&quot;Helvetica Neue&quot;"><span style=3D"backg=
+round-color:rgb(255,255,255)"><br></span></p><p class=3D"gmail-p1" style=3D=
+"margin:0px;font-variant-numeric:normal;font-variant-east-asian:normal;font=
+-stretch:normal;line-height:normal;font-family:&quot;Helvetica Neue&quot;">=
+<span style=3D"background-color:rgb(255,255,255)">As we discussed when you =
+were last here, we wanted to find ways we could help you get what you need =
+based on what we&#39;ve agreed upon within your IDEO engagement. We won&#39=
+;t be able to continue development of the remaining features on your site. =
+However, we would like to schedule some time with you and with any others w=
+ho may be able to jump in with you on coding the remaining features to do a=
+ proper handover of what needs to be done.</span></p>
+<p class=3D"gmail-p2" style=3D"margin:0px;font-variant-numeric:normal;font-=
+variant-east-asian:normal;font-stretch:normal;line-height:normal;font-famil=
+y:&quot;Helvetica Neue&quot;;min-height:14px"><span style=3D"background-col=
+or:rgb(255,255,255)"><br></span></p>
+<p class=3D"gmail-p1" style=3D"margin:0px;font-variant-numeric:normal;font-=
+variant-east-asian:normal;font-stretch:normal;line-height:normal;font-famil=
+y:&quot;Helvetica Neue&quot;"><span style=3D"background-color:rgb(255,255,2=
+55)">In chatting with Mani, he mentioned a few issues we can discuss all to=
+gether:</span></p><p class=3D"gmail-p1" style=3D"margin:0px;font-variant-nu=
+meric:normal;font-variant-east-asian:normal;font-stretch:normal;line-height=
+:normal;font-family:&quot;Helvetica Neue&quot;"></p><ul><li><span style=3D"=
+background-color:rgb(255,255,255)">He has not had direct access to your Med=
+ia Temple host because of the way=C2=A0user permissions are set up.=C2=A0So=
+ let&#39;s talk about workflow and other issues to make it clear to anyone =
+else helping you deploy.=C2=A0</span>At the moment it sounds like he=E2=80=
+=99s having to identify parts of the code that need change, make those chan=
+ges, share it with you so you can upload to your server in order to be able=
+ to test and iterate on the changes (this makes for a slow &amp; difficult =
+process.)</li><li>You are now using what is effectively a =E2=80=9Cstaging =
+server=E2=80=9D which means that yet another content / code migration would=
+ be in order, to launch your new site publicly. Mani recommends working on =
+the site in the current location on your VPS, and remap your domain to poin=
+t to the aforementioned location to further reduce workflow friction.</li><=
+li>We also think the Trello board is the most efficient way to communicate =
+the burndown of things to do, so we can walk through those things in depth =
+together as well.</li></ul><p></p>
+<p class=3D"gmail-p1" style=3D"margin:0px;font-variant-numeric:normal;font-=
+variant-east-asian:normal;font-stretch:normal;line-height:normal;font-famil=
+y:&quot;Helvetica Neue&quot;"><span style=3D"background-color:rgb(255,255,2=
+55)">I&#39;m hoping this handoff and walkthrough could be one way to get cl=
+oser to what you need.=C2=A0Based on our contract, we wanted to ensure we o=
+ffered design support for your website revamp during your time at IDEO (vs.=
+ development and deployment) so I believe we should be able to close on thi=
+s together.</span></p><p class=3D"gmail-p1" style=3D"margin:0px;font-varian=
+t-numeric:normal;font-variant-east-asian:normal;font-stretch:normal;line-he=
+ight:normal;font-family:&quot;Helvetica Neue&quot;"><span style=3D"backgrou=
+nd-color:rgb(255,255,255)"><br></span></p><p class=3D"gmail-p1" style=3D"ma=
+rgin:0px;font-variant-numeric:normal;font-variant-east-asian:normal;font-st=
+retch:normal;line-height:normal;font-family:&quot;Helvetica Neue&quot;"><sp=
+an style=3D"background-color:rgb(255,255,255)">Let&#39;s figure out timing =
+for when we can do the handoff soon =3D g.</span></p><p class=3D"gmail-p1" =
+style=3D"font-size:12px;margin:0px;font-variant-numeric:normal;font-variant=
+-east-asian:normal;font-stretch:normal;line-height:normal;font-family:&quot=
+;Helvetica Neue&quot;"><br></p><p class=3D"gmail-p1" style=3D"font-size:12p=
+x;margin:0px;font-variant-numeric:normal;font-variant-east-asian:normal;fon=
+t-stretch:normal;line-height:normal;font-family:&quot;Helvetica Neue&quot;"=
+><br></p></div><div><div dir=3D"ltr" class=3D"gmail_signature" data-smartma=
+il=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div =
+dir=3D"ltr"><font face=3D"arial, helvetica, sans-serif" size=3D"2"><b>Grego=
+ry A. Perez</b></font></div><div dir=3D"ltr"><div dir=3D"ltr"><font color=
+=3D"#999999"><font face=3D"arial, helvetica, sans-serif"><font size=3D"1"><=
+span>Senior Design</span>=C2=A0Director /=C2=A0</font></font><font size=3D"=
+1"><span style=3D"font-family:arial,helvetica,sans-serif">IDEO /=C2=A0</spa=
+n><font face=3D"arial, helvetica, sans-serif"><a href=3D"mailto:gperez@ideo=
+.com" style=3D"color:rgb(17,85,204)" target=3D"_blank">gperez@ideo.com</a>=
+=C2=A0/=C2=A0</font><span style=3D"font-family:arial,helvetica,sans-serif">=
++<span>1 (347) 281-3649</span></span></font></font></div></div></div></div>=
+</div></div></div></div></div></div></div></div></div></div></div></div></d=
+iv><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail=
+_attr">On Wed, Feb 26, 2020 at 11:07 AM Josh Klein &lt;<a href=3D"mailto:jo=
+sh@josh.is">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail=
+_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204=
+,204);padding-left:1ex"><div dir=3D"ltr"><div>Just checking in; what&#39;s =
+status?</div><div><br></div><div>- J<br></div></div><br><div class=3D"gmail=
+_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Feb 20, 2020 at 5:09 =
+PM Gregory Perez &lt;<a href=3D"mailto:gperez@ideo.com" target=3D"_blank">g=
+perez@ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-f=
+amily:arial,helvetica,sans-serif;font-size:small">Hey Josh,</div><div class=
+=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;font-siz=
+e:small"><br></div><div class=3D"gmail_default" style=3D"font-family:arial,=
+helvetica,sans-serif;font-size:small">Mani&#39;s back in the studio on Mond=
+ay, we&#39;re going to huddle up and see what we can do. Stay tuned! =3D g.=
+</div><div class=3D"gmail_default" style=3D"font-family:arial,helvetica,san=
+s-serif;font-size:small"><br></div><div><div dir=3D"ltr"><div dir=3D"ltr"><=
+div><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div =
+dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><font size=3D"2" face=3D"aria=
+l, helvetica, sans-serif"><b>Gregory A. Perez</b></font></div><div dir=3D"l=
+tr"><div dir=3D"ltr"><font color=3D"#999999"><font face=3D"arial, helvetica=
+, sans-serif"><font size=3D"1"><span>Senior Design</span>=C2=A0Director /=
+=C2=A0</font></font><font size=3D"1"><span style=3D"font-family:arial,helve=
+tica,sans-serif">IDEO /=C2=A0</span><font face=3D"arial, helvetica, sans-se=
+rif"><a href=3D"mailto:gperez@ideo.com" style=3D"color:rgb(17,85,204)" targ=
+et=3D"_blank">gperez@ideo.com</a>=C2=A0/=C2=A0</font><span style=3D"font-fa=
+mily:arial,helvetica,sans-serif">+<span>1 (347) 281-3649</span></span></fon=
+t></font></div></div></div></div></div></div></div></div></div></div></div>=
+</div></div></div></div></div></div><br></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Feb 20, 2020 at 3:08 PM Jos=
+h Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div dir=3D"ltr">Just following up - let me know if I can provide any furthe=
+r info.<br>
+
+<br>
+
+best,<br>
+
+Josh<br></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3Dbd0ffd5a-8627-4269-9cc3-ac29c4930a92"><font size=3D"1" col=
+or=3D"#ffffff">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div di=
+r=3D"ltr" class=3D"gmail_attr">On Fri, Feb 14, 2020 at 9:24 AM Josh Klein &=
+lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; w=
+rote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Greg,<br><br>Thanks for the meeting yesterday; really appreciate y=
+our interest in making things right. I revisited Mani&#39;s Trello board an=
+d there are three fixes remaining:<br><br>- Contents appears with Books and=
+ TV appearing both at once<br>- Speakings fixes [JK: I believe this means t=
+he popup videos]<br>- Articles and Interviews are appearing with summaries =
+instead of as lists of links<br><br>And then of course deployment to my hos=
+t. In the meantime, I reviewed the contract and it doesn&#39;t say anything=
+ about business development or bringing in clients. Totally understand how =
+that&#39;s out of line with where IDEO NY ended up and what it needs now, b=
+ut I&#39;m glad to report I didn&#39;t miss contractually! <br><br>Here&#39=
+;s to wrapping things up so we can have more good stories to tell in 2020,<=
+br>Josh<br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"g=
+mail_attr">On Mon, Feb 3, 2020 at 9:19 AM Gregory Perez &lt;<a href=3D"mail=
+to:gperez@ideo.com" target=3D"_blank">gperez@ideo.com</a>&gt; wrote:<br></d=
+iv><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bord=
+er-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div =
+class=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;fon=
+t-size:small">Can&#39;t do tomorrow... but can do 9a on Wednesday=C2=A0if y=
+ou can. =3D g.</div><div><div dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D=
+"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"l=
+tr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><di=
+v dir=3D"ltr"><div dir=3D"ltr"><font size=3D"2" face=3D"arial, helvetica, s=
+ans-serif"><b>Gregory A. Perez</b></font></div><div dir=3D"ltr"><div dir=3D=
+"ltr"><font color=3D"#999999"><font face=3D"arial, helvetica, sans-serif"><=
+font size=3D"1"><span>Senior Design</span>=C2=A0Director /=C2=A0</font></fo=
+nt><font size=3D"1"><span style=3D"font-family:arial,helvetica,sans-serif">=
+IDEO /=C2=A0</span><font face=3D"arial, helvetica, sans-serif"><a href=3D"m=
+ailto:gperez@ideo.com" style=3D"color:rgb(17,85,204)" target=3D"_blank">gpe=
+rez@ideo.com</a>=C2=A0/=C2=A0</font><span style=3D"font-family:arial,helvet=
+ica,sans-serif">+<span>1 (347) 281-3649</span></span></font></font></div></=
+div></div></div></div></div></div></div></div></div></div></div></div></div=
+></div></div></div><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Mon, Feb 3, 2020 at 9:05 AM Josh Klein &lt;<a hre=
+f=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br>=
+</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">NP=
+, I know the feeling! Any chance you could meet tomorrow 9am?<div><br></div=
+><div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px=
+"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" sr=
+c=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=
+=3Dzerocontent&amp;guid=3D325e31af-d39f-4212-9489-fed19cd1c329"><font size=
+=3D"1" color=3D"#ffffff">=E1=90=A7</font></div><br><div class=3D"gmail_quot=
+e"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jan 31, 2020 at 9:44 AM Gr=
+egory Perez &lt;<a href=3D"mailto:gperez@ideo.com" target=3D"_blank">gperez=
+@ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-fami=
+ly:arial,helvetica,sans-serif;font-size:small">YO! Sorry for the delay on r=
+esponses, up to my eyeballs.</div><div class=3D"gmail_default" style=3D"fon=
+t-family:arial,helvetica,sans-serif;font-size:small"><br></div><div class=
+=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;font-siz=
+e:small">Can we get together sometime next week and jam on this?</div><div =
+class=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;fon=
+t-size:small"><br></div><div><div dir=3D"ltr"><div dir=3D"ltr"><div><div di=
+r=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr"><font size=3D"2" face=3D"arial, helveti=
+ca, sans-serif"><b>Gregory A. Perez</b></font></div><div dir=3D"ltr"><div d=
+ir=3D"ltr"><font color=3D"#999999"><font face=3D"arial, helvetica, sans-ser=
+if"><font size=3D"1"><span>Senior Design</span>=C2=A0Director /=C2=A0</font=
+></font><font size=3D"1"><span style=3D"font-family:arial,helvetica,sans-se=
+rif">IDEO /=C2=A0</span><font face=3D"arial, helvetica, sans-serif"><a href=
+=3D"mailto:gperez@ideo.com" style=3D"color:rgb(17,85,204)" target=3D"_blank=
+">gperez@ideo.com</a>=C2=A0/=C2=A0</font><span style=3D"font-family:arial,h=
+elvetica,sans-serif">+<span>1 (347) 281-3649</span></span></font></font></d=
+iv></div></div></div></div></div></div></div></div></div></div></div></div>=
+</div></div></div></div><br></div><br><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Fri, Jan 31, 2020 at 7:52 AM Josh Klein &l=
+t;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wr=
+ote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D=
+"ltr">Let me know if you&#39;ve got anything I can pass to W50 for the exec=
+utive lunch series pilot - even just a couple ideas around format (tensions=
+ session, instant prototyping, cross-disciplinary examination, ??) would be=
+ great. I&#39;m going to ping my W50 contacts about what they&#39;ve heard =
+from members in the meantime.<div><br></div><div>All best,</div><div>Josh</=
+div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=
+=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https=
+://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroconte=
+nt&amp;guid=3De2ebd4c5-e952-4d53-8291-86be26eaa326"><font size=3D"1" color=
+=3D"#ffffff">=E1=90=A7</font></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+
+--00000000000024a803059f9359f7--

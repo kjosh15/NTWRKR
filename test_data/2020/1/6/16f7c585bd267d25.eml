@@ -1,0 +1,761 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b522:0:0:0:0:0 with SMTP id z2csp23074228ljm;
+        Mon, 6 Jan 2020 11:32:43 -0800 (PST)
+X-Google-Smtp-Source: APXvYqwlocPGO70YiDSUEpUg1CAKe5twuDa0UsS7iRtcEOBHFv3RhNbEB8p3kCLsNuoQkjGCq6OK
+X-Received: by 2002:a6b:6f07:: with SMTP id k7mr69334642ioc.174.1578339163166;
+        Mon, 06 Jan 2020 11:32:43 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1578339163; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=rA7fMtU42w34P9cX2OevqygY784IbgxHHKm0IiOm0/lw3NAE1pcggEJdyeQHu6ximv
+         EOTz1avNJL9xjesoswH1SHEmy9bwfZu1haXymEYPke7Pc2ZoFrOk5ZS569hmLxLULHdU
+         qQm3RY5Y4V6QhSw4IbPqTZfZbNAwRjJuJRvCot7IrvErgKq5XCHv2782oeRF2zA5omlP
+         iXQoZldVCGL2ta6vhhd8ApQOqfy88vrVA5Fbgq8/40omSPiuZplF2wlhqbPGqC5r9ItG
+         uwVZWf6GLs5j4iH2/nVQpWl89kusJ5MxpZ3SL+6jqtWJdRUhJd4/F0AkDp8u+Y8ey4gn
+         uGYA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:cc:to
+         :from:dkim-signature;
+        bh=tqbPVoEV5JoHL9uljUJxZM/YJaHcH3LjpJpUgvQZMbs=;
+        b=Y6GH1RMF8k8WxWCiSpn2uEGMKZOLqMURUAAHnzCCz5WlZH6N+fClG1TGeOlK9a+7Ap
+         Blr/fydz9FckUfQD0lBDiNSSrPHZKOWlLhUo2/KMqfVq65aQ3MqdEhqFDMhINMXgzXhy
+         gVnsN/XDKC5rSaCk/kW0kE5ggbFs/ICC+GdWBLsM53GBM7xs0x7fu6rMWR9zQET1hvGQ
+         0anOtK2RVXJ/3ILVDzyJQRO+NQINq92BXmybArt2+zgv1lPOcX1en4UhyhUpSXUN7wEL
+         u+rNds+Irq8fP6i5LZwNmBk2L2j7ZSMGCOWcMEz0h1WNPxFWaTDE/PC9KQthRZ/940Jw
+         pgnQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@HalmaHoldingsInc.onmicrosoft.com header.s=selector2-HalmaHoldingsInc-onmicrosoft-com header.b=nXLQfAre;
+       arc=pass (i=1 spf=pass spfdomain=halma.com dkim=pass dkdomain=halma.com dmarc=pass fromdomain=halma.com);
+       spf=pass (google.com: domain of jennifer.ward@halma.com designates 40.107.76.93 as permitted sender) smtp.mailfrom=jennifer.ward@halma.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=halma.com
+Return-Path: <jennifer.ward@halma.com>
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (mail-eopbgr760093.outbound.protection.outlook.com. [40.107.76.93])
+        by mx.google.com with ESMTPS id r188si977794iod.112.2020.01.06.11.32.42
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jan 2020 11:32:43 -0800 (PST)
+Received-SPF: pass (google.com: domain of jennifer.ward@halma.com designates 40.107.76.93 as permitted sender) client-ip=40.107.76.93;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@HalmaHoldingsInc.onmicrosoft.com header.s=selector2-HalmaHoldingsInc-onmicrosoft-com header.b=nXLQfAre;
+       arc=pass (i=1 spf=pass spfdomain=halma.com dkim=pass dkdomain=halma.com dmarc=pass fromdomain=halma.com);
+       spf=pass (google.com: domain of jennifer.ward@halma.com designates 40.107.76.93 as permitted sender) smtp.mailfrom=jennifer.ward@halma.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=halma.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XtSg1l/CDK8EDNN4vcUGLrDKZbNldCTWIRRG2QGwOLL2PUgx5Tzr5tAJ5tTyamLNVZmTegg78N+1gx0b9dC/vXUFjgQrd65YEQdUHCujMK957/UBGNd1uuE1oi18xBmL4bZpJcLK1FroFaVgz73CD9B8iU7B/jttcwUjYRtlftI+5dmCESgc8uRD+4NsiVUEJOW4DVVKfudKu+yNPJgSmhfsJYvKIHkFg1/EbwdiuUX/KJ/o8cR+oma/PR4SFk7OoUO2DZ7xL8MhOyHpNAUMbzF6IFvp+wMdJ3kplAmCjZtfrLdb1K1WKkUIE/+V8+dExs2fbo+TI4ZTRHA+bnloGw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tqbPVoEV5JoHL9uljUJxZM/YJaHcH3LjpJpUgvQZMbs=;
+ b=YjMUaQFK4aL/wFbSqT/+O2SLPiDIlIfvboi/22tMj22ZnJCHZjQPId6dZqBitqFr2ED942wNKTAYbd6W4SziQS2a7veD6U+Z5l5p7pXUjG/IAQ0b4uncUmnGQB7AOgI9XXFkuogYoRENQ7IicHDvv3ZpbeNnTHLsPcoMgqB7AuhCfyFsdoqbjcUccrJrWk0z9EgYeDHQTpchyAcXejhUpQxgarwjuHM6B4tTrFKKEXf88/ApMtalocTi0riGXNRlvDSMrDfGump/Oq2rX+v93ODTw5D+1wx7Vh2+biyNWQ/VT1kuKUQ8Sn9FkKmRSHpsc20NgFbu1KvEp3law5FOtw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=halma.com; dmarc=pass action=none header.from=halma.com;
+ dkim=pass header.d=halma.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=HalmaHoldingsInc.onmicrosoft.com;
+ s=selector2-HalmaHoldingsInc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tqbPVoEV5JoHL9uljUJxZM/YJaHcH3LjpJpUgvQZMbs=;
+ b=nXLQfAreZ0XvIRt7VWiYdeFg8wDMc4ln2TyXOtR09GxgXC0BKzsu6mRedW1lDRdd5wRlKjky1APE3uQtzRBwjTz7aKoDe0mHcA0jI0RvJrdSrTnhqHlSZXD9tWo+sHCvRGkY5iq3zNSRPwqq7kkf44EsKm09gWapC6rmMLjC+W0=
+Received: from MWHPR01MB2735.prod.exchangelabs.com (10.172.166.138) by
+ MWHPR01MB2317.prod.exchangelabs.com (10.169.236.16) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2602.11; Mon, 6 Jan 2020 19:32:39 +0000
+Received: from MWHPR01MB2735.prod.exchangelabs.com
+ ([fe80::1979:28af:60fb:f9ac]) by MWHPR01MB2735.prod.exchangelabs.com
+ ([fe80::1979:28af:60fb:f9ac%12]) with mapi id 15.20.2602.015; Mon, 6 Jan 2020
+ 19:32:39 +0000
+From: Jennifer Ward <jennifer.ward@halma.com>
+To: Josh Klein <josh@josh.is>, Inken Braunschmidt
+	<inken.braunschmidt@halma.com>
+CC: Clare Hudson <clare.hudson@halma.com>
+Subject: Re: Josh and Halma
+Thread-Topic: Josh and Halma
+Thread-Index:
+ AQHUVLE3e/OB8kBqXEymDCI/qGfqYaUAylUAgABUrQCAABQvAIAAGWMAgCpA1YCAAyNLgIDlY/IAgcy58ICAABgFLg==
+Date: Mon, 6 Jan 2020 19:32:38 +0000
+Message-ID:
+ <MWHPR01MB2735070590907258ED2ABE56E53C0@MWHPR01MB2735.prod.exchangelabs.com>
+References: <656FC4EE-1D8F-4CC7-A492-6153850F7BE1@halma.com>
+ <0826F321-6454-495D-8D56-B0FA9BDAAC71@halma.com>
+ <CACNgykN+=eF5+YorPV9p3D0f7H6-=zN3qr+Tb-u54AgMgOa2=w@mail.gmail.com>
+ <3660BB90-B599-41C1-BF5D-0A50391596EB@halma.com>
+ <CACNgykOJ0KiVqCSYSYcgG=kRmPEA+nXKjP4dmkWPLY+6hd_9jw@mail.gmail.com>
+ <CACNgykMcd-3-F0Q-Q2rPoVxfT2wMJj9dj6kpajV4C-HE3pHUxQ@mail.gmail.com>
+ <98C4847A-C03E-4957-8B3D-9069BD703160@halma.com>
+ <CACNgykPM-FqYnbsrOx=iT4b4jRuoWcL+d7b+SRe5XiqbgocDWA@mail.gmail.com>,<CACNgykNGPnO9ESDGbNRe_+BrbO3xYJ=Ca9ORE2BJTDTjPxxw-w@mail.gmail.com>
+In-Reply-To:
+ <CACNgykNGPnO9ESDGbNRe_+BrbO3xYJ=Ca9ORE2BJTDTjPxxw-w@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=jennifer.ward@halma.com; 
+x-originating-ip: [85.255.234.147]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: cdaf6aae-25ae-4d09-aac5-08d792df30dd
+x-ms-traffictypediagnostic: MWHPR01MB2317:|MWHPR01MB2317:|MWHPR01MB2317:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs:
+ <MWHPR01MB231790BCF8850998DD9B40C1E53C0@MWHPR01MB2317.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:5516;
+x-forefront-prvs: 0274272F87
+x-forefront-antispam-report:
+ SFV:NSPM;SFS:(10019020)(136003)(366004)(346002)(39850400004)(396003)(376002)(189003)(199004)(107886003)(71200400001)(52536014)(44832011)(53546011)(86362001)(6506007)(4326008)(81156014)(8936002)(9686003)(3480700007)(81166006)(55016002)(8676002)(5660300002)(7696005)(6636002)(33656002)(66556008)(66476007)(64756008)(66446008)(316002)(66946007)(2906002)(110136005)(76116006)(91956017)(478600001)(45080400002)(186003)(26005)(7116003);DIR:OUT;SFP:1102;SCL:1;SRVR:MWHPR01MB2317;H:MWHPR01MB2735.prod.exchangelabs.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;MX:1;A:1;
+received-spf: None (protection.outlook.com: halma.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ c/9+aEXlx2HcPxXV9g8ONyMY6PEXPtJG2wKu53PsBwkpqhMeRsoWBwFGzBeorK5DYvLZrZi8zWJjo8Ag6vK+pEkvORcm5mz5VAtYVQieJAs6P6D0xX/5hW73mV5Ki+y8JNqwHvKz+oEERDrum3h8ASSSWmG6GkeZeHJB4W1B+8IRbsfgb3xmvZ2rZfABuIIM7w/8rb55crLin+UpVbpNqvsi/UiObK7VVHH/YpsUbEwi7q/iuxJzRLMSnY3PGegomdexie2eI7JwErGuo23rLFUKQRQ1+JXkGE9tAGTNV5VnfrTUbSJqpUOkLU2AMEJyjp9whIIS/sNShYUJ6o7W8y9H17XcHvUN6DNOSHzggE3DVYV08HWSelhAEJfh6/3wLai0fRiZF0eIr/0829J0kZFNADbCNwv/jlOX5zYd6QbZ8amOwI730U4DpMJ8MaZkHTTsB2Bve4XCfxJs2iiRfA6wvW4cVLbSPyCQ9KjA3bw=
+Content-Type: multipart/alternative;
+	boundary="_000_MWHPR01MB2735070590907258ED2ABE56E53C0MWHPR01MB2735prod_"
+MIME-Version: 1.0
+X-OriginatorOrg: halma.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cdaf6aae-25ae-4d09-aac5-08d792df30dd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jan 2020 19:32:38.7891
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 078256a4-c4a0-4e95-b107-2ae7d5db8581
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mLR/krjvfUCGgD/TzO8l0HFThSglFlUvvfepwxS9rUQCYjWRUGy2QZbzlE0Z/FgEUAshhPgL0mj+vVmc7/SxqA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR01MB2317
+
+--_000_MWHPR01MB2735070590907258ED2ABE56E53C0MWHPR01MB2735prod_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh.   You don=92t happen to be at CES this week? If so, Inken and I ar=
+e here and would be great to connect!  Jennifer
+
+Get Outlook for iOS<https://aka.ms/o0ukef>
+________________________________
+From: Josh Klein <josh@josh.is>
+Sent: Monday, January 6, 2020 10:06:15 AM
+To: Inken Braunschmidt <inken.braunschmidt@halma.com>
+Cc: Jennifer Ward <jennifer.ward@halma.com>
+Subject: Re: Josh and Halma
+
+Happy new year! I hope you and yours had a wonderful holiday.
+
+I'm writing to see if your thinking has advanced on the Digital Advisory Bo=
+ard Crowd for the US. I'm still keen to learn more about what you're buildi=
+ng in that arena; let me know if you've got any updates or if there's any o=
+ther way I can help!
+
+All best wishes,
+Josh
+
+
+On Tue, Mar 19, 2019 at 10:21 AM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+Just checking in to say hi; I've just closed out one of the companies I wor=
+k with and helped two others close Series C rounds. Now that the dust has s=
+ettled I'm turning my attention to larger partnerships and of course though=
+t of you - let me know if anything significant has changed on your end and/=
+or if I can be of any help with your projects!
+
+All best,
+Josh
+
+On Wed, Oct 24, 2018 at 10:20 AM Inken Braunschmidt <inken.braunschmidt@hal=
+ma.com<mailto:inken.braunschmidt@halma.com>> wrote:
+
+Hi Josh,
+
+
+
+I will be in Summit/ Newark, Cleveland in December (week before Christmas),=
+ but having two board meetings, not yet knowing if I am able to fit in a me=
+eting.
+
+
+
+Going forward we have established the idea to do an event/ workshop for pos=
+sible future members of our Digital Advisory Board Crowd in the US and you =
+would be on the top of the invitation list.
+
+
+
+Don=92t have a date yet but come back to you with this as well.
+
+
+
+Best
+
+Inken
+
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Date: Monday, 22 October 2018 at 16:25
+To: Inken Braunschmidt <inken.braunschmidt@halma.com<mailto:inken.braunschm=
+idt@halma.com>>
+Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Re: Josh and Halma
+
+
+
+Just wanted to extend the invite; if you're coming through NYC before the n=
+ew year do let me know as I'll mostly be around. Otherwise I'll let you kno=
+w when I next come to the UK (probably this spring...)
+
+
+
+All best wishes,
+
+Josh
+
+
+
+On Tue, Sep 25, 2018 at 2:10 PM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+
+!!! Next time... Let me know when you come through NYC after mid-October!
+
+
+
+- J
+
+
+
+On Tue, Sep 25, 2018 at 3:39 PM Jennifer Ward <jennifer.ward@halma.com<mail=
+to:jennifer.ward@halma.com>> wrote:
+
+Ha=85 we will pass at the airport.  I land in NYC afternoon of Oct 1.
+
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Date: Tuesday, 25 September 2018 at 16:27
+To: Jennifer Ward <jennifer.ward@halma.com<mailto:jennifer.ward@halma.com>>
+Cc: Inken Braunschmidt <inken.braunschmidt@halma.com<mailto:inken.braunschm=
+idt@halma.com>>, Rosemary Kilcoyne <rosemary.kilcoyne@halma.com<mailto:rose=
+mary.kilcoyne@halma.com>>, Clare Hudson <clare.hudson@halma.com<mailto:clar=
+e.hudson@halma.com>>, Joshua William Klein <josh@josh.is<mailto:josh@josh.i=
+s>>
+Subject: Re: Josh and Halma
+
+
+
+When are you heading to NYC? I land in London Oct 2. :)
+
+
+
+- J
+
+
+
+On Tue, Sep 25, 2018 at 9:23 AM Jennifer Ward <jennifer.ward@halma.com<mail=
+to:jennifer.ward@halma.com>> wrote:
+
+Also, Josh,  I will be in NYC next week and have some time Thursday morning=
+ Oct 4 if that could work.  Best, Jennifer
+
+
+
+From: Inken Braunschmidt <inken.braunschmidt@halma.com<mailto:inken.braunsc=
+hmidt@halma.com>>
+Date: Tuesday, 25 September 2018 at 10:22
+To: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Cc: Rosemary Kilcoyne <rosemary.kilcoyne@halma.com<mailto:rosemary.kilcoyne=
+@halma.com>>, Jennifer Ward <jennifer.ward@halma.com<mailto:jennifer.ward@h=
+alma.com>>
+Subject: Josh and Halma
+
+
+
+Hi Josh,
+
+
+
+When are you in London? We will have the start of our second Convergence Ac=
+celerator in November (19-21), so maybe a good chance to meet and somehow i=
+ntegrate you in a feedback session=85
+
+Or meeting for a coffee when you are at any other time in London.
+
+I will be in US (Summit/ Newark) now regularly, also in November (8th)
+
+
+
+Best
+
+Inken
+
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Date: Monday, 24 September 2018 at 17:02
+To: Inken Braunschmidt <inken.braunschmidt@halma.com<mailto:inken.braunschm=
+idt@halma.com>>
+Cc: Rose Kilcoyne <rosemary.kilcoyne@halma.com<mailto:rosemary.kilcoyne@hal=
+ma.com>>, Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Re: Morgan Amsler
+
+
+
+Wanted to touch base as I was talking about your organization just yesterda=
+y. I'm back in NYC (although heading to DC and then London over the next co=
+uple weeks) and remain curious about what you're doing and how to participa=
+te. Let me know if there's a reason to connect.
+
+
+
+All best,
+
+Josh
+
+
+
+On Thu, Jun 28, 2018 at 2:21 PM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+
+Yep! Will be doing a bit of bouncing around, though - may be back in the US=
+ early August for example - so please keep me posted of opportunities!
+
+On Thu, Jun 28, 2018 at 9:33 AM Inken Braunschmidt <inken.braunschmidt@halm=
+a.com<mailto:inken.braunschmidt@halma.com>> wrote:
+
+Hello Josh,
+
+
+
+Would like to spend more time to get to know each other but aren=92t you in=
+ Island for the next two months?
+
+
+
+Best
+
+Inken
+
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Date: Wednesday, 27 June 2018 at 15:42
+To: Inken Braunschmidt <inken.braunschmidt@halma.com<mailto:inken.braunschm=
+idt@halma.com>>
+Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Morgan Amsler
+
+
+
+Had a great conversation with Morgan yesterday; I don't think I'll be able =
+to help him directly at this stage, but will be connecting him with some an=
+alytical talent that might be able to jump in and get him to the next.
+
+
+
+Most critically, we spoke briefly about his experience working with Halma a=
+nd it really helped confirm for me that you're approaching things in a very=
+ appealing way. Let me know if / when we can spend some more time learning =
+about each other - I'm keen to see how I can help you advance your initiati=
+ves.
+
+
+
+All best,
+
+Josh
+
+--_000_MWHPR01MB2735070590907258ED2ABE56E53C0MWHPR01MB2735prod_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+</head>
+<body>
+<div>
+<div>
+<div style=3D"direction: ltr;">Hi Josh. &nbsp;&nbsp;You don=92t happen to b=
+e at CES this week? If so, Inken and I are here and would be great to conne=
+ct! &nbsp;Jennifer</div>
+</div>
+<div><br>
+</div>
+<div class=3D"ms-outlook-ios-signature">Get <a href=3D"https://aka.ms/o0uke=
+f">Outlook for iOS</a></div>
+</div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>From:</b> Josh Klein &lt;josh@j=
+osh.is&gt;<br>
+<b>Sent:</b> Monday, January 6, 2020 10:06:15 AM<br>
+<b>To:</b> Inken Braunschmidt &lt;inken.braunschmidt@halma.com&gt;<br>
+<b>Cc:</b> Jennifer Ward &lt;jennifer.ward@halma.com&gt;<br>
+<b>Subject:</b> Re: Josh and Halma</font>
+<div>&nbsp;</div>
+</div>
+<div>
+<div dir=3D"ltr">
+<div>Happy new year! I hope you and yours had a wonderful holiday.</div>
+<div><br>
+</div>
+<div>I'm writing to see if your thinking has advanced on the <i>Digital Adv=
+isory Board Crowd</i> for the US. I'm still keen to learn more about what y=
+ou're building in that arena; let me know if you've got any updates or if t=
+here's any other way I can help!</div>
+<div><br>
+</div>
+<div>All best wishes,</div>
+<div>Josh</div>
+<div><br>
+</div>
+</div>
+<br>
+<div class=3D"x_gmail_quote">
+<div dir=3D"ltr" class=3D"x_gmail_attr">On Tue, Mar 19, 2019 at 10:21 AM Jo=
+sh Klein &lt;<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:<br=
+>
+</div>
+<blockquote class=3D"x_gmail_quote" style=3D"margin:0px 0px 0px 0.8ex; bord=
+er-left:1px solid rgb(204,204,204); padding-left:1ex">
+<div dir=3D"ltr">
+<div>Just checking in to say hi; I've just closed out one of the companies =
+I work with and helped two others close Series C rounds. Now that the dust =
+has settled I'm turning my attention to larger partnerships and of course t=
+hought of you - let me know if anything
+ significant has changed on your end and/or if I can be of any help with yo=
+ur projects!</div>
+<div><br>
+</div>
+<div>All best,<br>
+</div>
+<div>Josh<br>
+</div>
+</div>
+<br>
+<div class=3D"x_gmail_quote">
+<div dir=3D"ltr" class=3D"x_gmail_attr">On Wed, Oct 24, 2018 at 10:20 AM In=
+ken Braunschmidt &lt;<a href=3D"mailto:inken.braunschmidt@halma.com" target=
+=3D"_blank">inken.braunschmidt@halma.com</a>&gt; wrote:<br>
+</div>
+<blockquote class=3D"x_gmail_quote" style=3D"margin:0px 0px 0px 0.8ex; bord=
+er-left:1px solid rgb(204,204,204); padding-left:1ex">
+<div lang=3D"EN-GB">
+<div>
+<p class=3D"x_MsoNormal">Hi Josh,<u></u><u></u></p>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<p class=3D"x_MsoNormal">I will be in Summit/ Newark, Cleveland in December=
+ (week before Christmas), but having two board meetings, not yet knowing if=
+ I am able to fit in a meeting.<u></u><u></u></p>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<p class=3D"x_MsoNormal">Going forward we have established the idea to do a=
+n event/ workshop for possible future members of our
+<i>Digital Advisory Board Crowd</i> in the US and you would be on the top o=
+f the invitation list.<u></u><u></u></p>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<p class=3D"x_MsoNormal">Don=92t have a date yet but come back to you with =
+this as well.<u></u><u></u></p>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<p class=3D"x_MsoNormal">Best<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Inken<u></u><u></u></p>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<div style=3D"border-color:rgb(181,196,223) currentcolor currentcolor; bord=
+er-style:solid none none; border-width:1pt medium medium; padding:3pt 0cm 0=
+cm">
+<p class=3D"x_MsoNormal"><b><span style=3D"font-size:12pt; color:black">Fro=
+m: </span>
+</b><span style=3D"font-size:12pt; color:black">Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Date: </b>Monday, 22 October 2018 at 16:25<br>
+<b>To: </b>Inken Braunschmidt &lt;<a href=3D"mailto:inken.braunschmidt@halm=
+a.com" target=3D"_blank">inken.braunschmidt@halma.com</a>&gt;<br>
+<b>Cc: </b>Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" target=
+=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Subject: </b>Re: Josh and Halma<u></u><u></u></span></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+</div>
+<div>
+<div>
+<p class=3D"x_MsoNormal">Just wanted to extend the invite; if you're coming=
+ through NYC before the new year do let me know as I'll mostly be around. O=
+therwise I'll let you know when I next come to the UK (probably this spring=
+...)<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">All best wishes,<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">Josh<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<div>
+<div>
+<p class=3D"x_MsoNormal">On Tue, Sep 25, 2018 at 2:10 PM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<=
+u></u><u></u></p>
+</div>
+<blockquote style=3D"border-color:currentcolor currentcolor currentcolor rg=
+b(204,204,204); border-style:none none none solid; border-width:medium medi=
+um medium 1pt; padding:0cm 0cm 0cm 6pt; margin-left:4.8pt; margin-right:0cm=
+">
+<div>
+<div>
+<p class=3D"x_MsoNormal">!!! Next time... Let me know when you come through=
+ NYC after mid-October!<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">- J<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"x_MsoNormal"><u></u>&nbsp;<u></u></p>
+<div>
+<div>
+<p class=3D"x_MsoNormal">On Tue, Sep 25, 2018 at 3:39 PM Jennifer Ward &lt;=
+<a href=3D"mailto:jennifer.ward@halma.com" target=3D"_blank">jennifer.ward@=
+halma.com</a>&gt; wrote:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-color:currentcolor currentcolor currentcolor rg=
+b(204,204,204); border-style:none none none solid; border-width:medium medi=
+um medium 1pt; padding:0cm 0cm 0cm 6pt; margin-left:4.8pt; margin-right:0cm=
+">
+<div>
+<div>
+<p class=3D"x_MsoNormal">Ha=85 we will pass at the airport.&nbsp; I land in=
+ NYC afternoon of Oct 1.&nbsp;
+<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div style=3D"border-color:rgb(181,196,223) currentcolor currentcolor; bord=
+er-style:solid none none; border-width:1pt medium medium; padding:3pt 0cm 0=
+cm">
+<p class=3D"x_MsoNormal"><b><span style=3D"font-size:12pt; color:black">Fro=
+m: </span>
+</b><span style=3D"font-size:12pt; color:black">Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Date: </b>Tuesday, 25 September 2018 at 16:27<br>
+<b>To: </b>Jennifer Ward &lt;<a href=3D"mailto:jennifer.ward@halma.com" tar=
+get=3D"_blank">jennifer.ward@halma.com</a>&gt;<br>
+<b>Cc: </b>Inken Braunschmidt &lt;<a href=3D"mailto:inken.braunschmidt@halm=
+a.com" target=3D"_blank">inken.braunschmidt@halma.com</a>&gt;, Rosemary Kil=
+coyne &lt;<a href=3D"mailto:rosemary.kilcoyne@halma.com" target=3D"_blank">=
+rosemary.kilcoyne@halma.com</a>&gt;, Clare Hudson &lt;<a href=3D"mailto:cla=
+re.hudson@halma.com" target=3D"_blank">clare.hudson@halma.com</a>&gt;,
+ Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank"=
+>josh@josh.is</a>&gt;<br>
+<b>Subject: </b>Re: Josh and Halma</span><u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<div>
+<p class=3D"x_MsoNormal">When are you heading to NYC? I land in London Oct =
+2. :)<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">- J<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"x_MsoNormal">On Tue, Sep 25, 2018 at 9:23 AM Jennifer Ward &lt;=
+<a href=3D"mailto:jennifer.ward@halma.com" target=3D"_blank">jennifer.ward@=
+halma.com</a>&gt; wrote:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-color:currentcolor currentcolor currentcolor rg=
+b(204,204,204); border-style:none none none solid; border-width:medium medi=
+um medium 1pt; padding:0cm 0cm 0cm 6pt; margin:5pt 0cm 5pt 4.8pt">
+<div>
+<div>
+<p class=3D"x_MsoNormal">Also, Josh,&nbsp; I will be in NYC next week and h=
+ave some time Thursday morning Oct 4 if that could work.&nbsp; Best, Jennif=
+er<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div style=3D"border-color:rgb(181,196,223) currentcolor currentcolor; bord=
+er-style:solid none none; border-width:1pt medium medium; padding:3pt 0cm 0=
+cm">
+<p class=3D"x_MsoNormal"><b><span style=3D"font-size:12pt; color:black">Fro=
+m: </span>
+</b><span style=3D"font-size:12pt; color:black">Inken Braunschmidt &lt;<a h=
+ref=3D"mailto:inken.braunschmidt@halma.com" target=3D"_blank">inken.braunsc=
+hmidt@halma.com</a>&gt;<br>
+<b>Date: </b>Tuesday, 25 September 2018 at 10:22<br>
+<b>To: </b>Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank"=
+>josh@josh.is</a>&gt;<br>
+<b>Cc: </b>Rosemary Kilcoyne &lt;<a href=3D"mailto:rosemary.kilcoyne@halma.=
+com" target=3D"_blank">rosemary.kilcoyne@halma.com</a>&gt;, Jennifer Ward &=
+lt;<a href=3D"mailto:jennifer.ward@halma.com" target=3D"_blank">jennifer.wa=
+rd@halma.com</a>&gt;<br>
+<b>Subject: </b>Josh and Halma</span><u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<p class=3D"x_MsoNormal">Hi Josh,<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<p class=3D"x_MsoNormal">When are you in London? We will have the start of =
+our second Convergence Accelerator in November (19-21), so maybe a good cha=
+nce to meet and somehow integrate you in a feedback session=85<u></u><u></u=
+></p>
+<p class=3D"x_MsoNormal">Or meeting for a coffee when you are at any other =
+time in London.<u></u><u></u></p>
+<p class=3D"x_MsoNormal">I will be in US (Summit/ Newark) now regularly, al=
+so in November (8<sup>th</sup>)<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Best<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Inken<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div style=3D"border-color:rgb(181,196,223) currentcolor currentcolor; bord=
+er-style:solid none none; border-width:1pt medium medium; padding:3pt 0cm 0=
+cm">
+<p class=3D"x_MsoNormal"><b><span style=3D"font-size:12pt; color:black">Fro=
+m: </span>
+</b><span style=3D"font-size:12pt; color:black">Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Date: </b>Monday, 24 September 2018 at 17:02<br>
+<b>To: </b>Inken Braunschmidt &lt;<a href=3D"mailto:inken.braunschmidt@halm=
+a.com" target=3D"_blank">inken.braunschmidt@halma.com</a>&gt;<br>
+<b>Cc: </b>Rose Kilcoyne &lt;<a href=3D"mailto:rosemary.kilcoyne@halma.com"=
+ target=3D"_blank">rosemary.kilcoyne@halma.com</a>&gt;, Joshua William Klei=
+n &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt=
+;<br>
+<b>Subject: </b>Re: Morgan Amsler</span><u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<div>
+<p class=3D"x_MsoNormal">Wanted to touch base as I was talking about your o=
+rganization just yesterday. I'm back in NYC (although heading to DC and the=
+n London over the next couple weeks) and remain curious about what you're d=
+oing and how to participate. Let me
+ know if there's a reason to connect. <u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">All best,<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">Josh<u></u><u></u></p>
+</div>
+</div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"x_MsoNormal">On Thu, Jun 28, 2018 at 2:21 PM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<=
+u></u><u></u></p>
+</div>
+<blockquote style=3D"border-color:currentcolor currentcolor currentcolor rg=
+b(204,204,204); border-style:none none none solid; border-width:medium medi=
+um medium 1pt; padding:0cm 0cm 0cm 6pt; margin:5pt 0cm 5pt 4.8pt">
+<p class=3D"x_MsoNormal">Yep! Will be doing a bit of bouncing around, thoug=
+h - may be back in the US early August for example - so please keep me post=
+ed of opportunities!<u></u><u></u></p>
+<div>
+<div>
+<p class=3D"x_MsoNormal">On Thu, Jun 28, 2018 at 9:33 AM Inken Braunschmidt=
+ &lt;<a href=3D"mailto:inken.braunschmidt@halma.com" target=3D"_blank">inke=
+n.braunschmidt@halma.com</a>&gt; wrote:<u></u><u></u></p>
+</div>
+<blockquote style=3D"border-color:currentcolor currentcolor currentcolor rg=
+b(204,204,204); border-style:none none none solid; border-width:medium medi=
+um medium 1pt; padding:0cm 0cm 0cm 6pt; margin:5pt 0cm 5pt 4.8pt">
+<div>
+<div>
+<p class=3D"x_MsoNormal">Hello Josh,<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Would like to spend more time to get to know each =
+other but aren=92t you in Island for the next two months?<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Best<u></u><u></u></p>
+<p class=3D"x_MsoNormal">Inken<u></u><u></u></p>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+<div style=3D"border-color:rgb(181,196,223) currentcolor currentcolor; bord=
+er-style:solid none none; border-width:1pt medium medium; padding:3pt 0cm 0=
+cm">
+<p class=3D"x_MsoNormal"><b><span style=3D"font-size:12pt; color:black">Fro=
+m: </span>
+</b><span style=3D"font-size:12pt; color:black">Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Date: </b>Wednesday, 27 June 2018 at 15:42<br>
+<b>To: </b>Inken Braunschmidt &lt;<a href=3D"mailto:inken.braunschmidt@halm=
+a.com" target=3D"_blank">inken.braunschmidt@halma.com</a>&gt;<br>
+<b>Cc: </b>Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" target=
+=3D"_blank">josh@josh.is</a>&gt;<br>
+<b>Subject: </b>Morgan Amsler</span><u></u><u></u></p>
+</div>
+</div>
+</div>
+<div>
+<div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<div>
+<p class=3D"x_MsoNormal">Had a great conversation with Morgan yesterday; I =
+don't think I'll be able to help him directly at this stage, but will be co=
+nnecting him with some analytical talent that might be able to jump in and =
+get him to the next.
+<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">Most critically, we spoke briefly about his experi=
+ence working with Halma and it really helped confirm for me that you're app=
+roaching things in a very appealing way. Let me know if / when we can spend=
+ some more time learning about each
+ other - I'm keen to see how I can help you advance your initiatives.<u></u=
+><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">&nbsp;<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">All best,<u></u><u></u></p>
+</div>
+<div>
+<p class=3D"x_MsoNormal">Josh<u></u><u></u></p>
+</div>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+</blockquote>
+</div>
+</div>
+</div>
+</blockquote>
+</div>
+</blockquote>
+</div>
+</div>
+</body>
+</html>
+
+--_000_MWHPR01MB2735070590907258ED2ABE56E53C0MWHPR01MB2735prod_--

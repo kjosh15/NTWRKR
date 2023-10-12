@@ -1,0 +1,788 @@
+Delivered-To: josh@josh.is
+Received: by 2002:adf:a1c7:0:0:0:0:0 with SMTP id v7csp575138wrv;
+        Wed, 7 Apr 2021 09:47:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwrYo6Ihzfna60FBWEqfnxDMGWKxehOhbfvX41wIlRNwFrS2ht47q/FbnKAkwzhTEmDIG2g
+X-Received: by 2002:a17:90b:289:: with SMTP id az9mr527999pjb.10.1617814050665;
+        Wed, 07 Apr 2021 09:47:30 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1617814050; cv=none;
+        d=google.com; s=arc-20160816;
+        b=t5wJxQfW/7mUpa0Y77/6MyWfX4YXoac18k0szkAjeJxDywo+Q6+xXRcn/ScyVXMITn
+         Q1+BHxd0tAn1g6ggTjLNXQvsr+B6Qze50NB6yspNmF4iWXI7mAYQ26F6277VSsNaAlpm
+         Kh/JZkEznghi6D7qV12s7U9FaxrtCrAIffa3ZiJbeddRsdNT30LKo9dyUayYvnYGI5QV
+         SlHN4vLeWt8gDf61C8e0UleZjBUajPchaCmHrMiaiv6V0wmyhkboY4lxgUqo4EvXciNa
+         JWL6vtvk2xO7yH9qpZAZu1naBX3B1cAqkUcacAwB+bbli4HOZIoiflZcmplUb5TzfvXL
+         Yrtg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=auto-submitted:subject:references:in-reply-to:message-id
+         :content-language:date:to:from:mime-version:ironport-hdrordr;
+        bh=QYfVx5uPbX0W4egXWtuy5KlAk70Nd+Ge7WTbiPR3Nh4=;
+        b=KuxxSx6hOCdvxfhZaUWR0uRnBEhCv2CYJbsNPmQC6vnK3SH5oyQHFd4Js06IEReHuf
+         2Q5w3OY11X7k8HZazEhjEh0BJcCaDKZHaFCS1Q4u77r5OY67TurS6SrhMRXx7KU0rWsv
+         4vhW/RXASyIQpoBjJbjcAqtmGd7f2eHmHHpn13d6YSiDvYuxSsx3K1liUfiRAas1cqB6
+         TC2WnmTFr5cHxVskMP+l9o1yNy+zOw40XaPnzONqnib/oyyw3yjyOuY0LS80qzGMQxKI
+         SRtU156Z7MWqTy+MhpLV7Yhb1RO8wy2zPi4MtpoY3G23gRg4h4olcj6kPdr+krBoi0d8
+         oLkg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of postmaster@esvaout9.mail-relay.ubc.ca designates 142.103.117.139 as permitted sender) smtp.helo=esvaout9.mail-relay.ubc.ca;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ubc.ca
+Return-Path: <>
+Received: from esvaout9.mail-relay.ubc.ca (esvaout9.mail-relay.ubc.ca. [142.103.117.139])
+        by mx.google.com with ESMTPS id j15si6222939pjy.53.2021.04.07.09.47.30
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 07 Apr 2021 09:47:30 -0700 (PDT)
+Received-SPF: pass (google.com: domain of postmaster@esvaout9.mail-relay.ubc.ca designates 142.103.117.139 as permitted sender) client-ip=142.103.117.139;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of postmaster@esvaout9.mail-relay.ubc.ca designates 142.103.117.139 as permitted sender) smtp.helo=esvaout9.mail-relay.ubc.ca;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ubc.ca
+Authentication-Results: esvaout9.mail-relay.ubc.ca; dkim=none (message not signed) header.i=none; spf=None smtp.mailfrom=postmaster@smtp.mail.ubc.ca; spf=None smtp.helo=postmaster@smtp.mail.ubc.ca
+Received-SPF: None (esvaout9.mail-relay.ubc.ca: no sender
+  authenticity information available from domain of
+  postmaster@smtp.mail.ubc.ca) identity=mailfrom;
+  client-ip=10.45.24.97; receiver=esvaout9.mail-relay.ubc.ca;
+  envelope-from=""; x-sender="postmaster@smtp.mail.ubc.ca";
+  x-conformance=spf_only
+Received-SPF: None (esvaout9.mail-relay.ubc.ca: no sender
+  authenticity information available from domain of
+  postmaster@smtp.mail.ubc.ca) identity=helo;
+  client-ip=10.45.24.97; receiver=esvaout9.mail-relay.ubc.ca;
+  envelope-from=""; x-sender="postmaster@smtp.mail.ubc.ca";
+  x-conformance=spf_only
+X-ExtLoop1: 1
+X-SMTPAUTH: FALSE
+IronPort-HdrOrdr: A9a23:t02RqquH3gO3xIrbL0wl5WDH7skCKIMji2hD6mlwRA09T+Wxi9
+ 2p2M4G3hv1lSscVRgb6Le9EYOHRm7R8oMw3JIYOq2sUBKjlGyjKoxj6oWK+UyFJwTV8OlB2a
+ B8N5VvEdGYNykese/WwimdV+whzt6O7byyiY7lpB1QZCxjdq0I1WtEIymWHkB8TANFQboVfa
+ Dsn/ZviCGnfR0sAfiTInUeReDMq5nqufvdASIuIx4i5E2wgSiz6Lj8eiLovCs2aD9Ezbc8/W
+ WtqWWQ2oyZv+i/2lvg0Qbogah+osfryddIGaW3+6soAwjr4zzIWK1RH5uE+DsyvOak5BIwls
+ XQr1M8Oa1Ihk/5TyWOjSGo/RX83jAv7HGK8y7/vUfe
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from lbpglfsc01gstp01-ents01-f5-vrfglue-float.systems.it.ubc.ca (HELO smtp.mail.ubc.ca) ([10.45.24.97])
+  by esvaout9.mail-relay.ubc.ca with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Apr 2021 09:47:25 -0700
+Received: from EXCH-SRV07AP.ead.ubc.ca (10.7.1.111) by EXCH-SRV05BP.ead.ubc.ca
+ (10.19.216.59) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 7 Apr 2021
+ 09:47:23 -0700
+MIME-Version: 1.0
+From: <postmaster@ead.ubc.ca>
+To: <josh@josh.is>
+Date: Wed, 7 Apr 2021 09:47:23 -0700
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="c850f34b-8ef7-4bf3-bed4-a090bd5dae20"
+X-MS-Exchange-Message-Is-Ndr:
+Content-Language: en-CA
+Message-ID: <e3bd9af5-65d4-47f0-892b-929bd1ae6ad1@EXCH-SRV07AP.ead.ubc.ca>
+In-Reply-To: <CACNgykNbc-rDyCT_CAF6bQDc0z2kRA3XpYZF27rcuLYjaQ44qg@mail.gmail.com>
+References: <CACNgykNbc-rDyCT_CAF6bQDc0z2kRA3XpYZF27rcuLYjaQ44qg@mail.gmail.com>
+Subject: Undeliverable: Hello from the future
+Auto-Submitted: auto-replied
+Return-Path: <>
+
+--c850f34b-8ef7-4bf3-bed4-a090bd5dae20
+Content-Type: multipart/alternative; differences=Content-Type;
+	boundary="e1ca33d6-5a57-4392-b72f-d2c38fee4281"
+
+--e1ca33d6-5a57-4392-b72f-d2c38fee4281
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Delivery has failed to these recipients or groups:
+
+mc.pelletier@sauder.ubc.ca<mailto:mc.pelletier@sauder.ubc.ca>
+The email address you entered couldn't be found. Please check the recipient=
+'s email address and try to resend the message. If the problem continues, p=
+lease contact your email admin.
+
+
+
+
+
+
+
+
+Diagnostic information for administrators:
+
+Generating server: EXCH-SRV07AP.ead.ubc.ca
+
+mc.pelletier@sauder.ubc.ca
+Remote Server returned '550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipien=
+t not found by SMTP address lookup'
+
+Original message headers:
+
+Received: from EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) by
+ EXCH-SRV07AP.ead.ubc.ca (10.7.1.111) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 7 Apr 2021 09:47:23 -0700
+Received: from esvaout8.mail-relay.ubc.ca (10.19.170.1) by
+ EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1=
+.2176.2
+ via Frontend Transport; Wed, 7 Apr 2021 09:47:23 -0700
+Received-SPF: Pass (esvaout8.mail-relay.ubc.ca: domain of
+  josh@josh.is designates 209.85.221.50 as permitted sender)
+  identity=3Dmailfrom; client-ip=3D209.85.221.50;
+  receiver=3Desvaout8.mail-relay.ubc.ca;
+  envelope-from=3D"josh@josh.is"; x-sender=3D"josh@josh.is";
+  x-conformance=3Dspf_only; x-record-type=3D"v=3Dspf1";
+  x-record-text=3D"v=3Dspf1 ip4:35.190.247.0/24 ip4:64.233.160.0/19
+  ip4:66.102.0.0/20 ip4:66.249.80.0/20 ip4:72.14.192.0/18
+  ip4:74.125.0.0/16 ip4:108.177.8.0/21 ip4:173.194.0.0/16
+  ip4:209.85.128.0/17 ip4:216.58.192.0/19 ip4:216.239.32.0/19
+  ~all"
+Received-SPF: None (esvaout8.mail-relay.ubc.ca: no sender
+  authenticity information available from domain of
+  postmaster@mail-wr1-f50.google.com) identity=3Dhelo;
+  client-ip=3D209.85.221.50; receiver=3Desvaout8.mail-relay.ubc.ca;
+  envelope-from=3D"josh@josh.is";
+  x-sender=3D"postmaster@mail-wr1-f50.google.com";
+  x-conformance=3Dspf_only
+Authentication-Results: esvaout8.mail-relay.ubc.ca; spf=3DPass smtp.mailfro=
+m=3Djosh@josh.is; spf=3DNone smtp.helo=3Dpostmaster@mail-wr1-f50.google.com=
+; dkim=3Dpass (signature verified) header.i=3D@josh.is; dmarc=3Dpass (p=3Dq=
+uarantine dis=3Dnone) d=3Djosh.is
+IronPort-SDR: /Lof8eGg1OseEDgsnML+e/eynrmiYnVqOj6924CbpxOl2qE5sq8r4x03g4fOu=
+8xxeqCOMIL6SZ
+ iX2FhbS2o/oqf7L3ICXPNcK3j8SZEFrgJNYpByDOhtMB/cPdcMKblUF8fJwlwsVODcrAi1hMqe
+ r9i8MtbK6YJlyw1LmhIgHQNQGY60dYWKUBfNy/YZ0N02HQ0MG3P5JiD+zddf/NMsruSmPWtbjk
+ YjQyg2t0d+C7rcEUH8hmGsjwkQXkk54mBXozuOBzphSxX9m4PmmSjjUNIuMuymlOtql9Slqzlh
+ IfWZHKjLy40xzMKJ+Udx/LiD
+X-ExtLoop1: 1
+X-SMTPAUTH: FALSE
+IronPort-PHdr: A9a23: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
+ sJLW0iTTEBpzaDDTnw0
+IronPort-HdrOrdr: A9a23:mz04Z6A3rbCrSnnlHek855DYdL4zR+YMi2QD/UZ3VBBTb4ikh9
+ mj9c5rsSPcpRQwfDUbmd6GMLSdWn+0z/VIyKQYILvKZmXbkUSyKoUK1+Tf6h3mXxbz7+tMkZ
+ pnGpIfNPTVLXxXyfn3+xO5FdFI+qjjzImNif3Fx3lgCSFGApsA0y5DBgyWElJ7SWB9bPJSea
+ a03cZJqyGtfn4adK2Adxo4dtLerN7Gno+OW29lOzcb7mC14w+A2frXFAWZwwdbcx4n+8ZFzU
+ H11zbWoomCnpiAu3jh61M=3D
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =3D?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flY=
+?=3D
+ =3D?us-ascii?q?rBAsxgnaBTIEek0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDg=
+I?=3D
+ =3D?us-ascii?q?BAgEBAQMCBgEBAQQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA=
+1?=3D
+ =3D?us-ascii?q?DARABBAEBgV0iggEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQ=
+Q?=3D
+ =3D?us-ascii?q?9iy+BMoEBggQBAQaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeo=
+J?=3D
+ =3D?us-ascii?q?KF4JJgngQfGKCE54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iV=
+q?=3D
+ =3D?us-ascii?q?SVoUCECOBHimBfiwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iB=
+A?=3D
+ =3D?us-ascii?q?kLzgCBgEJAQEDCYRKgwaBAYRAAQE?=3D
+X-IPAS-Result: =3D?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flYrBAsxgnaBTIEek=
+?=3D
+ =3D?us-ascii?q?0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDgIBAgEBAQMCBgEB=
+A?=3D
+ =3D?us-ascii?q?QQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA1DARABBAEBgV0i=
+g?=3D
+ =3D?us-ascii?q?gEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQQ9iy+BMoEBggQB=
+A?=3D
+ =3D?us-ascii?q?QaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeoJKF4JJgngQfGKC=
+E?=3D
+ =3D?us-ascii?q?54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iVqSVoUCECOBHimB=
+f?=3D
+ =3D?us-ascii?q?iwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iBAkLzgCBgEJAQED=
+C?=3D
+ =3D?us-ascii?q?YRKgwaBAYRAAQE?=3D
+X-IronPort-AV: E=3DSophos;i=3D"5.82,203,1613462400";
+   d=3D"scan'208,217";a=3D"87292821"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-UBC-EXTERNAL: TRUE
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+Received: from mail-wr1-f50.google.com ([209.85.221.50])
+  by esvaout8.mail-relay.ubc.ca with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;=
+ 07 Apr 2021 09:47:01 -0700
+Received: by mail-wr1-f50.google.com with SMTP id b9so10811909wrs.1
+        for <mc.pelletier@sauder.ubc.ca>; Wed, 07 Apr 2021 09:47:00 -0700 (=
+PDT)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dfrom:mime-version:date:message-id:subject:to;
+        bh=3Du1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=3D;
+        b=3DJollfu07OcPFnPCUk72qSXnHWxCo4KEaKDqlC/3Az0CaGTQvuRdIIEOL2TH0g9C=
+cIl
+         wgru8aSOwlOvpHUul0wZbncBgAxMSazASEb4jIV7QX6MJAcUgJTLFOs/W40L/3ScAh=
+DX
+         Fvv9pgnsCko7noSDzqpK21YYUz0M5Rsm4K/dUpj1Get6JiuHIrCt+pAlUUAkCXPySE=
+Js
+         g84eJ5IukCE/unmqOpzen08kdKX1Lmh05PbPbk+EkwW3nMNWgWZDVtmOAlNlS6Bp2W=
+yH
+         DQfPAEcI15GPwYrVg5d3LoeAiAGpgVIfm3hXcVfWVT1pm1hQOBsqkhK75yY2hLG5+J=
+dV
+         +wMQ=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:from:mime-version:date:message-id:subject:to=
+;
+        bh=3Du1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=3D;
+        b=3Del6mJpetnQTe6Ll2vYoB608It3mIdETCcQrfG37TQH/1IVTdFFBOxqLEnK64c2J=
+u3f
+         iqsoDw8+JD3sVSwdfCg2A4Yw6zoqM8OQ9E7/Av54alfcYWVvG/Drn/KIU8zwxvTHPY=
+bn
+         7Bt5lWf9ksyVgX0KfgzLxK6oId7eK6nF+MDvupjQ4ghL2JFVT7V87GkSFvsNe1Uo/U=
+sx
+         sxmO2Ohc9gWN3dV5BN9RzzZ1r/pRAdPpHqFAOw3mQqkp4asuvvTKrKtydx/55y+ty/=
+pg
+         64RezYEidBSMXNs+U2qKuf21GWyNULGXwZgR153ft7WFDBICfrNfz6gga67Tq///XA=
+oM
+         GwyA=3D=3D
+X-Gm-Message-State: AOAM532TzX94CVM3KSwpIq2voRokPDN21v9d6Fl/8JkEAfeUPqt6oBP=
+X
+        w4ZJHELeDpjgUd11EA7hNj9XVasxMPkhCaKHzYBYEKm4UDI=3D
+X-Google-Smtp-Source: ABdhPJxF7DrzyeEMByjrcyUh5RDpHF97B+0l+XdAgoej1j4sfVJ5c=
+ubr33OAM6pVg6HFF06AuHAjsNWCz4d5Il0vGt8=3D
+X-Received: by 2002:adf:fc4b:: with SMTP id e11mr5437475wrs.169.16178140190=
+89;
+ Wed, 07 Apr 2021 09:46:59 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 7 Apr 2021 09:46:58 -0700
+From: Josh Klein <josh@josh.is>
+MIME-Version: 1.0
+Date: Wed, 7 Apr 2021 09:46:58 -0700
+Message-ID: <CACNgykNbc-rDyCT_CAF6bQDc0z2kRA3XpYZF27rcuLYjaQ44qg@mail.gmail=
+.com>
+Subject: Hello from the future
+To: <mc.pelletier@sauder.ubc.ca>
+Content-Type: multipart/alternative; boundary=3D"000000000000ebaf3605bf64ad=
+74"
+Return-Path: josh@josh.is
+
+
+--e1ca33d6-5a57-4392-b72f-d2c38fee4281
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<Head></head><body>
+<p><b><font color=3D"#000066" size=3D"3" face=3D"Arial">Delivery has failed=
+ to these recipients or groups:</font></b></p>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><p><a href=3D"mailto:mc.=
+pelletier@sauder.ubc.ca">mc.pelletier@sauder.ubc.ca</a><br>
+</font>
+<font color=3D"#000000" size=3D"3" face=3D"Arial">The email address you ent=
+ered couldn't be found. Please check the recipient's email address and try =
+to resend the message. If the problem continues, please contact your email =
+admin.<br>
+</font>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><br>
+</p>
+</font>
+<br><br><br><br><br><br>
+<font color=3D"#808080" size=3D"2" face=3D"Tahoma"><p><b>Diagnostic informa=
+tion for administrators:</b></p>
+<p>Generating server: EXCH-SRV07AP.ead.ubc.ca<br>
+</p>
+<p>mc.pelletier@sauder.ubc.ca<br>
+Remote Server  returned '550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipie=
+nt not found by SMTP address lookup'<br>
+</p>
+<p>Original message headers:</p>
+<pre>Received: from EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) by
+ EXCH-SRV07AP.ead.ubc.ca (10.7.1.111) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 7 Apr 2021 09:47:23 -0700
+Received: from esvaout8.mail-relay.ubc.ca (10.19.170.1) by
+ EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1=
+.2176.2
+ via Frontend Transport; Wed, 7 Apr 2021 09:47:23 -0700
+Received-SPF: Pass (esvaout8.mail-relay.ubc.ca: domain of
+  josh@josh.is designates 209.85.221.50 as permitted sender)
+  identity=3Dmailfrom; client-ip=3D209.85.221.50;
+  receiver=3Desvaout8.mail-relay.ubc.ca;
+  envelope-from=3D&quot;josh@josh.is&quot;; x-sender=3D&quot;josh@josh.is&q=
+uot;;
+  x-conformance=3Dspf_only; x-record-type=3D&quot;v=3Dspf1&quot;;
+  x-record-text=3D&quot;v=3Dspf1 ip4:35.190.247.0/24 ip4:64.233.160.0/19
+  ip4:66.102.0.0/20 ip4:66.249.80.0/20 ip4:72.14.192.0/18
+  ip4:74.125.0.0/16 ip4:108.177.8.0/21 ip4:173.194.0.0/16
+  ip4:209.85.128.0/17 ip4:216.58.192.0/19 ip4:216.239.32.0/19
+  ~all&quot;
+Received-SPF: None (esvaout8.mail-relay.ubc.ca: no sender
+  authenticity information available from domain of
+  postmaster@mail-wr1-f50.google.com) identity=3Dhelo;
+  client-ip=3D209.85.221.50; receiver=3Desvaout8.mail-relay.ubc.ca;
+  envelope-from=3D&quot;josh@josh.is&quot;;
+  x-sender=3D&quot;postmaster@mail-wr1-f50.google.com&quot;;
+  x-conformance=3Dspf_only
+Authentication-Results: esvaout8.mail-relay.ubc.ca; spf=3DPass smtp.mailfro=
+m=3Djosh@josh.is; spf=3DNone smtp.helo=3Dpostmaster@mail-wr1-f50.google.com=
+; dkim=3Dpass (signature verified) header.i=3D@josh.is; dmarc=3Dpass (p=3Dq=
+uarantine dis=3Dnone) d=3Djosh.is
+IronPort-SDR: /Lof8eGg1OseEDgsnML+e/eynrmiYnVqOj6924CbpxOl2qE5sq8r4x03g4fOu=
+8xxeqCOMIL6SZ
+ iX2FhbS2o/oqf7L3ICXPNcK3j8SZEFrgJNYpByDOhtMB/cPdcMKblUF8fJwlwsVODcrAi1hMqe
+ r9i8MtbK6YJlyw1LmhIgHQNQGY60dYWKUBfNy/YZ0N02HQ0MG3P5JiD+zddf/NMsruSmPWtbjk
+ YjQyg2t0d+C7rcEUH8hmGsjwkQXkk54mBXozuOBzphSxX9m4PmmSjjUNIuMuymlOtql9Slqzlh
+ IfWZHKjLy40xzMKJ+Udx/LiD
+X-ExtLoop1: 1
+X-SMTPAUTH: FALSE
+IronPort-PHdr: A9a23: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
+ sJLW0iTTEBpzaDDTnw0
+IronPort-HdrOrdr: A9a23:mz04Z6A3rbCrSnnlHek855DYdL4zR+YMi2QD/UZ3VBBTb4ikh9
+ mj9c5rsSPcpRQwfDUbmd6GMLSdWn+0z/VIyKQYILvKZmXbkUSyKoUK1+Tf6h3mXxbz7+tMkZ
+ pnGpIfNPTVLXxXyfn3+xO5FdFI+qjjzImNif3Fx3lgCSFGApsA0y5DBgyWElJ7SWB9bPJSea
+ a03cZJqyGtfn4adK2Adxo4dtLerN7Gno+OW29lOzcb7mC14w+A2frXFAWZwwdbcx4n+8ZFzU
+ H11zbWoomCnpiAu3jh61M=3D
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =3D?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flY=
+?=3D
+ =3D?us-ascii?q?rBAsxgnaBTIEek0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDg=
+I?=3D
+ =3D?us-ascii?q?BAgEBAQMCBgEBAQQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA=
+1?=3D
+ =3D?us-ascii?q?DARABBAEBgV0iggEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQ=
+Q?=3D
+ =3D?us-ascii?q?9iy+BMoEBggQBAQaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeo=
+J?=3D
+ =3D?us-ascii?q?KF4JJgngQfGKCE54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iV=
+q?=3D
+ =3D?us-ascii?q?SVoUCECOBHimBfiwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iB=
+A?=3D
+ =3D?us-ascii?q?kLzgCBgEJAQEDCYRKgwaBAYRAAQE?=3D
+X-IPAS-Result: =3D?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flYrBAsxgnaBTIEek=
+?=3D
+ =3D?us-ascii?q?0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDgIBAgEBAQMCBgEB=
+A?=3D
+ =3D?us-ascii?q?QQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA1DARABBAEBgV0i=
+g?=3D
+ =3D?us-ascii?q?gEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQQ9iy+BMoEBggQB=
+A?=3D
+ =3D?us-ascii?q?QaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeoJKF4JJgngQfGKC=
+E?=3D
+ =3D?us-ascii?q?54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iVqSVoUCECOBHimB=
+f?=3D
+ =3D?us-ascii?q?iwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iBAkLzgCBgEJAQED=
+C?=3D
+ =3D?us-ascii?q?YRKgwaBAYRAAQE?=3D
+X-IronPort-AV: E=3DSophos;i=3D&quot;5.82,203,1613462400&quot;;=20
+   d=3D&quot;scan'208,217&quot;;a=3D&quot;87292821&quot;
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-UBC-EXTERNAL: TRUE
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+Received: from mail-wr1-f50.google.com ([209.85.221.50])
+  by esvaout8.mail-relay.ubc.ca with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256;=
+ 07 Apr 2021 09:47:01 -0700
+Received: by mail-wr1-f50.google.com with SMTP id b9so10811909wrs.1
+        for &lt;mc.pelletier@sauder.ubc.ca&gt;; Wed, 07 Apr 2021 09:47:00 -=
+0700 (PDT)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dfrom:mime-version:date:message-id:subject:to;
+        bh=3Du1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=3D;
+        b=3DJollfu07OcPFnPCUk72qSXnHWxCo4KEaKDqlC/3Az0CaGTQvuRdIIEOL2TH0g9C=
+cIl
+         wgru8aSOwlOvpHUul0wZbncBgAxMSazASEb4jIV7QX6MJAcUgJTLFOs/W40L/3ScAh=
+DX
+         Fvv9pgnsCko7noSDzqpK21YYUz0M5Rsm4K/dUpj1Get6JiuHIrCt+pAlUUAkCXPySE=
+Js
+         g84eJ5IukCE/unmqOpzen08kdKX1Lmh05PbPbk+EkwW3nMNWgWZDVtmOAlNlS6Bp2W=
+yH
+         DQfPAEcI15GPwYrVg5d3LoeAiAGpgVIfm3hXcVfWVT1pm1hQOBsqkhK75yY2hLG5+J=
+dV
+         +wMQ=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:from:mime-version:date:message-id:subject:to=
+;
+        bh=3Du1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=3D;
+        b=3Del6mJpetnQTe6Ll2vYoB608It3mIdETCcQrfG37TQH/1IVTdFFBOxqLEnK64c2J=
+u3f
+         iqsoDw8+JD3sVSwdfCg2A4Yw6zoqM8OQ9E7/Av54alfcYWVvG/Drn/KIU8zwxvTHPY=
+bn
+         7Bt5lWf9ksyVgX0KfgzLxK6oId7eK6nF+MDvupjQ4ghL2JFVT7V87GkSFvsNe1Uo/U=
+sx
+         sxmO2Ohc9gWN3dV5BN9RzzZ1r/pRAdPpHqFAOw3mQqkp4asuvvTKrKtydx/55y+ty/=
+pg
+         64RezYEidBSMXNs+U2qKuf21GWyNULGXwZgR153ft7WFDBICfrNfz6gga67Tq///XA=
+oM
+         GwyA=3D=3D
+X-Gm-Message-State: AOAM532TzX94CVM3KSwpIq2voRokPDN21v9d6Fl/8JkEAfeUPqt6oBP=
+X
+	w4ZJHELeDpjgUd11EA7hNj9XVasxMPkhCaKHzYBYEKm4UDI=3D
+X-Google-Smtp-Source: ABdhPJxF7DrzyeEMByjrcyUh5RDpHF97B+0l+XdAgoej1j4sfVJ5c=
+ubr33OAM6pVg6HFF06AuHAjsNWCz4d5Il0vGt8=3D
+X-Received: by 2002:adf:fc4b:: with SMTP id e11mr5437475wrs.169.16178140190=
+89;
+ Wed, 07 Apr 2021 09:46:59 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 7 Apr 2021 09:46:58 -0700
+From: Josh Klein &lt;josh@josh.is&gt;
+MIME-Version: 1.0
+Date: Wed, 7 Apr 2021 09:46:58 -0700
+Message-ID: &lt;CACNgykNbc-rDyCT_CAF6bQDc0z2kRA3XpYZF27rcuLYjaQ44qg@mail.gm=
+ail.com&gt;
+Subject: Hello from the future
+To: &lt;mc.pelletier@sauder.ubc.ca&gt;
+Content-Type: multipart/alternative; boundary=3D&quot;000000000000ebaf3605b=
+f64ad74&quot;
+Return-Path: josh@josh.is
+</pre>
+</font>
+</body>
+</html>=
+
+--e1ca33d6-5a57-4392-b72f-d2c38fee4281--
+
+--c850f34b-8ef7-4bf3-bed4-a090bd5dae20
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns;EXCH-SRV07AP.ead.ubc.ca
+Received-From-MTA: dns;esvaout8.mail-relay.ubc.ca
+Arrival-Date: Wed, 7 Apr 2021 16:47:23 +0000
+
+Final-Recipient: rfc822;mc.pelletier@sauder.ubc.ca
+Action: failed
+Status: 5.1.10
+Diagnostic-Code: smtp;550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipient not found by SMTP address lookup
+
+
+--c850f34b-8ef7-4bf3-bed4-a090bd5dae20
+Content-Type: message/rfc822
+
+Received: from EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) by
+ EXCH-SRV07AP.ead.ubc.ca (10.7.1.111) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 7 Apr 2021 09:47:23 -0700
+Received: from esvaout8.mail-relay.ubc.ca (10.19.170.1) by
+ EXCH-SRV06BP.ead.ubc.ca (10.19.216.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2
+ via Frontend Transport; Wed, 7 Apr 2021 09:47:23 -0700
+Received-SPF: Pass (esvaout8.mail-relay.ubc.ca: domain of
+  josh@josh.is designates 209.85.221.50 as permitted sender)
+  identity=mailfrom; client-ip=209.85.221.50;
+  receiver=esvaout8.mail-relay.ubc.ca;
+  envelope-from="josh@josh.is"; x-sender="josh@josh.is";
+  x-conformance=spf_only; x-record-type="v=spf1";
+  x-record-text="v=spf1 ip4:35.190.247.0/24 ip4:64.233.160.0/19
+  ip4:66.102.0.0/20 ip4:66.249.80.0/20 ip4:72.14.192.0/18
+  ip4:74.125.0.0/16 ip4:108.177.8.0/21 ip4:173.194.0.0/16
+  ip4:209.85.128.0/17 ip4:216.58.192.0/19 ip4:216.239.32.0/19
+  ~all"
+Received-SPF: None (esvaout8.mail-relay.ubc.ca: no sender
+  authenticity information available from domain of
+  postmaster@mail-wr1-f50.google.com) identity=helo;
+  client-ip=209.85.221.50; receiver=esvaout8.mail-relay.ubc.ca;
+  envelope-from="josh@josh.is";
+  x-sender="postmaster@mail-wr1-f50.google.com";
+  x-conformance=spf_only
+Authentication-Results: esvaout8.mail-relay.ubc.ca; spf=Pass smtp.mailfrom=josh@josh.is; spf=None smtp.helo=postmaster@mail-wr1-f50.google.com; dkim=pass (signature verified) header.i=@josh.is; dmarc=pass (p=quarantine dis=none) d=josh.is
+IronPort-SDR: /Lof8eGg1OseEDgsnML+e/eynrmiYnVqOj6924CbpxOl2qE5sq8r4x03g4fOu8xxeqCOMIL6SZ
+ iX2FhbS2o/oqf7L3ICXPNcK3j8SZEFrgJNYpByDOhtMB/cPdcMKblUF8fJwlwsVODcrAi1hMqe
+ r9i8MtbK6YJlyw1LmhIgHQNQGY60dYWKUBfNy/YZ0N02HQ0MG3P5JiD+zddf/NMsruSmPWtbjk
+ YjQyg2t0d+C7rcEUH8hmGsjwkQXkk54mBXozuOBzphSxX9m4PmmSjjUNIuMuymlOtql9Slqzlh
+ IfWZHKjLy40xzMKJ+Udx/LiD
+X-ExtLoop1: 1
+X-SMTPAUTH: FALSE
+IronPort-PHdr: A9a23:hCTHdB9PajWnPP9uWaq1ngc9DhMPi/DPJgcQr6AfoPdwSMyLwZ3uM
+ QTl6Ol3ixeRBMOHsqMC0rWJ+P+/EUU7or+5+EgYd5JNUxJXwe43pCcHRPC/NEvgMfTxZDY7F
+ skRHHVs/nW8LFQHUJ2mPw6arXK99yMdFQviPgRpOOv1BpTSj8Oq3Oyu5pHfeQpFiCe5bL9oM
+ Rm7rwfcusYUjIZgN6081gbHrnxUdupM2GhmP0iTnxHy5sex+J5s7SFdsO8/+sBDTKv3Yb02Q
+ aRXAzo6PW814tbrtQTYQguU+nQcSGQWnQFWDAXD8Rr3Q43+sir+tup6xSmaIcj7Rq06VDi+8
+ 6tmTgLjhSEaPDA77W7XkNR9gqJUrxyvpBJx3pDab52OOfVkYq/QZ8kXSXZdUstTUSFKH4Oyb
+ 5EID+oEJetWq479p0AOrRCjAAesAP3gyj5OhnTr2qA60eMhERrG3AE7HdIOt2/UrNXvOKcTS
+ uC41a/FxijMYP1Kwzny8pTIcgw/rvGWW7J9acrcx0YhGg7EjlidtJHoMy6L2+oDsmWW4PRtW
+ PyxhmAnrwx9viWjyMgshITUmI8Yzk7J+yp7zYs2JtC1TEF1b9CiHZBNuS+aMI52TdkjQ2Fuo
+ Cs6yLoGuYW7fCQQyZQn3BjSYOGEfYiQ+h/vSvqdLDNiiH9meL+znQi+/Va9xuHmVsS4zFBHp
+ TdfnNbWrHACzRnT59CHSvRj+keh3i6C1wXJ5eFFJUA4jKTaK4Q8zrIpmJoesVjPEjX5mEXxi
+ 6+WeUEk9fay5+v7ZbXmo4eQN45yig7gLqQjgtKzDfg8PwQUXGWW+f6w2KP98UHkWrlHjuE6n
+ rHcsJ/AJMQboqC5AxVS0oYm8xu/DTCm0M8YnXQcLlJFfwmHj4jzN1HPO/D0Fe2/jEi0kDd32
+ /DGOaXsApDRIXTZiLfuY7J960pCxwovzNBQ+YhUB6oaIP3pR0/+qcLXDgUjPwyp2OnoFM9x2
+ Z8EVjHHPqjMNaiUqVKM4u8zIuSWTJQcpTrwMb447fWohnZqt0UaePyL2oAXIFO8E/VgaxGbZ
+ mHsqtUGCmdMvxFoH7+is0GLTTMGPyX6ZKk7/DxuUOqOIaTiY8WAnrWFwS6nH5pQDkhYXwnfW
+ X69bZ6NHuwMYXjPfJwpmWkeWLyoW4ItkgujsAbqxrY0S4icsmVQ/dqrnNQg5erIlVcz7m88F
+ JGS1GaCS2wn+wFAD3d+lOg36UwoxE2E1Pp9gvlVUMJe/ehIVQFoOZfAwr5/BsvpUw3MO9aFG
+ k27SNerCi1jUtVipr1GKw41U53qxhrDijfzJ48XqZuRJrEl6/uA8D/4G9Rz53TG7K0ErFp7S
+ M0IbDasxZd77jfJKdacwCD73+7iPexUlGbHoUWEyW6AoRkHdwVIf6P9dk0cORHPluT/xnzSZ
+ LjyKpkuESdYzeXFcYJYMvbgoml/WurZNPX/TkWVwVuQXRnZ7bitaO+IMy1VlG2VQABMjA8J4
+ CaPDi8hAgC/u0LjETg2CmDlZUjG/sBujUiyXGYP4gvWbWxfiIOFpDs3rPehRNEv+pwjo2Ae9
+ 21QWw2G1PvWJ+rlxUIpNO0UKZt1qHlZyzPBuApmFZ+ncKZlvXIMahxU5Rrf5ihlUqAdq9Mv8
+ FBtwDdqK/u33U8fVTKF/bHqEaGUMkD2wS2GaIXm4kDl/fSNn8VHoLxw4x2r9EmmRhYv0ShGz
+ tp+/jyB4JDTKxIAXJSpAkU71Cgjg7TaOnQF7bve1j5BMraL6Tnn/e0mO9kJ9AqlWP5bFqe/S
+ iXqSfILJ63MYKRi0xDhJlpMENlczIcZNOL/KtS+x5+xAuk9kGmCimlu4alSyk2y1iR5Ee741
+ KgL/M+khxOCDjfFq326q8P3ut8ZdABIHk6QlGvGCLA0BOU6Nc5DQS/ma46o4+wr0s2lSztZ7
+ lmlH1QcxIqzdAGPa0CoxQRLzhd/iVCCsBGTpxQs1x0sp7CU5iHFxP7uJlIfb3dWTXNri0vtJ
+ 4Xwx8gRQB3xN1Bt3AC9sAKyzqRYpaEqNS2bSFxQcX3sayl4T6LlhfrNb8tG8phtqyhPV/6ge
+ niYTaX95RoBnGerRjMClG1kKWnrj9H/mBp34Eq0MWpzoXzFeMp52RbY4pnmSOVM2iYdLAF1k
+ ifeAUWgb5+s9NSQ0o3OtumvEX+rXdtYeHqj1puO4ROy/nYiGhijh7a2k9zjHxI91Hr50MJqf
+ SfPtxa6Y5K4n7+iP7dBeU9lTET599I8Gox6ld4og4oM3HEBmpiP1X8OkGO2Ls8CnKyjNDwCQ
+ jkEx9OT6w/giwVvLXOMkprwTW7VgtBgaN+zfn4M12oj4tpLBqaZ4P0MnSZ8rlei6wOESfp6h
+ TdbyOB9oHIfivsC7RIk1T7VQqhHBFRRJyXqixWO4piyrb4CYmGpfPn42B98msuhSrCZyilmV
+ X30e4kvEWpL1usXGGrFy2a7qoz/ZtDXcM5D8BidkhOFleVRIYN3i/ABwyFuayrxungsyuhzi
+ hILv9nyvo+cK01v+7m5RB9DfjH4fMIc/DjxgL0WxJ7HmdDyWM87Q3NWBNPhVrqwHSgXtOj7O
+ grGCzA6pnqBWN+9VUee5Epgs3PTAsWuPnCTKmMeyIYqTx2cKUpDxQEMCW9iz9hpS0bwnpWnL
+ R8qg1JZrkT1oRZN1O9yYhTkTG7YuRv4LDI9SZzaNhdS5xAE+k3ed8eXvYcRV2lV+IOsqAuVJ
+ ymVfQNNWCsLXVeEL1LkJbno5MKKoKCIQ/GzKffDe+DEq+tFV9+KwomvlIp9tWXpVI3HLjxpC
+ Ps13VBGVHZyFpHCgzs4TCoThnGFf4uBqRy74CEystGn/aGhRlf0/YXWQeg3U50n61WsjKyEL
+ eLVmCtpNWMSyMYX3XGRgLkHgAxJ1mc3JmHrS+hf83aKFv6Ym7cLXUBHLXkob40Rsfp6hk4Ua
+ Ku5wpv0zuIq0KBzUg8fEwSnwobzPYQLOz3vag2BXhracuTeY2WMmZm/YLvgG+IKyrwI8UTh4
+ 3DDVBazW1bL3zjxC0LwbacV1nzdZFoG/9jjOhd1VTq6FIKgM0Lkdo8x1XpsmPU1ni+YbDFHd
+ 2EtLwUV6OXXtH094L03GnQdvCA9fK/UxmDAtbmectFP7rNqGngmzbsEpilqjeIEtmccA6Uk0
+ CrK8ow0+g/gyLLejGE9FkIJ82cu5srDq0xmPe+x3qNNUnvF4h8BqF6oJXwigdxjB5WvtrtOw
+ 9/SiPK1LT5D95fO8M8VFo7JIsnBO3NzeRzuUCXZCgcIV1vJfSnWmlBdnfeO93aUsolyq57in
+ 4ALQ6NaU1p9H+0TC0BsFtgPaJltWTZsnbmehc8OrX2wyXuZDN1dpYzCX+mODO/HLT+Yifxbf
+ UJNz+6ga4sUMYL/1gppbVw71IXGFkzMXMxc9y1saghnxScFuHN6T2A1xwfkclb3uC5VRaPyx
+ ERvzFYmMqw3+Tzh4kk6PA/HvzU5l1QtyZPgiDGVNST8KK6hG5xcAGz/vhtUUNuzTgBrYAm1h
+ UEhOi3DQucbjbx7dUhpjxTc/5pUU605L+UMcFoLyPebau99m0xbsTmizFRb6PHtDJJjkE41a
+ 8fpoS8YnQ1ka9ExKOrbI68DnT0yzuqe+ySv0O422goXIU0ApXiKdhkPvkgZXpEWYhGw9+kp0
+ jSs3jtOfG9kf/8jo/Yv6Vlkfurdl2Tv1LlMLk33POuaffvxk1iFrtaBRxYL7m1NkkBE+bZs1
+ sJLW0iTTEBpzaDDTnw0
+IronPort-HdrOrdr: A9a23:mz04Z6A3rbCrSnnlHek855DYdL4zR+YMi2QD/UZ3VBBTb4ikh9
+ mj9c5rsSPcpRQwfDUbmd6GMLSdWn+0z/VIyKQYILvKZmXbkUSyKoUK1+Tf6h3mXxbz7+tMkZ
+ pnGpIfNPTVLXxXyfn3+xO5FdFI+qjjzImNif3Fx3lgCSFGApsA0y5DBgyWElJ7SWB9bPJSea
+ a03cZJqyGtfn4adK2Adxo4dtLerN7Gno+OW29lOzcb7mC14w+A2frXFAWZwwdbcx4n+8ZFzU
+ H11zbWoomCnpiAu3jh61M=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-Anti-Spam-Result: =?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flY?=
+ =?us-ascii?q?rBAsxgnaBTIEek0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDgI?=
+ =?us-ascii?q?BAgEBAQMCBgEBAQQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA1?=
+ =?us-ascii?q?DARABBAEBgV0iggEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQQ?=
+ =?us-ascii?q?9iy+BMoEBggQBAQaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeoJ?=
+ =?us-ascii?q?KF4JJgngQfGKCE54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iVq?=
+ =?us-ascii?q?SVoUCECOBHimBfiwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iBA?=
+ =?us-ascii?q?kLzgCBgEJAQEDCYRKgwaBAYRAAQE?=
+X-IPAS-Result: =?us-ascii?q?A0EtEwCq4W1gfzLdVdFaglsCgSp4flYrBAsxgnaBTIEek?=
+ =?us-ascii?q?0eRNy+HcQEKAQEBAQEBAQEBCSoKBAEBBIZGAh0HATcGDgIBAgEBAQMCBgEBA?=
+ =?us-ascii?q?QQBAQECAQECAwIBAQEBAhABAQ0LCwgnO2BfgUeBcQYEMA1DARABBAEBgV0ig?=
+ =?us-ascii?q?gEsAQhSgQQRHQEBOBsDBzcCJBIBBQE9GoJQgwcPM6ARgQQ9iy+BMoEBggQBA?=
+ =?us-ascii?q?QaBMwGEY4E7CRKBDQMXAYVmUEYBAYZ1HIILgUmCPgGFeoJKF4JJgngQfGKCE?=
+ =?us-ascii?q?54iiVqST4MVBIEiiD2TGSOBM4IagT6EQpskhwiHYog7iVqSVoUCECOBHimBf?=
+ =?us-ascii?q?iwHGggwbAaCMglEAQIBAgEMAgECAQIBAgECCAEBApR1iBAkLzgCBgEJAQEDC?=
+ =?us-ascii?q?YRKgwaBAYRAAQE?=
+X-IronPort-AV: E=Sophos;i="5.82,203,1613462400"; 
+   d="scan'208,217";a="87292821"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+X-UBC-EXTERNAL: TRUE
+X-IronPort-Outbreak-Status: No, level 0, Unknown - Unknown
+Received: from mail-wr1-f50.google.com ([209.85.221.50])
+  by esvaout8.mail-relay.ubc.ca with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 07 Apr 2021 09:47:01 -0700
+Received: by mail-wr1-f50.google.com with SMTP id b9so10811909wrs.1
+        for <mc.pelletier@sauder.ubc.ca>; Wed, 07 Apr 2021 09:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=josh.is; s=google;
+        h=from:mime-version:date:message-id:subject:to;
+        bh=u1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=;
+        b=Jollfu07OcPFnPCUk72qSXnHWxCo4KEaKDqlC/3Az0CaGTQvuRdIIEOL2TH0g9CcIl
+         wgru8aSOwlOvpHUul0wZbncBgAxMSazASEb4jIV7QX6MJAcUgJTLFOs/W40L/3ScAhDX
+         Fvv9pgnsCko7noSDzqpK21YYUz0M5Rsm4K/dUpj1Get6JiuHIrCt+pAlUUAkCXPySEJs
+         g84eJ5IukCE/unmqOpzen08kdKX1Lmh05PbPbk+EkwW3nMNWgWZDVtmOAlNlS6Bp2WyH
+         DQfPAEcI15GPwYrVg5d3LoeAiAGpgVIfm3hXcVfWVT1pm1hQOBsqkhK75yY2hLG5+JdV
+         +wMQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:date:message-id:subject:to;
+        bh=u1LXjVOrJEyq14G/aTzfDjhPlMKk5bn/13b+QlqWrF0=;
+        b=el6mJpetnQTe6Ll2vYoB608It3mIdETCcQrfG37TQH/1IVTdFFBOxqLEnK64c2Ju3f
+         iqsoDw8+JD3sVSwdfCg2A4Yw6zoqM8OQ9E7/Av54alfcYWVvG/Drn/KIU8zwxvTHPYbn
+         7Bt5lWf9ksyVgX0KfgzLxK6oId7eK6nF+MDvupjQ4ghL2JFVT7V87GkSFvsNe1Uo/Usx
+         sxmO2Ohc9gWN3dV5BN9RzzZ1r/pRAdPpHqFAOw3mQqkp4asuvvTKrKtydx/55y+ty/pg
+         64RezYEidBSMXNs+U2qKuf21GWyNULGXwZgR153ft7WFDBICfrNfz6gga67Tq///XAoM
+         GwyA==
+X-Gm-Message-State: AOAM532TzX94CVM3KSwpIq2voRokPDN21v9d6Fl/8JkEAfeUPqt6oBPX
+	w4ZJHELeDpjgUd11EA7hNj9XVasxMPkhCaKHzYBYEKm4UDI=
+X-Google-Smtp-Source: ABdhPJxF7DrzyeEMByjrcyUh5RDpHF97B+0l+XdAgoej1j4sfVJ5cubr33OAM6pVg6HFF06AuHAjsNWCz4d5Il0vGt8=
+X-Received: by 2002:adf:fc4b:: with SMTP id e11mr5437475wrs.169.1617814019089;
+ Wed, 07 Apr 2021 09:46:59 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 7 Apr 2021 09:46:58 -0700
+From: Josh Klein <josh@josh.is>
+MIME-Version: 1.0
+Date: Wed, 7 Apr 2021 09:46:58 -0700
+Message-ID: <CACNgykNbc-rDyCT_CAF6bQDc0z2kRA3XpYZF27rcuLYjaQ44qg@mail.gmail.com>
+Subject: Hello from the future
+To: <mc.pelletier@sauder.ubc.ca>
+Content-Type: multipart/alternative; boundary="000000000000ebaf3605bf64ad74"
+Return-Path: josh@josh.is
+
+--000000000000ebaf3605bf64ad74
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+W0NBVVRJT046IE5vbi1VQkMgRW1haWxdCgogSGVsbG8gZnJvbSB0aGUgZnV0dXJlClNpbmNlIHRo
+ZSBwYW5kZW1pYyBiZWdhbiBldmVyeW9uZSBoYXMgYmVlbiBidWlsZGluZyB0aGVpciBuZXR3b3Jr
+cyBpbiBhCm5ld2x5IHZpcnR1YWxpemVkIHdvcmxkLCBidXQgbW9zdCBvZiBpdCBoYXMgdHVybmVk
+IG91dCB0byBiZSBzcGFtLiBZb3UgYW5kCkkgaGF2ZSB3b3JrZWQgdG9nZXRoZXIgaW4gdGhlIHBh
+c3Q7IEkgd2FudGVkIHRvIGludml0ZSB5b3UgdG8gcmVjb25uZWN0IHRvCnNlZSBpZiB3ZSBjb3Vs
+ZCBoZWxwIGVhY2ggb3RoZXIgaW4gdGhlIGZ1dHVyZS4KCkJlbG93IGFyZSBhIGZldyBvZiBteSBj
+dXJyZW50IHByb2plY3RzOyBsZXQgbWUga25vdyBpZiBhbnkgc3RyaWtlIHlvdXIKaW50ZXJlc3Qs
+IG9yIGp1c3QgaGl0IG1lIHdpdGggYW4gdXBkYXRlIG9uIHdoYXQgeW91J3JlIHdvcmtpbmcgb24u
+IE9yIGxldCdzCnNldCB1cCBhIHRpbWUgdG8gY2hhdCEKCkFsbCBiZXN0IHdpc2hlcywKSm9zaAoK
+IyMjCgoqQ3VycmVudCBQcm9qZWN0czoqCgpJbmRpZ29NZXRyaWNzCjxodHRwOi8vdHJhY2tpbmcu
+am9zaC5pcy9wcm9kL2JmMzg1M2QyLTk4ZjYtNDU1My04NTM3LWIwZWVkNTUzMjU0Mi9kNDFlNjdi
+MC1iYzUyLTQyMzktYmY1Yy0wZGFlN2Q0Mzc3YzM+OwphbiBBSSBwbGF0Zm9ybSBmb3IgYXV0b25v
+bW91c2x5IG1hbmFnaW5nIGJlaGF2aW9yIGFuZCBiZWxpZWZzIGluIGVtcGxveWVlcy4KSWYgeW91
+ciBkaXN0cmlidXRlZCB3b3JrZm9yY2UgaXMgc3RhcnRpbmcgdG8gZnJheSwgdGhpcyBpcyB0aGUg
+YW5zd2VyLgoKQ29udGludW91cyBHbHVjb3NlIE1vbml0b3IgVGVzdGluZwo8aHR0cDovL3RyYWNr
+aW5nLmpvc2guaXMvcHJvZC9iZjM4NTNkMi05OGY2LTQ1NTMtODUzNy1iMGVlZDU1MzI1NDIvOTE2
+Yjc2MGUtODlmOS00MzgyLWE3ZDEtNWZlOGE4ODJkMzk2PjsKYSBwcm9qZWN0IHRvIHVuZGVyc3Rh
+bmQgaG93IHRvIHVzZSBwaHlzaWNhbGx5IGVtYmVkZGVkIHNlbnNvcnMgdG8gcmVkdWNlCnRoZSBo
+ZWFsdGggaW1wYWN0cyBvZiBvYmVzaXR5LCBoZWFydCBkaXNlYXNlLCBhbmQgZGlhYmV0ZXMgKGFu
+ZCBoZW5jZQpDb3ZpZCEpCgpJbm5vdmF0aW9uIENvbnN1bHRpbmcKPGh0dHA6Ly90cmFja2luZy5q
+b3NoLmlzL3Byb2QvYmYzODUzZDItOThmNi00NTUzLTg1MzctYjBlZWQ1NTMyNTQyLzBmZmI2OGMy
+LWNhYTgtNDZmOS1hYzljLWViZjdhOGZjYWIzZj46CmFzIGV2ZXIsIEkgY29udGludWUgdG8gd29y
+ayB3aXRoIHNlbmlvciBsZWFkZXJzIGFuZCB0ZWFtcyBvbiB0ZWNobm9sb2d5CnN0cmF0ZWd5IGFu
+ZCBuZXcgaW5ub3ZhdGlvbiAvIHByb2R1Y3QgZGV2ZWxvcG1lbnQuIFdlJ3ZlIHNlZW4gc29tZSBy
+YWRpY2FsCmNoYW5nZXMgaW4gdGhlIGxhc3QgeWVhciAtIHRoZSB3aW5uZXJzIGFyZSBhY3Rpbmcg
+b24gaXQhCg==
+
+--000000000000ebaf3605bf64ad74
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+CiAgICAgIDxodG1sPgogICAgICA8aGVhZD4KICAgICAgICA8dGl0bGU+SGVsbG8gZnJvbSB0aGUg
+ZnV0dXJlPC90aXRsZT4KICAgICAgICA8bWV0YSBjb250ZW50PSJ0ZXh0L2h0bWw7IiBjaGFyc2V0
+PSJ1dGYtOCIgaHR0cC1lcXVpdj0iQ29udGVudC1UeXBlIj4KICAgICAgPC9oZWFkPgogICAgICA8
+Ym9keT48dGFibGUgc3R5bGU9ImJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7IHBhZGRpbmctbGVm
+dDogMHB4OyI+PHRib2R5Pjx0cj48dGQ+PGZvbnQgc3R5bGU9ImZvbnQtZmFtaWx5OiBBcmlhbCwg
+c2Fucy1zZXJpZjsgZm9udC1zaXplOiAxMnB4OyBmb250LXN0eWxlOiBub3JtYWw7IGZvbnQtd2Vp
+Z2h0OiBub3JtYWw7IGNvbG9yOiAjMDAwMDAwOyBiYWNrZ3JvdW5kLWNvbG9yOiAjRkZFQ0IzOyBs
+aW5lLWhlaWdodDogMS42OyBwYWRkaW5nOiAzcHg7Ij5bPHN0cm9uZz5DQVVUSU9OOjwvc3Ryb25n
+PiBOb24tVUJDIEVtYWlsXTwvZm9udD48L3RkPjwvdHI+PC90Ym9keT48L3RhYmxlPjxkaXY+U2lu
+Y2UgdGhlIHBhbmRlbWljIGJlZ2FuIGV2ZXJ5b25lIGhhcyBiZWVuIGJ1aWxkaW5nIHRoZWlyIG5l
+dHdvcmtzIGluIGEgbmV3bHkgdmlydHVhbGl6ZWQgd29ybGQsIGJ1dCBtb3N0IG9mIGl0IGhhcyB0
+dXJuZWQgb3V0IHRvIGJlIHNwYW0uIFlvdSBhbmQgSSBoYXZlIHdvcmtlZCB0b2dldGhlciBpbiB0
+aGUgcGFzdDsgSSB3YW50ZWQgdG8gaW52aXRlIHlvdSB0byByZWNvbm5lY3QgdG8gc2VlIGlmIHdl
+IGNvdWxkIGhlbHAgZWFjaCBvdGhlciBpbiB0aGUgZnV0dXJlLjwvZGl2Pgo8ZGl2PsKgPC9kaXY+
+CjxkaXY+QmVsb3cgYXJlIGEgZmV3IG9mIG15IGN1cnJlbnQgcHJvamVjdHM7IGxldCBtZSBrbm93
+IGlmIGFueSBzdHJpa2UgeW91ciBpbnRlcmVzdCwgb3IganVzdCBoaXQgbWUgd2l0aCBhbiB1cGRh
+dGUgb24gd2hhdCB5b3UmIzM5O3JlIHdvcmtpbmcgb24uIE9yIGxldCYjMzk7cyBzZXQgdXAgYSB0
+aW1lwqB0byBjaGF0ITwvZGl2Pgo8ZGl2PsKgPC9kaXY+CjxkaXY+QWxsIGJlc3Qgd2lzaGVzLDwv
+ZGl2Pgo8ZGl2Pkpvc2g8L2Rpdj4KPGRpdj48YnI+IyMjPGJyPjxicj4KPGRpdj48c3Ryb25nPkN1
+cnJlbnQgUHJvamVjdHM6PC9zdHJvbmc+PC9kaXY+CjxkaXY+wqA8L2Rpdj4KPGRpdj48YSBocmVm
+PSJodHRwOi8vdHJhY2tpbmcuam9zaC5pcy9wcm9kL2JmMzg1M2QyLTk4ZjYtNDU1My04NTM3LWIw
+ZWVkNTUzMjU0Mi9kNDFlNjdiMC1iYzUyLTQyMzktYmY1Yy0wZGFlN2Q0Mzc3YzMiPkluZGlnb01l
+dHJpY3M8L2E+OyBhbiBBSSBwbGF0Zm9ybSBmb3IgYXV0b25vbW91c2x5IG1hbmFnaW5nIGJlaGF2
+aW9yIGFuZCBiZWxpZWZzIGluIGVtcGxveWVlcy4gSWYgeW91ciBkaXN0cmlidXRlZCB3b3JrZm9y
+Y2UgaXMgc3RhcnRpbmcgdG8gZnJheSwgdGhpcyBpcyB0aGUgYW5zd2VyLsKgPC9kaXY+CjxkaXY+
+wqA8L2Rpdj4KPGRpdj48YSBocmVmPSJodHRwOi8vdHJhY2tpbmcuam9zaC5pcy9wcm9kL2JmMzg1
+M2QyLTk4ZjYtNDU1My04NTM3LWIwZWVkNTUzMjU0Mi85MTZiNzYwZS04OWY5LTQzODItYTdkMS01
+ZmU4YTg4MmQzOTYiPkNvbnRpbnVvdXMgR2x1Y29zZSBNb25pdG9yIFRlc3Rpbmc8L2E+OyBhIHBy
+b2plY3QgdG8gdW5kZXJzdGFuZCBob3cgdG8gdXNlIHBoeXNpY2FsbHkgZW1iZWRkZWQgc2Vuc29y
+cyB0byByZWR1Y2UgdGhlIGhlYWx0aCBpbXBhY3RzIG9mIG9iZXNpdHksIGhlYXJ0IGRpc2Vhc2Us
+IGFuZCBkaWFiZXRlcyAoYW5kIGhlbmNlIENvdmlkISk8L2Rpdj4KPGRpdj7CoDwvZGl2Pgo8ZGl2
+PjxhIGhyZWY9Imh0dHA6Ly90cmFja2luZy5qb3NoLmlzL3Byb2QvYmYzODUzZDItOThmNi00NTUz
+LTg1MzctYjBlZWQ1NTMyNTQyLzBmZmI2OGMyLWNhYTgtNDZmOS1hYzljLWViZjdhOGZjYWIzZiI+
+SW5ub3ZhdGlvbiBDb25zdWx0aW5nPC9hPjogYXMgZXZlciwgSSBjb250aW51ZSB0byB3b3JrIHdp
+dGggc2VuaW9yIGxlYWRlcnMgYW5kIHRlYW1zIG9uIHRlY2hub2xvZ3kgc3RyYXRlZ3kgYW5kIG5l
+dyBpbm5vdmF0aW9uIC8gcHJvZHVjdCBkZXZlbG9wbWVudC4gV2UmIzM5O3ZlIHNlZW4gc29tZSBy
+YWRpY2FsIGNoYW5nZXMgaW4gdGhlIGxhc3QgeWVhciAtIHRoZSB3aW5uZXJzIGFyZSBhY3Rpbmcg
+b24gaXQhPC9kaXY+CjwvZGl2Pgo8cD7CoDwvcD48aW1nIGFsdD0iIiB3aWR0aD0iMSIgaGVpZ2h0
+PSIxIiBjbGFzcz0iYmVhY29uLW8iIHNyYz0iaHR0cDovL3RyYWNraW5nLmpvc2guaXMvcHJvZC9v
+cGVuL2JmMzg1M2QyLTk4ZjYtNDU1My04NTM3LWIwZWVkNTUzMjU0MiIgc3R5bGU9ImZsb2F0Omxl
+ZnQ7bWFyZ2luLWxlZnQ6LTFweDtwb3NpdGlvbjphYnNvbHV0ZTsiPjwvYm9keT4KICAgICAgPC9o
+dG1sPgo=
+
+--000000000000ebaf3605bf64ad74--
+
+--c850f34b-8ef7-4bf3-bed4-a090bd5dae20--

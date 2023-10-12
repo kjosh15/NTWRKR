@@ -1,0 +1,658 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp1278548ljm;
+        Fri, 12 Mar 2021 07:19:25 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyRRL+Shxdx5LfnG8RJ98Xz0RxxaYE6Dd5mYmmTyFJ/mx9aQ0UuVjs2ArY4SbhRumr78Au9
+X-Received: by 2002:a02:aa92:: with SMTP id u18mr8854385jai.119.1615562365177;
+        Fri, 12 Mar 2021 07:19:25 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1615562365; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=yXl8fkMMwbh/92u7xGtA/LhlCeS891YKQApvs1PTSjkJTHo68UyUoHDdNuSYmDI3K+
+         HxVoFxLyGZ1OKDcOajwu4AdbRe3sA+5I84KHeekjbH4mc38hJxRe4bJ2ah47+hNB1G2Y
+         0R2CCQ75qmnBDik67QPAwycP8kGDzft0MZ13NVpSoE/mgH5ICnI9R+00pPwz6YHPUK9o
+         8kdplw338PK6Kf8kcNLvFH1Z0TuTGO6YzoXAXRwaLicz8WZUdtTMFnboBQQ+g+32jv9M
+         duMmPMla3coDUYeYd1/1JOQ3reOLXCoboqRaXf1EOndg8U2HAIVwEOTs8sPjjcCOFB5i
+         3zGw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:cc:to
+         :from:dkim-signature;
+        bh=aYVGMLySo0tNRQvV8qgD8WgVthDevqo4mCw57U4NJyE=;
+        b=Rh1N8ZNV/KFmNrVxaCx+wk03g9IF+S0h/uWZQH1jj/05gA/69O992M3/iAXJAA6p2Z
+         mcALqALtCAK3yZAj6t64wzM9ReXW4q7hfq+Yr2lxUnTA7gD8wp0HXc4hxPqew2ovw9UP
+         71PEn+ik1PpAULDDiVrPE9Ysgda8EJpU2vtfqvtQY5uqdygOIaMyWWHFmG+B4k3xNnU+
+         g5ut9EXCZjEFQ5LSyT1VdZ/AkYku6g0hoGpyWi1b1oOzbQ+E9hjNRW4VKEjJWcs6MCqv
+         0vH3cxWiYJbF7npX+RQxzG7uZruMGtlW9Gw1nedEvIwSeH2IMcYI1romzms64it1L/W9
+         KDow==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@elsevier.com header.s=selector2 header.b=QVHGTmPP;
+       arc=pass (i=1 spf=pass spfdomain=elsevier.com dkim=pass dkdomain=elsevier.com dmarc=pass fromdomain=elsevier.com);
+       spf=pass (google.com: domain of d.watkins.1@elsevier.com designates 40.107.223.135 as permitted sender) smtp.mailfrom=d.watkins.1@elsevier.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=elsevier.com
+Return-Path: <d.watkins.1@elsevier.com>
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2135.outbound.protection.outlook.com. [40.107.223.135])
+        by mx.google.com with ESMTPS id o9si4924412jas.111.2021.03.12.07.19.24
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Mar 2021 07:19:25 -0800 (PST)
+Received-SPF: pass (google.com: domain of d.watkins.1@elsevier.com designates 40.107.223.135 as permitted sender) client-ip=40.107.223.135;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@elsevier.com header.s=selector2 header.b=QVHGTmPP;
+       arc=pass (i=1 spf=pass spfdomain=elsevier.com dkim=pass dkdomain=elsevier.com dmarc=pass fromdomain=elsevier.com);
+       spf=pass (google.com: domain of d.watkins.1@elsevier.com designates 40.107.223.135 as permitted sender) smtp.mailfrom=d.watkins.1@elsevier.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=elsevier.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=cV07WsWwvA+8OCLCbvWxKTIoquw1BydOL/sTiAMq3OsW+/hr7reJDCQy7UT04rvqxhXaWt+zJ99+NOu8z5UbTxcTF4eDWdAaCVRmsymvI85veMXNduewCo1s2C/hAaxo3pIAMowk1Oi1bLZGIKxpI42XI+1NIR3+Q2SHrPW8+tC0p8Y5kb4Ar4ZMMV4dnBgnoLYsP4e+hkQ5ZoqaXCpW/FTUTbRLvpB+TVLD0dPOQkgoB5iEYnXZpDqlGT6U7aZ/LoTWhEwoTremmwg2unMfAz7I6yAQQ1yhQn8vx+7fkFZjePDy+etVajWprIlHqOnWK0jgMeWTR/7mRt3QTdGA3A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aYVGMLySo0tNRQvV8qgD8WgVthDevqo4mCw57U4NJyE=;
+ b=Dcaf3j+NiyHu1Dotys9Qr7bkwqYIh9Uv+bQCvZ5IFS2xqDYQHZardlgalKsLqMnrmG2B9TsIodDRJOuULIRlTZ9QF6DailFOMwG6IkT8orFfXMZJm5yTgsx9eyiUrvr6qKj4pxoaGUqI4lr7yKDitI8ehp2vhj0J3w+kjjF1dFrWLLaXkzFsz/9H8tvz6uGEaHMr3KBP1QlngzodUiZGXo/EcuIwrCQJw6f5dz3/aJWTnb0c0QIMSaTj8Ndc7x3J/V/cu+QwRhYjCV8kNvSZdNSmo/Ub622F2uGwm2t8eDVrMOUq19M98y5GoqXEyIvM6EYOqpwGTPwCOIkIyZmSNA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=elsevier.com; dmarc=pass action=none header.from=elsevier.com;
+ dkim=pass header.d=elsevier.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=elsevier.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=aYVGMLySo0tNRQvV8qgD8WgVthDevqo4mCw57U4NJyE=;
+ b=QVHGTmPPIs34tRSsFZhxrJIHDPiFsmg6zanhEuIQwUE0yYBXvegRqZz1h7uB0pXB28QTQIj4RDC+miQOz0i+WpEm8bQqI1G38ZkZW6fiimYuj7IUrqsokNgIxZkFbqCWsOoBTXBJZDHb3AJIaSXCnh9e7hJmwJLJ9uabDsjRuWo=
+Received: from SN6PR08MB4109.namprd08.prod.outlook.com (2603:10b6:805:1e::27)
+ by SN6PR08MB4109.namprd08.prod.outlook.com (2603:10b6:805:1e::27) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3933.31; Fri, 12 Mar
+ 2021 15:19:14 +0000
+Received: from SN6PR08MB4109.namprd08.prod.outlook.com
+ ([fe80::f9d4:16a:c9e4:b3d5]) by SN6PR08MB4109.namprd08.prod.outlook.com
+ ([fe80::f9d4:16a:c9e4:b3d5%6]) with mapi id 15.20.3933.031; Fri, 12 Mar 2021
+ 15:19:14 +0000
+From: "Watkins, Dave (ELS-OXF)" <d.watkins.1@elsevier.com>
+To: "chris@indigometrics.com" <chris@indigometrics.com>, "Grove, Charl
+ (ELS-OXF)" <c.grove@elsevier.com>
+CC: "Baker, Michael (ELS-OXF)" <m.baker.1@elsevier.com>, "Stickland, Ian
+ (ELS-LON)" <i.stickland@elsevier.com>, 'Josh Klein' <josh@josh.is>
+Subject: RE: VPN white list
+Thread-Topic: VPN white list
+Thread-Index:
+ AdcXJ0XvFzbAfPf/SOCltegdSEsqHAAAYzrgAAA2u7AAAVi1AAACA8ggAASPKAAAAlz0cA==
+Date: Fri, 12 Mar 2021 15:19:14 +0000
+Message-ID:
+ <SN6PR08MB4109E4157B68CAD7AAEE0AC68A6F9@SN6PR08MB4109.namprd08.prod.outlook.com>
+References: <05b701d71727$ca621d30$5f265790$@indigometrics.com>
+ <DM6PR08MB490767E23A85EAAABF079CD2866F9@DM6PR08MB4907.namprd08.prod.outlook.com>
+ <SN6PR08MB4109EE463D6F3475C43FF3498A6F9@SN6PR08MB4109.namprd08.prod.outlook.com>
+ <062701d7172f$11ea52b0$35bef810$@indigometrics.com>
+ <SN6PR08MB4109B770C8E02CBE32444B768A6F9@SN6PR08MB4109.namprd08.prod.outlook.com>
+ <072b01d71749$5e2dcbb0$1a896310$@indigometrics.com>
+In-Reply-To: <072b01d71749$5e2dcbb0$1a896310$@indigometrics.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: indigometrics.com; dkim=none (message not signed)
+ header.d=none;indigometrics.com; dmarc=none action=none
+ header.from=elsevier.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 731d3733-9aec-41c0-4d1d-08d8e56a326f
+x-ms-traffictypediagnostic: SN6PR08MB4109:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs:
+ <SN6PR08MB41094DA19AE3749F7C5C13478A6F9@SN6PR08MB4109.namprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ os69lqLbpvAZ270qF49oR34bu3RRw0c41PggQPBDoZtJypebNqSWE+2fO9lrv5meDZ8c87h+Ec0MrB0x2JOk2s1K5en335/lZO8WR09Xd7GHwaCOJtleZcYU9WyuXZxvRS0K0IfYnHK2YFrq1tA7HctlTAm1mRW39hr4kY6i5yRY3rPyvoMERuwXcV1GEjUpfpSRe9uQuvVYWYESD+aY2f0FPMaFa26mPow2slJpad1pqQv9tIOXugvySUR3/ewQSUAwBfjd6u/+viw5I2ntGccryhkqQBVkIwb5xhuvtjGoTbQb4pcP+M9dk6wAtQJ6ZS7InE9DVCZougPazG2PigAYGUrWVBfmFtKYMgz0ccj7RUxueIt3HA0VcoK6y5agY8ERzyhmoTv/zuFaZvl0zlD+6tgTDe3wXJMmLirVIjiCVynmku2nWHdUNqocs4Pmpou7TLHaRq4N3RBxVbN4+1N8+bct48DqRZvn+J5W6RVROHVKmmrEFXUkN32kRLm7SuJEAUudL+3URIw7K6vT1kFVQXPaU553rRUZo2rszPFfO4hPWtMw6fJ+maQaBoxzdrB/g/nPqw80ArDomSt0EC6KDV13yh9ZZxOrNThVdFMHGn6UbNnsbPSMAurnZA3AgOgPklJUmYtlB4uUE7DDCSNrtdeZOtXXpNASsQkkmNdK0nn0x8WSKGRkEAx/3zlNPREY+bGxknd4WZMTqP8qYkPuoe5A8Sy0MTbU1nAyZk4=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR08MB4109.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(136003)(396003)(366004)(6506007)(316002)(8936002)(66476007)(110136005)(66556008)(52536014)(53546011)(478600001)(54906003)(9326002)(9686003)(76116006)(66446008)(7696005)(4326008)(5660300002)(86362001)(8676002)(33656002)(55016002)(83380400001)(966005)(64756008)(71200400001)(2906002)(166002)(186003)(3480700007)(26005)(6636002)(66946007)(7116003)(132500200002)(71600200004);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata:
+ =?iso-8859-1?Q?8g7dfRa14BCck5+eGzQz1MkDa0OOsjZm5cQvDttEidvDVs3p/eGHK/zFPh?=
+ =?iso-8859-1?Q?+6NI2tVHo+QMmRKA7YIGMVpLpNwgIC73B3Hye1avdTXJfrP5ro7gWLiFrk?=
+ =?iso-8859-1?Q?pHKNOpl9+RXBEJI6RyXU467FKcKGIKzu58GiyfAh0O6NUXuvDbPi/G3baA?=
+ =?iso-8859-1?Q?tRVnZ7tbI+RmmywM73Uwx445eEiiRTQUfjfCVgemr00mzD1phbO3dhWsuM?=
+ =?iso-8859-1?Q?3xMqc/Ys4JpPdpS1gwBwd6QfQJRI/D2/gPitV5Z78QCFjj1F/nH5RS1qKK?=
+ =?iso-8859-1?Q?s6LEq15EjlL5F9UrUaEO7c8or2XVzkwmnf/BbsBU9w51632RBIYkxERTVg?=
+ =?iso-8859-1?Q?iOo4zP0YvIx0xq4ebOD20B6dRTt0mR/PLV91IPuip0nAjPXsazr9lpJ1bx?=
+ =?iso-8859-1?Q?nptv5Pa63/tmeayuy1zUDstZbqxeWQZwUBIGzPKyBGlLpHdE8Q4V4fpAdV?=
+ =?iso-8859-1?Q?EhK9LKx7pzHjUqSu6zZotabXQNkYRaDrPvoCRfTWCLKr2qjonCsj+nbTzf?=
+ =?iso-8859-1?Q?RaBapIOoK5zuuuxWX8QFyc5S+wr34OqsGJqlpu7EzY/+0KUth3azZoRCLH?=
+ =?iso-8859-1?Q?7ak7uhZ1QyBdmqAanRSa+xXEbPlLUsEXMiw+SaN+0Hzz5p7rn0sChAqG8w?=
+ =?iso-8859-1?Q?pzdjUFRwH8kvYobtar+JU1g1fTGyM51k3LN1Vq+1SfLArOf6W61DO7a8O7?=
+ =?iso-8859-1?Q?xnvs93lCIP5n+heOqqUn7MZkeEfeGuc/wKAzgtvBrHhKjj0gl62fisODPT?=
+ =?iso-8859-1?Q?HklD1Sgk2QG/dQHewoLQOvC/VGefoWlB04spkKV9fTc4d0E80y9QS3808M?=
+ =?iso-8859-1?Q?MT83IqMSqo7fKf6Sie52Cw0Cufadpg8u3Beb7N1nVWFZY7R3/m/R7HUj6s?=
+ =?iso-8859-1?Q?6FU6hks351AxYfcpYaAvaEEv7vRVnAOr7CfP8RTwFFk3yxis8U0wNXI1oa?=
+ =?iso-8859-1?Q?UZfMM0Ktr9E6cOZhTF6wd2iuxXD/hk62RBd16ypZCoIxE8Yd3INbuU1LJL?=
+ =?iso-8859-1?Q?tvhnqK4g5CDSaULt2RkLG5OleenOr8fw/b7ja9Jo/mvcx3x+mtZnHENSY7?=
+ =?iso-8859-1?Q?0G4uoXmOdYi62SA+WUa25nnjWdiTw5atohaJu490aafzeb02ByfvQDCfip?=
+ =?iso-8859-1?Q?wH3kTvX8MllnWR634VKQH1eNpSk4owudj9CIp1zwceeEccijaPjFuzfBuE?=
+ =?iso-8859-1?Q?AUB6nUJDfEzZ0LTWOfSN01sSzX41VCChIw7iuPrHVKar8kN5swWeUCKqYp?=
+ =?iso-8859-1?Q?8IOSwgT/4GDcbiwwEdoiE9CpDlT49NY15HV+aeDed9od0xynBFT5yZPkRk?=
+ =?iso-8859-1?Q?oz5W7ku+Fyxs5ab1nFkpYaDxX7X1yYjeeS6q+SDIW+zGZejjh1Mc9xM8ay?=
+ =?iso-8859-1?Q?hAJ0Hd8+Xb?=
+Content-Type: multipart/alternative;
+	boundary="_000_SN6PR08MB4109E4157B68CAD7AAEE0AC68A6F9SN6PR08MB4109namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: elsevier.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR08MB4109.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 731d3733-9aec-41c0-4d1d-08d8e56a326f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 12 Mar 2021 15:19:14.6565
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 9274ee3f-9425-4109-a27f-9fb15c10675d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: BChTJrT8L9inPzHCUdnRtg+aEBvScTAPNaIWhs/QrstJa6pkStutQD/COaYUJNIY0INULWvWAzk5c8pHKXacsXMIdQiNzVevQYr/etHhft0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR08MB4109
+
+--_000_SN6PR08MB4109E4157B68CAD7AAEE0AC68A6F9SN6PR08MB4109namp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Chris,
+
+That's brilliant, we use Zscaler for our DNS security too, so I'm feeling c=
+onfident that the same won't happen to us.
+
+I think I'm actually going to take that as a positive confirmation that it =
+works over Zscaler ZIA.
+
+I think we are on safe ground, but of course everyone please test.
+
+Cheers,
+Dave
+
+
+From: chris@indigometrics.com <chris@indigometrics.com>
+Sent: 12 March 2021 14:10
+To: Watkins, Dave (ELS-OXF) <d.watkins.1@elsevier.com>; Grove, Charl (ELS-O=
+XF) <c.grove@elsevier.com>
+Cc: Baker, Michael (ELS-OXF) <m.baker.1@elsevier.com>; Stickland, Ian (ELS-=
+LON) <i.stickland@elsevier.com>; 'Josh Klein' <josh@josh.is>
+Subject: RE: VPN white list
+
+
+*** External email: use caution ***
+
+
+Hi Dave,
+The event was around 18.00 GMT - but looks like that was coincidence.
+Our US client has identified the problem as being with Umbrella, their DNS =
+vendor, who categorized the site as a "newly seen domain" and which caused =
+ZScaler to block the site. They have now added Indigometrics to their inter=
+nal whitelist and the problem appears to have been resolved.
+Please let me know if more info would be required to help avoiding the same=
+ problems when we go live with Elsevier on April 8th , I have also copied m=
+y colleague Josh Klein on this email as he is our expert in this area.
+In any case we will be able to definitively test whether our US client's fi=
+x is effective over the next few weeks because they will continue to access=
+ our site in significant volume through ZScalar.
+Chris
+
+
+From: Watkins, Dave (ELS-OXF) <d.watkins.1@elsevier.com<mailto:d.watkins.1@=
+elsevier.com>>
+Sent: 12 March 2021 12:00
+To: chris@indigometrics.com<mailto:chris@indigometrics.com>; Grove, Charl (=
+ELS-OXF) <c.grove@elsevier.com<mailto:c.grove@elsevier.com>>
+Cc: Baker, Michael (ELS-OXF) <m.baker.1@elsevier.com<mailto:m.baker.1@elsev=
+ier.com>>; Stickland, Ian (ELS-LON) <i.stickland@elsevier.com<mailto:i.stic=
+kland@elsevier.com>>
+Subject: RE: VPN white list
+
+Hi Chris,
+
+I had a Zscaler event in America yesterday, GMT 18.45 approx, that's not th=
+e same time is it ?
+
+Yes please, a bit more info would be greatly appreciated.
+
+Cheers,
+Dave
+
+
+From: chris@indigometrics.com<mailto:chris@indigometrics.com> <chris@indigo=
+metrics.com<mailto:chris@indigometrics.com>>
+Sent: 12 March 2021 11:02
+To: Watkins, Dave (ELS-OXF) <d.watkins.1@elsevier.com<mailto:d.watkins.1@el=
+sevier.com>>; Grove, Charl (ELS-OXF) <c.grove@elsevier.com<mailto:c.grove@e=
+lsevier.com>>
+Cc: Baker, Michael (ELS-OXF) <m.baker.1@elsevier.com<mailto:m.baker.1@elsev=
+ier.com>>; Stickland, Ian (ELS-LON) <i.stickland@elsevier.com<mailto:i.stic=
+kland@elsevier.com>>
+Subject: RE: VPN white list
+
+
+*** External email: use caution ***
+
+
+Hi Dave,
+There are no limitations on our side ref inbound traffic (nor anything on A=
+WS where we are hosted).
+The previous incident happened yesterday in the US so when they wake up I w=
+ill ask for more detail.
+Chris
+
+From: Watkins, Dave (ELS-OXF) <d.watkins.1@elsevier.com<mailto:d.watkins.1@=
+elsevier.com>>
+Sent: 12 March 2021 10:27
+To: Grove, Charl (ELS-OXF) <c.grove@elsevier.com<mailto:c.grove@elsevier.co=
+m>>
+Cc: chris@indigometrics.com<mailto:chris@indigometrics.com>; Baker, Michael=
+ (ELS-OXF) <m.baker.1@elsevier.com<mailto:m.baker.1@elsevier.com>>; Stickla=
+nd, Ian (ELS-LON) <i.stickland@elsevier.com<mailto:i.stickland@elsevier.com=
+>>
+Subject: RE: VPN white list
+
+Hi Charl,
+
+I do not believe Zscaler would block any site due to traffic volumes.
+
+It may be possible that the site has limitations on how many requests can c=
+ome from nats behind one public IP address, or the site blocked Zscaler's E=
+nforcement node public IP address, believing it to be a DOS attack.
+
+Our user traffic is going to go over ZIA or ZPA, there is no middle ground =
+of not going through a security layer from our point of view.
+
+Chris @ indigo, you don't have any more detail on the Zscaler previous inci=
+dent do you ? It would be really helpful to know a little more detail.  Our=
+ clients use Zscaler exclusively, so their traffic is going to either be go=
+ing over Zscaler ZPA or Zscaler ZIA.
+
+Cheers,
+Dave
+
+
+From: Grove, Charl (ELS-OXF) <c.grove@elsevier.com<mailto:c.grove@elsevier.=
+com>>
+Sent: 12 March 2021 10:19
+To: Watkins, Dave (ELS-OXF) <d.watkins.1@elsevier.com<mailto:d.watkins.1@el=
+sevier.com>>
+Cc: chris@indigometrics.com<mailto:chris@indigometrics.com>; Baker, Michael=
+ (ELS-OXF) <m.baker.1@elsevier.com<mailto:m.baker.1@elsevier.com>>; Stickla=
+nd, Ian (ELS-LON) <i.stickland@elsevier.com<mailto:i.stickland@elsevier.com=
+>>
+Subject: RE: VPN white list
+
+Hi Dave,
+
+As discussed IndigoMetrics have had issues in the past with zscaler blockin=
+g their site after go live and high traffic even though during testing ever=
+ything worked fine.
+
+Below is their URL and IP address, does this need to be whitelisted or is t=
+his something we don't need to be concerned about?
+
+Regards,
+Charl Grov=E9
+
+From: chris@indigometrics.com<mailto:chris@indigometrics.com> <chris@indigo=
+metrics.com<mailto:chris@indigometrics.com>>
+Sent: 12 March 2021 10:09
+To: Grove, Charl (ELS-OXF) <c.grove@elsevier.com<mailto:c.grove@elsevier.co=
+m>>
+Subject: VPN white list
+
+
+*** External email: use caution ***
+
+
+Charl,
+The url for the ZScalar whitelist (plus any other VPNs? In the instance yes=
+terday their senior management was using a separate VPN and wasn't impacted=
+) is https://elsevier.indigometrics.com<https://nam03.safelinks.protection.=
+outlook.com/?url=3Dhttps%3A%2F%2Felsevier.indigometrics.com%2F&data=3D04%7C=
+01%7Cd.watkins.1%40elsevier.com%7Cdada230721034c34574508d8e560b420%7C9274ee=
+3f94254109a27f9fb15c10675d%7C0%7C0%7C637511550809766787%7CUnknown%7CTWFpbGZ=
+sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1=
+000&sdata=3DCDWu%2BokPNIzC%2BQoD6j7mKk3uf5L7iW0g6c3lQ9KSoX4%3D&reserved=3D0=
+> hosted at 18.217.213.225 .
+Thanks
+Chris
+
+________________________________
+
+Elsevier Limited. Registered Office: The Boulevard, Langford Lane, Kidlingt=
+on, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, Registered i=
+n England and Wales.
+
+________________________________
+
+Elsevier Limited. Registered Office: The Boulevard, Langford Lane, Kidlingt=
+on, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, Registered i=
+n England and Wales.
+
+________________________________
+
+Elsevier Limited. Registered Office: The Boulevard, Langford Lane, Kidlingt=
+on, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, Registered i=
+n England and Wales.
+
+--_000_SN6PR08MB4109E4157B68CAD7AAEE0AC68A6F9SN6PR08MB4109namp_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-GB" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Chris,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">That&#8217;s brilliant, we use Zscaler for our DNS s=
+ecurity too, so I&#8217;m feeling confident that the same won&#8217;t happe=
+n to us.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I think I&#8217;m actually going to take that as a p=
+ositive confirmation that it works over Zscaler ZIA.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I think we are on safe ground, but of course everyon=
+e please test.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Cheers,<o:p></o:p></p>
+<p class=3D"MsoNormal">Dave<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB"> chris@indigometrics.com &lt;chris@indigometrics.com&gt;
+<br>
+<b>Sent:</b> 12 March 2021 14:10<br>
+<b>To:</b> Watkins, Dave (ELS-OXF) &lt;d.watkins.1@elsevier.com&gt;; Grove,=
+ Charl (ELS-OXF) &lt;c.grove@elsevier.com&gt;<br>
+<b>Cc:</b> Baker, Michael (ELS-OXF) &lt;m.baker.1@elsevier.com&gt;; Stickla=
+nd, Ian (ELS-LON) &lt;i.stickland@elsevier.com&gt;; 'Josh Klein' &lt;josh@j=
+osh.is&gt;<br>
+<b>Subject:</b> RE: VPN white list<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p><strong><span style=3D"font-family:&quot;Calibri&quot;,sans-serif;color:=
+black;background:#FF4F00">*** External email: use caution ***</span></stron=
+g><o:p></o:p></p>
+<p>&nbsp;<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal">Hi Dave,<o:p></o:p></p>
+<p class=3D"MsoNormal">The event was around 18.00 GMT &#8211; but looks lik=
+e that was coincidence.<o:p></o:p></p>
+<p class=3D"MsoNormal">Our US client has identified the problem as being wi=
+th Umbrella, their DNS vendor, who categorized the site as a &#8220;newly s=
+een domain&#8221; and which caused ZScaler to block the site. They have now=
+ added Indigometrics to their internal whitelist
+ and the problem appears to have been resolved.<o:p></o:p></p>
+<p class=3D"MsoNormal">Please let me know if more info would be required to=
+ help avoiding the same problems when we go live with Elsevier on April 8<s=
+up>th</sup> , I have also copied my colleague Josh Klein on this email as h=
+e is our expert in this area.<o:p></o:p></p>
+<p class=3D"MsoNormal">In any case we will be able to definitively test whe=
+ther our US client&#8217;s fix is effective over the next few weeks because=
+ they will continue to access our site in significant volume through ZScala=
+r.<o:p></o:p></p>
+<p class=3D"MsoNormal">Chris<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB"> Watkins, Dave (ELS-OXF) &lt;<a href=3D"mailto:d.watkins.1@elsevier=
+.com">d.watkins.1@elsevier.com</a>&gt;
+<br>
+<b>Sent:</b> 12 March 2021 12:00<br>
+<b>To:</b> <a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.c=
+om</a>; Grove, Charl (ELS-OXF) &lt;<a href=3D"mailto:c.grove@elsevier.com">=
+c.grove@elsevier.com</a>&gt;<br>
+<b>Cc:</b> Baker, Michael (ELS-OXF) &lt;<a href=3D"mailto:m.baker.1@elsevie=
+r.com">m.baker.1@elsevier.com</a>&gt;; Stickland, Ian (ELS-LON) &lt;<a href=
+=3D"mailto:i.stickland@elsevier.com">i.stickland@elsevier.com</a>&gt;<br>
+<b>Subject:</b> RE: VPN white list<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Hi Chris,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I had a Zscaler event in America yesterday, GMT 18.4=
+5 approx, that&#8217;s not the same time is it ?<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Yes please, a bit more info would be greatly appreci=
+ated.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Cheers,<br>
+Dave<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB">
+<a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a> &lt;=
+<a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a>&gt;
+<br>
+<b>Sent:</b> 12 March 2021 11:02<br>
+<b>To:</b> Watkins, Dave (ELS-OXF) &lt;<a href=3D"mailto:d.watkins.1@elsevi=
+er.com">d.watkins.1@elsevier.com</a>&gt;; Grove, Charl (ELS-OXF) &lt;<a hre=
+f=3D"mailto:c.grove@elsevier.com">c.grove@elsevier.com</a>&gt;<br>
+<b>Cc:</b> Baker, Michael (ELS-OXF) &lt;<a href=3D"mailto:m.baker.1@elsevie=
+r.com">m.baker.1@elsevier.com</a>&gt;; Stickland, Ian (ELS-LON) &lt;<a href=
+=3D"mailto:i.stickland@elsevier.com">i.stickland@elsevier.com</a>&gt;<br>
+<b>Subject:</b> RE: VPN white list<o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p><strong><span style=3D"font-family:&quot;Calibri&quot;,sans-serif;color:=
+black;background:#FF4F00">*** External email: use caution ***</span></stron=
+g><o:p></o:p></p>
+<p>&nbsp;<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal">Hi Dave,<o:p></o:p></p>
+<p class=3D"MsoNormal">There are no limitations on our side ref inbound tra=
+ffic (nor anything on AWS where we are hosted).<o:p></o:p></p>
+<p class=3D"MsoNormal">The previous incident happened yesterday in the US s=
+o when they wake up I will ask for more detail.<o:p></o:p></p>
+<p class=3D"MsoNormal">Chris<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB"> Watkins, Dave (ELS-OXF) &lt;<a href=3D"mailto:d.watkins.1@elsevier=
+.com">d.watkins.1@elsevier.com</a>&gt;
+<br>
+<b>Sent:</b> 12 March 2021 10:27<br>
+<b>To:</b> Grove, Charl (ELS-OXF) &lt;<a href=3D"mailto:c.grove@elsevier.co=
+m">c.grove@elsevier.com</a>&gt;<br>
+<b>Cc:</b> <a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.c=
+om</a>; Baker, Michael (ELS-OXF) &lt;<a href=3D"mailto:m.baker.1@elsevier.c=
+om">m.baker.1@elsevier.com</a>&gt;; Stickland, Ian (ELS-LON) &lt;<a href=3D=
+"mailto:i.stickland@elsevier.com">i.stickland@elsevier.com</a>&gt;<br>
+<b>Subject:</b> RE: VPN white list</span><o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Hi Charl,<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">I do not believe Zscaler would block any site due to=
+ traffic volumes.<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">It may be possible that the site has limitations on =
+how many requests can come from nats behind one public IP address, or the s=
+ite blocked Zscaler&#8217;s Enforcement node public IP address, believing i=
+t to be a DOS attack.<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Our user traffic is going to go over ZIA or ZPA, the=
+re is no middle ground of not going through a security layer from our point=
+ of view.<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Chris @ indigo, you don&#8217;t have any more detail=
+ on the Zscaler previous incident do you ? It would be really helpful to kn=
+ow a little more detail.&nbsp; Our clients use Zscaler exclusively, so thei=
+r traffic is going to either be going over Zscaler
+ ZPA or Zscaler ZIA.<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Cheers,<br>
+Dave<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB"> Grove, Charl (ELS-OXF) &lt;<a href=3D"mailto:c.grove@elsevier.com"=
+>c.grove@elsevier.com</a>&gt;
+<br>
+<b>Sent:</b> 12 March 2021 10:19<br>
+<b>To:</b> Watkins, Dave (ELS-OXF) &lt;<a href=3D"mailto:d.watkins.1@elsevi=
+er.com">d.watkins.1@elsevier.com</a>&gt;<br>
+<b>Cc:</b> <a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.c=
+om</a>; Baker, Michael (ELS-OXF) &lt;<a href=3D"mailto:m.baker.1@elsevier.c=
+om">m.baker.1@elsevier.com</a>&gt;; Stickland, Ian (ELS-LON) &lt;<a href=3D=
+"mailto:i.stickland@elsevier.com">i.stickland@elsevier.com</a>&gt;<br>
+<b>Subject:</b> RE: VPN white list</span><o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Hi Dave,<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">As discussed IndigoMetrics have had issues in the pa=
+st with zscaler blocking their site after go live and high traffic even tho=
+ugh during testing everything worked fine.<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal">Below is their URL and IP address, does this need to=
+ be whitelisted or is this something we don&#8217;t need to be concerned ab=
+out?<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span lang=3D"EN-US" style=3D"font-size:10.0pt;font-family:&quot;A=
+rial&quot;,sans-serif;color:#53565A;letter-spacing:-.05pt;mso-fareast-langu=
+age:EN-GB">Regards,</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><b><span lang=3D"EN-US" style=3D"font-size:10.0pt;font-family:&quo=
+t;Arial&quot;,sans-serif;color:#53565A;letter-spacing:-.05pt;mso-fareast-la=
+nguage:EN-GB">Charl Grov=E9</span></b><o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"mso-fareast-languag=
+e:EN-GB">From:</span></b><span lang=3D"EN-US" style=3D"mso-fareast-language=
+:EN-GB">
+<a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a> &lt;=
+<a href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a>&gt;
+<br>
+<b>Sent:</b> 12 March 2021 10:09<br>
+<b>To:</b> Grove, Charl (ELS-OXF) &lt;<a href=3D"mailto:c.grove@elsevier.co=
+m">c.grove@elsevier.com</a>&gt;<br>
+<b>Subject:</b> VPN white list</span><o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+<p><strong><span style=3D"font-family:&quot;Calibri&quot;,sans-serif;color:=
+black;background:#FF4F00">*** External email: use caution ***</span></stron=
+g><o:p></o:p></p>
+<p>&nbsp;<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal">Charl,<o:p></o:p></p>
+<p class=3D"MsoNormal">The url for the ZScalar whitelist (plus any other VP=
+Ns? In the instance yesterday their senior management was using a separate =
+VPN and wasn&#8217;t impacted) is
+<a href=3D"https://nam03.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Felsevier.indigometrics.com%2F&amp;data=3D04%7C01%7Cd.watkins.1%40elsevi=
+er.com%7Cdada230721034c34574508d8e560b420%7C9274ee3f94254109a27f9fb15c10675=
+d%7C0%7C0%7C637511550809766787%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAi=
+LCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DCDWu%2Bok=
+PNIzC%2BQoD6j7mKk3uf5L7iW0g6c3lQ9KSoX4%3D&amp;reserved=3D0">
+https://elsevier.indigometrics.com</a> hosted at 18.217.213.225 .<o:p></o:p=
+></p>
+<p class=3D"MsoNormal">Thanks<o:p></o:p></p>
+<p class=3D"MsoNormal">Chris<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">&nbsp;</s=
+pan><o:p></o:p></p>
+<div class=3D"MsoNormal" align=3D"center" style=3D"text-align:center"><span=
+ style=3D"mso-fareast-language:EN-GB">
+<hr size=3D"2" width=3D"100%" align=3D"center">
+</span></div>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+">Elsevier Limited. Registered Office: The Boulevard, Langford Lane, Kidlin=
+gton, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, Registered=
+ in England and Wales.</span>
+<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><o:p>&nbs=
+p;</o:p></span></p>
+<div class=3D"MsoNormal" align=3D"center" style=3D"text-align:center"><span=
+ style=3D"mso-fareast-language:EN-GB">
+<hr size=3D"2" width=3D"100%" align=3D"center">
+</span></div>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+">Elsevier Limited. Registered Office: The Boulevard, Langford Lane, Kidlin=
+gton, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, Registered=
+ in England and Wales.</span>
+<o:p></o:p></p>
+</div>
+</div>
+<style>P {margin:0cm:margin-bottomL.0001pt;}</style><br>
+<hr>
+<p><span style=3D"font-size:10pt;font-family:&quot;Arial&quot;,&quot;sans-s=
+erif&quot;">Elsevier Limited. Registered Office: The Boulevard, Langford La=
+ne, Kidlington, Oxford, OX5 1GB, United Kingdom, Registration No. 1982084, =
+Registered in England and Wales.</span>
+<br clear=3D"none">
+</p>
+</body>
+</html>
+
+--_000_SN6PR08MB4109E4157B68CAD7AAEE0AC68A6F9SN6PR08MB4109namp_--

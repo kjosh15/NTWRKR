@@ -1,0 +1,567 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:a173:0:0:0:0:0 with SMTP id u19csp353973ljl;
+        Wed, 9 Sep 2020 03:38:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyqJSwIRcunHURYfx72WYLyvGOPzLKas4e6yMIAZxJCbdN56fiOp7VHiKLGNtsF/lQbEW/p
+X-Received: by 2002:ac8:4e81:: with SMTP id 1mr2664209qtp.62.1599647882731;
+        Wed, 09 Sep 2020 03:38:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1599647882; cv=none;
+        d=google.com; s=arc-20160816;
+        b=EmGlkbun3RwJoGEd4Fy3483WoQxONeVQ3xIiv1ouFCNqZ5BcNGSlKmj6h+pFXsw8Ye
+         +R4YQB3qNiaksBjQfBYGOXRbZCfrqPxAHsptRziCyBT2pE6K8e1fs5SM0JIgQAHs6z0v
+         4oP3IMfKsTF5a2QBd7uw8kgnx8YnY9u9lUJwxVLcJCZJZmUV41vXNntR7ZmE0yCaH5qf
+         SokLmIvdEKyEDVF5S+LmMfmta4QjO3zfL/f0U5ASPrNUuDCVjurACQ7nSPCsM8kncOuC
+         FVpAIif5Yfssy1X+5XeG9UyCrVccNzEYY5EXR0bQb7NFkXLFnk/92MtzEyWhM8+I2TKS
+         fGdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :to:from;
+        bh=9FD1lL/pBUexe31f358tIXKW+kmiy+stlYLAXhmOfmw=;
+        b=wtJejlqfuQDGg/bhKDmySMyawAlK2+Avno345WpedgZY80NsbGZIXG6UurpOYU5Adc
+         KqJ7/U/a387yQXBiilofQErvRmwY0n6mB1zUwHx8XQkzvUN/QfIwEiOSzwg/YK5eIhOQ
+         QnSHCRkaNoVRfxqObYAg11Oy7z5h7cTLTUedaxTg9V+aqcvAPzlBdxGQ2PRQkNHqzCJm
+         n0xj5CZcgywOeL4qdvEHhxhVZ3xMtgRGhQdQTz6vrq6KpsFK9FxC2ikuJlf7sa3vElDB
+         OKIfnJ/jacJ30+EjkwsZz5jsPIWK1p5LFKWbSDs+DeKGZOU0FM4psGGnGKWZAANNiayq
+         berQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-01.prod.iad2.secureserver.net (a2nlsmtp01-01.prod.iad2.secureserver.net. [198.71.224.24])
+        by mx.google.com with ESMTPS id 4si1429700qtu.94.2020.09.09.03.38.02
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 09 Sep 2020 03:38:02 -0700 (PDT)
+Received-SPF: fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) client-ip=198.71.224.24;
+Authentication-Results: mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Received: from mailout02.c01.mtsvc.net ([64.207.129.76])
+	by : HOSTING RELAY : with ESMTP
+	id FxTIkokuWx3vJFxTJkYjal; Wed, 09 Sep 2020 03:37:01 -0700
+X-CMAE-Analysis: v=2.3 cv=PduBeRpd c=1 sm=1 tr=0
+ a=4F84bBsrrNdyp59tV0sJTA==:117 a=/15AZbmo+sh/qGbmvzU40Q==:17
+ a=reM5J-MqmosA:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=MGKIFWvDAAAA:8
+ a=UGs74wCFDK8DuFjP5dYA:9 a=CjuIK1q_8ugA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8
+ a=FtdnMHT2-GNsV-vUzSAA:9 a=AIV_utR8MwCmpt-m:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=4D1dU0hVIIbnoyLp9NuI:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl09.gs01.gridserver.com ([64.13.192.18])
+	by mailout02.c01.mtsvc.net with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kFxTH-00050X-1d
+	for josh@josh.is; Wed, 09 Sep 2020 03:37:00 -0700
+Received: from [90.196.235.220] (port=51238 helo=DESKTOPVL3QK79)
+	by cl09.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kFxT0-0006ph-Pj
+	for josh@josh.is; Wed, 09 Sep 2020 03:36:59 -0700
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+Subject: RE: Big Spaceship Pilot - IGNORE PREVIOUS 
+Date: Wed, 9 Sep 2020 11:36:41 +0100
+Message-ID: <010901d68695$1bddd420$53997c60$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_010A_01D6869D.7DA45F00"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdaGlQVFMm4dnUuHSKaGu+uRZhnehQ==
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=0.0 tests=ALL_TRUSTED, HTML_MESSAGE, URIBL_BLOCKED version=3.4.2
+	cmae=_CMAETAG_"
+X-Spam-Level: *
+X-Spam_score: 0.0
+X-Spam_score_int: 0
+X-CMAE-Envelope: MS4wfN1fwnlRq98rvTZt91aAll5vS+OttljVH54WT4mLM9v+rsGPAuSZj2/qNRN+23jY/XEAl7X/sqQD5tfA3HbqpskcGtui66qq2VhINZDaHx9AIg2yITgJ
+ a4cT33gv7SZSg8KOQ0zZmz77F9FvmPVZPprvB9EZHh9R5e4RdQix6XKIcYGLuiwIwTovxDQZmFgfOw==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_010A_01D6869D.7DA45F00
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+There are 2 tabs in the sheet - the leadership guys are in the other tab
+......... back to the drawing board.....
+
+C
+
+ 
+
+From: chris@indigometrics.com <chris@indigometrics.com> 
+Sent: 09 September 2020 11:21
+To: 'Josh Klein' <josh@josh.is>
+Subject: Big Spaceship Pilot
+
+ 
+
+
+Sam
+
+Cranston
+
+
+Austin
+
+Powe
+
+
+Kacy
+
+Emmett
+
+
+Ana
+
+Kim
+
+
+Matt
+
+Brown
+
+
+Lucas
+
+Rojas
+
+
+Caroline
+
+May
+
+
+Terrence
+
+Lewis
+
+
+Esther
+
+Douer
+
+
+Jordan
+
+Middendorf
+
+
+Kaileigh
+
+Woodruff
+
+
+Lauren
+
+Wannermeyer
+
+
+Dan
+
+Bort
+
+
+Adam
+
+Gloo
+
+
+Greg
+
+Berman
+
+
+Stacey
+
+Zimmerman
+
+
+AJ
+
+Moser
+
+
+Eric
+
+Hammer
+
+
+Marnie
+
+Thompson
+
+ 
+
+This is the list of participants from Big Spaceship - worth checking with
+Michael? he isn't on it, nor are Harry or Sarah - we were hoping to get
+insights from their creative minds set off by actually interacting with the
+platform themselves etc
+
+ 
+
+I'm going ahead and setting it all up in any case.
+
+ 
+
+C
+
+
+------=_NextPart_000_010A_01D6869D.7DA45F00
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><META =
+HTTP-EQUIV=3D"Content-Type" CONTENT=3D"text/html; =
+charset=3Dus-ascii"><meta name=3DGenerator content=3D"Microsoft Word 15 =
+(filtered medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Work Sans";
+	panose-1:0 0 0 0 0 0 0 0 0 0;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB =
+link=3D"#0563C1" vlink=3D"#954F72"><div class=3DWordSection1><p =
+class=3DMsoNormal>There are 2 tabs in the sheet &#8211; the leadership =
+guys are in the other tab =
+&#8230;&#8230;&#8230;&#8230;&#8230;&#8230;&#8230;.. back to the drawing =
+board&#8230;&#8230;&#8230;..<o:p></o:p></p><p =
+class=3DMsoNormal>C<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'>From:</span></b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'> chris@indigometrics.com =
+&lt;chris@indigometrics.com&gt; <br><b>Sent:</b> 09 September 2020 =
+11:21<br><b>To:</b> 'Josh Klein' &lt;josh@josh.is&gt;<br><b>Subject:</b> =
+Big Spaceship Pilot<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D0 =
+style=3D'width:0cm;border-collapse:collapse'><tr =
+style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;background:white;padding:1.5pt 2.25pt 1.5pt =
+2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'>Sam<o:p></o:p></span></p></td><td=
+ valign=3Dbottom style=3D'border:solid #CCCCCC =
+1.0pt;border-left:none;background:white;padding:1.5pt 2.25pt 1.5pt =
+2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Cranston</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Austin</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Powe</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Kacy</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Emmett</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Ana</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Kim</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Matt</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Brown</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Lucas</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Rojas</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Caroline</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>May</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Terrence</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Lewis</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Esther</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Douer</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Jordan</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Middendorf</span><spa=
+n style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Kaileigh</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Woodruff</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Lauren</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Wannermeyer</span><sp=
+an style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Dan</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Bort</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Adam</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Gloo</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Greg</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Berman</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Stacey</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Zimmerman</span><span=
+ style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>AJ</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Moser</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Eric</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Hammer</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+tr style=3D'height:15.75pt'><td valign=3Dbottom style=3D'border:solid =
+#CCCCCC 1.0pt;border-top:none;background:white;padding:1.5pt 2.25pt =
+1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Marnie</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td><td =
+valign=3Dbottom =
+style=3D'border-top:none;border-left:none;border-bottom:solid #CCCCCC =
+1.0pt;border-right:solid #CCCCCC 1.0pt;background:white;padding:1.5pt =
+2.25pt 1.5pt 2.25pt;height:15.75pt'><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;color:black;mso-fareast-language:EN-GB'>Thompson</span><span =
+style=3D'font-size:10.0pt;font-family:"Work =
+Sans",serif;mso-fareast-language:EN-GB'><o:p></o:p></span></p></td></tr><=
+/table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>This is the list of participants from Big Spaceship =
+&#8211; worth checking with Michael? he isn&#8217;t on it, nor are Harry =
+or Sarah &#8211; we were hoping to get insights from their creative =
+minds set off by actually interacting with the platform themselves =
+etc<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>I&#8217;m going ahead and setting it all up in any =
+case.<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>C<o:p></o:p></p></div></body></html>
+------=_NextPart_000_010A_01D6869D.7DA45F00--
+

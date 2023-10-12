@@ -1,0 +1,744 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:28a:0:0:0:0 with SMTP id b10csp4057890ljo;
+        Mon, 5 Jul 2021 05:54:34 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxtIwd7X+HlErQbIAbJMJgaaChUmNnyI8I6m/1fkEDLYo5PNalVcV82bQ8JqRH602K8GZHk
+X-Received: by 2002:a37:8345:: with SMTP id f66mr13710378qkd.396.1625489674100;
+        Mon, 05 Jul 2021 05:54:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1625489674; cv=none;
+        d=google.com; s=arc-20160816;
+        b=HtnMJA0NoJM/ag/s6QS9hXqyRKhT0sQ76iwYWqTQDdyyi/UZKYVP9MEgNHf2Ztmnh7
+         iJK7wzccIavqJKMQ0nUfckFSPFHWyE5FY563Epp/NmSYgE9ERAZX0uWO7ZAOyjFeP86B
+         7Dpj1Zzxvui5pEm1biIvgN2kKLXPDIVc52IalS2uIxOhIZAW9Fr0esCfYi9u05o1uWP8
+         75sExs6WAWGOKrz7JR6xGsVh6otu6YnzvQa6GaFai0MLXml83YSCKhSlf6Kvpf9bAihB
+         PRp/yaVFA7EmAKrx2lp5vG01PBP9I62Z4IoZLYzhyQi/N7VaZ2ccLrVElXrV2zh6Y+Vd
+         ElEQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:mime-version:subject:message-id:to:reply-to:from:date
+         :dkim-signature:dkim-signature;
+        bh=0opaat5TFjWhfCvxhRmoyQsSOMI04oBZm8FL+yH/Zcg=;
+        b=sUOFXLy1UlQRNctz+qwM43Hb/b42AxDCIw+cROeA+XA5GcLWeX49jyPgEGX+hTaBqm
+         5b7wRLKq0DzYPzttmHBiEAJQnlnOC9HBRzs3PiZX/c+uD48PX/fn3CqU21CKgVT0XBB7
+         5svz4Mr+f1DM+NgtmE45cucg8jjWZPj61j3x5ytAoBxcVYtEmNKDIljpH/mp+Znr+qev
+         3vXBafJrJqVm4k/jyRXUM/kwrkoaSjnNdZcUu378k8fRaloqUMtQupFF98/OJFaVcClZ
+         LQYOYju/Ud2SnHk7pBlB6iSF16B2ba+1puzHwUsEqagadzYD5F3XTZXrqNgCfgAqMaPz
+         mVmg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ses1.okplay.co header.s=z4fhbtvuvao7k3eaeqnqfxdov7hgx643 header.b=jflJBO82;
+       dkim=pass header.i=@amazonses.com header.s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug header.b=a8YTswNr;
+       spf=pass (google.com: domain of 0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com designates 23.251.255.241 as permitted sender) smtp.mailfrom=0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com
+Return-Path: <0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com>
+Received: from e255-241.smtp-out.amazonses.com (e255-241.smtp-out.amazonses.com. [23.251.255.241])
+        by mx.google.com with ESMTPS id 65si9342450qte.134.2021.07.05.05.54.33
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 05 Jul 2021 05:54:34 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com designates 23.251.255.241 as permitted sender) client-ip=23.251.255.241;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ses1.okplay.co header.s=z4fhbtvuvao7k3eaeqnqfxdov7hgx643 header.b=jflJBO82;
+       dkim=pass header.i=@amazonses.com header.s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug header.b=a8YTswNr;
+       spf=pass (google.com: domain of 0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com designates 23.251.255.241 as permitted sender) smtp.mailfrom=0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@amazonses.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=z4fhbtvuvao7k3eaeqnqfxdov7hgx643; d=ses1.okplay.co; t=1625489673;
+	h=Date:From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type;
+	bh=9WYsfSgxFPsnU/sJrrfhECLZp2L/nDWJvzZBnCFao+M=;
+	b=jflJBO82aamKMPY6xC4qNRgUCAQh+zrBmDqRWDBWs1bE3e7umdFqCSq1tG5U3ABY
+	sbsXzw6/+Q4bWCjcadj+MUI54AnsIqThWyZz+3i7nVxOSeg61xyXFLb/MGDV7YBuLl0
+	DgR8sBmFAdesWGrg0+5B+sV/GdqUTl3gSyp53mJA=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1625489673;
+	h=Date:From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Feedback-ID;
+	bh=9WYsfSgxFPsnU/sJrrfhECLZp2L/nDWJvzZBnCFao+M=;
+	b=a8YTswNr93lvpzGugZFhJVIIDb9ozzZSiv3j8V5zkcszJt1JqpjcaQHf+rYG1yI7
+	8I82pCuyNgQJCX3f5gtGwz3e10YRJenrZTTPjWo+VVCoVIkl5jdTYM22SZyZngDyAwo
+	l+i6YA1bl0BgrjTLKGE5kp5MCQR7Yme2HlA7WjN4=
+Date: Mon, 5 Jul 2021 12:54:33 +0000
+From: OK Play <hello@ses1.okplay.co>
+Reply-To: hello@okplay.co
+To: josh@josh.is
+Message-ID: <0100017a76bc0b64-602eaf1d-7d8c-4ec5-96c7-e81235bdfd65-000000@email.amazonses.com>
+Subject: Welcome to OK Play! Ignite your child's imagination today.
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_11268459_1690837688.1625489673048"
+X-Campaign-ID: 2136863
+Feedback-ID: 1.us-east-1.lCJVkz6+3S71MtYe1CeGk/9v1Z83C325jnahyIHJIg0=:AmazonSES
+X-Feedback-ID: 2930899:2136863:44603:iterable
+X-Message-ID: c82b7701f0114c1f94b8a3bfb959a916
+X-SES-Outgoing: 2021.07.05-23.251.255.241
+
+------=_Part_11268459_1690837688.1625489673048
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+OK PLAY=20
+OK Play activates kids through engaging play prompts developed by our team =
+of=20
+experts. The app is always ad-free and kid-safe, and content is updated dai=
+ly.=20
+We hope you enjoy!=20
+
+
+
+
+
+
+
+=20
+<https://okplay.co?utm_source=3Dlifecycle&utm_medium=3Demail&utm_campaign=
+=3Dwelcome_1_free_reg>
+
+
+
+
+Welcome to OK Play!=20
+
+
+
+
+
+
+We created OK Play to ignite young imaginations with tools to create, explo=
+re,=20
+and pretend. Our interactive stories put kids in the director's chair, allo=
+wing=20
+them to explore new worlds, experiences, and feelings. Because this type of=
+=20
+play is how kids learn=C2=A0best.
+
+Hope you enjoy!
+
+
+
+
+
+Read More: Our Approach=20
+<https://okplay.co/learn/learning-is-playful/?utm_source=3Dlifecycle&utm_me=
+dium=3Demail&utm_campaign=3Dwelcome_1_free_reg>
+=20
+<https://okplay.co/learn/learning-is-playful/?utm_source=3Dlifecycle&utm_me=
+dium=3Demail&utm_campaign=3Dwelcome_1_free_reg>
+
+
+
+
+
+
+
+
+Loved by kids, trusted by=C2=A0parents.=20
+
+
+
+
+
+Guilt-Free Screen Time
+ Engages kids' creativity, inspires positive social growth, and is always=
+=20
+ad-free & kid-safe.
+
+Created by PhDs & Experts
+ Based in research to build confidence, kindness, empathy & other valuable=
+=20
+life=C2=A0lessons.
+
+Ignites Imagination & Play
+ With new stories weekly, kids explore new worlds, new experiences, and new=
+=20
+feelings.
+
+Parents Welcome
+ Kids can play alone or with a grown up. Kids will love sharing their stori=
+es=20
+with you!=20
+
+
+
+
+Take me to the App <https://okplay.app/today>  <https://okplay.app/today>=
+=20
+
+
+
+
+
+Endorsed by experts.=20
+
+
+
+=E2=80=9CHits the gold standards for
+high-quality screen time with=C2=A0little=C2=A0ones.=E2=80=9D=20
+
+ <>=20
+
+As seen on:=20
+
+ <>=20
+
+
+
+
+ <http://www.kidsafeseal.com/certifiedproducts/okplay.html>=20
+
+OK Play is kidSAFE certified!=20
+
+
+ <https://twitter.com/okplay> =C2=A0=C2=A0=C2=A0  <https://www.instagram.co=
+m/okplay/>=20
+
+OKCO, Inc.
+ 3019 Ocean Park Blvd #300
+ Santa Monica, CA 90405
+
+ You are receiving this email as a registered user of OK Play.=20
+
+
+
+
+Terms of Service=20
+<https://okplay.co/terms/?utm_source=3Dlifecycle&utm_medium=3Demail&utm_cam=
+paign=3Dwelcome_1_free_reg>
+=C2=A0=C2=A0 Privacy Policy=20
+<https://okplay.co/privacy/?utm_source=3Dlifecycle&utm_medium=3Demail&utm_c=
+ampaign=3Dwelcome_1_free_reg>
+
+
+
+------=_Part_11268459_1690837688.1625489673048
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html xmlns=3D"http://www.w3=
+.org/1999/xhtml" xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:s=
+chemas-microsoft-com:office:office"> <head><!--[if gte mso 9]><xml> <o:Offi=
+ceDocumentSettings> <o:AllowPNG/> <o:PixelsPerInch>96</o:PixelsPerInch> </o=
+:OfficeDocumentSettings> </xml><![endif]--> <title>OK PLAY</title> <meta ht=
+tp-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8"><meta http=
+-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge"><meta name=3D"viewport" co=
+ntent=3D"width=3Ddevice-width, initial-scale=3D1.0 "><meta name=3D"format-d=
+etection" content=3D"telephone=3Dno"><!--[if !mso]><!--> <link href=3D"http=
+s://fonts.googleapis.com/css2?family=3DMontserrat:wght@300;400;500;600;700;=
+800;900&amp;display=3Dswap" rel=3D"stylesheet"><!--<![endif]--> <style type=
+=3D"text/css">body{margin:0 auto;padding:0;-webkit-text-size-adjust:100%!im=
+portant;-ms-text-size-adjust:100%!important;-webkit-font-smoothing:antialia=
+sed!important}img{border:0!important;outline:none!important}p{Margin:0!impo=
+rtant;Padding:0!important}table{border-collapse:collapse;mso-table-lspace:0=
+;mso-table-rspace:0}td,a,span{border-collapse:collapse;mso-line-height-rule=
+:exactly}.ExternalClass *{line-height:100%}.em_defaultlink a{color:inherit;=
+text-decoration:none}.em_g_img+div{display:none}a[x-apple-data-detectors],u=
++.em_body a,#MessageViewBody a{color:inherit;text-decoration:none;font-size=
+:inherit;font-family:inherit;font-weight:inherit;line-height:inherit}@media=
+ only screen and (max-width:655px){.em_main_table{width:100%!important}.em_=
+wrapper{width:100%!important}.em_hide{display:none!important}.em_full_img i=
+mg{width:100%!important;height:auto!important}.em_hide_desktop{display:tabl=
+e!important;float:none!important;width:100%!important;overflow:visible!impo=
+rtant;height:auto!important}.em_center{text-align:center!important}.em_side=
+10{width:10px!important}.em_aside10{padding:0 10px!important}.em_side15{wid=
+th:15px!important}.em_aside15{padding:0 15px!important}.em_ptop{padding-top=
+:20px!important}.em_pbottom{padding-bottom:20px!important}.em_h20{height:20=
+px!important;font-size:1px!important;line-height:1px!important}.em_h30{heig=
+ht:30px!important}.em_mob_block{display:block!important}.em_hauto{height:au=
+to!important}.em_clear{clear:both!important;width:100%!important;display:bl=
+ock!important}u+.em_body .em_full_wrap{width:100%!important;width:100vw!imp=
+ortant}.em_side70{width:70px!important}}@media screen and (max-width:480px)=
+{.em_cta{width:270px!important;height:55px!important}.em_cta a{font-size:17=
+px!important;line-height:55px!important}.em_cta1 a{font-size:15px!important=
+;line-height:50px!important;height:50px!important}.em_cta1{font-size:15px!i=
+mportant;line-height:50px!important;height:50px!important}.em_f30{font-size=
+:28px!important;line-height:30px!important}.em_w1 img{width:110px!important=
+;height:auto!important}.em_w2 img{width:65px!important;height:auto!importan=
+t}.em_w3 img{width:90px!important;height:auto!important}.em_f24{font-size:2=
+2px!important;line-height:25px!important}}@media screen and (max-width:374p=
+x){.em_cta{font-size:13px!important;width:250px!important;height:50px!impor=
+tant}.em_cta a{font-size:13px!important;line-height:50px!important;height:5=
+0px!important}.em_cta1 a{font-size:14px!important;line-height:30px!importan=
+t;height:30px!important}.em_cta1{font-size:14px!important;line-height:30px!=
+important;height:30px!important}.em_f30{font-size:23px!important;line-heigh=
+t:25px!important}.em_f24{font-size:20px!important;line-height:23px!importan=
+t}.em_f17{font-size:17px!important;line-height:27px!important}.em_w1 img{wi=
+dth:100px!important;height:auto!important}.em_w2 img{width:60px!important;h=
+eight:auto!important}.em_w3 img{width:80px!important;height:auto!important}=
+.em_w4 img{width:40px!important;height:auto!important}.em_w6 img{width:30px=
+!important;height:auto!important}.em_w7 img{width:230px!important;height:au=
+to!important}}</style> </head> <body class=3D"em_body" style=3D"margin: 0px=
+ auto; padding: 0px; -webkit-text-size-adjust: 100% !important; -ms-text-si=
+ze-adjust: 100% !important; -webkit-font-smoothing: antialiased !important;=
+" bgcolor=3D"#f2def8"><span style=3D"color:transparent;visibility:hidden;di=
+splay:none;opacity:0;height:0;width:0;font-size:0;"></span><img src=3D"http=
+s://itt2.okplay.co/e/eo?_t=3Df513dd46997d4835aa6d56cd829f5cb3&amp;_m=3Dc82b=
+7701f0114c1f94b8a3bfb959a916&amp;_e=3DATXWxyVL89jrF-F2QZL-6nD-H71CsVOKhfmud=
+X9C3lYvJkd1ECqTSVX3tCJCVlGHKIlSHdwE5lRAt9lsBGmKQ42iXcrMkbkl36CcpoiWuNOAhG82=
+OIuo1uEaPhtBbHLRH6lIezXTDj2mhhWyFKWodMkmwMURHFgei9uyJavxloU%3D" style=3D"bo=
+rder:0;width:1px;height:1px;border-width:0px!important;display:none!importa=
+nt;line-height:0!important;" width=3D"1" height=3D"1"/> <table width=3D"100=
+%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" class=3D"em_full_wrap" =
+bgcolor=3D"#f2def8" style=3D"border-collapse: collapse; mso-table-lspace: 0=
+px; mso-table-rspace: 0px; table-layout: fixed;"> <tbody> <tr> <td valign=
+=3D"top" align=3D"center" style=3D"border-collapse: collapse; mso-line-heig=
+ht-rule: exactly; display: none; font-size: 0px; color: #ffffff; line-heigh=
+t: 0px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; font=
+-family: Arial, sans-serif;">OK Play activates kids through engaging play p=
+rompts developed by our team of experts. The app is always ad-free and kid-=
+safe, and content is updated daily. We hope you enjoy!</td> </tr> <tr> <td =
+align=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-lin=
+e-height-rule: exactly;"> <table align=3D"center" width=3D"656" border=3D"0=
+" cellspacing=3D"0" cellpadding=3D"0" class=3D"em_main_table" style=3D"bord=
+er-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px; width:=
+ 656px; table-layout: fixed;" bgcolor=3D"#f2def8"> <tbody> <tr> <td align=
+=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly;"> <table width=3D"656" border=3D"0" cellspacing=3D"0" ce=
+llpadding=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-ta=
+ble-lspace: 0px; mso-table-rspace: 0px; width: 656px;" class=3D"em_wrapper"=
+> <tbody> <tr> <td width=3D"28" style=3D"border-collapse: collapse; mso-lin=
+e-height-rule: exactly; width: 28px;" class=3D"em_side15"></td> <td align=
+=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" c=
+ellpadding=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-t=
+able-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td height=3D"35" s=
+tyle=3D"border-collapse: collapse; mso-line-height-rule: exactly; height: 3=
+5px;" class=3D"em_h20"></td> </tr> <!-- Logo Section --> <tr> <td align=3D"=
+center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-height-=
+rule: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" align=3D"center" bgcolor=3D"#cc7ee7" style=3D"border-collapse:=
+ collapse; mso-table-lspace: 0px; mso-table-rspace: 0px; border-top-left-ra=
+dius: 5px; border-top-right-radius: 5px;"> <tbody> <tr> <td width=3D"30" st=
+yle=3D"border-collapse: collapse; mso-line-height-rule: exactly; width: 30p=
+x;" class=3D"em_side15"></td> <td align=3D"center" valign=3D"top" style=3D"=
+border-collapse: collapse; mso-line-height-rule: exactly;"> <table width=3D=
+"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center" st=
+yle=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace: =
+0px;"> <tbody> <tr> <td height=3D"25" style=3D"border-collapse: collapse; m=
+so-line-height-rule: exactly; height: 25px;" class=3D"em_h20"></td> </tr> <=
+tr> <td align=3D"center" valign=3D"top" style=3D"border-collapse: collapse;=
+ mso-line-height-rule: exactly;"><a target=3D"_blank" style=3D"border-colla=
+pse: collapse; mso-line-height-rule: exactly; text-decoration: none;" href=
+=3D"https://itt2.okplay.co/u/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=
+=3Dc82b7701f0114c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGrlHy9VK3a7zuUj=
+wjaiVnFgpqi8fo6Z8NNU7c6H6kw0O6rTsmJOrs4E7MiLegrk11GLcalZ94PHH8BDMgUVSSW-4_5=
+Pk5eqdRv487epE2VxWSNTsWB7EvE27vR1tbh-RqqcTDLCwbWKp6ER5oZfKT2o1YdcPSVU9NECou=
+urPmhgMVobAO5Y_7-K-2dHfwMqGm4yd8d68YgsKZ626IXL6rQUAq9NtTIfxHYA0LPExIaO3TRDF=
+ZmQizefz7Gf6Eh-CAQRJALD-TXvzktAO2S9u2T5iW6SLDUDZo3y9M0raCFB1df1JSOqjo4yO_l2=
+FCVIc8SA%3D%3D"><img width=3D"150" alt=3D"OK PLAY" border=3D"0" style=3D"di=
+splay: block; max-width: 150px; font-family: Arial, sans-serif; font-size: =
+17px; line-height: 20px; color: #000000; border: 0 !important; outline: non=
+e !important;" src=3D"https://assets.okplay.app/email/OKPlay_Logo_Horizonta=
+l_white.png"></a></td> </tr> <tr> <td height=3D"25" style=3D"border-collaps=
+e: collapse; mso-line-height-rule: exactly; height: 25px;" class=3D"em_h20"=
+></td> </tr> </tbody> </table> </td> <td width=3D"30" style=3D"border-colla=
+pse: collapse; mso-line-height-rule: exactly; width: 30px;" class=3D"em_sid=
+e15"></td> </tr> </tbody> </table> </td> </tr> <!-- //Logo Section --><!-- =
+Title Section1 --> <tr> <td align=3D"center" valign=3D"top" style=3D"border=
+-collapse: collapse; mso-line-height-rule: exactly;"> <table width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center" bgcolor=
+=3D"#ffffff" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso=
+-table-rspace: 0px;"> <tbody> <tr> <td width=3D"30" style=3D"border-collaps=
+e: collapse; mso-line-height-rule: exactly; width: 30px;" class=3D"em_side1=
+5"></td> <td align=3D"center" valign=3D"top" style=3D"border-collapse: coll=
+apse; mso-line-height-rule: exactly;"> <table width=3D"100%" border=3D"0" c=
+ellspacing=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collaps=
+e: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <=
+td height=3D"40" style=3D"border-collapse: collapse; mso-line-height-rule: =
+exactly; height: 40px;" class=3D"em_h20"></td> </tr> <tr> <td align=3D"cent=
+er" valign=3D"top" class=3D"em_defaultlink em_f30" style=3D"border-collapse=
+: collapse; mso-line-height-rule: exactly; font-family: 'Montserrat', Arial=
+, sans-serif; color: #CC7EE7; font-size: 36px; font-weight: bold; line-heig=
+ht: 38px;">Welcome to OK Play!</td> </tr> <tr> <td height=3D"40" style=3D"b=
+order-collapse: collapse; mso-line-height-rule: exactly; height: 40px;" cla=
+ss=3D"em_h20"></td> </tr> </tbody> </table> </td> <td width=3D"30" style=3D=
+"border-collapse: collapse; mso-line-height-rule: exactly; width: 30px;" cl=
+ass=3D"em_side15"></td> </tr> </tbody> </table> </td> </tr> <!-- //Title Se=
+ction1 --><!-- Hero Image Section --> <tr> <td align=3D"center" valign=3D"t=
+op" class=3D"em_full_img" style=3D"border-collapse: collapse; mso-line-heig=
+ht-rule: exactly;"><img width=3D"600" alt=3D"A note from our founders" bord=
+er=3D"0" style=3D"display: block; max-width: 600px; font-family: Arial, san=
+s-serif; font-size: 17px; line-height: 20px; color: #000000; border: 0 !imp=
+ortant; outline: none !important;" src=3D"https://assets.okplay.app/email/w=
+elcomeemail_founders.png"></td> </tr> <!-- //Hero Image Section --><!-- Con=
+tent With CTA Section --> <tr> <td align=3D"center" valign=3D"top" style=3D=
+"border-collapse: collapse; mso-line-height-rule: exactly;"> <table width=
+=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center"=
+ bgcolor=3D"#ffffff" style=3D"border-collapse: collapse; mso-table-lspace: =
+0px; mso-table-rspace: 0px; border-bottom-left-radius: 5px; border-bottom-r=
+ight-radius: 5px;"> <tbody> <tr> <td width=3D"15" style=3D"border-collapse:=
+ collapse; mso-line-height-rule: exactly; width: 15px;"></td> <td align=3D"=
+center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-height-=
+rule: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-table=
+-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td height=3D"30" style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; height: 30px;=
+" class=3D"em_h20"></td> </tr> <tr> <td align=3D"center" valign=3D"top" cla=
+ss=3D"em_defaultlink em_f17" style=3D"border-collapse: collapse; mso-line-h=
+eight-rule: exactly; font-family: Arial, Helvetica, sans-serif , sans-serif=
+; color: #4C4C4C; font-size: 18px; line-height: 28px;"> <p style=3D"Margin:=
+ 0px !important; Padding: 0px !important;">We created OK Play to ignite you=
+ng imaginations with tools to create, explore, and pretend. Our interactive=
+ stories put kids in the director's chair, allowing them to explore new wor=
+lds, experiences, and feelings. Because this type of play is how kids learn=
+&nbsp;best.</p> <p style=3D"Margin: 0px !important; Padding: 0px !important=
+;">Hope you enjoy!</p> </td> </tr> <tr> <td height=3D"30" style=3D"border-c=
+ollapse: collapse; mso-line-height-rule: exactly; height: 30px;" class=3D"e=
+m_h20"></td> </tr> <tr> <td align=3D"center" valign=3D"top" style=3D"border=
+-collapse: collapse; mso-line-height-rule: exactly;"> <table border=3D"0" c=
+ellspacing=3D"0" cellpadding=3D"0" align=3D"center" bgcolor=3D"#cc7ee7" sty=
+le=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace: 0=
+px; background-color: #cc7ee7; border-radius: 4px;" class=3D"em_cta"> <tbod=
+y> <tr> <td align=3D"center" valign=3D"middle" style=3D"border-collapse: co=
+llapse; mso-line-height-rule: exactly;"> <table border=3D"0" cellspacing=3D=
+"0" cellpadding=3D"0" align=3D"center" style=3D"border-collapse: collapse; =
+mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td width=3D"1=
+5" style=3D"border-collapse: collapse; mso-line-height-rule: exactly; width=
+: 15px; line-height: 0px; font-size: 0px;"></td> <td align=3D"center" valig=
+n=3D"middle" style=3D"border-collapse: collapse; mso-line-height-rule: exac=
+tly;"> <table align=3D"center" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-table=
+-rspace: 0px;"> <tbody> <tr> <td align=3D"right" class=3D"em_defaultlink em=
+_cta1" valign=3D"middle" height=3D"60" style=3D"border-collapse: collapse; =
+mso-line-height-rule: exactly; height: 60px; color: #ffffff; font-family: '=
+Montserrat', Arial, sans-serif; font-size: 18px; font-weight: bold;"><a tar=
+get=3D"_blank" style=3D"border-collapse: collapse; mso-line-height-rule: ex=
+actly; text-decoration: none; color: #ffffff; display: block; line-height: =
+60px;" href=3D"https://itt2.okplay.co/u/click?_t=3Df513dd46997d4835aa6d56cd=
+829f5cb3&_m=3Dc82b7701f0114c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGrk5=
+XBWQFXWz3i5LTRLxJUzZQyDxOS4MAdwcQGFuu10sUJDwlpF6v_nnRDVxZxGLT-qG2EdgmkVUYnB=
+OS-G9GSxpUhDb2wYFWJJWGduVHrg39xu9TK2LUdPcHPmQbi8zh-fkSECWABnskEQAuEZOdsOaem=
+9_Rqch-ykLF9c-GGCigx9WrLw0Qr7_PAEsJ2xiWXs5HhgsGBzWL2IRuzLIZVNdWz28-MYLyEqzU=
+eL25yKz472-wmAFIVqw7QCHea8zNAw9o8Q8va__QefY2ap6Ag9_cpBJr9a2C7n2iprNN_ZrMAH0=
+pugt1kyxOgLAftdSr0CzmOALrxUCongkasMNYwXzddY8SY_X5gI3gxHrv-Jis">Read More: O=
+ur Approach</a></td> <td width=3D"8" style=3D"border-collapse: collapse; ms=
+o-line-height-rule: exactly; width: 8px; line-height: 0px; font-size: 0px;"=
+></td> <td align=3D"left" valign=3D"middle" style=3D"border-collapse: colla=
+pse; mso-line-height-rule: exactly; line-height: 0px; font-size: 0px;"><a t=
+arget=3D"_blank" style=3D"border-collapse: collapse; mso-line-height-rule: =
+exactly; text-decoration: none;" href=3D"https://itt2.okplay.co/u/click?_t=
+=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b7701f0114c1f94b8a3bfb959a916&_=
+e=3D_J-Xecw-LtHykW8_xpuGrk5XBWQFXWz3i5LTRLxJUzZQyDxOS4MAdwcQGFuu10sUJDwlpF6=
+v_nnRDVxZxGLT-qG2EdgmkVUYnBOS-G9GSxpUhDb2wYFWJJWGduVHrg39xu9TK2LUdPcHPmQbi8=
+zh-fkSECWABnskEQAuEZOdsOY-d1Q6GNJJVUyW9d8ZBwNfTEDfXPLZ2vrhnm6U3i0jUi9ElsPiT=
+hEo8wRB8WZjCkabAoV9gryHB0be7iWGJpN28Ys_xYq6g_Y8wgyrNSapKZ7NZMqsFJlsp-UNCZyE=
+WxyEh9P9xcrfoya6ee3KqIgpbt_-TnoZympBw-Cpz-X7mZuyb5nVjxiDE0LZNKrWjp3JWghNf70=
+XSWe5dPS6X8Rr"><img width=3D"7" alt border=3D"0" style=3D"display: block; m=
+ax-width: 7px; border: 0 !important; outline: none !important;" src=3D"http=
+s://assets.okplay.app/email/icon5.png"></a></td> </tr> </tbody> </table> </=
+td> <td width=3D"15" style=3D"border-collapse: collapse; mso-line-height-ru=
+le: exactly; width: 15px; line-height: 0px; font-size: 0px;"></td> </tr> </=
+tbody> </table> </td> </tr> </tbody> </table> </td> </tr> <tr> <td height=
+=3D"50" style=3D"border-collapse: collapse; mso-line-height-rule: exactly; =
+height: 50px;" class=3D"em_h20"></td> </tr> </tbody> </table> </td> <td wid=
+th=3D"15" style=3D"border-collapse: collapse; mso-line-height-rule: exactly=
+; width: 15px;"></td> </tr> </tbody> </table> </td> </tr> <!-- //Content Wi=
+th CTA Section --> <tr> <td height=3D"25" style=3D"border-collapse: collaps=
+e; mso-line-height-rule: exactly; height: 25px;" class=3D"em_h20"></td> </t=
+r> </tbody> </table> </td> <td width=3D"28" style=3D"border-collapse: colla=
+pse; mso-line-height-rule: exactly; width: 28px;" class=3D"em_side15"></td>=
+ </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> </tbody>=
+ </table> <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" class=3D"em_full_wrap" bgcolor=3D"#f2def8" style=3D"border-collapse:=
+ collapse; mso-table-lspace: 0px; mso-table-rspace: 0px; table-layout: fixe=
+d;"> <tbody> <tr> <td align=3D"center" valign=3D"top" style=3D"border-colla=
+pse: collapse; mso-line-height-rule: exactly;"> <table align=3D"center" wid=
+th=3D"656" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" class=3D"em_mai=
+n_table" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-tab=
+le-rspace: 0px; width: 656px; table-layout: fixed;" bgcolor=3D"#f2def8"> <t=
+body> <tr> <td align=3D"center" valign=3D"top" style=3D"border-collapse: co=
+llapse; mso-line-height-rule: exactly;"> <table width=3D"656" border=3D"0" =
+cellspacing=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collap=
+se: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px; width: 656px;" =
+class=3D"em_wrapper"> <tbody> <tr> <td width=3D"28" style=3D"border-collaps=
+e: collapse; mso-line-height-rule: exactly; width: 28px;" class=3D"em_side1=
+5"></td> <td align=3D"center" valign=3D"top" style=3D"border-collapse: coll=
+apse; mso-line-height-rule: exactly;"> <table width=3D"100%" border=3D"0" c=
+ellspacing=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collaps=
+e: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody><!-- Ti=
+tle Section2 --> <tr> <td align=3D"center" valign=3D"top" style=3D"border-c=
+ollapse: collapse; mso-line-height-rule: exactly;"> <table width=3D"100%" b=
+order=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center" bgcolor=3D=
+"#ffffff" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-ta=
+ble-rspace: 0px; border-top-left-radius: 5px; border-top-right-radius: 5px;=
+"> <tbody> <tr> <td width=3D"30" style=3D"border-collapse: collapse; mso-li=
+ne-height-rule: exactly; width: 30px;" class=3D"em_side15"></td> <td align=
+=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" c=
+ellpadding=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-t=
+able-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td height=3D"40" s=
+tyle=3D"border-collapse: collapse; mso-line-height-rule: exactly; height: 4=
+0px;" class=3D"em_h20"></td> </tr> <tr> <td align=3D"center" valign=3D"top"=
+ class=3D"em_defaultlink em_f24" style=3D"border-collapse: collapse; mso-li=
+ne-height-rule: exactly; font-family: 'Montserrat', Arial, sans-serif; colo=
+r: #CC7EE7; font-size: 28px; font-weight: bold; line-height: 30px;">Loved b=
+y kids, trusted by&nbsp;parents.</td> </tr> <tr> <td height=3D"30" style=3D=
+"border-collapse: collapse; mso-line-height-rule: exactly; height: 30px;" c=
+lass=3D"em_h20"></td> </tr> </tbody> </table> </td> <td width=3D"30" style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; width: 30px;"=
+ class=3D"em_side15"></td> </tr> </tbody> </table> </td> </tr> <!-- //Title=
+ Section2 --><!-- Banner Section --> <tr> <td align=3D"center" valign=3D"to=
+p" class=3D"em_full_img" style=3D"border-collapse: collapse; mso-line-heigh=
+t-rule: exactly;"><img width=3D"600" alt border=3D"0" style=3D"display: blo=
+ck; max-width: 600px; border: 0 !important; outline: none !important;" src=
+=3D"https://assets.okplay.app/email/welcomeemail_lovedbykids.png"></td> </t=
+r> <!-- //Banner Section --><!-- Content Section --> <tr> <td align=3D"cent=
+er" valign=3D"top" style=3D"border-collapse: collapse; mso-line-height-rule=
+: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpaddi=
+ng=3D"0" align=3D"center" bgcolor=3D"#ffffff" style=3D"border-collapse: col=
+lapse; mso-table-lspace: 0px; mso-table-rspace: 0px; border-bottom-left-rad=
+ius: 5px; border-bottom-right-radius: 5px;"> <tbody> <tr> <td width=3D"28" =
+style=3D"border-collapse: collapse; mso-line-height-rule: exactly; width: 2=
+8px;" class=3D"em_side15"></td> <td align=3D"center" valign=3D"top" style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly;"> <table widt=
+h=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center=
+" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspa=
+ce: 0px;"> <tbody> <tr> <td height=3D"30" style=3D"border-collapse: collaps=
+e; mso-line-height-rule: exactly; height: 30px;" class=3D"em_h20"></td> </t=
+r> <tr> <td align=3D"left" valign=3D"top" class=3D"em_defaultlink em_f17 em=
+_center" style=3D"border-collapse: collapse; mso-line-height-rule: exactly;=
+ font-family: Arial, Helvetica, sans-serif; color: #4C4C4C; font-size: 18px=
+; line-height: 28px;"><span style=3D"border-collapse: collapse; mso-line-he=
+ight-rule: exactly; font-weight: bold; color: #CC7EE7;">Guilt-Free Screen T=
+ime</span><br> Engages kids' creativity, inspires positive social growth, a=
+nd is always ad-free &amp; kid-safe.<br> <br> <span style=3D"border-collaps=
+e: collapse; mso-line-height-rule: exactly; font-weight: bold; color: #CC7E=
+E7;">Created by PhDs &amp; Experts</span><br> Based in research to build co=
+nfidence, kindness, empathy &amp; other valuable life&nbsp;lessons.<br> <br=
+> <span style=3D"border-collapse: collapse; mso-line-height-rule: exactly; =
+font-weight: bold; color: #CC7EE7;">Ignites Imagination &amp; Play</span><b=
+r> With new stories weekly, kids explore new worlds, new experiences, and n=
+ew feelings.<br> <br> <span style=3D"border-collapse: collapse; mso-line-he=
+ight-rule: exactly; font-weight: bold; color: #CC7EE7;">Parents Welcome</sp=
+an><br> Kids can play alone or with a grown up. Kids will love sharing thei=
+r stories with you!</td> </tr> <tr> <td height=3D"10" style=3D"border-colla=
+pse: collapse; mso-line-height-rule: exactly; height: 10px;" class=3D"em_hi=
+de"></td> </tr> <!-- Mobile Show --><!--[if !mso 9]><!--> <tr> <td height=
+=3D"0" style=3D"border-collapse: collapse; mso-line-height-rule: exactly;">=
+ <div class=3D"em_hide_desktop" style=3D"display:none;width:0;overflow:hidd=
+en;max-height:0!important"> <table align=3D"center" border=3D"0" cellspacin=
+g=3D"0" cellpadding=3D"0" class=3D"em_wrapper" style=3D"border-collapse: co=
+llapse; mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td al=
+ign=3D"center" valign=3D"top" class=3D"em_ptop em_pbottom" style=3D"border-=
+collapse: collapse; mso-line-height-rule: exactly;"> <table border=3D"0" ce=
+llspacing=3D"0" cellpadding=3D"0" align=3D"center" bgcolor=3D"#cc7ee7" styl=
+e=3D"border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace: 0p=
+x; background-color: #cc7ee7; border-radius: 4px;"> <tbody> <tr> <td align=
+=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" c=
+ellpadding=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-t=
+able-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td width=3D"15" st=
+yle=3D"border-collapse: collapse; mso-line-height-rule: exactly; width: 15p=
+x; line-height: 0px; font-size: 0px;"></td> <td align=3D"left" class=3D"em_=
+defaultlink" valign=3D"middle" height=3D"55" style=3D"border-collapse: coll=
+apse; mso-line-height-rule: exactly; height: 55px; color: #ffffff; font-fam=
+ily: 'Montserrat', Arial, sans-serif; font-size: 16px; font-weight: bold;">=
+<a target=3D"_blank" style=3D"border-collapse: collapse; mso-line-height-ru=
+le: exactly; text-decoration: none; color: #ffffff; display: block; line-he=
+ight: 55px;" href=3D"https://itt2.okplay.co/a/click?_t=3Df513dd46997d4835aa=
+6d56cd829f5cb3&_m=3Dc82b7701f0114c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_x=
+puGro4ENhqSCyLDS0uck-AvfYEKuz8COBJ_dTCkuw_dLTNW5cKAnTiKalibw25SdXFW6A4pDaFD=
+5XBdVYvoh0AW9G9b0Rb7HPf23qn5Jvvr4PrNeYIo6B6qq1-18ZCPBSK9LkAdbn0oEHJxzRMEtVj=
+NmPlj4fzEV8u33-jqBLYO06HZgjrOijEmMbu3mplaiiznaaYmjVN8Hc3YeNtFBTEpa7PURz8Nsm=
+pEKuV0vy_8dk58">Take me to the App</a></td> <td width=3D"8" style=3D"border=
+-collapse: collapse; mso-line-height-rule: exactly; width: 8px; line-height=
+: 0px; font-size: 0px;"></td> <td align=3D"center" valign=3D"middle" style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; line-height: =
+0px; font-size: 0px;"><a target=3D"_blank" style=3D"border-collapse: collap=
+se; mso-line-height-rule: exactly; text-decoration: none;" href=3D"https://=
+itt2.okplay.co/a/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b7701f=
+0114c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGro4ENhqSCyLDS0uck-AvfYHfRL=
+gZe32DPwcvfmwtONHPvqaDNQgQSHAXcIbMAA8_LeO2noQ0vgN01DOUIQEdwQR96gvwvQ0WFjFtq=
+yAEehUZEk5GSlMeMb68TFXpksTyAb4ouQbGSLfc8P49NYHIIo5kdWLLqMghjKy0pYjeWqjoJHGo=
+S7JvlBz-cyzx6A56X3Whf8sWSyZqJ47Ky12x4P2eaSrOfG-JFVzO9u8eoOPE"><img width=3D=
+"7" alt border=3D"0" style=3D"display: block; max-width: 7px; border: 0 !im=
+portant; outline: none !important;" src=3D"https://assets.okplay.app/email/=
+icon5.png"></a></td> <td width=3D"15" style=3D"border-collapse: collapse; m=
+so-line-height-rule: exactly; width: 15px; line-height: 0px; font-size: 0px=
+;"></td> </tr> </tbody> </table> </td> </tr> </tbody> </table> </td> </tr> =
+</tbody> </table> </div> </td> </tr> <!--<![endif]--><!-- //Mobile Show -->=
+ <tr> <td height=3D"20" style=3D"border-collapse: collapse; mso-line-height=
+-rule: exactly; height: 20px; font-size: 0px; line-height: 0px;" class=3D"e=
+m_hide"></td> </tr> </tbody> </table> </td> <td width=3D"28" style=3D"borde=
+r-collapse: collapse; mso-line-height-rule: exactly; width: 28px;" class=3D=
+"em_side15"></td> </tr> </tbody> </table> </td> </tr> <!-- //Content Sectio=
+n --> <tr> <td height=3D"25" style=3D"border-collapse: collapse; mso-line-h=
+eight-rule: exactly; height: 25px;" class=3D"em_h20"></td> </tr> <!-- Group=
+ Logos Section --> <tr> <td align=3D"center" valign=3D"top" style=3D"border=
+-collapse: collapse; mso-line-height-rule: exactly;"> <table width=3D"100%"=
+ border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"center" bgcolor=
+=3D"#ffffff" style=3D"border-collapse: collapse; mso-table-lspace: 0px; mso=
+-table-rspace: 0px; border-top-left-radius: 5px; border-top-right-radius: 5=
+px; border-bottom-left-radius: 5px; border-bottom-right-radius: 5px;"> <tbo=
+dy> <tr> <td width=3D"30" style=3D"border-collapse: collapse; mso-line-heig=
+ht-rule: exactly; width: 30px;" class=3D"em_side15"></td> <td align=3D"cent=
+er" valign=3D"top" style=3D"border-collapse: collapse; mso-line-height-rule=
+: exactly;"> <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpaddi=
+ng=3D"0" align=3D"center" style=3D"border-collapse: collapse; mso-table-lsp=
+ace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td height=3D"30" style=3D"=
+border-collapse: collapse; mso-line-height-rule: exactly; height: 30px;" cl=
+ass=3D"em_h20"></td> </tr> <tr> <td align=3D"center" valign=3D"top" class=
+=3D"em_defaultlink em_f24" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly; font-family: 'Montserrat', Arial, sans-serif; color: #CC=
+7EE7; font-size: 28px; font-weight: bold; line-height: 30px;">Endorsed by e=
+xperts.</td> </tr> <tr> <td height=3D"35" style=3D"border-collapse: collaps=
+e; mso-line-height-rule: exactly; height: 35px;" class=3D"em_h20"></td> </t=
+r> <tr> <td align=3D"center" valign=3D"top" style=3D"border-collapse: colla=
+pse; mso-line-height-rule: exactly;"><img width=3D"165" alt border=3D"0" st=
+yle=3D"display: block; max-width: 165px; border: 0 !important; outline: non=
+e !important;" src=3D"https://assets.okplay.app/email/welcomeemail_5stars.p=
+ng"></td> </tr> <tr> <td height=3D"20" style=3D"border-collapse: collapse; =
+mso-line-height-rule: exactly; height: 20px; line-height: 0px; font-size: 0=
+px;"></td> </tr> <tr> <td align=3D"center" valign=3D"top" class=3D"em_defau=
+ltlink em_f17" style=3D"border-collapse: collapse; mso-line-height-rule: ex=
+actly; font-family: 'Montserrat', Arial, sans-serif; color: #000000; font-s=
+ize: 18px; line-height: 28px; font-weight: bold;">=E2=80=9CHits the <span s=
+tyle=3D"border-collapse: collapse; mso-line-height-rule: exactly; color: #C=
+C7EE7;">gold standards</span> for<br> <span style=3D"border-collapse: colla=
+pse; mso-line-height-rule: exactly; color: #CC7EE7;">high-quality screen ti=
+me</span> with&nbsp;little&nbsp;ones.=E2=80=9D</td> </tr> <tr> <td height=
+=3D"20" style=3D"border-collapse: collapse; mso-line-height-rule: exactly; =
+height: 20px; line-height: 0px; font-size: 0px;"></td> </tr> <tr> <td align=
+=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly;"><a target=3D"_blank" style=3D"border-collapse: collapse=
+; mso-line-height-rule: exactly; text-decoration: none;" class=3D"em_w7" hr=
+ef=3D"#"><img width=3D"265" alt=3D"Common Sense Media" border=3D"0" style=
+=3D"display: block; max-width: 265px; font-family: Arial, sans-serif; font-=
+size: 15px; line-height: 17px; color: #000000; border: 0 !important; outlin=
+e: none !important;" src=3D"https://assets.okplay.app/email/welcomeemail_co=
+mmonsensemedialogo.png"></a></td> </tr> <tr> <td height=3D"45" style=3D"bor=
+der-collapse: collapse; mso-line-height-rule: exactly; height: 45px;" class=
+=3D"em_h20"></td> </tr> <tr> <td align=3D"center" valign=3D"top" class=3D"e=
+m_defaultlink em_f17" style=3D"border-collapse: collapse; mso-line-height-r=
+ule: exactly; font-family: Arial, sans-serif; font-weight: bold; color: #00=
+0000; font-size: 18px; line-height: 28px;">As seen on:</td> </tr> <tr> <td =
+height=3D"20" style=3D"border-collapse: collapse; mso-line-height-rule: exa=
+ctly; height: 20px; line-height: 0px; font-size: 0px;"></td> </tr> <tr> <td=
+ align=3D"center" valign=3D"top" style=3D"border-collapse: collapse; mso-li=
+ne-height-rule: exactly;"><a target=3D"_blank" style=3D"border-collapse: co=
+llapse; mso-line-height-rule: exactly; text-decoration: none;" class=3D"em_=
+full_img" href=3D"#"><img width=3D"303" alt=3D"kidscreen | SUPERPARENT | BU=
+SINESS INSIDER | Parentology | POPULAR SCIENCE | M | Cheddar | WSJ | NBC" b=
+order=3D"0" style=3D"display: block; max-width: 300px; font-family: Arial, =
+sans-serif; font-size: 15px; line-height: 17px; color: #000000; border: 0 !=
+important; outline: none !important;" src=3D"https://assets.okplay.app/emai=
+l/welcomeemail_logobox.png"></a></td> </tr> <tr> <td height=3D"60" style=3D=
+"border-collapse: collapse; mso-line-height-rule: exactly; height: 60px;" c=
+lass=3D"em_h20"></td> </tr> </tbody> </table> </td> <td width=3D"30" style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; width: 30px;"=
+ class=3D"em_side15"></td> </tr> </tbody> </table> </td> </tr> <!-- //Group=
+ Logos Section --> <tr> <td height=3D"25" style=3D"border-collapse: collaps=
+e; mso-line-height-rule: exactly; height: 25px;" class=3D"em_h20"></td> </t=
+r> <!-- BEGIN MODULE: Footer 7 --> <tr> <td align=3D"center" valign=3D"top"=
+ style=3D"border-collapse: collapse; mso-line-height-rule: exactly;"> <tabl=
+e border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" style=3D"=
+border-collapse: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px; ba=
+ckground-color: #ffffff;" bgcolor=3D"#ffffff"> <tbody> <tr> <td style=3D"bo=
+rder-collapse: collapse; mso-line-height-rule: exactly; padding: 25px 10px =
+5px;" valign=3D"top" pc-default-class=3D"pc-sm-p-38-30-40 pc-xs-p-25-20" pc=
+-default-padding=3D"38px 40px 40px"> <table border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0" width=3D"100%" role=3D"presentation" style=3D"border-coll=
+apse: collapse; mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr=
+> <td class=3D"pc-xs-fs-14" style=3D"border-collapse: collapse; mso-line-he=
+ight-rule: exactly; text-align: center; font-family: Arial, sans-serif; fon=
+t-size: 24px;" valign=3D"top" align=3D"center"><a style=3D"border-collapse:=
+ collapse; mso-line-height-rule: exactly; text-decoration: none;" href=3D"h=
+ttps://itt2.okplay.co/u/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc8=
+2b7701f0114c1f94b8a3bfb959a916&_e=3DvJkPQRBwx1kuWoBBr1Wf2FbKwUN2zhdzKUjTPuW=
+L5CEuwBwri9jI9HMn8XEVEUnDsnVaDlYCMIw1KrEpwMjai6chhmebv315NrdBzDWk3vIuxjwiKn=
+o2nCJZVJ-jiSapudUZU--jatndEVca0Lt4Pg6o42ThpzDGXX5cJNjXztXM2eFzhX2LBX7YBaSiA=
+dws0TxjgHG6XbcAGkJh4cUNn5GmBNfSEZDEZ41ircipj4JC1bvSZ7g6r2qQuxIw67l0dX02Guc6=
+8_vJ2KP8ZR17m5EeRKS4mmbaXYVk5dHoaE4%3D"><img width=3D"110" height=3D"40" al=
+t=3D"OK Play - Learning Activities is certified by the kidSAFE Seal Program=
+." style=3D"line-height: 100%; -ms-interpolation-mode: bicubic; font-size: =
+14px; color: #151515; border: 0 !important; outline: none !important;" src=
+=3D"http://www.kidsafeseal.com/sealimage/1704779997512293369/okplay_small_d=
+arktm.png"></a></td> </tr> <tr> <td height=3D"15" style=3D"border-collapse:=
+ collapse; mso-line-height-rule: exactly; font-size: 1px; line-height: 1px;=
+" valign=3D"top"></td> </tr> <tr> <td style=3D"border-collapse: collapse; m=
+so-line-height-rule: exactly; text-align: center; line-height: 20px; letter=
+-spacing: -0.2px; font-family: 'Arial', sans-serif; font-size: 16px; color:=
+ #9B9B9B;" valign=3D"top" align=3D"center"><strong>OK Play is kidSAFE certi=
+fied!</strong></td> </tr> <tr> <td height=3D"13" style=3D"border-collapse: =
+collapse; mso-line-height-rule: exactly; font-size: 1px; line-height: 1px;"=
+></td> </tr> </tbody> <tbody> </tbody> </table> </td> </tr> <!-- END MODULE=
+: Footer 7 --><!-- BEGIN MODULE: Footer 7 --> <tr> <td style=3D"border-coll=
+apse: collapse; mso-line-height-rule: exactly; padding: 5px 40px 0px;" vali=
+gn=3D"top" pc-default-class=3D"pc-sm-p-38-30-40 pc-xs-p-25-20" pc-default-p=
+adding=3D"38px 40px 40px"> <table border=3D"0" cellpadding=3D"0" cellspacin=
+g=3D"0" width=3D"100%" role=3D"presentation" style=3D"border-collapse: coll=
+apse; mso-table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td clas=
+s=3D"pc-xs-fs-14" style=3D"border-collapse: collapse; mso-line-height-rule:=
+ exactly; text-align: center; font-family: Arial, sans-serif; font-size: 24=
+px;" valign=3D"top" align=3D"center"><a style=3D"border-collapse: collapse;=
+ mso-line-height-rule: exactly; text-decoration: none;" href=3D"https://itt=
+2.okplay.co/u/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b7701f011=
+4c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGrqs0CTuzzJ5bhKRAHLinQaNWzQ0pQ=
+K0r2GBijhJiS3DTYBC02TJtFfGtWg58KCTRiuqdSUJCVP9Ex2D03gscHGEruzdkMF016r9S7bQU=
+Bg_NmQo3QYC9hoTWOleY8Ioctjc56YXkdnte7t4hWI1UUUEdSlSnbzRIJVERUQM1dsG0w4y9xrM=
+5ENlFOnqAAWO45yMg-tqMCExzywUsuAmW-aKuCo_zN-bNv8_nN7u2IS72"><img width=3D"24=
+" height=3D"21" alt=3D"Twitter" style=3D"line-height: 100%; -ms-interpolati=
+on-mode: bicubic; font-size: 14px; color: #151515; border: 0 !important; ou=
+tline: none !important;" src=3D"https://assets.okplay.app/email/icon1.png">=
+</a> <span style=3D"border-collapse: collapse; mso-line-height-rule: exactl=
+y;">&nbsp;&nbsp;&nbsp;</span> <a style=3D"border-collapse: collapse; mso-li=
+ne-height-rule: exactly; text-decoration: none;" href=3D"https://itt2.okpla=
+y.co/u/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b7701f0114c1f94b=
+8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGrmtE75_rP89cfIkbOsZdHFdT_1cGl57mylhp=
+0LblJTe16q_ct0THuAHucaMLwpqsOmGAil5cuzCkJ9S6eRltmUnppb2mj4Epy-MrhFJUNx1ehLy=
+shcjKd2lgTPCk35u0fiNCCJGqO5e5OPWd4fU5lUIotc-Veriy7TbxOU1AC0cvQgT8V-5RousG6r=
+u_M-zfDSw5teoTXQQUWpdiu9Rzdw7XQbfSmJzaMUoO2b5KtX_hCtPOipPvIdOrUfRoGFMyUQ%3D=
+%3D"><img width=3D"21" height=3D"21" alt=3D"Instagram" style=3D"line-height=
+: 100%; -ms-interpolation-mode: bicubic; font-size: 14px; color: #151515; b=
+order: 0 !important; outline: none !important;" src=3D"https://assets.okpla=
+y.app/email/icon2.png"></a></td> </tr> <tr> <td height=3D"15" style=3D"bord=
+er-collapse: collapse; mso-line-height-rule: exactly; font-size: 1px; line-=
+height: 1px;" valign=3D"top"></td> </tr> </tbody> <tbody> <tr> <td style=3D=
+"border-collapse: collapse; mso-line-height-rule: exactly; text-align: cent=
+er; line-height: 20px; letter-spacing: -0.2px; font-family: 'Arial', Helvet=
+ica, Arial, sans-serif; font-size: 14px; color: #afafaf;" valign=3D"top" al=
+ign=3D"center">OKCO, Inc.<br> 3019 Ocean Park Blvd #300<br> Santa Monica, C=
+A 90405<br> <br> You are receiving this email as a registered user of OK Pl=
+ay.</td> </tr> <tr> <td height=3D"0" style=3D"border-collapse: collapse; ms=
+o-line-height-rule: exactly; font-size: 1px; line-height: 1px;"></td> </tr>=
+ </tbody> <tbody> <tr> <td style=3D"border-collapse: collapse; mso-line-hei=
+ght-rule: exactly; text-align: center; font-size: 0;" valign=3D"top" align=
+=3D"center"></td> </tr> </tbody> </table> </td> </tr> <!-- END MODULE: Foot=
+er 7 --><!-- BEGIN MODULE: Footer 3 --> <tr> <td style=3D"border-collapse: =
+collapse; mso-line-height-rule: exactly; padding: 0px 10px 25px;" valign=3D=
+"top" pc-default-class=3D"pc-sm-p-31-20 pc-xs-p-15-10-25" pc-default-paddin=
+g=3D"31px 30px"> <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" wi=
+dth=3D"100%" role=3D"presentation" style=3D"border-collapse: collapse; mso-=
+table-lspace: 0px; mso-table-rspace: 0px;"> <tbody> <tr> <td class=3D"pc-sm=
+-h-20" height=3D"15" style=3D"border-collapse: collapse; mso-line-height-ru=
+le: exactly; line-height: 1px; font-size: 1px;"></td> </tr> <tr> <td style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; text-align: c=
+enter; line-height: 20px; font-family: Arial, sans-serif; font-size: 14px; =
+color: #9B9B9B; padding: 0 10px;" valign=3D"top" align=3D"center"><a style=
+=3D"border-collapse: collapse; mso-line-height-rule: exactly; text-decorati=
+on: none; font-family: 'Arial', sans-serif; color: #afafaf;" href=3D"https:=
+//itt2.okplay.co/u/click?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b770=
+1f0114c1f94b8a3bfb959a916&_e=3D_J-Xecw-LtHykW8_xpuGrhCn3sv7uK2IZdriWetSKVGw=
+2SWQifc_VOtmZV8QM7trbFoWcXXV_BMLA17-e9OyTx055vetTBApTjuuJFxzQRykqhhSuRVUqoB=
+hpQvSHRLl2LSqQxkw8fpehl_rLIHaIKDFHzTSupq-nW0tE7tA8BVBroamn1ftYMpQQaEw9dFXyd=
+0JJXtBsiuplcdyzo2-UgUSvSGU9ucc08LcrRwQiHvePQFU20m64xlzl-h3sbGhrp4EQSCIAvUwR=
+roYmz2nCmhbWDBCPJwKiEINGvBU3KUz-jBVUtIjOxGrZ3YP1IQFuo_sSEf1Fzu2pX2khnHAow%3=
+D%3D">Terms of Service</a> <span style=3D"border-collapse: collapse; mso-li=
+ne-height-rule: exactly;">&nbsp;&nbsp;</span> <a style=3D"border-collapse: =
+collapse; mso-line-height-rule: exactly; text-decoration: none; font-family=
+: 'Arial', sans-serif; color: #afafaf;" href=3D"https://itt2.okplay.co/u/cl=
+ick?_t=3Df513dd46997d4835aa6d56cd829f5cb3&_m=3Dc82b7701f0114c1f94b8a3bfb959=
+a916&_e=3D_J-Xecw-LtHykW8_xpuGrgpSU1JU-zEhGFmDH-Pl4uv9t0BwjPv39rbReNtgvhxdn=
+FZF4zpbJVnXDVz2RBIuuG8BoLBSVwissPEqcWPRxib7XS1bedQQ0Oxepdqij-SnMwIrKmvS2pbx=
+XlGYtoKl9C_yuNVNFR8Szvxv884_3o3PirOG_4_5Mgs9oY5Q1AArXnEX82PLTfRXZsIoJTWJXvL=
+-MiPjv38G_PNflDg3wzkvpJczXOZ0l-nu4gHYIT1kE2SH-QCml3veKLdEHLx0EnckmYP6BfDV_P=
+5QacxnePnV74Jj0Bs2LfOv2p6rDYDCJlspCbzZazEXYKRGHh0vbWOfQEW1-kIaFMlExMtDOH8%3=
+D">Privacy Policy</a></td> </tr> </tbody> </table> </td> </tr> <tr> <td hei=
+ght=3D"30" style=3D"border-collapse: collapse; mso-line-height-rule: exactl=
+y; height: 30px;" class=3D"em_h20"></td> </tr> <!-- END MODULE: Footer 3 --=
+> </tbody> </table> </td> </tr> <tr> <td height=3D"25" style=3D"border-coll=
+apse: collapse; mso-line-height-rule: exactly; height: 25px;" class=3D"em_h=
+20"></td> </tr> </tbody> </table> </td> <td width=3D"28" style=3D"border-co=
+llapse: collapse; mso-line-height-rule: exactly; width: 28px;" class=3D"em_=
+side15"></td> </tr> </tbody> </table> </td> </tr> <tr> <td class=3D"em_hide=
+" style=3D"border-collapse: collapse; mso-line-height-rule: exactly; line-h=
+eight: 1px; min-width: 656px; background-color: #f2def8;" bgcolor=3D"#f2def=
+8"><img alt height=3D"1" width=3D"656" style=3D"max-height: 1px; min-height=
+: 1px; display: block; width: 656px; min-width: 656px; border: 0 !important=
+; outline: none !important;" border=3D"0" src=3D"https://assets.okplay.app/=
+email/spacer.gif"></td> </tr> </tbody> </table> </td> </tr> </tbody> </tabl=
+e> </body> </html>
+------=_Part_11268459_1690837688.1625489673048--

@@ -1,0 +1,969 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp3548700ljm;
+        Mon, 26 Apr 2021 00:26:37 -0700 (PDT)
+X-Received: by 2002:a17:902:b415:b029:ec:c4ab:9a87 with SMTP id x21-20020a170902b415b02900ecc4ab9a87mr17498256plr.5.1619421997131;
+        Mon, 26 Apr 2021 00:26:37 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1619421997; cv=none;
+        d=google.com; s=arc-20160816;
+        b=AYrFy+FNsIypYmKassOMc9M/OVwpS5Fn6erZlEEf1YGSUy1povgGxBGz29WYMgLx6L
+         OYbxki1y4uPaKqkWov/V7gLw9WZBsVNkORoTSnDGfd9cgX4GIqPChLuJITU78tqFldNq
+         knV49wgcOUIQgcRlu5VcXo9inOOTTHgFwNXZ/UdMHNHNYZG0G00VRH05FSgIHrySdflQ
+         N3eWjGXSQfLAfjE0F9/rwltAnrlvPvWZKWADSkceJyX9Nc8IiEMcChG2fAyj4v1GJnET
+         4oZRltR5WXRNd/iba98s57OFDCrMJzu5vYaa9XRBM2m7yqPqytHdUWOaHR5+T/+5v7tq
+         c9LQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:message-id:reply-to:references:date:mime-version
+         :dkim-signature;
+        bh=VOahx7VN5O1d45kACqd21txw3XXnUE17EYsN8caf23M=;
+        b=sBmPDpBOHaz1TILw0jQqIneWA4T0v4vh/PtvujAfaD3NpyXHv2HPcySYGktJNELw5A
+         2TCY2TMPUw20cqvEP6ynepbet8vn28E4Q0cteoenQxDmEKuCsmXi2itJ/+aRGDxwdi5D
+         X+UvfM4GW5TBXi93XN5xUolL+qcjc1ZcK0tvnb1TstiH/wo526n/yrymHRSRmtMYoSyS
+         ygba2KaswsmUmK30Mfj8ZDo6+qAMwltL8Tf+HUYdGaL2TFgRx+RdGghBrfgyB2ymMgTb
+         F2o3ZbF/JVdr/Yr9ymV4V+10ptaIrzbzfsjP6zVYDi5m7O1rZvJ0hPFAT6/zW7hMbpLF
+         O6GA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20161025 header.b=UQBBmYKf;
+       spf=pass (google.com: domain of 3lgugybapbccfrpphqwv-qruhsobgrfv.jrrjoh.frpmrvkmrvk.lv@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3LGuGYBAPBCcFRPPHQWV-QRUHSObGRFV.JRRJOH.FRPMRVKMRVK.LV@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+Return-Path: <3LGuGYBAPBCcFRPPHQWV-QRUHSObGRFV.JRRJOH.FRPMRVKMRVK.LV@docos.bounces.google.com>
+Received: from mail-sor-f69.google.com (mail-sor-f69.google.com. [209.85.220.69])
+        by mx.google.com with SMTPS id 189sor7302645pfz.51.2021.04.26.00.26.36
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 26 Apr 2021 00:26:37 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 3lgugybapbccfrpphqwv-qruhsobgrfv.jrrjoh.frpmrvkmrvk.lv@docos.bounces.google.com designates 209.85.220.69 as permitted sender) client-ip=209.85.220.69;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20161025 header.b=UQBBmYKf;
+       spf=pass (google.com: domain of 3lgugybapbccfrpphqwv-qruhsobgrfv.jrrjoh.frpmrvkmrvk.lv@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3LGuGYBAPBCcFRPPHQWV-QRUHSObGRFV.JRRJOH.FRPMRVKMRVK.LV@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=docs.google.com; s=20161025;
+        h=mime-version:date:references:reply-to:message-id:subject:from:to;
+        bh=VOahx7VN5O1d45kACqd21txw3XXnUE17EYsN8caf23M=;
+        b=UQBBmYKfT5qGm2eyHUyTTDWNMM/PwjIJSU2JOh9StfuhNIgy0K7ud2v0yNG6kffVv1
+         wZDO0FQA/pELJiEAnblX6Pi9a5P2lfRLpwqt48OglqDeaafksOzcHbmoTSUf2ecA8Lt0
+         1gM98xFBuR9dRUcvJCqZoe7WVrqyrpuRiMlhRH1tJOLhsU0PkeJdN5kvu82n/ppJln9T
+         7OKlYBrxplKcZ14iu0a657p9nAYbNV4bq4YUybJnTocC5PrnnEtuCKCHeck2Au+YAeXT
+         vdHm35sqxne47yS7H/esxEF5qamPHxBdWPKD3l8AB7iMvs35ltbq7aYtoNCwDdRfAyO2
+         6tvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:references:reply-to:message-id
+         :subject:from:to;
+        bh=VOahx7VN5O1d45kACqd21txw3XXnUE17EYsN8caf23M=;
+        b=HBMm+FV4EhzbgMHTi1VtX0rcw7KrtSA7+vxagZ5j9pATLqttINlAO27VGU2OTJo7TD
+         n6Rcopzlp8slDc4rYPHX/UuSxfqBJ7J+oa7iM1CAZ/PgUp89QTKNBqqxKGuAwQntNovD
+         +d6HqKRFVzpQaumEGruWh8pvaIbCHWftODwTojxfiJD5pHg21Y2wk8yPRawMTIFjJ4+7
+         N/pS/PumgMhO+BGx7HqdgZIwrqyhTWlJQSg+opaQBCVj4CZX0tjIiYJXzgKMDJC9R1an
+         8AEKMXllg3KwVFNF7IeO09cl3qCr5pPGL0IvfABhQsiSDnrrKzM/bqwa8kiKdTq72WHY
+         xpkw==
+X-Gm-Message-State: AOAM5335pd9KAejGrHJ/o6k4x6Y7hcOp+pgqPh6XF8xzcUqn3jOPToWA
+	S2k5iQ/AU4WJve5T4lY=
+X-Google-Smtp-Source: ABdhPJwIeegcLhFJATBny6Yq63BHxvU/g4ssMWNcs2lYxN3NdfYrATvtCP06dvlhS3Rve1c04w==
+MIME-Version: 1.0
+X-Received: by 2002:a62:9a11:0:b029:25c:908b:5284 with SMTP id
+ o17-20020a629a110000b029025c908b5284mr16094882pfe.6.1619421996365; Mon, 26
+ Apr 2021 00:26:36 -0700 (PDT)
+Date: Mon, 26 Apr 2021 00:26:36 -0700
+X-Document-ID: sEN9wxb_-LPWUcDCitIu9qA
+References: <d+c0VOOXd4Yl8tTFBXVWNEQ2l0SXU5cUE6@docs.google.com>
+X-No-Auto-Attachment: 1
+Reply-to: No Reply <d+noreply@docs.google.com>
+X-Notifications: 2f86796ff6200000
+Message-ID: <YTrJQLzJo9SKnJwHfZTXtA@notifications.google.com>
+Subject: Indigometrics_Growth_Strategy_Q2_2021
+From: "Chris Carman (Google Docs)" <comments-noreply@docs.google.com>
+To: josh@josh.is
+Content-Type: multipart/alternative; boundary="000000000000d5b8d905c0db10c2"
+
+--000000000000d5b8d905c0db10c2
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+
+Chris Carman added comments to the following document
+Indigometrics_Growth_Strategy_Q2_2021  
+(https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=AAAAIXDMoeM&ts=60866b2c&usp=comment_email_document&usp_dm=false)
+
+New: 4 comments
+
+
+New Comments
+
+.
+Chris Carman
+| reliably
+I dont think we are reliably acquiring large customers yet
+
+Reply (Reply  
+<d+AORGpRee_RV4jhfRNspe8vmI--oA6fezI614MD8lV3TCWyA2-J4lwOiciiJjxZPPtei_ux80VmsJug7l7EfzUK0LMsSny69na9rSzQjCjf7rlRn-QbMZ1ns_aaQCHVy7kWrNwdh01TWF@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=AAAAIXDMod0&usp=comment_email_discussion&usp_dm=false&ts=60866b2c)
+
+.
+Chris Carman
+| 2022
+Love the concept - and the yacht it would buy - but:
+- not sure prep for sale in 2022 is practical, the technology is so young
+- may suggest instability internally (ie will they keep their jobs when a  
+sale happens
+- maybe "make Indigometrics a $100m company that is considering a sale by  
+EOY 2026" or something like that?
+
+Reply (Reply  
+<d+AORGpRdX7E0Ogr5SzGzgOb7yZbQosnbZYWGuYVrEARKuQzutxaoJQrLIROuAaJJ_iNT5w57-ZYN6kJurT9bjk10vOJSheISqO3py2E1Fn98T7QrdHST0zmligC4Gez__Ax3GtOcTHw9S@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=AAAAIXDModk&usp=comment_email_discussion&usp_dm=false&ts=60866b2c)
+
+.
+Chris Carman
+| pipeline
+For me - to sell for $50m we would need.
+1, Customers
+2. Positive press
+3. More Customers
+4. A big pipeline of even more customers
+Then all of the other stuff
+
+Reply (Reply  
+<d+AORGpReUV7qtujpbD4zVfplNu-gVvLGqhTC-U4ChnB3If4dNoXHAN_HpalpLHij1HedrjMI2R_23FvKdW5RcwSbQXWthQlRsWN9mqlUhdWGSJIfhZVIiUPlqeSJ0edi5fFtJvAwO5-Ht@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=AAAAIXDModo&usp=comment_email_discussion&usp_dm=false&ts=60866b2c)
+
+.
+Chris Carman
+| for
+I'm back again - think not finding new customers is the biggest risk for  
+the company..........
+
+Reply (Reply  
+<d+AORGpRd3_FjmRe4R9qV1fj41MrAW0_qMjdOdaBo84R1mnZ-Ajlrf9kLIfV3HGtR3qTekNbt-4quDkCi1rUKTCxOLuX4V9ApujQDuhnHrRWLHoNDddQj52B5jKh7tQoJPlMcoFREOoppy@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=AAAAIXDMoeM&usp=comment_email_discussion&usp_dm=false&ts=60866b2c)
+
+
+Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+
+You have received this email because you are a participant in the updated  
+comment threads.
+Change  
+(https://docs.google.com/document/u/100348406323779895805/docos/notify?ouid=100348406323779895805&id=1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8&title=Indigometrics_Growth_Strategy_Q2_2021)  
+what Google sends you.
+You cannot reply to this email.
+
+--000000000000d5b8d905c0db10c2
+Content-Type: text/x-amp-html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html><html amp4email><head><meta charset=3D"utf-8"><meta name=3D"=
+email.contentIds" content=3D"AAAAIXDMoeM,AAAAIXDMod0,AAAAIXDModo,AAAAIXDMod=
+k"><script async src=3D"https://cdn.ampproject.org/v0.js"></script><script =
+async custom-element=3D"amp-list" src=3D"https://cdn.ampproject.org/v0/amp-=
+list-0.1.js"></script><script async custom-template=3D"amp-mustache" src=3D=
+"https://cdn.ampproject.org/v0/amp-mustache-0.2.js"></script><script async =
+custom-element=3D"amp-form" src=3D"https://cdn.ampproject.org/v0/amp-form-0=
+.1.js"></script><script async custom-element=3D"amp-bind" src=3D"https://cd=
+n.ampproject.org/v0/amp-bind-0.1.js"></script><style amp4email-boilerplate>=
+body{visibility:hidden}</style><style amp-custom>.material-button{-webkit-a=
+ppearance: none; cursor: pointer; outline: none;}.material-button:disabled{=
+cursor: initial;}.material-button-transparent{background-color: transparent=
+; color: #1a73e8;}.material-button-transparent:hover{background-color: rgba=
+(26, 115, 232, .04);}.material-button-transparent:focus{background-color: r=
+gba(26, 115, 232, .12);}.material-button-transparent:active{background-colo=
+r: rgba(26, 115, 232, .12); box-shadow: 0 1px 3px 1px rgba(60, 64, 67, .15)=
+;}.material-button-transparent:disabled{background-color: transparent; colo=
+r: #3c4043; opacity: 0.38;}.material-text-input{border: none; border-bottom=
+: 1px solid #3c4043;}.material-text-input:focus{border-bottom: 2px solid #2=
+277e8;}.discussion-header-spacer:first-of-type{display: none;}a{color: #1a7=
+3e8;}.resolving-discussion{opacity: 0.4;}.resolving-discussion .resolve-but=
+ton{visibility: hidden;}.submitting-reply .reply-form-textarea{opacity: 0.4=
+;}.submitting-reply .resolve-button{visibility: hidden;}.reply-error-text{d=
+isplay: none;}.submit-error .reply-error-text{display: block;}.post-dark-te=
+xt{color: #3c4043;}.head-post{margin-top: 18px; word-break: break-word; wor=
+d-wrap: break-word;}.reply-post{margin-top: 12px; word-break: break-word; w=
+ord-wrap: break-word;}.post-light-text{color: #777777;}input:disabled{opaci=
+ty: 0.4;}.screenreader-hidden-offscreen{position: absolute; left: -10000px;=
+ top: auto; width: 1px; height: 1px; overflow: hidden;}@media screen and (m=
+ax-width: 600px){.discussion-post-quote ul,ol{padding-left:20px;}}@media sc=
+reen and (min-width: 601px){.discussion-open-button{float: right;}}</style>=
+</head><body><div style=3D"font: 14px Roboto, Arial, Helvetica, sans-serif;=
+"><template type=3D"amp-mustache" id=3D"inline-action-post">{{#post}}<div s=
+tyle=3D"margin-top: 12px; word-break: break-word; word-wrap: break-word;"><=
+div class=3D"{{#isHeadPost}}head-post{{/isHeadPost}}{{^isHeadPost}}reply-po=
+st{{/isHeadPost}}"><table role=3D"presentation" cellpadding=3D"0" cellspaci=
+ng=3D"0" style=3D"width: 100%;" class=3D"{{#isNew}}post-dark-text{{/isNew}}=
+{{^isNew}}post-light-text{{/isNew}}"><tr><td style=3D"vertical-align: top; =
+width: 44px;"><amp-img src=3D"{{authorPhotoUrl}}" alt=3D"" height=3D"32" wi=
+dth=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; display: blo=
+ck;"></amp-img></td><td><h3 style=3D"display: inline-block; font: 500 14px =
+Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; l=
+ine-height: 20px; margin: 6px 0 2px 0;">{{authorName}}</h3>{{#isNew}}<h4 st=
+yle=3D"background: #1a73e8; border-radius: 8px; color: #fff; display: inlin=
+e-block; font: 700 12px/16px Roboto, Arial, Helvetica, sans-serif; margin-b=
+ottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4>{{/isN=
+ew}}<div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line=
+-height: 20px; letter-spacing: .2px;">{{#htmlBody}}<div style=3D"margin-top=
+: 6px;" class=3D"notranslate">{{{htmlBody}}}</div>{{/htmlBody}}{{#htmlActio=
+nText}}<div style=3D"margin-top: 6px;"><i>{{{htmlActionText}}}</i></div>{{/=
+htmlActionText}}{{#showCopiedText}}<div style=3D"margin: 18px 0; height: 1p=
+x; background-color: #eee;"></div><div style=3D"color: #3c4043; font: itali=
+c 14px Roboto-Italic, Arial; margin: 18px 0 6px 0; width: 100%;">Comments a=
+bove copied from original document</div>{{/showCopiedText}}</div></td></tr>=
+</table></div></div>{{/post}}</template><amp-list id=3D"discussionList" bin=
+ding=3D"refresh-evaluate" layout=3D"container" single-item items=3D"." src=
+=3D"https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZ=
+Z1MprHG8/dynamicmail/comments?emailToken=3DAORGpReoYm80UNQyKCTvtxNqz5-RHBjV=
+Vj9mlIjMNNkMShMHsPHoiBqfpMzAVophcyQl4RuS-NBs1bAo4gk8fAweAseqgq4wRiexhxkWPyL=
+VRK5cM-KozwgVrL2W043b3K1Ls58-J6L8&amp;buildLabel=3Dkix_2021.15-Tue_RC06&amp=
+;clientVersion=3D2&amp;commentIds=3DAAAAIXDMoeM&amp;fnpi_AAAAIXDMoeM=3DAAAA=
+IXDMoeM&amp;commentIds=3DAAAAIXDMod0&amp;fnpi_AAAAIXDMod0=3DAAAAIXDMod0&amp=
+;commentIds=3DAAAAIXDModo&amp;fnpi_AAAAIXDModo=3DAAAAIXDModo&amp;commentIds=
+=3DAAAAIXDModk&amp;fnpi_AAAAIXDModk=3DAAAAIXDModk&amp;ct_cs=3DvPhXvmAnKwhgM=
+s4kfd/HdA%3D%3D&amp;isNudge=3Dfalse&amp;hl=3Den&amp;headRevision=3D3969&amp=
+;context_AAAAIXDMoeM=3DH4sIAAAAAAAAAK1SwW7TQBD9lZG51m4rBEIm8SUgiASEQ4XEcbM7=
+tkfZ3TG741S58Rvc-i39FL6EcRKiRuVQiR68mvXMzps3783YQxaTZF68LDTaeZwXwaSOYik81Fd=
+vj5c1i3Cor4pm5gkcpXnhJZ2eeMpS7uNSdgPWDi0F47V6eFx8aLnvlQcTGx4wGaHYAcYtJY4Bo0=
+BvMtjexA4dBJMzbdHvIFO0CIvVt-W7CpYVVhfw1ZsYp9eUYYtpp4BtS3b0Us0u9wCzy0E_T3qw_=
+-dILUcpb5G6Xuo1e3ekXVevMMBp0Jv3i49fVp9WH74_bPwEhsvoqOOAksjm3z9_gaDtp8XbzTS1=
+9Ah2TGmi3SU0glkgUd7AX5zpBOt1DfMi24QYtcxhKntyDmPJbXv4XTT3dwsO-w3uhb2_O-txHHC=
+tyF3iMbrSsudUv2hbvH79pmhaTv8FitGdQzYHehw03lVww2ACemKVHDVl5AJuESKqzKI52xNuEV=
+oek2ZV1gxqhB8j2Y3Kr-HA6oW1x_qhBqN_TvNStk9z7meOJJx0yvqc8uKo5tHaHDM4jqr85GulZ=
+9TSMiaEcOrw2Kujb_4AB-QtE6ADAAA&amp;context_AAAAIXDMod0=3DH4sIAAAAAAAAAKWSwY=
+7TQAyGX8UKlz1s2uUAQqGNVKoVHCouPMFkxkmsdcZh7KjkbfZZ9smYlEK3LBJIXCaWNf7_f754M=
+0KgtC3YUgFqM-O2GFzqKFZ3Rb3R0cW6SS4G0N4lXG3Wp9ZmPdabP4y2Eq08InW9VY1weH_WWr3B=
+AX4J7j_tDof7zx_vv_xF7vckO4MxoWI0kClBQ12HauB7x4wx15AzglNohVmOWj3XF76WLU3G6u6=
+csGzETIaTFdPLJExq5akubR6xCuhpcFz8U-yDxA4YXQCjAYEieBal3PSTZldMuoIP6N2kCEcEiT=
+xDQp_fmQvL-JWMJGIWEPj5puXMQk51W6hPiDFlC0xlTyFgLKVtf7SL-ulxL8OwYFNzyZ4erzTOq=
+RvnH7okUwylF5ZUvWpbfP32XVEnZHINz__ljDFc-9bg_NeJ0sKBMzG80LiFZeOaCxH8NqI3sB4z=
+7bYlP7HNC8ggy7jKAibQQJG0B6UuUr7kTvy0l5S_t0AGpJf5ZSRvT_6NhrDf7eFmf_Z_vjVrpnw=
+I198BkPWu5yoDAAA&amp;context_AAAAIXDModo=3DH4sIAAAAAAAAAK1SS27cMAy9CuECWdWd=
+ZFMUzsxsipwg6QE4Eu1hQ0uKSKfIbXKWnKyU4_SDbgq0Cxs0-fjeI839IqD2JHToZqwTp95yGS6=
+vt49TNsvzcNkd98IQuR46sdq9tQir9Wvc21OhIbIGh5Y_ka98K5EWTMdIwo9U8SSk70GoxQ6YIC=
+9WFvMcpgik5gjWc6s4xT1Ziy4muwZFb4VScyBV0v1u5d3vij_C_9vvbVMb4EuJuFpAETdkVBnFz=
+T6i8FYplcNqN_uM2xwji7ScnQnejLY3BEHVQ6ehEqVKGKn2Z46RUp_H8TXdHV-eP-d5pmTuDqu9=
+PP_GsTk-Ybifal5S7EOWXId340hXHz91x8LFt53on5QpxZ-6P5a8W-Sv1nfng59I8jdQCsY5KUQ=
+yZIFKDwtXahoKY65AGM6Qx7YrJeDki6y0oT_ATatuHF4MskS_AgTjeZ1xpbCKSQU3jGU_qtou5a=
+v3-V9LOK16v0zzHRviXJwHAwAA&amp;context_AAAAIXDModk=3DH4sIAAAAAAAAAKWSwU7cMB=
+CGX2WU9riB7Uqgasnm0GoPXIpEJVCPjj1JrNqedMYh5NbX4Maz8Cg8SWd3AcGpRZUsa2RL83_z_=
+1MN4DxvipC5AMlzwE0RDXc-rZdFXclgUt2OyfnULWAIJqV9ZZKDBiVDxzTlHgY2NnuLAi0x5B5h=
+RsMw4ePvO0awIzOmHGbA24FRRJsAjQwyoPWtt9CRCWBkXR3vJavjoa7-Ae07hgDnitdRxMzeHgA=
+-nixjBC0iqXozw_biBzy33t1ggxHZFGIZMTEah1z23jlMJbXt4bmoH-6_UoxKrvqG88P9mx5PTI=
+2xP9UGNam0FIjXH9oWP51-LurVcrX6L1VM7q1mffROg75RRs3DZM0CJq9uMd542b15gV-jToUc5=
+gU0Y95bl2g6_OkxL_ksIPuIJbFXLHSHuDJBj2GAUcCxv8F9orsf-RtlSymXE_quz-uGgjt7wj46=
+wQgv7BdX28ur8-31O0f-YkQJKT1vnU4suoy2X7xq9Acb6442-AIAAA&amp;ts=3D60866b2c"><=
+div placeholder><table style=3D"border-collapse: collapse; width: 100%; bac=
+kground-color: white; text-align: center;" role=3D"presentation"><tr><td st=
+yle=3D"padding: 24px 0 16px 0;"><table style=3D"border-collapse: collapse;f=
+ont-family: Roboto, Arial, Helvetica, sans-serif;hyphens: auto; overflow-wr=
+ap: break-word; word-wrap: break-word; word-break: break-word;display: inli=
+ne-block; width: 90%;max-width: 700px;min-width: 280px; text-align: left;" =
+role=3D"presentation"><tr><td style=3D"padding: 0;"><table style=3D"width:1=
+00%; border: 1px solid #dadce0; border-radius: 8px; border-spacing: 0; tabl=
+e-layout:fixed; border-collapse: separate;" role=3D"presentation"><tr><td s=
+tyle=3D"padding: 4.5%;" dir=3D"ltr"><h1 style=3D"color: #3c4043; font: 400 =
+18px Google Sans, Roboto, Arial, Helvetica, sans-serif; margin: 0;">Chris C=
+arman added comments to the following document</h1><a href=3D"https://docs.=
+google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?dis=
+co=3DAAAAIXDMoeM&amp;ts=3D60866b2c&amp;usp=3Dcomment_email_document&amp;usp=
+_dm=3Dtrue" target=3D"_blank" style=3D"color: #3c4043; display: inline-bloc=
+k; max-width: 100%; text-decoration: none; vertical-align: top;border: 1px =
+solid #DADCE0; border-radius: 16px; white-space: nowrap;margin-top: 12px;">=
+<div style=3D"line-height: 18px; overflow: hidden; text-overflow: ellipsis;=
+padding: 6px 12px;"><span style=3D"display: inline-block; vertical-align: t=
+op; min-width: 26px; width: 26px;"><amp-img src=3D"https://ssl.gstatic.com/=
+docs/doclist/images/mediatype/icon_1_document_x64.png" width=3D"18" height=
+=3D"18" style=3D"vertical-align: top;" role=3D"presentation"></amp-img></sp=
+an><span style=3D"font: 500 14px/18px Google Sans, Roboto, Arial, Helvetica=
+, sans-serif; display: inline; letter-spacing: 0.2px;">Indigometrics_Growth=
+_Strategy_Q2_2021</span></div></a><div style=3D"margin: 18px 0; height: 1px=
+; background-color: #eee;"></div><table role=3D"presentation" cellpadding=
+=3D"0" cellspacing=3D"0" style=3D"display: table; width: 100%;"><tr><td><ta=
+ble role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0"><tr><td><stro=
+ng style=3D"display: inline-block; font: 500 14px Roboto, Arial, Helvetica,=
+ sans-serif; margin: 0; line-height: 20px; letter-spacing: .25px; color: #3=
+c4043;">Open</strong></td></tr><tr><td height=3D"4" style=3D"height: 4px;" =
+colspan=3D"0"></td></tr><tr><td><span style=3D"font: 400 14px Roboto, Arial=
+, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;color: #3c=
+4043;">4 comments</span></td></tr></table></td></tr></table></td></tr></tab=
+le><div style=3D"height: 14px;"></div><table style=3D"width:100%; border: 1=
+px solid #dadce0; border-radius: 8px; border-spacing: 0; table-layout:fixed=
+; border-collapse: separate;" role=3D"presentation"><tr><td style=3D"paddin=
+g: 4.5%;" dir=3D"ltr"><div><div><h2 style=3D"color: #3c4043; font: 400 18px=
+ Google Sans, Roboto, Arial, Helvetica, sans-serif; margin: 0;">Comments</h=
+2></div><div style=3D"margin-top: 18px;"><div style=3D"margin: 18px 0; heig=
+ht: 1px; background-color: #eee;"></div></div><div style=3D"margin-top: 18p=
+x;"><div style=3D"overflow: visible; line-height: 20px;"><div class=3D"disc=
+ussion-post-quote" style=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba=
+(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px solid #d3=
+d3d3; border-radius: 8px; overflow-wrap: break-word; word-break: break-word=
+;"><span class=3D"notranslate" style=3D"font: 400 14px Roboto, Arial, Helve=
+tica, sans-serif; line-height: 20px; color: #3c4043;"><p dir=3D"ltr" style=
+=3D"margin:0"><span>brand share.</span></p><p dir=3D"ltr" style=3D"font-wei=
+ght:bold;margin:.5em 0"><span>CHALLENGES</span></p><p dir=3D"ltr" style=3D"=
+margin:0"><span>At present our biggest challenges are as follows:</span></p=
+><ol style=3D"margin-top:0;margin-bottom:0"><li dir=3D"ltr" style=3D"list-s=
+tyle-type:decimal"><p dir=3D"ltr" style=3D"margin:0"><span>Long lead time i=
+n closing customers. Because we only recently transitioned to </span><span =
+class=3D"screenreader-hidden-offscreen">=C2=A0Comment start=C2=A0</span><sp=
+an style=3D"background-color:#ffe168">reliably</span><span class=3D"screenr=
+eader-hidden-offscreen">=C2=A0Comment end=C2=A0</span><span> acquiring larg=
+e customers, and because we expect the difficulty in doing so to diminish s=
+ignificantly shortly, it is difficult to estimate CAC (Customer</span></p><=
+/li></ol></span></div><div style=3D"margin-top: 18px; word-break: break-wor=
+d; word-wrap: break-word;"><table role=3D"presentation" cellpadding=3D"0" c=
+ellspacing=3D"0" style=3D"width: 100%;color: #3c4043;"><tr><td style=3D"ver=
+tical-align: top; width: 44px;"><amp-img src=3D"https://lh5.googleuserconte=
+nt.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8kru=
+pvg/s50-c-k-no/photo.jpg" alt=3D"" height=3D"32" width=3D"32" style=3D"bord=
+er-radius: 50%;box-sizing: border-box; display: block;"></amp-img></td><td>=
+<h3 style=3D"display: inline-block; font: 500 14px Google Sans, Roboto, Ari=
+al, Helvetica, sans-serif; letter-spacing: .25px; line-height: 20px; margin=
+: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"background: #1a73e8; border-r=
+adius: 8px; color: #fff; display: inline-block; font: 700 12px/16px Roboto,=
+ Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; margin-left=
+: 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14px Roboto, Arial=
+, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;"><div sty=
+le=3D"margin-top: 6px;" class=3D"notranslate">I dont think we are reliably =
+acquiring large customers yet</div></div></td></tr></table></div><div style=
+=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;"><a href=3D"mailTo=
+:Reply%20%3Cd+AORGpRcVQMuN_x7xpbAgeJ---gKYDG6un_JXDFg1ZPYIGcpUBu9Jo_O_hokMa=
+AzjZ3lJkqrcXyHWwtoHhBnuikr-4pE69XWVeO1YbLfxojETuD3lQuHJXlqEj1gQkMmRFpUclTDD=
+f_2n@docs.google.com%3E?subject=3DIndigometrics_Growth_Strategy_Q2_2021" cl=
+ass=3D"material-button material-button-transparent" target=3D"_blank" tabin=
+dex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Googl=
+e Sans, Roboto, Arial, Helvetica, sans-serif; border: none; border-radius: =
+4px; box-sizing: border-box; display: inline-block; letter-spacing: .25px; =
+min-height: 36px; text-align: center; text-decoration: none;margin-right: 1=
+2px;">Reply</a><a href=3D"https://docs.google.com/document/d/1FWis-eqiRrmo1=
+zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDMod0&amp;usp=3Dcomment_e=
+mail_discussion&amp;usp_dm=3Dtrue&amp;ts=3D60866b2c" class=3D"material-butt=
+on material-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"bu=
+tton" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Aria=
+l, Helvetica, sans-serif; border: none; border-radius: 4px; box-sizing: bor=
+der-box; display: inline-block; letter-spacing: .25px; min-height: 36px; te=
+xt-align: center; text-decoration: none;float: right;">Open</a></div></div>=
+</div><div style=3D"margin-top: 18px;"><div style=3D"margin: 18px 0; height=
+: 1px; background-color: #eee;"></div></div><div style=3D"margin-top: 18px;=
+"><div style=3D"overflow: visible; line-height: 20px;"><div class=3D"discus=
+sion-post-quote" style=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba(6=
+0,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px solid #d3d3=
+d3; border-radius: 8px; overflow-wrap: break-word; word-break: break-word;"=
+><span class=3D"notranslate" style=3D"font: 400 14px Roboto, Arial, Helveti=
+ca, sans-serif; line-height: 20px; color: #3c4043;"><p dir=3D"ltr" style=3D=
+"margin:0"><span>funding, planning, and best growth practices for the year =
+we=E2=80=99re currently expressing our specific goal as:</span></p><p dir=
+=3D"ltr" style=3D"margin:0"><span>Sell Indigometrics for $50mm or more by E=
+OY </span><span class=3D"screenreader-hidden-offscreen">=C2=A0Comment start=
+=C2=A0</span><span style=3D"background-color:#ffe168">2022</span><span clas=
+s=3D"screenreader-hidden-offscreen">=C2=A0Comment end=C2=A0</span><span>.</=
+span></p><p dir=3D"ltr" style=3D"margin:0"><span>Note that we will revise t=
+his quarterly, but for now this is a specific, time-oriented goal to help u=
+s drive our goals.</span></p><p dir=3D"ltr" style=3D"font-weight:bold;margi=
+n:.5em 0"><span>OVERVIEW</span></p><p dir=3D"ltr" style=3D"margin:0"><span>=
+Based on current research,</span></p></span></div><div style=3D"margin-top:=
+ 18px; word-break: break-word; word-wrap: break-word;"><table role=3D"prese=
+ntation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #3=
+c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><amp-img src=3D=
+"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZ=
+uuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" alt=3D"" height=3D"32=
+" width=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; display:=
+ block;"></amp-img></td><td><h3 style=3D"display: inline-block; font: 500 1=
+4px Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25p=
+x; line-height: 20px; margin: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"b=
+ackground: #1a73e8; border-radius: 8px; color: #fff; display: inline-block;=
+ font: 700 12px/16px Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0=
+; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"=
+font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; let=
+ter-spacing: .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">L=
+ove the concept - and the yacht it would buy - but:<br>- not sure prep for =
+sale in 2022 is practical, the technology is so young<br>- may suggest inst=
+ability internally (ie will they keep their jobs when a sale happens<br>- m=
+aybe &quot;make Indigometrics a $100m company that is considering a sale by=
+ EOY 2026&quot; or something like that?</div></div></td></tr></table></div>=
+<div style=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;"><a href=
+=3D"mailTo:Reply%20%3Cd+AORGpRfRb-tmnyk0VxCwW6D2O-FUBH2IjB1MqVJwQWmbGUSu_yw=
+GpYtvgvElxO39leVuFRHEmaSffB68l_5JirDF8I4PzGv5OMCGJkSWw6jq6dlFCev0EOaqgECh_Z=
+PeDrNqzcb-EVDK@docs.google.com%3E?subject=3DIndigometrics_Growth_Strategy_Q=
+2_2021" class=3D"material-button material-button-transparent" target=3D"_bl=
+ank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/=
+36px Google Sans, Roboto, Arial, Helvetica, sans-serif; border: none; borde=
+r-radius: 4px; box-sizing: border-box; display: inline-block; letter-spacin=
+g: .25px; min-height: 36px; text-align: center; text-decoration: none;margi=
+n-right: 12px;">Reply</a><a href=3D"https://docs.google.com/document/d/1FWi=
+s-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDModk&amp;usp=
+=3Dcomment_email_discussion&amp;usp_dm=3Dtrue&amp;ts=3D60866b2c" class=3D"m=
+aterial-button material-button-transparent" target=3D"_blank" tabindex=3D"0=
+" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, =
+Roboto, Arial, Helvetica, sans-serif; border: none; border-radius: 4px; box=
+-sizing: border-box; display: inline-block; letter-spacing: .25px; min-heig=
+ht: 36px; text-align: center; text-decoration: none;float: right;">Open</a>=
+</div></div></div><div style=3D"margin-top: 18px;"><div style=3D"margin: 18=
+px 0; height: 1px; background-color: #eee;"></div></div><div style=3D"margi=
+n-top: 18px;"><div style=3D"overflow: visible; line-height: 20px;"><div cla=
+ss=3D"discussion-post-quote" style=3D"padding: 7px 12px; box-shadow: 0 1px =
+2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px=
+ solid #d3d3d3; border-radius: 8px; overflow-wrap: break-word; word-break: =
+break-word;"><span class=3D"notranslate" style=3D"font: 400 14px Roboto, Ar=
+ial, Helvetica, sans-serif; line-height: 20px; color: #3c4043;"><ul style=
+=3D"margin-top:0;margin-bottom:0"><li dir=3D"ltr" style=3D"list-style-type:=
+disc"><p dir=3D"ltr" style=3D"margin:0"><span>deliverables, leveraging outp=
+uts, and establishing marketing &gt; sales processes</span></p></li><li dir=
+=3D"ltr" style=3D"list-style-type:disc"><p dir=3D"ltr" style=3D"margin:0"><=
+span>Sales: Updating all materials, validating pricing models, and filling =
+the </span><span class=3D"screenreader-hidden-offscreen">=C2=A0Comment star=
+t=C2=A0</span><span style=3D"background-color:#ffe168">pipeline</span><span=
+ class=3D"screenreader-hidden-offscreen">=C2=A0Comment end=C2=A0</span></p>=
+</li></ul><p dir=3D"ltr" style=3D"margin:0"><span>The below sections detail=
+ requirements for each of these in more detail. Each section includes a tim=
+eline for translation into our project management</span></p></span></div><d=
+iv style=3D"margin-top: 18px; word-break: break-word; word-wrap: break-word=
+;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=
+=3D"width: 100%;color: #3c4043;"><tr><td style=3D"vertical-align: top; widt=
+h: 44px;"><amp-img src=3D"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AA=
+AAAAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.j=
+pg" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: 50%;box-siz=
+ing: border-box; display: block;"></amp-img></td><td><h3 style=3D"display: =
+inline-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, sans-se=
+rif; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Chris =
+Carman</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #ff=
+f; display: inline-block; font: 700 12px/16px Roboto, Arial, Helvetica, san=
+s-serif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px=
+;">New</h4><div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-seri=
+f; line-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top: 6px;=
+" class=3D"notranslate">For me - to sell for $50m we would need.<br>1, Cust=
+omers <br>2. Positive press<br>3. More Customers<br>4. A big pipeline of ev=
+en more customers<br>Then all of the other stuff</div></div></td></tr></tab=
+le></div><div style=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;=
+"><a href=3D"mailTo:Reply%20%3Cd+AORGpReEg5WLxi_2vJFydZzJFL_tC3qpTvkVpZCPcu=
+hqhvQdF8jeMhTYRGVuo2t5t1RABVvnGXhVnqMqHvH5MsX286QpfbQVD262ELeJTk50OE2gO4qQA=
+_kfiWGpYGxrS32XM3MDnz2v@docs.google.com%3E?subject=3DIndigometrics_Growth_S=
+trategy_Q2_2021" class=3D"material-button material-button-transparent" targ=
+et=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: =
+500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; border: no=
+ne; border-radius: 4px; box-sizing: border-box; display: inline-block; lett=
+er-spacing: .25px; min-height: 36px; text-align: center; text-decoration: n=
+one;margin-right: 12px;">Reply</a><a href=3D"https://docs.google.com/docume=
+nt/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDModo&=
+amp;usp=3Dcomment_email_discussion&amp;usp_dm=3Dtrue&amp;ts=3D60866b2c" cla=
+ss=3D"material-button material-button-transparent" target=3D"_blank" tabind=
+ex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Google=
+ Sans, Roboto, Arial, Helvetica, sans-serif; border: none; border-radius: 4=
+px; box-sizing: border-box; display: inline-block; letter-spacing: .25px; m=
+in-height: 36px; text-align: center; text-decoration: none;float: right;">O=
+pen</a></div></div></div><div style=3D"margin-top: 18px;"><div style=3D"mar=
+gin: 18px 0; height: 1px; background-color: #eee;"></div></div><div style=
+=3D"margin-top: 18px;"><div style=3D"overflow: visible; line-height: 20px;"=
+><div class=3D"discussion-post-quote" style=3D"padding: 7px 12px; box-shado=
+w: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); bo=
+rder: 1px solid #d3d3d3; border-radius: 8px; overflow-wrap: break-word; wor=
+d-break: break-word;"><span class=3D"notranslate" style=3D"font: 400 14px R=
+oboto, Arial, Helvetica, sans-serif; line-height: 20px; color: #3c4043;"><o=
+l start=3D"3" style=3D"margin-top:0;margin-bottom:0"><li dir=3D"ltr" style=
+=3D"list-style-type:decimal"><p dir=3D"ltr" style=3D"margin:0"><span>operat=
+ing environment has changed massively since COVID. I.e., Planning is very d=
+ifficult.</span></p></li></ol><p dir=3D"ltr" style=3D"font-weight:bold;marg=
+in:.5em 0"><span>TECHNOLOGY</span></p><p dir=3D"ltr" style=3D"margin:0"><sp=
+an>Indigometrics=E2=80=99 tech stack is the current greatest risk </span><s=
+pan class=3D"screenreader-hidden-offscreen">=C2=A0Comment start=C2=A0</span=
+><span style=3D"background-color:#ffe168">for</span><span class=3D"screenre=
+ader-hidden-offscreen">=C2=A0Comment end=C2=A0</span><span> the company. To=
+ ameliorate that, we need to achieve four things as quickly as possible:</s=
+pan></p><ul style=3D"margin-top:0;margin-bottom:0"><li dir=3D"ltr" style=3D=
+"list-style-type:disc"><p dir=3D"ltr" style=3D"margin:0"><span>Monitoring:<=
+/span><span> Current operations don=E2=80=99t have a mature monitoring</spa=
+n></p></li></ul></span></div><div style=3D"margin-top: 18px; word-break: br=
+eak-word; word-wrap: break-word;"><table role=3D"presentation" cellpadding=
+=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #3c4043;"><tr><td styl=
+e=3D"vertical-align: top; width: 44px;"><amp-img src=3D"https://lh5.googleu=
+sercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8=
+LhnO8krupvg/s50-c-k-no/photo.jpg" alt=3D"" height=3D"32" width=3D"32" style=
+=3D"border-radius: 50%;box-sizing: border-box; display: block;"></amp-img><=
+/td><td><h3 style=3D"display: inline-block; font: 500 14px Google Sans, Rob=
+oto, Arial, Helvetica, sans-serif; letter-spacing: .25px; line-height: 20px=
+; margin: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"background: #1a73e8; =
+border-radius: 8px; color: #fff; display: inline-block; font: 700 12px/16px=
+ Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; mar=
+gin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14px Robot=
+o, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;">=
+<div style=3D"margin-top: 6px;" class=3D"notranslate">I&#39;m back again - =
+think not finding new customers is the biggest risk for the company........=
+..</div></div></td></tr></table></div><div style=3D"margin: 10px 0 0 42px; =
+overflow: auto; padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRci7A_AQ=
+3PTRBXq7Cz-JTjvyvBbHRwcHdIg6U7lW5fRmrD-_TlGhmpyb4DC7AohKiAbTVQPI3Qjhgm_XUAK=
+DZsM9JDTE4Ygm3Rx2Oe6JcYBlyqIG3i9fqEbKvM-FhLH3DKqeYUg@docs.google.com%3E?sub=
+ject=3DIndigometrics_Growth_Strategy_Q2_2021" class=3D"material-button mate=
+rial-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button" s=
+tyle=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Arial, Helv=
+etica, sans-serif; border: none; border-radius: 4px; box-sizing: border-box=
+; display: inline-block; letter-spacing: .25px; min-height: 36px; text-alig=
+n: center; text-decoration: none;margin-right: 12px;">Reply</a><a href=3D"h=
+ttps://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1Mpr=
+HG8/edit?disco=3DAAAAIXDMoeM&amp;usp=3Dcomment_email_discussion&amp;usp_dm=
+=3Dtrue&amp;ts=3D60866b2c" class=3D"material-button material-button-transpa=
+rent" target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 =
+8px;font: 500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; =
+border: none; border-radius: 4px; box-sizing: border-box; display: inline-b=
+lock; letter-spacing: .25px; min-height: 36px; text-align: center; text-dec=
+oration: none;float: right;">Open</a></div></div></div></div></td></tr></ta=
+ble><table style=3D"border-collapse: collapse; width: 100%;" role=3D"presen=
+tation"><tr><td style=3D"padding: 24px 4.5%"><table style=3D"border-collaps=
+e: collapse; width: 100%;" dir=3D"ltr"><tr><td style=3D"padding: 0;font-fam=
+ily: Roboto, Arial, Helvetica, sans-serif; color: #5F6368; width: 100%; fon=
+t-size: 12px; line-height: 16px; min-height: 40px; letter-spacing: .3px;"><=
+p style=3D"margin: 0; padding: 0;">Google LLC, 1600 Amphitheatre Parkway, M=
+ountain View, CA 94043, USA<br><br>You have received this email because you=
+ are a participant in the updated discussion threads. <a href=3D"https://do=
+cs.google.com/document/u/100348406323779895805/docos/notify?ouid=3D10034840=
+6323779895805&amp;id=3D1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8&amp;tit=
+le=3DIndigometrics_Growth_Strategy_Q2_2021" target=3D"_blank" style=3D"colo=
+r: #1a73e8; text-decoration: none;">Change what Google Docs sends you.</a> =
+You can not reply to this email.</p></td><td style=3D"padding: 0; padding-l=
+eft: 20px;"><amp-img src=3D"https://www.gstatic.com/images/branding/googlel=
+ogo/2x/googlelogo_tm_black54_color_96x40dp.png" width=3D"96px" height=3D"40=
+px"></amp-img></td></tr></table></td></tr></table></td></tr></table></td></=
+tr></table></div><template type=3D"amp-mustache">{{#digestDiscussions}}<tab=
+le style=3D"border-collapse: collapse; width: 100%; background-color: white=
+; text-align: center;" role=3D"presentation"><tr><td style=3D"padding: 24px=
+ 0 16px 0;"><table style=3D"border-collapse: collapse;font-family: Roboto, =
+Arial, Helvetica, sans-serif;hyphens: auto; overflow-wrap: break-word; word=
+-wrap: break-word; word-break: break-word;display: inline-block; width: 90%=
+;max-width: 700px;min-width: 280px; text-align: left;" role=3D"presentation=
+"><tr><td style=3D"padding: 0;"><table style=3D"width:100%; border: 1px sol=
+id #dadce0; border-radius: 8px; border-spacing: 0; table-layout:fixed; bord=
+er-collapse: separate;" role=3D"presentation"><tr><td style=3D"padding: 4.5=
+%;" dir=3D"ltr"><h1 style=3D"color: #3c4043; font: 400 18px Google Sans, Ro=
+boto, Arial, Helvetica, sans-serif; margin: 0;">Chris Carman added comments=
+ to the following document</h1><a href=3D"https://docs.google.com/document/=
+d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDMoeM&amp=
+;ts=3D60866b2c&amp;usp=3Dcomment_email_document&amp;usp_dm=3Dtrue" target=
+=3D"_blank" style=3D"color: #3c4043; display: inline-block; max-width: 100%=
+; text-decoration: none; vertical-align: top;border: 1px solid #DADCE0; bor=
+der-radius: 16px; white-space: nowrap;margin-top: 12px;"><div style=3D"line=
+-height: 18px; overflow: hidden; text-overflow: ellipsis;padding: 6px 12px;=
+"><span style=3D"display: inline-block; vertical-align: top; min-width: 26p=
+x; width: 26px;"><amp-img src=3D"https://ssl.gstatic.com/docs/doclist/image=
+s/mediatype/icon_1_document_x64.png" width=3D"18" height=3D"18" style=3D"ve=
+rtical-align: top;" role=3D"presentation"></amp-img></span><span style=3D"f=
+ont: 500 14px/18px Google Sans, Roboto, Arial, Helvetica, sans-serif; displ=
+ay: inline; letter-spacing: 0.2px;">Indigometrics_Growth_Strategy_Q2_2021</=
+span></div></a><div style=3D"margin: 18px 0; height: 1px; background-color:=
+ #eee;"></div>{{#countBuckets}}<div role=3D"presentation" style=3D"display:=
+ table; width: 100%;"><div style=3D"display: table-row;">{{#firstBucket}}<d=
+iv style=3D"display: table-cell; padding-right: 12.5px; vertical-align: mid=
+dle;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0"><tr>=
+<td><strong style=3D"display: inline-block; font: 500 14px Roboto, Arial, H=
+elvetica, sans-serif; margin: 0; line-height: 20px; letter-spacing: .25px; =
+color: #3c4043;">{{heading}}</strong></td></tr><tr><td height=3D"4" style=
+=3D"height: 4px;" colspan=3D"0"></td></tr><tr><td><span style=3D"font: 400 =
+14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacin=
+g: .2px;color: #3c4043;">{{counts}}</span></td></tr></table></div>{{/firstB=
+ucket}}{{#secondBucket}}<div style=3D"display: table-cell; width: 50%; padd=
+ing-left: 12.5px; vertical-align: middle;"><table role=3D"presentation" cel=
+lpadding=3D"0" cellspacing=3D"0"><tr><td><strong style=3D"display: inline-b=
+lock; font: 500 14px Roboto, Arial, Helvetica, sans-serif; margin: 0; line-=
+height: 20px; letter-spacing: .25px; color: #3c4043;">{{heading}}</strong><=
+/td></tr><tr><td height=3D"4" style=3D"height: 4px;" colspan=3D"0"></td></t=
+r><tr><td><span style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-seri=
+f; line-height: 20px; letter-spacing: .2px;color: #3c4043;">{{counts}}</spa=
+n></td></tr></table></div>{{/secondBucket}}</div></div>{{/countBuckets}}</t=
+d></tr></table>{{#discussionSections}}<div style=3D"height: 14px;"></div><t=
+able style=3D"width:100%; border: 1px solid #dadce0; border-radius: 8px; bo=
+rder-spacing: 0; table-layout:fixed; border-collapse: separate;" role=3D"pr=
+esentation"><tr><td style=3D"padding: 4.5%;" dir=3D"ltr">{{#sectionHeaderTi=
+tle}}<h2 style=3D"color: #3c4043; font: 400 24px/32px Google Sans, Roboto, =
+Arial, Helvetica, sans-serif; margin: 0;">{{sectionHeaderTitle}}</h2><div s=
+tyle=3D"height: 18px;" class=3D"discussion-header-spacer"></div>{{/sectionH=
+eaderTitle}}{{#discussionSubsections}}<div style=3D"height: 18px;" class=3D=
+"discussion-header-spacer"></div><h2 style=3D"color: #3c4043; font: 400 18p=
+x Google Sans, Roboto, Arial, Helvetica, sans-serif; margin: 0;">{{subsecti=
+onHeaderTitle}}</h2>{{#items}}<div style=3D"margin: 18px 0; height: 1px; ba=
+ckground-color: #eee;"></div><div id=3D"discussion-{{docoId}}" style=3D"ove=
+rflow: visible; line-height: 20px;">{{^isDeleted}}{{#htmlQuote}}<div class=
+=3D"discussion-post-quote" style=3D"padding: 7px 12px; box-shadow: 0 1px 2p=
+x 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px s=
+olid #d3d3d3; border-radius: 8px; overflow-wrap: break-word; word-break: br=
+eak-word;"><span class=3D"notranslate" style=3D"font: 400 14px Roboto, Aria=
+l, Helvetica, sans-serif; line-height: 20px; color: #3c4043;">{{{htmlQuote}=
+}}</span></div>{{/htmlQuote}}{{#posts}}<div class=3D"{{#isHeadPost}}head-po=
+st{{/isHeadPost}}{{^isHeadPost}}reply-post{{/isHeadPost}}"><table role=3D"p=
+resentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;" cla=
+ss=3D"{{#isNew}}post-dark-text{{/isNew}}{{^isNew}}post-light-text{{/isNew}}=
+"><tr><td style=3D"vertical-align: top; width: 44px;"><amp-img src=3D"{{aut=
+horPhotoUrl}}" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: =
+50%;box-sizing: border-box; display: block;"></amp-img></td><td><h3 style=
+=3D"display: inline-block; font: 500 14px Google Sans, Roboto, Arial, Helve=
+tica, sans-serif; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2=
+px 0;">{{authorName}}</h3>{{#isNew}}<h4 style=3D"background: #1a73e8; borde=
+r-radius: 8px; color: #fff; display: inline-block; font: 700 12px/16px Robo=
+to, Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; margin-l=
+eft: 10px; padding: 0 6px;">New</h4>{{/isNew}}<div style=3D"font: 400 14px =
+Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2=
+px;">{{#htmlBody}}<div style=3D"margin-top: 6px;" class=3D"notranslate">{{{=
+htmlBody}}}</div>{{/htmlBody}}{{#htmlActionText}}<div style=3D"margin-top: =
+6px;"><i>{{{htmlActionText}}}</i></div>{{/htmlActionText}}{{#showCopiedText=
+}}<div style=3D"margin: 18px 0; height: 1px; background-color: #eee;"></div=
+><div style=3D"color: #3c4043; font: italic 14px Roboto-Italic, Arial; marg=
+in: 18px 0 6px 0; width: 100%;">Comments above copied from original documen=
+t</div>{{/showCopiedText}}</div></td></tr></table></div>{{/posts}}{{/isDele=
+ted}}{{#isDeleted}}<div style=3D"color: #3c4043; font: italic 14px Roboto-I=
+talic, Arial; margin: 18px 0 6px 0; width: 100%;">Comment was deleted</div>=
+{{/isDeleted}}{{#canResolve}}<form id=3D"resolve-form-{{docoId}}" method=3D=
+"post" action-xhr=3D"https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlg=
+ml6x_5EgJtmndPnWZZ1MprHG8/dynamicmail/resolve?emailToken=3DAORGpReoYm80UNQy=
+KCTvtxNqz5-RHBjVVj9mlIjMNNkMShMHsPHoiBqfpMzAVophcyQl4RuS-NBs1bAo4gk8fAweAse=
+qgq4wRiexhxkWPyLVRK5cM-KozwgVrL2W043b3K1Ls58-J6L8&amp;buildLabel=3Dkix_2021=
+.15-Tue_RC06&amp;clientVersion=3D2&amp;ts=3D60866b2c" on=3D"submit-success:=
+ discussionList.refresh, AMP.setState({scope: {'pendingReply{{docoId}}': fa=
+lse}, pendingReplies: {'{{docoId}}': ''}, cachedReplies: {'{{docoId}}': ''}=
+}); submit: discussion-{{docoId}}.toggleClass('class' =3D 'resolving-discus=
+sion'), AMP.setState({scope: {'replyButton{{docoId}}Disabled': true, 'pendi=
+ngReply{{docoId}}': true}, cachedReplies: pendingReplies}); submit-error: d=
+iscussion-{{docoId}}.toggleClass('class' =3D 'submit-error', force=3Dtrue),=
+ discussion-{{docoId}}.toggleClass('class' =3D 'resolving-discussion'), AMP=
+.setState({scope: {'replyButton{{docoId}}Disabled': pendingReplies['{{docoI=
+d}}'] =3D=3D null || pendingReplies['{{docoId}}'] =3D=3D '', 'pendingReply{=
+{docoId}}': false}});"><div submit-success template=3D"inline-action-post">=
+</div><input type=3D"hidden" name=3D"replyText" data-amp-bind-value=3D"pend=
+ingReplies['{{docoId}}']"><input type=3D"hidden" name=3D"commentId" value=
+=3D"{{docoId}}"><input type=3D"hidden" name=3D"clientId" value=3D"{{replyCl=
+ientId}}"></form>{{/canResolve}}{{#canReply}}<form id=3D"reply-form-{{docoI=
+d}}" method=3D"post" autocomplete=3D"off" action-xhr=3D"https://docs.google=
+.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/dynamicmail/re=
+ply?emailToken=3DAORGpReoYm80UNQyKCTvtxNqz5-RHBjVVj9mlIjMNNkMShMHsPHoiBqfpM=
+zAVophcyQl4RuS-NBs1bAo4gk8fAweAseqgq4wRiexhxkWPyLVRK5cM-KozwgVrL2W043b3K1Ls=
+58-J6L8&amp;buildLabel=3Dkix_2021.15-Tue_RC06&amp;clientVersion=3D2&amp;ts=
+=3D60866b2c" custom-validation-reporting=3D"as-you-go" on=3D"submit-success=
+: discussionList.refresh, AMP.setState({scope: {'pendingReply{{docoId}}': f=
+alse}, pendingReplies: {'{{docoId}}': ''}, cachedReplies: {'{{docoId}}': ''=
+}}); submit: discussion-{{docoId}}.toggleClass('class' =3D 'submitting-repl=
+y'), AMP.setState({scope: {'replyButton{{docoId}}Disabled': true, 'pendingR=
+eply{{docoId}}': true}, cachedReplies: pendingReplies}); submit-error: disc=
+ussion-{{docoId}}.toggleClass('class' =3D 'submit-error', force=3Dtrue), di=
+scussion-{{docoId}}.toggleClass('class' =3D 'submitting-reply'), AMP.setSta=
+te({scope: {'replyButton{{docoId}}Disabled': false, 'pendingReply{{docoId}}=
+': false}}); valid:AMP.setState({scope: {'replyButton{{docoId}}Disabled': f=
+alse}}); invalid:AMP.setState({scope: {'replyButton{{docoId}}Disabled': tru=
+e}});"><div submit-success template=3D"inline-action-post"></div><div class=
+=3D"reply-form-textarea" style=3D"margin-top: 12px; word-break: break-word;=
+ word-wrap: break-word;"><table role=3D"presentation" cellpadding=3D"0" cel=
+lspacing=3D"0" style=3D"width: 100%;"><tr><td style=3D"vertical-align: top;=
+ width: 44px; padding-top: 11px;"><amp-img src=3D"{{requestor.photoUrl}}" a=
+lt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: 50%;box-sizing: =
+border-box; display: block;"></amp-img></td><td><textarea autoexpand style=
+=3D"font-family: Roboto, Arial, Helvetica, sans-serif; font-size: 14px; bac=
+kground-color: #f8f9fa; border-radius: 4px 4px 0 0; box-sizing: border-box;=
+ color: #3c4043; height: 54px; letter-spacing: .2px; line-height: 20px; out=
+line: none; padding: 16px 10px; resize: none; width: 100%; word-break: brea=
+k-word; vertical-align: top;" class=3D"material-text-input" name=3D"replyTe=
+xt" autocomplete=3D"off" placeholder=3D"Reply" maxlength=3D"2048" on=3D"inp=
+ut-throttled: AMP.setState({pendingReplies: {'{{docoId}}': event.value}});"=
+ data-amp-bind-text=3D"cachedReplies['{{docoId}}'] || ''" data-amp-bind-dis=
+abled=3D"scope['pendingReply{{docoId}}']" pattern=3D".*\S+.*" aria-label=3D=
+"Reply" required></textarea><input type=3D"hidden" name=3D"commentId" value=
+=3D"{{docoId}}"><input type=3D"hidden" name=3D"clientId" value=3D"{{replyCl=
+ientId}}"></td></tr></table></div></form>{{/canReply}}<div style=3D"margin:=
+ 10px 0 0 42px; overflow: auto; padding: 2px;">{{#canReply}}<input id=3D"di=
+scussion-reply-button-{{docoId}}" type=3D"submit" style=3D"padding: 0 8px;f=
+ont: 500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; borde=
+r: none; border-radius: 4px; box-sizing: border-box; display: inline-block;=
+ letter-spacing: .25px; min-height: 36px; text-align: center; text-decorati=
+on: none;margin-right: 12px;" role=3D"button" on=3D"tap:reply-form-{{docoId=
+}}.submit()" class=3D"material-button material-button-transparent" value=3D=
+"Reply" title=3D"Reply to comment" disabled data-amp-bind-disabled=3D"scope=
+['replyButton{{docoId}}Disabled']" tabindex=3D"0">{{/canReply}}{{#canResolv=
+e}}<input id=3D"discussion-resolve-button-{{docoId}}" type=3D"submit" style=
+=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Arial, Helvetic=
+a, sans-serif; border: none; border-radius: 4px; box-sizing: border-box; di=
+splay: inline-block; letter-spacing: .25px; min-height: 36px; text-align: c=
+enter; text-decoration: none;margin-right: 12px;" role=3D"button" on=3D"tap=
+:resolve-form-{{docoId}}.submit()" class=3D"material-button material-button=
+-transparent resolve-button" value=3D"{{#isTodo}}Mark as done{{/isTodo}}{{^=
+isTodo}}Resolve{{/isTodo}}" title=3D"{{#isTodo}}Mark action item as done{{/=
+isTodo}}{{^isTodo}}Mark as resolved{{/isTodo}}" tabindex=3D"0">{{/canResolv=
+e}}<a id=3D"discussion-open-button-{{docoId}}" href=3D"{{discussionLink}}" =
+class=3D"material-button material-button-transparent discussion-open-button=
+" target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;=
+font: 500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; bord=
+er: none; border-radius: 4px; box-sizing: border-box; display: inline-block=
+; letter-spacing: .25px; min-height: 36px; text-align: center; text-decorat=
+ion: none;">Open</a></div><div style=3D"color: #d93025; font: 14px Roboto, =
+Arial, Helvetica, sans-serif; height: 36px; line-height: 36px; letter-spaci=
+ng: 0.25px; margin-left: 36px; padding-left: 8px;" class=3D"reply-error-tex=
+t">Something went wrong, please retry</div></div>{{/items}}{{/discussionSub=
+sections}}</td></tr></table>{{/discussionSections}}<table style=3D"border-c=
+ollapse: collapse; width: 100%;" role=3D"presentation"><tr><td style=3D"pad=
+ding: 24px 4.5%"><table style=3D"border-collapse: collapse; width: 100%;" d=
+ir=3D"ltr"><tr><td style=3D"padding: 0;font-family: Roboto, Arial, Helvetic=
+a, sans-serif; color: #5F6368; width: 100%; font-size: 12px; line-height: 1=
+6px; min-height: 40px; letter-spacing: .3px;"><p style=3D"margin: 0; paddin=
+g: 0;">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA<=
+br><br>You have received this email because you are a participant in the up=
+dated discussion threads. <a href=3D"https://docs.google.com/document/u/100=
+348406323779895805/docos/notify?ouid=3D100348406323779895805&amp;id=3D1FWis=
+-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8&amp;title=3DIndigometrics_Growth_St=
+rategy_Q2_2021" target=3D"_blank" style=3D"color: #1a73e8; text-decoration:=
+ none;">Change what Google Docs sends you.</a> You can not reply to this em=
+ail.</p></td><td style=3D"padding: 0; padding-left: 20px;"><amp-img src=3D"=
+https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_tm_black54=
+_color_96x40dp.png" width=3D"96px" height=3D"40px"></amp-img></td></tr></ta=
+ble></td></tr></table></td></tr></table></td></tr></table>{{/digestDiscussi=
+ons}}</template></amp-list></div></body></html>
+--000000000000d5b8d905c0db10c2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div itemscope itemtype=3D"http://schema.org/EmailMessage" style=3D"font: 1=
+4px Roboto, Arial, Helvetica, sans-serif;"><div itemprop=3D"about" itemscop=
+e itemtype=3D"http://schema.org/CreativeWork"><meta itemprop=3D"name" conte=
+nt=3D"Indigometrics_Growth_Strategy_Q2_2021"><meta itemprop=3D"url" content=
+=3D"https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZ=
+Z1MprHG8/edit?disco=3DAAAAIXDMoeM&amp;ts=3D60866b2c&amp;usp=3Dcomment_email=
+_document"><table style=3D"border-collapse: collapse; width: 100%; backgrou=
+nd-color: white; text-align: center;" role=3D"presentation"><tr><td style=
+=3D"padding: 24px 0 16px 0;"><table style=3D"border-collapse: collapse;font=
+-family: Roboto, Arial, Helvetica, sans-serif;hyphens: auto; overflow-wrap:=
+ break-word; word-wrap: break-word; word-break: break-word;display: inline-=
+block; width: 90%;max-width: 700px;min-width: 280px; text-align: left;" rol=
+e=3D"presentation"><tr><td style=3D"padding: 0;"><table style=3D"width:100%=
+; border: 1px solid #dadce0; border-radius: 8px; border-spacing: 0; table-l=
+ayout:fixed; border-collapse: separate;" role=3D"presentation"><tr><td styl=
+e=3D"padding: 4.5%;" dir=3D"ltr"><h1 style=3D"color: #3c4043; font: 400 18p=
+x Google Sans, Roboto, Arial, Helvetica, sans-serif; margin: 0;">Chris Carm=
+an added comments to the following document</h1><a href=3D"https://docs.goo=
+gle.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=
+=3DAAAAIXDMoeM&amp;ts=3D60866b2c&amp;usp=3Dcomment_email_document&amp;usp_d=
+m=3Dfalse" target=3D"_blank" style=3D"color: #3c4043; display: inline-block=
+; max-width: 100%; text-decoration: none; vertical-align: top;border: 1px s=
+olid #DADCE0; border-radius: 16px; white-space: nowrap;margin-top: 12px;"><=
+div style=3D"line-height: 18px; overflow: hidden; text-overflow: ellipsis;p=
+adding: 6px 12px;"><span style=3D"display: inline-block; vertical-align: to=
+p; min-width: 26px; width: 26px;"><img src=3D"https://ssl.gstatic.com/docs/=
+doclist/images/mediatype/icon_1_document_x64.png" width=3D"18" height=3D"18=
+" style=3D"vertical-align: top;" role=3D"presentation"></span><span style=
+=3D"font: 500 14px/18px Google Sans, Roboto, Arial, Helvetica, sans-serif; =
+display: inline; letter-spacing: 0.2px;">Indigometrics_Growth_Strategy_Q2_2=
+021</span></div></a><div style=3D"margin: 18px 0; height: 1px; background-c=
+olor: #eee;"></div><table role=3D"presentation" cellpadding=3D"0" cellspaci=
+ng=3D"0" style=3D"display: table; width: 100%;"><tr><td><table role=3D"pres=
+entation" cellpadding=3D"0" cellspacing=3D"0"><tr><td><strong style=3D"disp=
+lay: inline-block; font: 500 14px Roboto, Arial, Helvetica, sans-serif; mar=
+gin: 0; line-height: 20px; letter-spacing: .25px; color: #3c4043;">New</str=
+ong></td></tr><tr><td height=3D"4" style=3D"height: 4px;" colspan=3D"0"></t=
+d></tr><tr><td><span style=3D"font: 400 14px Roboto, Arial, Helvetica, sans=
+-serif; line-height: 20px; letter-spacing: .2px;color: #3c4043;">4 comments=
+</span></td></tr></table></td></tr></table></td></tr></table><div style=3D"=
+height: 14px;"></div><table style=3D"width:100%; border: 1px solid #dadce0;=
+ border-radius: 8px; border-spacing: 0; table-layout:fixed; border-collapse=
+: separate;" role=3D"presentation"><tr><td style=3D"padding: 4.5%;" dir=3D"=
+ltr"><div><div><h2 style=3D"color: #3c4043; font: 400 18px Google Sans, Rob=
+oto, Arial, Helvetica, sans-serif; margin: 0;">Comments</h2></div><div styl=
+e=3D"margin-top: 18px;"><div itemprop=3D"action" itemscope itemtype=3D"http=
+://schema.org/ViewAction"><meta itemprop=3D"url" content=3D"https://docs.go=
+ogle.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=
+=3DAAAAIXDMod0&amp;usp=3Dcomment_email_discussion&amp;ts=3D60866b2c"><meta =
+itemprop=3D"name" content=3D"Open Discussion"></div></div><div style=3D"mar=
+gin-top: 18px;"><div style=3D"margin: 18px 0; height: 1px; background-color=
+: #eee;"></div></div><div style=3D"margin-top: 18px;"><div style=3D"overflo=
+w: visible; line-height: 20px;"><div class=3D"discussion-post-quote" style=
+=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px =
+6px 2px rgba(60,64,67,0.149); border: 1px solid #d3d3d3; border-radius: 8px=
+; overflow-wrap: break-word; word-break: break-word;"><span class=3D"notran=
+slate" style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-h=
+eight: 20px; color: #3c4043;">reliably</span></div><div style=3D"margin-top=
+: 18px; word-break: break-word; word-wrap: break-word;"><table role=3D"pres=
+entation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #=
+3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><img src=3D"ht=
+tps://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuc=
+kDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" alt=3D"" height=3D"32" w=
+idth=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; display: bl=
+ock;"></td><td><h3 style=3D"display: inline-block; font: 500 14px Google Sa=
+ns, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; line-heigh=
+t: 20px; margin: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"background: #1=
+a73e8; border-radius: 8px; color: #fff; display: inline-block; font: 700 12=
+px/16px Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top:=
+ 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14p=
+x Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacing: =
+.2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">I dont think w=
+e are reliably acquiring large customers yet</div></div></td></tr></table><=
+/div><div style=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;"><a=
+ href=3D"mailTo:Reply%20%3Cd+AORGpRee_RV4jhfRNspe8vmI--oA6fezI614MD8lV3TCWy=
+A2-J4lwOiciiJjxZPPtei_ux80VmsJug7l7EfzUK0LMsSny69na9rSzQjCjf7rlRn-QbMZ1ns_a=
+aQCHVy7kWrNwdh01TWF@docs.google.com%3E?subject=3DIndigometrics_Growth_Strat=
+egy_Q2_2021" class=3D"material-button material-button-transparent" target=
+=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 50=
+0 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; border: none=
+; border-radius: 4px; box-sizing: border-box; display: inline-block; letter=
+-spacing: .25px; min-height: 36px; text-align: center; text-decoration: non=
+e;background-color: transparent; color: #1a73e8; cursor: pointer;margin-rig=
+ht: 12px;">Reply</a><a href=3D"https://docs.google.com/document/d/1FWis-eqi=
+Rrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDMod0&amp;usp=3Dcomm=
+ent_email_discussion&amp;usp_dm=3Dfalse&amp;ts=3D60866b2c" class=3D"materia=
+l-button material-button-transparent" target=3D"_blank" tabindex=3D"0" role=
+=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto=
+, Arial, Helvetica, sans-serif; border: none; border-radius: 4px; box-sizin=
+g: border-box; display: inline-block; letter-spacing: .25px; min-height: 36=
+px; text-align: center; text-decoration: none;background-color: transparent=
+; color: #1a73e8; cursor: pointer;float: right;">Open</a></div></div></div>=
+<div style=3D"margin-top: 18px;"><div itemprop=3D"action" itemscope itemtyp=
+e=3D"http://schema.org/ViewAction"><meta itemprop=3D"url" content=3D"https:=
+//docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/e=
+dit?disco=3DAAAAIXDModk&amp;usp=3Dcomment_email_discussion&amp;ts=3D60866b2=
+c"><meta itemprop=3D"name" content=3D"Open Discussion"></div></div><div sty=
+le=3D"margin-top: 18px;"><div style=3D"margin: 18px 0; height: 1px; backgro=
+und-color: #eee;"></div></div><div style=3D"margin-top: 18px;"><div style=
+=3D"overflow: visible; line-height: 20px;"><div class=3D"discussion-post-qu=
+ote" style=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.30=
+2), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px solid #d3d3d3; border-r=
+adius: 8px; overflow-wrap: break-word; word-break: break-word;"><span class=
+=3D"notranslate" style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-ser=
+if; line-height: 20px; color: #3c4043;">2022</span></div><div style=3D"marg=
+in-top: 18px; word-break: break-word; word-wrap: break-word;"><table role=
+=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;=
+color: #3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><img s=
+rc=3D"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAA=
+A/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" alt=3D"" height=
+=3D"32" width=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; di=
+splay: block;"></td><td><h3 style=3D"display: inline-block; font: 500 14px =
+Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; l=
+ine-height: 20px; margin: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"backg=
+round: #1a73e8; border-radius: 8px; color: #fff; display: inline-block; fon=
+t: 700 12px/16px Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0; ma=
+rgin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font=
+: 400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-=
+spacing: .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">Love =
+the concept - and the yacht it would buy - but:<br>- not sure prep for sale=
+ in 2022 is practical, the technology is so young<br>- may suggest instabil=
+ity internally (ie will they keep their jobs when a sale happens<br>- maybe=
+ &quot;make Indigometrics a $100m company that is considering a sale by EOY=
+ 2026&quot; or something like that?</div></div></td></tr></table></div><div=
+ style=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;"><a href=3D"=
+mailTo:Reply%20%3Cd+AORGpRdX7E0Ogr5SzGzgOb7yZbQosnbZYWGuYVrEARKuQzutxaoJQrL=
+IROuAaJJ_iNT5w57-ZYN6kJurT9bjk10vOJSheISqO3py2E1Fn98T7QrdHST0zmligC4Gez__Ax=
+3GtOcTHw9S@docs.google.com%3E?subject=3DIndigometrics_Growth_Strategy_Q2_20=
+21" class=3D"material-button material-button-transparent" target=3D"_blank"=
+ tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px=
+ Google Sans, Roboto, Arial, Helvetica, sans-serif; border: none; border-ra=
+dius: 4px; box-sizing: border-box; display: inline-block; letter-spacing: .=
+25px; min-height: 36px; text-align: center; text-decoration: none;backgroun=
+d-color: transparent; color: #1a73e8; cursor: pointer;margin-right: 12px;">=
+Reply</a><a href=3D"https://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgm=
+l6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDModk&amp;usp=3Dcomment_email_d=
+iscussion&amp;usp_dm=3Dfalse&amp;ts=3D60866b2c" class=3D"material-button ma=
+terial-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button"=
+ style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Arial, He=
+lvetica, sans-serif; border: none; border-radius: 4px; box-sizing: border-b=
+ox; display: inline-block; letter-spacing: .25px; min-height: 36px; text-al=
+ign: center; text-decoration: none;background-color: transparent; color: #1=
+a73e8; cursor: pointer;float: right;">Open</a></div></div></div><div style=
+=3D"margin-top: 18px;"><div itemprop=3D"action" itemscope itemtype=3D"http:=
+//schema.org/ViewAction"><meta itemprop=3D"url" content=3D"https://docs.goo=
+gle.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=
+=3DAAAAIXDModo&amp;usp=3Dcomment_email_discussion&amp;ts=3D60866b2c"><meta =
+itemprop=3D"name" content=3D"Open Discussion"></div></div><div style=3D"mar=
+gin-top: 18px;"><div style=3D"margin: 18px 0; height: 1px; background-color=
+: #eee;"></div></div><div style=3D"margin-top: 18px;"><div style=3D"overflo=
+w: visible; line-height: 20px;"><div class=3D"discussion-post-quote" style=
+=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px =
+6px 2px rgba(60,64,67,0.149); border: 1px solid #d3d3d3; border-radius: 8px=
+; overflow-wrap: break-word; word-break: break-word;"><span class=3D"notran=
+slate" style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-h=
+eight: 20px; color: #3c4043;">pipeline</span></div><div style=3D"margin-top=
+: 18px; word-break: break-word; word-wrap: break-word;"><table role=3D"pres=
+entation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #=
+3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><img src=3D"ht=
+tps://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuc=
+kDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" alt=3D"" height=3D"32" w=
+idth=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; display: bl=
+ock;"></td><td><h3 style=3D"display: inline-block; font: 500 14px Google Sa=
+ns, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; line-heigh=
+t: 20px; margin: 6px 0 2px 0;">Chris Carman</h3><h4 style=3D"background: #1=
+a73e8; border-radius: 8px; color: #fff; display: inline-block; font: 700 12=
+px/16px Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top:=
+ 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14p=
+x Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacing: =
+.2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">For me - to se=
+ll for $50m we would need.<br>1, Customers <br>2. Positive press<br>3. More=
+ Customers<br>4. A big pipeline of even more customers<br>Then all of the o=
+ther stuff</div></div></td></tr></table></div><div style=3D"margin: 10px 0 =
+0 42px; overflow: auto; padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGp=
+ReUV7qtujpbD4zVfplNu-gVvLGqhTC-U4ChnB3If4dNoXHAN_HpalpLHij1HedrjMI2R_23FvKd=
+W5RcwSbQXWthQlRsWN9mqlUhdWGSJIfhZVIiUPlqeSJ0edi5fFtJvAwO5-Ht@docs.google.co=
+m%3E?subject=3DIndigometrics_Growth_Strategy_Q2_2021" class=3D"material-but=
+ton material-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"b=
+utton" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Ari=
+al, Helvetica, sans-serif; border: none; border-radius: 4px; box-sizing: bo=
+rder-box; display: inline-block; letter-spacing: .25px; min-height: 36px; t=
+ext-align: center; text-decoration: none;background-color: transparent; col=
+or: #1a73e8; cursor: pointer;margin-right: 12px;">Reply</a><a href=3D"https=
+://docs.google.com/document/d/1FWis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/=
+edit?disco=3DAAAAIXDModo&amp;usp=3Dcomment_email_discussion&amp;usp_dm=3Dfa=
+lse&amp;ts=3D60866b2c" class=3D"material-button material-button-transparent=
+" target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;=
+font: 500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; bord=
+er: none; border-radius: 4px; box-sizing: border-box; display: inline-block=
+; letter-spacing: .25px; min-height: 36px; text-align: center; text-decorat=
+ion: none;background-color: transparent; color: #1a73e8; cursor: pointer;fl=
+oat: right;">Open</a></div></div></div><div style=3D"margin-top: 18px;"><di=
+v itemprop=3D"action" itemscope itemtype=3D"http://schema.org/ViewAction"><=
+meta itemprop=3D"url" content=3D"https://docs.google.com/document/d/1FWis-e=
+qiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDMoeM&amp;usp=3Dco=
+mment_email_discussion&amp;ts=3D60866b2c"><meta itemprop=3D"name" content=
+=3D"Open Discussion"></div></div><div style=3D"margin-top: 18px;"><div styl=
+e=3D"margin: 18px 0; height: 1px; background-color: #eee;"></div></div><div=
+ style=3D"margin-top: 18px;"><div style=3D"overflow: visible; line-height: =
+20px;"><div class=3D"discussion-post-quote" style=3D"padding: 7px 12px; box=
+-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.14=
+9); border: 1px solid #d3d3d3; border-radius: 8px; overflow-wrap: break-wor=
+d; word-break: break-word;"><span class=3D"notranslate" style=3D"font: 400 =
+14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; color: #3c404=
+3;">for</span></div><div style=3D"margin-top: 18px; word-break: break-word;=
+ word-wrap: break-word;"><table role=3D"presentation" cellpadding=3D"0" cel=
+lspacing=3D"0" style=3D"width: 100%;color: #3c4043;"><tr><td style=3D"verti=
+cal-align: top; width: 44px;"><img src=3D"https://lh5.googleusercontent.com=
+/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s5=
+0-c-k-no/photo.jpg" alt=3D"" height=3D"32" width=3D"32" style=3D"border-rad=
+ius: 50%;box-sizing: border-box; display: block;"></td><td><h3 style=3D"dis=
+play: inline-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, s=
+ans-serif; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">=
+Chris Carman</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; colo=
+r: #fff; display: inline-block; font: 700 12px/16px Roboto, Arial, Helvetic=
+a, sans-serif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding:=
+ 0 6px;">New</h4><div style=3D"font: 400 14px Roboto, Arial, Helvetica, san=
+s-serif; line-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top=
+: 6px;" class=3D"notranslate">I&#39;m back again - think not finding new cu=
+stomers is the biggest risk for the company..........</div></div></td></tr>=
+</table></div><div style=3D"margin: 10px 0 0 42px; overflow: auto; padding:=
+ 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRd3_FjmRe4R9qV1fj41MrAW0_qMjdOda=
+Bo84R1mnZ-Ajlrf9kLIfV3HGtR3qTekNbt-4quDkCi1rUKTCxOLuX4V9ApujQDuhnHrRWLHoNDd=
+dQj52B5jKh7tQoJPlMcoFREOoppy@docs.google.com%3E?subject=3DIndigometrics_Gro=
+wth_Strategy_Q2_2021" class=3D"material-button material-button-transparent"=
+ target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;f=
+ont: 500 14px/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; borde=
+r: none; border-radius: 4px; box-sizing: border-box; display: inline-block;=
+ letter-spacing: .25px; min-height: 36px; text-align: center; text-decorati=
+on: none;background-color: transparent; color: #1a73e8; cursor: pointer;mar=
+gin-right: 12px;">Reply</a><a href=3D"https://docs.google.com/document/d/1F=
+Wis-eqiRrmo1zvHlgml6x_5EgJtmndPnWZZ1MprHG8/edit?disco=3DAAAAIXDMoeM&amp;usp=
+=3Dcomment_email_discussion&amp;usp_dm=3Dfalse&amp;ts=3D60866b2c" class=3D"=
+material-button material-button-transparent" target=3D"_blank" tabindex=3D"=
+0" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans,=
+ Roboto, Arial, Helvetica, sans-serif; border: none; border-radius: 4px; bo=
+x-sizing: border-box; display: inline-block; letter-spacing: .25px; min-hei=
+ght: 36px; text-align: center; text-decoration: none;background-color: tran=
+sparent; color: #1a73e8; cursor: pointer;float: right;">Open</a></div></div=
+></div></div></td></tr></table><table style=3D"border-collapse: collapse; w=
+idth: 100%;" role=3D"presentation"><tr><td style=3D"padding: 24px 4.5%"><ta=
+ble style=3D"border-collapse: collapse; width: 100%;" dir=3D"ltr"><tr><td s=
+tyle=3D"padding: 0;font-family: Roboto, Arial, Helvetica, sans-serif; color=
+: #5F6368; width: 100%; font-size: 12px; line-height: 16px; min-height: 40p=
+x; letter-spacing: .3px;"><p style=3D"margin: 0; padding: 0;">Google LLC, 1=
+600 Amphitheatre Parkway, Mountain View, CA 94043, USA<br><br>You have rece=
+ived this email because you are a participant in the updated discussion thr=
+eads. <a href=3D"https://docs.google.com/document/u/100348406323779895805/d=
+ocos/notify?ouid=3D100348406323779895805&amp;id=3D1FWis-eqiRrmo1zvHlgml6x_5=
+EgJtmndPnWZZ1MprHG8&amp;title=3DIndigometrics_Growth_Strategy_Q2_2021" targ=
+et=3D"_blank" style=3D"color: #1a73e8; text-decoration: none;">Change what =
+Google Docs sends you.</a> You can not reply to this email.</p></td><td sty=
+le=3D"padding: 0; padding-left: 20px;"><img src=3D"https://www.gstatic.com/=
+images/branding/googlelogo/2x/googlelogo_tm_black54_color_96x40dp.png" widt=
+h=3D"96px" height=3D"40px"></td></tr></table></td></tr></table></td></tr></=
+table></td></tr></table></div></div>
+--000000000000d5b8d905c0db10c2--

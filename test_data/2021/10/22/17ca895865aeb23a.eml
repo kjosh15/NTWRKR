@@ -1,0 +1,748 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp1813059vqp;
+        Fri, 22 Oct 2021 08:19:04 -0700 (PDT)
+X-Received: by 2002:a05:6a00:1147:b029:3e0:8c37:938e with SMTP id b7-20020a056a001147b02903e08c37938emr338568pfm.65.1634915944281;
+        Fri, 22 Oct 2021 08:19:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1634915944; cv=none;
+        d=google.com; s=arc-20160816;
+        b=F59Rfp4kPWDO3Cs0tseH9cvVAV1mZrI9BCzXD02mR0322cOlhzP+RKhqKr5n70xfW5
+         1EXMd7x+YEdQNsmi3H0zTCI8IaKbiA1hAbDKDjWpWl23nWGqV0cYpSEM/HjUNhsfbC9c
+         KMi4bNFL6QNZFlQMXIGxHB+8yJOL10wZnIaNrk4dyPPknSE7P7035D9DlIKFIZ+Ds/HU
+         CfEPdm3JZVZsWqnICJNN/xnGYejC98QkGanYS8/4yO/Wg6sJjZ7zfXEUcDqbpNfaNXE9
+         lwskKiD4Ybq8AkYsK64IAOYrKqJZiAxwAbKI2PhcW6zbJDvOQqfuTtPQGJH3rd6uhXL5
+         GhWQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:message-id:reply-to:feedback-id:references:date
+         :mime-version:dkim-signature;
+        bh=vAVl2XD0NqzevXFTNz0XY75Z/5N4MdnA2FyXnsEoCzA=;
+        b=HzlDckVTsgLw9s8iXrFcjQphnt47P9zLkjRMgQJ8SO2dqbkRb/a+pHc/jDtk0l+eII
+         2yq0qFmgQUBHBP98N3IcO6QWl7n5drEmEN9Dwf8nphEas4C9zXboeU9WGvw2zUhHvu32
+         UITeAA8c2pX7ZzaZs/xc78OON8N9BmfStrNyjLGk3t5eDCfIXsiK5YUy2TCQX8yIBDvG
+         Ja3jF6w0QF2si50bM3QYIRR7v5huqa9yr043Goe2dYH6FYjEzhEyGXPEsTwhfGCaWE88
+         o5dGqA2vPwB0G6BGZdIy2vHYZVmCF194gBh/tDVtINidCh8vZeBXiu696RIOb+xwOUS6
+         VmiQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20210112 header.b="zccH5O/F";
+       spf=pass (google.com: domain of 3z9zyyrapbpaugeewflk-fgjwhdqvguk.yggydw.ugebgkzbgkz.ak@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3Z9ZyYRAPBPAUgeeWflk-fgjWhdqVgUk.YggYdW.UgebgkZbgkZ.ak@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+Return-Path: <3Z9ZyYRAPBPAUgeeWflk-fgjWhdqVgUk.YggYdW.UgebgkZbgkZ.ak@docos.bounces.google.com>
+Received: from mail-sor-f69.google.com (mail-sor-f69.google.com. [209.85.220.69])
+        by mx.google.com with SMTPS id il2sor8319308pjb.10.2021.10.22.08.19.04
+        for <josh@josh.is>
+        (Google Transport Security);
+        Fri, 22 Oct 2021 08:19:04 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 3z9zyyrapbpaugeewflk-fgjwhdqvguk.yggydw.ugebgkzbgkz.ak@docos.bounces.google.com designates 209.85.220.69 as permitted sender) client-ip=209.85.220.69;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20210112 header.b="zccH5O/F";
+       spf=pass (google.com: domain of 3z9zyyrapbpaugeewflk-fgjwhdqvguk.yggydw.ugebgkzbgkz.ak@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3Z9ZyYRAPBPAUgeeWflk-fgjWhdqVgUk.YggYdW.UgebgkZbgkZ.ak@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=docs.google.com; s=20210112;
+        h=mime-version:date:references:feedback-id:reply-to:message-id
+         :subject:from:to;
+        bh=vAVl2XD0NqzevXFTNz0XY75Z/5N4MdnA2FyXnsEoCzA=;
+        b=zccH5O/F8xwINMUO/LGrEKUdjgjkRIpbBsPrv1XzVhyPmibhD7kxhPV67Y0aWcXwU0
+         XLrrgrQvnaEJkuS1WwBF9VcOTy0xfDayj4j0sLl3DNgLIgHUDAASNFjyi5EU8FRBDd8h
+         WOF1k3Rp5bWa7M7sdfCUfFjgIy+9eMDubuFpTR0pk/e6DnaMlEANxwnSZRVijQIilYc0
+         QYazal2UhDX2AKjlKt+1XkvadZjvB0/hzrJ69CY/X0O1Yg8AWPRR10b882Yj9cAmASqg
+         46yEUjlkhdM7RECueSvjL2EpH+FJmGua2p3QfF2dBPH7AP/N7jp3xHjbEW2sJQttapfh
+         6L9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:date:references:feedback-id
+         :reply-to:message-id:subject:from:to;
+        bh=vAVl2XD0NqzevXFTNz0XY75Z/5N4MdnA2FyXnsEoCzA=;
+        b=H5X/ZwcEa4sUoF492n2qAwWAVOH0dkZe+KR8LPmxwO3PULaooK9Ve0lCwIKttOilS9
+         VhlPkjMLT9dcY8RN+byhqMKhuxy5d2jMsBGLd62IT7fRpBwpqYmbKkT/zguibdflda4S
+         TgizjyVNH/B5KUHZgXPv6SEX3XUc2PpO3h/NP+V7TfjM21wTDJjaQFRkeMJ7WA4c72iK
+         NYnrrmgWbUyqwY4oVgruc16YqEqnxvfm/XxnwufFXZ6Oyp9brJV4fxAsno1AOdthyPJd
+         kBIhH6rl/fx0wH6G8Vpqi9Q+dcwPBfhgMFIxa5QM1T+GjQ3DnSr4msHN+HR7L5dqQtsI
+         3SCQ==
+X-Gm-Message-State: AOAM531gVRlcz/t3D2OolwyRj/8vh185+cGiTvLp1FsBGZguHhEXxZng
+	HSkgAPtkCYN5oVrMvQ8=
+X-Google-Smtp-Source: ABdhPJya86gOkb+1c1fThncx+k0etZ35SETQkJrHD1UGBq2wR86BXZQhej50uoQBCSPIk12+Gg==
+MIME-Version: 1.0
+X-Received: by 2002:a17:90a:f696:: with SMTP id cl22mr6122789pjb.135.1634915943637;
+ Fri, 22 Oct 2021 08:19:03 -0700 (PDT)
+Date: Fri, 22 Oct 2021 08:19:03 -0700
+X-Document-ID: sHSqF_p2z68hTPP1Vhz74ww
+References: <d+c0hTcUZfcDJ6NjhoVFBQMVZoejc0d3c6QUFBQVFfYTF3UFk@docs.google.com>
+X-No-Auto-Attachment: 1
+Feedback-ID: MailTypeComment:EditorsNotification
+X-Doco-ID: AAAAQ_a1wPY
+Reply-to: Reply <d+AORGpRfYjG10dh4lkbvaPIWqOdgaGAOeJ_cZZlSgwnaP9pyLwJU-6BZTp5dD6-PJQfJJXpGpbdfG0P3rYsmKSbmc6OtDM9cySp8qnhsNU63at3_6UiY_eNChuvaUp9j4rl3nJLwoK0KJ@docs.google.com>
+X-Notifications: 6e5bc63f8a100000
+X-Notifications-Bounce-Info: AXvZQxfT5hNshbVRXR1Q1Y2pHfYSOvV81oKTKBH_IgGplic3ErUGFNnMi7NGlCiZDZDUKG3gxJPfEIepAHr8CJ77gIy_rIhH_b6US22qmqpnmcttmkrrG7TL1L1Yna7xEmlqT42JWvCRFDl2XmX0_nld1BhpZeCzrCD_a9xLT6TSKnj75hPAtoyuuqSApMiUd32DV-AeY0LHrkIJZTPW4H3lwDAxNjAwNjA0MDQxNTM1NTk2OTMzMg
+Message-ID: <gGmadKLob-CvsBiUA_T9eQ@notifications.google.com>
+Subject: The Rise of Forer... - @josh@josh.is @sam.mouser@nytimes.com...
+From: "Sara Joyner (Google Docs)" <comments-noreply@docs.google.com>
+To: josh@josh.is
+Content-Type: multipart/alternative; boundary="0000000000000ee43705cef288a2"
+
+--0000000000000ee43705cef288a2
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+
+U2FyYSBKb3luZXIgbWVudGlvbmVkIHlvdSBpbiBhbiBhY3Rpb24gaXRlbSBpbiB0aGUgZm9sbG93
+aW5nIGRvY3VtZW50DQpUaGUgUmlzZSBvZiBGb3JlcnVubmVycyBTY3JpcHQgdjMgIA0KKGh0dHBz
+Oi8vZG9jcy5nb29nbGUuY29tL2RvY3VtZW50L2QvMXNSbV82Yjl4c1Ftb0RjcVFCaVd0N1gyQWpK
+bkJTaWZYMkJhLUxKMnFOcmMvZWRpdD9kaXNjbz1BQUFBUV9hMXdQWSZ0cz02MTcyZDY2NyZ1c3A9
+Y29tbWVudF9lbWFpbF9kb2N1bWVudCZ1c3BfZG09ZmFsc2UpDQoNClNhcmEgSm95bmVyDQp8IEpv
+c2g6IFRha2UgZm9yIGV4YW1wbGUsIG9uZSBvZiBIeXBlcmdpYW504oCZcyBjbGllbnRzIHdobyBj
+YW1lIHRvIHRoZW0gZm9yICANCmEgcHJlZGljdGl2ZSBtYWludGVuYW5jZSBzb2x1dGlvbiBmb3Ig
+dGhlaXIgZmxlZXQgb2YgYXV0b25vbW91cyB0cmFpbnMuIFlvdSAgDQprbm93LCBsaWtlIHRoZSBr
+aW5kIHRoYXQgc2h1dHRsZSB5b3UgYXJvdW5kIGJldHdlZW4gYWlycG9ydCB0ZXJtaW5hbHMuDQoN
+CldpbGw6IEJpZyBwcm9qZWN0LCBodWdlIHByb2plY3QuIFNvIG9idmlvdXNseSB0aGUgc3RhdGVt
+ZW50IG9mIHdvcmsgY29tZXMgIA0KaW4sIGRlc2lnbmVycyBhbmQgZGV2ZWxvcGVycyBjb21lIHVw
+IHdpdGggcmVhbGx5LCByZWFsbHkgaW5ub3ZhdGl2ZSAgDQpzb2x1dGlvbnMgdG8gdGhlaXIgcHJv
+YmxlbXMgdGhhdCB3b3VsZCBoYXZlIGFuIGltbWVkaWF0ZSBpbXBhY3Qgb24gc2FmZXR5ICANCmZv
+ciB0aGUgd29ya2VycyBpbiBhbiBpbW1lZGlhdGUgaW1wYWN0IG9uIGVmZmljaWVuY3kgZm9yIHRo
+ZSBjb21wYW55Lg0KDQpKb3NoOiBUaGUgZGV2ZWxvcGVycyBoYWQgY29tZSB1cCB3aXRoIGEgdG90
+YWxseSBhdXRvbWF0ZWQgQUkgbWFpbnRlbmFuY2UgIA0Kc3lzdGVtLiBQb3dlcmZ1bCBzZW5zb3Jz
+IHdvdWxkIGRldGVjdCBwcm9ibGVtcyBiZWZvcmUgdGhleSBldmVyIGFyb3NlLiBUaGUgIA0KdHJh
+aW5zIHdvdWxkIG5ldmVyIGJyZWFrIGRvd24uIEFuZCBhdCBmaXJzdCBnbGFuY2UsIHRoZXkgdGhv
+dWdodCBpdCBtZXQgdGhlICANCmV0aGljYWwgcmVxdWlyZW1lbnRzLiBUaGUgZGV2ZWxvcGVycyBi
+ZWxpZXZlZCB0aGVyZSB3YXMgcG9zaXRpdmUgaW50ZW50LCAgDQp0aGF0IHRoZSB3b3JsZCB3b3Vs
+ZCBiZSBhIGdyZWF0IHBsYWNlIGlmIG5vdGhpbmcgZXZlciBicm9rZSBkb3duLCBhbmQuLi4gIA0K
+dGhleSB0aG91Z2h0IGl0IHdvdWxkIGJlbmVmaXQgaHVtYW4gYmVpbmdzLg0KDQpXaWxsOiAgVGhl
+IGNoYWxsZW5nZSB3YXMgaXQgYWxzbyB3b3VsZCBoYXZlIGxlZCB0byB0aGUgbWFqb3JpdHkgb2Yg
+dGhlIG1h4oCmDQpAam9zaEBqb3NoLmlzIEBzYW0ubW91c2VyQG55dGltZXMuY29tIGNoZWNrIHRo
+aXMgb3V0IQ0KX0Fzc2lnbmVkIHRvIHlvdV8NCg0KSm9zaCBLbGVpbg0KSSBsb3ZlIGl0IGV4Y2Vw
+dCBmb3Ig4oCcV2hlbiB5b3UgdXNlIHRlY2hub2xvZ3kgYW5kIHJvYm90IHByb2Nlc3MgYXV0b21h
+dGlvbiAgDQp0aGF0IGRpc3BsYWNlcyBodW1hbiB3b3JrZXJzLCB3aGF0IHlvdSBub3cgY3JlYXRl
+IGlzIHdob2xlIGNvbW11bml0aWVzIG9mICANCmlkbGUgcGVvcGxlIHdobyBkb24ndCBoYXZlIGpv
+YnMgYW5kIHdoZW4gdGhhdCBoYXBwZW5zLCBpdCBjcmVhdGVzIGNpdmlsICANCnVucmVzdCBhbmQg
+c29jaWFsIHVucmVzdC4gQW5kIHRoYXQgaXMgd2hhdCB0ZWFycyBhdCB0aGUgZmFicmljIG9mIHNv
+Y2lldHnigJ0gIA0KLSBkb2VzIHRoaXMgcGllY2UgbWFrZSB0aGUgcG9pbnQgd2l0aG91dCB0aGF0
+IHBhcnQ/DQoNClNhcmEgSm95bmVyDQpJJ2QgZmVlbCBtb3JlIGNvbWZvcnRhYmxlIGxlYXZpbmcg
+aXQgaW4gc2luY2UgdGhhdCBpcyB0aGUgY29udGV4dCBvZiBoaXMgIA0KcGVyc3BlY3RpdmUsIGFu
+ZCB3ZSdsbCBzZWUgaWYgQWNjZW50dXJlIHJlYWN0cyB0byBpdC4NCg0KU2FyYSBKb3luZXINCl9N
+YXJrZWQgYXMgZG9uZV8NCg0KDQpHb29nbGUgTExDLCAxNjAwIEFtcGhpdGhlYXRyZSBQYXJrd2F5
+LCBNb3VudGFpbiBWaWV3LCBDQSA5NDA0MywgVVNBDQoNCllvdSBoYXZlIHJlY2VpdmVkIHRoaXMg
+ZW1haWwgYmVjYXVzZSB5b3UgYXJlIGEgcGFydGljaXBhbnQgaW4gdGhpcyB0aHJlYWQuDQpDaGFu
+Z2UgIA0KKGh0dHBzOi8vZG9jcy5nb29nbGUuY29tL2RvY3VtZW50L3UvMTAwMzQ4NDA2MzIzNzc5
+ODk1ODA1L2RvY29zL25vdGlmeT9vdWlkPTEwMDM0ODQwNjMyMzc3OTg5NTgwNSZpZD0xc1JtXzZi
+OXhzUW1vRGNxUUJpV3Q3WDJBakpuQlNpZlgyQmEtTEoycU5yYyZ0aXRsZT1UaGUrUmlzZStvZitG
+b3JlcnVubmVycytTY3JpcHQrdjMmcmVzb3VyY2VrZXkpICANCndoYXQgR29vZ2xlIHNlbmRzIHlv
+dS4NCllvdSBjYW4gcmVwbHkgdG8gdGhpcyBlbWFpbCB0byByZXBseSB0byB0aGUgY29tbWVudC4N
+Cg==
+--0000000000000ee43705cef288a2
+Content-Type: text/x-amp-html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html><html amp4email><head><meta charset=3D"utf-8"><meta name=3D"=
+email.contentIds" content=3D"AAAAQ_a1wPY"><script async src=3D"https://cdn.=
+ampproject.org/v0.js"></script><script async custom-element=3D"amp-list" sr=
+c=3D"https://cdn.ampproject.org/v0/amp-list-0.1.js"></script><script async =
+custom-template=3D"amp-mustache" src=3D"https://cdn.ampproject.org/v0/amp-m=
+ustache-0.2.js"></script><script async custom-element=3D"amp-form" src=3D"h=
+ttps://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async custom=
+-element=3D"amp-bind" src=3D"https://cdn.ampproject.org/v0/amp-bind-0.1.js"=
+></script><style amp4email-boilerplate>body{visibility:hidden}</style><styl=
+e amp-custom>.material-button{-webkit-appearance: none; cursor: pointer; ou=
+tline: none;}.material-button:focus {outline: 1px solid transparent;}.mater=
+ial-button:disabled{cursor: initial; outline: none;}.material-button-transp=
+arent{background-color: transparent; color: #1a73e8;}.material-button-trans=
+parent:hover{background-color: rgba(26, 115, 232, .04);}.material-button-tr=
+ansparent:focus{background-color: rgba(26, 115, 232, .12);}.material-button=
+-transparent:active{background-color: rgba(26, 115, 232, .12); box-shadow: =
+0 1px 3px 1px rgba(60, 64, 67, .15);}.material-button-transparent:disabled{=
+background-color: transparent; color: #3c4043; opacity: 0.38;}.material-tex=
+t-input{border: none; border-bottom: 1px solid #3c4043;}.material-text-inpu=
+t:focus{border-bottom: 2px solid #2277e8;}a{color: #1a73e8;}.resolving-disc=
+ussion{opacity: 0.4;}.resolving-discussion .resolve-button{visibility: hidd=
+en;}.submitting-reply .reply-form-textarea{opacity: 0.4;}.submitting-reply =
+.resolve-button{visibility: hidden;}.reply-error-text{display: none;}.submi=
+t-error .reply-error-text{display: block;}.post-dark-text{color: #3c4043;}.=
+head-post{margin-top: 18px; word-break: break-word; word-wrap: break-word;}=
+.reply-post{margin-top: 12px; word-break: break-word; word-wrap: break-word=
+;}.post-light-text{color: #777777;}input:disabled{opacity: 0.4;}.screenread=
+er-hidden-offscreen{position: absolute; left: -10000px; top: auto; height: =
+1px; overflow: hidden;}@media screen and (max-width: 600px) {.document-cont=
+ent-snippet ul, .document-content-snippet ol {padding-left: 20px;}}@media s=
+creen and (min-width: 601px){.discussion-open-button{float: right;}}#docume=
+nt-chip-section {align-items: center; display: flex;}#document-chip-section=
+ > * + * {margin-left: 12px;}#document-chip {align-items: center; display: =
+flex; flex: 1; margin-right: auto; max-width: calc(100% - 12pxpx); min-widt=
+h: 0; flex-basis: calc((100% - 12px) * 0.45);}.flex {display: flex;}.flex-c=
+olumn {flex-direction: column;}.align-start {align-items: flex-start;}.alig=
+n-center {align-items: center;}.align-baseline {align-items: baseline;}.ali=
+gn-end {align-items: flex-end;}.flex-space-column-12px > * + * {margin-top:=
+ 12px;}</style></head><body><div style=3D"font: 14px Roboto, Arial, Helveti=
+ca, sans-serif;"><template type=3D"amp-mustache" id=3D"inline-action-post">=
+{{#post}}<div style=3D"margin-top: 12px; word-break: break-word; word-wrap:=
+ break-word;"><div class=3D"{{#isHeadPost}}head-post{{/isHeadPost}}{{^isHea=
+dPost}}reply-post{{/isHeadPost}}"><table role=3D"presentation" cellpadding=
+=3D"0" cellspacing=3D"0" style=3D"width: 100%;" class=3D"{{#isNew}}post-dar=
+k-text{{/isNew}}{{^isNew}}post-light-text{{/isNew}}"><tr><td style=3D"verti=
+cal-align: top; width: 44px;"><amp-img src=3D"{{authorPhotoUrl}}" alt=3D"" =
+height=3D"32" width=3D"32" style=3D"border-radius: 50%;box-sizing: border-b=
+ox; display: block;"></amp-img></td><td><h3 style=3D"display: inline-block;=
+ font: 500 14px Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-s=
+pacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">{{authorName}}</h3>=
+{{#isNew}}<h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff=
+; display: inline-block; font: 700 12px/16px Roboto, Arial, Helvetica, sans=
+-serif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;=
+">New</h4>{{/isNew}}<div style=3D"font: 400 14px Roboto, Arial, Helvetica, =
+sans-serif; line-height: 20px; letter-spacing: .2px;">{{#htmlBody}}<div sty=
+le=3D"margin-top: 6px;" class=3D"notranslate">{{{htmlBody}}}</div>{{/htmlBo=
+dy}}{{#htmlActionText}}<div style=3D"margin-top: 6px;"><i>{{{htmlActionText=
+}}}</i></div>{{/htmlActionText}}{{#showCopiedText}}<div style=3D"margin: 18=
+px 0;height: 1px; background-color: #eee;"></div><div style=3D"color: #3c40=
+43; font: italic 14px Roboto-Italic, Arial; margin: 18px 0 6px 0; width: 10=
+0%;">Comments above copied from original document</div>{{/showCopiedText}}<=
+/div></td></tr></table></div></div>{{/post}}</template><amp-list id=3D"disc=
+ussionList" diffable binding=3D"refresh-evaluate" layout=3D"container" sing=
+le-item items=3D"." src=3D"https://docs.google.com/document/d/1sRm_6b9xsQmo=
+DcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc/dynamicmail/comments?emailToken=3DAORGpRcXB=
+zyaFAOwDvLdIsYy96aY0GXF2KqGydgxcJBip40BpfTfKH8Qd5Xhum-R5YLS-pCzMUj0pVMh65ax=
+lo4XdcTfBqxVQ3uP3UhbYmc3YUiPTA_TO8IqWA7d5jUNeOcFaEvcl47g&amp;buildLabel=3Dk=
+ix_2021.41-Tue_RC01&amp;clientVersion=3D2&amp;commentIds=3DAAAAQ_a1wPY&amp;=
+fnpi_AAAAQ_a1wPY=3DAAAAOzsbfSY&amp;ct_cs=3Dp0hpQMiMYs58EEDdFH4YCA%3D%3D&amp=
+;isNudge=3Dfalse&amp;hl=3Den&amp;headRevision=3D985&amp;context_AAAAQ_a1wPY=
+=3DH4sIAAAAAAAAALVY227cNhD9lYELtC-bTYsCRes6BpKgRVygQNCkCPpISaMVvRSpktSqevNv=
+FGgBP_VD_Cn-kp4hpdXaRtFsgH3wenUhOXPmzJmZveio0v7FmYn-jEIcDb84a5XfaHv-5dnlRei=
+UvTRuo0tlyLMKzmq7WdHAVCpLygRHqqpI0dA4wxSdMxQ4kquJY_NkGe40FBrXm4patWVyvafgTB=
+-1s4Fa55m8K_oQSdkKBslnbLAxh7Rp1C2vL54nuy6ed5cXhb-8-Agffv713dXr49dRaVQIL85C6=
+ZktPKnYP2t0VbF95uo63z67vLt97dqWbRSLfby7nU9Ke0xbF6rcbrzrbfWsdMb588_qmr_65tuz=
+y59caM7pveBRO0_8h2o7wytylsXnN2PHsErZeH_zZ4BJGicFQRxBaAV0gahNaxV1nitdRr1jIKx=
+tZKtsyXuQ01t4XXuqDedIqT4661rXB4oea8KafnM9ba0bVmQ0zJIQbHWKhYKTTR8joj3iJZU8oo=
+LjAChIad85HxEv32oLfqwXMI6A_X8h-6CNOadXegN_3TWXcUVNv-H5ak3vHLlip-GTGZP5iEzkF=
+CN4PDi_pdK1HEjbFVUc9MayD4l1Fe_YuE4u5RXqOxp0bITIxoyr6T8WWrdTCeiFwTkWABeGFIbb=
+kBEbEuMbhXfhnQZXKg1z8K1TJSyCx6rmOM7RSQaKAdr-1wKua12CCeWyCNYCvPET8uOjOYpTDuB=
+pVPUQIgUAYkJHONXC4opeXj0k4hgQhzW9dQP7uhe5sMFhs4xRxRHxW-AruBZRgHsj4WAvhAu8Tp=
+Zksk4LbXpaIDhbqtxg1_QSsQT2tfbQjo2R01d5owgF2jSRdKQWKSDYLWr1e699IkpYP_a3YOTej=
+pMkwahBBepc0IkDycO4yvGeQgizsnEF4k7HicIGnsQj13RGAWFdk3Vwx25owsQhhQWTlfB7vV4_=
+QWG20nKNq6ZvcVrB2OGk-Xt3mwAuGzCG7SYDivNTWTlIGSOIp8QCk66d10gUqQXNQ4nr2EE2ExG=
+RNgcJkV0ho3SFdfWJXPrUEnNE6v0iQLBqE1BJmFEE1PKxksBDjahWARr4I3QBNWQifYD78lUHcA=
+HCJ6-2PNG_RKpugKykADSGfRK249i3pqs6MU60sUINT19yLqTuIGcEckhKg0jDIdGo9q7N8cSfx=
+Et6g64ZQzbK1h5O-b6MvYdLV3DCoh6K-dpuU9rhckq1jXMV5WwAcQxcub_553R16MNxQOXmKVF7=
+krAkGk8V7FUf8yMJmP1C4qXsojDTYhSEPmkuRLPqy1Ri2F67UUFC0U0gmlIneF8nMuzThdfoaU5=
+YMgQhcG8Mq0k1lZeCKX1Lk-KeCyQfKXWWuTpuxeT2oWLMVRbAAGwuVR8mdEIKkbzp0VDFGamkqQ=
+ugUp2Ri2P2oVUlPEJmBWQQwoEdhKAn7YCOg-Du9s3iHJ7D99RhD2K-otTOlqlwWKcBhRP_Ql8kF=
+4VsWTn2Tc70aEEEvtLBEZERe-kSh5myoZVbEG-njTDQgOxy3sN9DyCG0KmJoykd9iBj_88_-_q7=
+7-NyikThRGhnLqOjWEmBSumYxKfDeJAcM2oQtxJ5UJ8WOiXB3XffU4kNdH_z19LB3d_8fWQkVeG=
+OlecjTxAjxTspzD7A2YOonKorePXDy_eni95b00OE9np0MFdRzWxC0s19Gxg69PO60Ea6DTBT7R=
+zah0oHKStC2SwnB426ILafBFAM87gmZXZW7DEdBMKWjYWFm3GahTOXoBre7fKwhfqIMjePKisq5=
+kqg4zw_V04q_UMJ2jJ34ZFlwjqnfJVmGykgMB59NwSKIVNu5Ook6j9VxgZDoeRmSoXFb7EFLb5L=
+nT4IFeaBQZIkl7yMND9yZ5W1RLbEeEqldMkQ4jC1GOj42h4JqLEO4OnKLH0h5mX0DJNopOp77Yo=
+88g1iZjq2UV2HgSSled4cUqN3UKse8__8u4QrtZrv5EEjBydMSsdKZsksebUq0FeJNbIMQ9760e=
+8Dx_7GwLb6lPSbsuCdA5sQtbmjrrwahM6JI08mHimzuftuXaXrcRb-ieZpzlY1qiSAg3U-921ST=
+Goe0MjjiU2tZJi6UIxhsmGqLDj3Gf7OD3z5F2oTuZ-QEgAA&amp;emailType=3Dcomments&am=
+p;ts=3D6172d667"><div role=3D"list"><table style=3D"border-collapse: collap=
+se; width: 100%; background-color: white; text-align: center;" role=3D"pres=
+entation"><tr><td style=3D"padding: 24px 0 16px 0;"><table style=3D"border-=
+collapse: collapse;font-family: Roboto, Arial, Helvetica, sans-serif;hyphen=
+s: auto; overflow-wrap: break-word; word-wrap: break-word; word-break: brea=
+k-word;display: inline-block; width: 90%;max-width: 700px;min-width: 280px;=
+ text-align: left;" role=3D"presentation"><tr><td style=3D"padding: 0;"><ta=
+ble style=3D"width:100%; border: 1px solid #dadce0; border-radius: 8px; bor=
+der-spacing: 0; table-layout:fixed; border-collapse: separate;" role=3D"pre=
+sentation"><tr><td style=3D"padding: 4.5%;" dir=3D"ltr"><div id=3D"overview=
+-card-contents"><div class=3D"flex flex-column flex-space-column-12px"><div=
+><h1 style=3D"color: #3c4043; font: 400 18px Google Sans, Roboto, Arial, He=
+lvetica, sans-serif; margin: 0;">Sara Joyner mentioned you in an action ite=
+m in the following document</h1></div><div><div class=3D"flex flex-column f=
+lex-space-column-12px"><div id=3D"document-chip-section"><div id=3D"documen=
+t-chip"><a href=3D"https://docs.google.com/document/d/1sRm_6b9xsQmoDcqQBiWt=
+7X2AjJnBSifX2Ba-LJ2qNrc/edit?disco=3DAAAAQ_a1wPY&amp;ts=3D6172d667&amp;usp=
+=3Dcomment_email_document&amp;usp_dm=3Dtrue" target=3D"_blank" style=3D"col=
+or: #3c4043; display: inline-block; max-width: 100%; text-decoration: none;=
+ vertical-align: top;border: 1px solid #DADCE0; border-radius: 16px; white-=
+space: nowrap;min-width: 0;"><div style=3D"line-height: 18px; overflow: hid=
+den; text-overflow: ellipsis;padding: 6px 12px;"><span style=3D"display: in=
+line-block; vertical-align: top; min-width: 26px; width: 26px;"><amp-img sr=
+c=3D"https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_=
+x64.png" width=3D"18" height=3D"18" style=3D"vertical-align: top;" role=3D"=
+presentation"></amp-img></span><span style=3D"font: 500 14px/18px Google Sa=
+ns, Roboto, Arial, Helvetica, sans-serif; display: inline; letter-spacing: =
+0.2px;">The Rise of Forerunners Script v3</span></div></a></div></div></div=
+></div></div><div style=3D"margin: 18px 0;height: 1px; background-color: #e=
+ee;"></div></div><div style=3D"overflow: visible; line-height: 20px;"><div =
+class=3D"document-content-snippet" style=3D"border: 1px solid #DADCE0; bord=
+er-radius: 8px; padding: 12px 16px;hyphens: auto; overflow-wrap: break-word=
+; word-wrap: break-word; word-break: break-word;"><span class=3D"notranslat=
+e" style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-heigh=
+t: 20px; color: #3c4043;"><p dir=3D"ltr" style=3D"margin:0"><span>logical r=
+easoning, we can also add a whole tool set of ethical reasoning, which shou=
+ld make our solutions more robust and stand the test of time.</span></p><br=
+><p dir=3D"ltr" style=3D"margin:0"><span>MUSIC</span></p><br><p dir=3D"ltr"=
+ style=3D"margin:0"><span class=3D"screenreader-hidden-offscreen">=C2=A0Com=
+ment start=C2=A0</span><span style=3D"background-color:#ffe168">Josh: Take =
+for example, one of Hypergiant=E2=80=99s clients who came to them for a pre=
+dictive maintenance solution for their fleet of autonomous trains. You know=
+, like the kind that shuttle you around between airport terminals.=C2=A0</s=
+pan></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"background-col=
+or:#ffe168">Will: Big project, huge project. So obviously the statement of =
+work comes in, designers and developers come up with really, really innovat=
+ive solutions to their problems that would have an immediate impact on safe=
+ty for the workers in an immediate impact on efficiency for the company.</s=
+pan></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"background-col=
+or:#ffe168">Josh: The developers had come up with a totally automated AI ma=
+intenance system. Powerful sensors would detect problems before they ever a=
+rose. The trains would never break down. And at first glance, they thought =
+it met the ethical requirements. The developers believed there was positive=
+ intent, that the world would be a </span><span style=3D"background-color:#=
+ffe168">great </span><span style=3D"background-color:#ffe168">place if noth=
+ing ever broke down, and... they thought it would benefit human beings.=C2=
+=A0</span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"backgrou=
+nd-color:#ffe168">Will:=C2=A0 The challenge was it also would have led to t=
+he majority of the maintenance people within the company being laid off.=C2=
+=A0</span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"backgrou=
+nd-color:#ffe168">MUSIC</span></p><br><p dir=3D"ltr" style=3D"margin:0"><sp=
+an style=3D"background-color:#ffe168">Josh: The Red team was like whoa whoa=
+ whoa, not so fast. For one, they said, this does not meet the categorical =
+imperative</span><span style=3D"background-color:#ffe168">. If every indust=
+ry in the whole world eliminated human beings from maintaining our physical=
+ infrastructure, I don=E2=80=99t think that=E2=80=99d be a good place to li=
+ve=E2=80=A6</span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"=
+background-color:#ffe168">Will: W</span><span style=3D"background-color:#ff=
+e168">e can have trains that never break down. But that doesn't mean that t=
+he trains actually produce an enjoyable experience for the human or the rid=
+er.</span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"backgrou=
+nd-color:#ffe168">Josh: Will says, there are some things that we </span><sp=
+an style=3D"background-color:#ffe168">need</span><span style=3D"background-=
+color:#ffe168"> human maintenance workers for. Because humans can interpret=
+ the riding experience in a way that machines simply can=E2=80=99t.=C2=A0</=
+span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"background-co=
+lor:#ffe168">Will: </span><span style=3D"background-color:#ffe168">=C2=A0Hu=
+mans can understand what a screeching noise on a subway train does to their=
+ subway experience.=C2=A0 Humans can tell you what the smell of oil or leak=
+ing does to their experience as a rider. But machines can&#39;t tell you th=
+at.=C2=A0</span></p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"ba=
+ckground-color:#ffe168">Josh: And, it doesn=E2=80=99t pass the law of human=
+ity. Because this solution benefits =E2=80=9Cefficiency=E2=80=9D </span><sp=
+an style=3D"background-color:#ffe168">above</span><span style=3D"background=
+-color:#ffe168"> </span><span style=3D"background-color:#ffe168">its passen=
+gers=E2=80=99 experiences.=C2=A0</span></p><br><p dir=3D"ltr" style=3D"marg=
+in:0"><span style=3D"background-color:#ffe168">BEAT</span></p><br><p dir=3D=
+"ltr" style=3D"margin:0"><span style=3D"background-color:#ffe168">Josh: Plu=
+s, Will says Hypergiant feels an ethical responsibility to avoid displacing=
+ human workers in its solutions. It=E2=80=99s not that they feel technology=
+ shouldn=E2=80=99t improve the nature of work, but that it should do so in =
+a way that keeps human workers on board and meaningfully employed.</span></=
+p><br><p dir=3D"ltr" style=3D"margin:0"><span style=3D"background-color:#ff=
+e168">Will: When you use technology and robot process automation that displ=
+aces human workers, what you now create is whole communities of idle people=
+ who don&#39;t have jobs and when that happens, it creates civil unrest and=
+ social unrest. And that is what tears at the fabric of society.=C2=A0</spa=
+n><span class=3D"screenreader-hidden-offscreen">=C2=A0Comment end=C2=A0</sp=
+an></p><br><p dir=3D"ltr" style=3D"margin:0"><span>Josh: So, back to the dr=
+awing board. The developers needed to modify their solution. So after hamme=
+ring out a few alternatives, they landed on a win-win:</span></p></span></d=
+iv><div style=3D"margin-top: 18px; word-break: break-word; word-wrap: break=
+-word;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" st=
+yle=3D"width: 100%;color: #777777;"><tr><td style=3D"vertical-align: top; w=
+idth: 44px;"><amp-img src=3D"https://lh3.googleusercontent.com/a/AATXAJwAq8=
+OM1xh6x2G8vB-GbBIrn0P_zVoOSIAOy2Uw=3Ds50-c-k-no" alt=3D"" height=3D"32" wid=
+th=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; display: bloc=
+k;"></amp-img></td><td><h3 style=3D"display: inline-block; font: 500 14px G=
+oogle Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; li=
+ne-height: 20px; margin: 6px 0 2px 0;">Sara Joyner</h3><div style=3D"font: =
+400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; letter-sp=
+acing: .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">@<a hre=
+f=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a> @<a href=3D"ma=
+ilto:sam.mouser@nytimes.com" target=3D"_blank">sam.mouser@nytimes.com</a> c=
+heck this out!</div><div style=3D"margin-top: 6px;"><i>Assigned to you</i><=
+/div></div></td></tr></table></div><div style=3D"margin-top: 12px; word-bre=
+ak: break-word; word-wrap: break-word;"><table role=3D"presentation" cellpa=
+dding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #777777;"><tr><td=
+ style=3D"vertical-align: top; width: 44px;"><amp-img src=3D"https://lh3.go=
+ogleusercontent.com/a-/AOh14Gj4lMLpN2f8IIsZd6cXqwFNcYqPDyt8x_t0q51UQg=3Ds50=
+-c-k-no" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: 50%;bo=
+x-sizing: border-box; display: block;"></amp-img></td><td><h3 style=3D"disp=
+lay: inline-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, sa=
+ns-serif; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">J=
+osh Klein</h3><div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-s=
+erif; line-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top: 6=
+px;" class=3D"notranslate">I love it except for =E2=80=9CWhen you use techn=
+ology and robot process automation that displaces human workers, what you n=
+ow create is whole communities of idle people who don&#39;t have jobs and w=
+hen that happens, it creates civil unrest and social unrest. And that is wh=
+at tears at the fabric of society=E2=80=9D - does this piece make the point=
+ without that part?</div></div></td></tr></table></div><div style=3D"margin=
+-top: 12px; word-break: break-word; word-wrap: break-word;"><table role=3D"=
+presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;colo=
+r: #3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><amp-img s=
+rc=3D"https://lh3.googleusercontent.com/a/AATXAJwAq8OM1xh6x2G8vB-GbBIrn0P_z=
+VoOSIAOy2Uw=3Ds50-c-k-no" alt=3D"" height=3D"32" width=3D"32" style=3D"bord=
+er-radius: 50%;box-sizing: border-box; display: block;"></amp-img></td><td>=
+<h3 style=3D"display: inline-block; font: 500 14px Google Sans, Roboto, Ari=
+al, Helvetica, sans-serif; letter-spacing: .25px; line-height: 20px; margin=
+: 6px 0 2px 0;">Sara Joyner</h3><h4 style=3D"background: #1a73e8; border-ra=
+dius: 8px; color: #fff; display: inline-block; font: 700 12px/16px Roboto, =
+Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; margin-left:=
+ 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14px Roboto, Arial,=
+ Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;"><div styl=
+e=3D"margin-top: 6px;" class=3D"notranslate">I&#39;d feel more comfortable =
+leaving it in since that is the context of his perspective, and we&#39;ll s=
+ee if Accenture reacts to it.</div></div></td></tr></table></div><div style=
+=3D"margin-top: 12px; word-break: break-word; word-wrap: break-word;"><tabl=
+e role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width:=
+ 100%;color: #3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;">=
+<amp-img src=3D"https://lh3.googleusercontent.com/a/AATXAJwAq8OM1xh6x2G8vB-=
+GbBIrn0P_zVoOSIAOy2Uw=3Ds50-c-k-no" alt=3D"" height=3D"32" width=3D"32" sty=
+le=3D"border-radius: 50%;box-sizing: border-box; display: block;"></amp-img=
+></td><td><h3 style=3D"display: inline-block; font: 500 14px Google Sans, R=
+oboto, Arial, Helvetica, sans-serif; letter-spacing: .25px; line-height: 20=
+px; margin: 6px 0 2px 0;">Sara Joyner</h3><h4 style=3D"background: #1a73e8;=
+ border-radius: 8px; color: #fff; display: inline-block; font: 700 12px/16p=
+x Roboto, Arial, Helvetica, sans-serif; margin-bottom: 0; margin-top: 0; ma=
+rgin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font: 400 14px Robo=
+to, Arial, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;"=
+><div style=3D"margin-top: 6px;"><i>Marked as done</i></div></div></td></tr=
+></table></div><div style=3D"margin: 10px 0 0 42px; overflow: auto; padding=
+: 2px;"><a href=3D"https://docs.google.com/document/d/1sRm_6b9xsQmoDcqQBiWt=
+7X2AjJnBSifX2Ba-LJ2qNrc/edit?disco=3DAAAAQ_a1wPY&amp;usp=3Dtodo_email_discu=
+ssion&amp;usp_dm=3Dtrue&amp;ts=3D6172d667" class=3D"material-button materia=
+l-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button" styl=
+e=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Roboto, Arial, Helveti=
+ca, sans-serif; border: none; border-radius: 4px; box-sizing: border-box; d=
+isplay: inline-block; letter-spacing: .25px; min-height: 36px; text-align: =
+center; text-decoration: none;float: right;">Open</a></div></div><div style=
+=3D"margin: 18px 0;height: 1px; background-color: #eee;"></div><div><a styl=
+e=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px=
+; letter-spacing: .2px;color: #1a73e8; text-decoration: none;" target=3D"_b=
+lank" href=3D"https://drive.google.com/drive/search?usp=3Dmanage_all_todos_=
+url&amp;q=3Dfollowup:actionitems&amp;usp_dm=3Dtrue">View files with action =
+items assigned to you</a></div></td></tr></table><table style=3D"border-col=
+lapse: collapse; width: 100%;" role=3D"presentation"><tr><td style=3D"paddi=
+ng: 24px 4.5%"><table style=3D"border-collapse: collapse; width: 100%;" dir=
+=3D"ltr"><tr><td style=3D"padding: 0;font-family: Roboto, Arial, Helvetica,=
+ sans-serif; color: #5F6368; width: 100%; font-size: 12px; line-height: 16p=
+x; min-height: 40px; letter-spacing: .3px;"><p style=3D"margin: 0; padding:=
+ 0;">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA<br=
+><br>You have received this email because you are mentioned in this thread.=
+ <a href=3D"https://docs.google.com/document/u/100348406323779895805/docos/=
+notify?ouid=3D100348406323779895805&amp;id=3D1sRm_6b9xsQmoDcqQBiWt7X2AjJnBS=
+ifX2Ba-LJ2qNrc&amp;title=3DThe+Rise+of+Forerunners+Script+v3&amp;resourceke=
+y" target=3D"_blank" style=3D"color: #1a73e8; text-decoration: none;">Chang=
+e what Google Docs sends you.</a> You can reply to this email to reply to t=
+he discussion.</p></td><td style=3D"padding: 0; padding-left: 20px;"><amp-i=
+mg src=3D"https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_=
+tm_black54_color_96x40dp.png" width=3D"96px" height=3D"40px"></amp-img></td=
+></tr></table></td></tr></table></td></tr></table></td></tr></table></div><=
+template type=3D"amp-mustache">{{#singleThreadDiscussion}}<table style=3D"b=
+order-collapse: collapse; width: 100%; background-color: white; text-align:=
+ center;" role=3D"presentation"><tr><td style=3D"padding: 24px 0 16px 0;"><=
+table style=3D"border-collapse: collapse;font-family: Roboto, Arial, Helvet=
+ica, sans-serif;hyphens: auto; overflow-wrap: break-word; word-wrap: break-=
+word; word-break: break-word;display: inline-block; width: 90%;max-width: 7=
+00px;min-width: 280px; text-align: left;" role=3D"presentation"><tr><td sty=
+le=3D"padding: 0;"><table style=3D"width:100%; border: 1px solid #dadce0; b=
+order-radius: 8px; border-spacing: 0; table-layout:fixed; border-collapse: =
+separate;" role=3D"presentation"><tr><td style=3D"padding: 4.5%;" dir=3D"lt=
+r"><div id=3D"overview-card-contents"><div class=3D"flex flex-column flex-s=
+pace-column-12px"><div><h1 style=3D"color: #3c4043; font: 400 18px Google S=
+ans, Roboto, Arial, Helvetica, sans-serif; margin: 0;">Sara Joyner mentione=
+d you in an action item in the following document</h1></div><div><div class=
+=3D"flex flex-column flex-space-column-12px"><div id=3D"document-chip-secti=
+on"><div id=3D"document-chip"><a href=3D"https://docs.google.com/document/d=
+/1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc/edit?disco=3DAAAAQ_a1wPY&amp;=
+ts=3D6172d667&amp;usp=3Dcomment_email_document&amp;usp_dm=3Dtrue" target=3D=
+"_blank" style=3D"color: #3c4043; display: inline-block; max-width: 100%; t=
+ext-decoration: none; vertical-align: top;border: 1px solid #DADCE0; border=
+-radius: 16px; white-space: nowrap;min-width: 0;"><div style=3D"line-height=
+: 18px; overflow: hidden; text-overflow: ellipsis;padding: 6px 12px;"><span=
+ style=3D"display: inline-block; vertical-align: top; min-width: 26px; widt=
+h: 26px;"><amp-img src=3D"https://ssl.gstatic.com/docs/doclist/images/media=
+type/icon_1_document_x64.png" width=3D"18" height=3D"18" style=3D"vertical-=
+align: top;" role=3D"presentation"></amp-img></span><span style=3D"font: 50=
+0 14px/18px Google Sans, Roboto, Arial, Helvetica, sans-serif; display: inl=
+ine; letter-spacing: 0.2px;">The Rise of Forerunners Script v3</span></div>=
+</a></div></div></div></div></div><div style=3D"margin: 18px 0;height: 1px;=
+ background-color: #eee;"></div></div><div id=3D"discussion-{{docoId}}" sty=
+le=3D"overflow: visible; line-height: 20px;">{{^isDeleted}}{{#htmlQuote}}<d=
+iv class=3D"document-content-snippet" style=3D"border: 1px solid #DADCE0; b=
+order-radius: 8px; padding: 12px 16px;hyphens: auto; overflow-wrap: break-w=
+ord; word-wrap: break-word; word-break: break-word;"><span class=3D"notrans=
+late" style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-he=
+ight: 20px; color: #3c4043;">{{{htmlQuote}}}</span></div>{{/htmlQuote}}{{#p=
+osts}}<div class=3D"{{#isHeadPost}}head-post{{/isHeadPost}}{{^isHeadPost}}r=
+eply-post{{/isHeadPost}}"><table role=3D"presentation" cellpadding=3D"0" ce=
+llspacing=3D"0" style=3D"width: 100%;" class=3D"{{#isNew}}post-dark-text{{/=
+isNew}}{{^isNew}}post-light-text{{/isNew}}"><tr><td style=3D"vertical-align=
+: top; width: 44px;"><amp-img src=3D"{{authorPhotoUrl}}" alt=3D"" height=3D=
+"32" width=3D"32" style=3D"border-radius: 50%;box-sizing: border-box; displ=
+ay: block;"></amp-img></td><td><h3 style=3D"display: inline-block; font: 50=
+0 14px Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .=
+25px; line-height: 20px; margin: 6px 0 2px 0;">{{authorName}}</h3>{{#isNew}=
+}<h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff; display=
+: inline-block; font: 700 12px/16px Roboto, Arial, Helvetica, sans-serif; m=
+argin-bottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4=
+>{{/isNew}}<div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-seri=
+f; line-height: 20px; letter-spacing: .2px;">{{#htmlBody}}<div style=3D"mar=
+gin-top: 6px;" class=3D"notranslate">{{{htmlBody}}}</div>{{/htmlBody}}{{#ht=
+mlActionText}}<div style=3D"margin-top: 6px;"><i>{{{htmlActionText}}}</i></=
+div>{{/htmlActionText}}{{#showCopiedText}}<div style=3D"margin: 18px 0;heig=
+ht: 1px; background-color: #eee;"></div><div style=3D"color: #3c4043; font:=
+ italic 14px Roboto-Italic, Arial; margin: 18px 0 6px 0; width: 100%;">Comm=
+ents above copied from original document</div>{{/showCopiedText}}</div></td=
+></tr></table></div>{{/posts}}{{/isDeleted}}{{#isDeleted}}<div style=3D"col=
+or: #3c4043; font: italic 14px Roboto-Italic, Arial; margin: 18px 0 6px 0; =
+width: 100%;">Comment was deleted</div>{{/isDeleted}}{{#canResolve}}<form i=
+d=3D"resolve-form-{{docoId}}" method=3D"post" action-xhr=3D"https://docs.go=
+ogle.com/document/d/1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc/dynamicmai=
+l/resolve?emailToken=3DAORGpRcXBzyaFAOwDvLdIsYy96aY0GXF2KqGydgxcJBip40BpfTf=
+KH8Qd5Xhum-R5YLS-pCzMUj0pVMh65axlo4XdcTfBqxVQ3uP3UhbYmc3YUiPTA_TO8IqWA7d5jU=
+NeOcFaEvcl47g&amp;buildLabel=3Dkix_2021.41-Tue_RC01&amp;clientVersion=3D2&a=
+mp;ts=3D6172d667" on=3D"submit-success: discussionList.refresh, AMP.setStat=
+e({scope: {'pendingReply{{docoId}}': false}, pendingReplies: {'{{docoId}}':=
+ ''}, cachedReplies: {'{{docoId}}': ''}}); submit: discussion-{{docoId}}.to=
+ggleClass('class' =3D 'resolving-discussion'), AMP.setState({scope: {'reply=
+Button{{docoId}}Disabled': true, 'pendingReply{{docoId}}': true}, cachedRep=
+lies: pendingReplies}); submit-error: discussion-{{docoId}}.toggleClass('cl=
+ass' =3D 'submit-error', force=3Dtrue), discussion-{{docoId}}.toggleClass('=
+class' =3D 'resolving-discussion'), AMP.setState({scope: {'replyButton{{doc=
+oId}}Disabled': pendingReplies['{{docoId}}'] =3D=3D null || pendingReplies[=
+'{{docoId}}'] =3D=3D '', 'pendingReply{{docoId}}': false}});"><div submit-s=
+uccess template=3D"inline-action-post"></div><input type=3D"hidden" name=3D=
+"replyText" data-amp-bind-value=3D"pendingReplies['{{docoId}}']"><input typ=
+e=3D"hidden" name=3D"commentId" value=3D"{{docoId}}"><input type=3D"hidden"=
+ name=3D"clientId" value=3D"{{replyClientId}}"></form>{{/canResolve}}{{#can=
+Reply}}<form id=3D"reply-form-{{docoId}}" method=3D"post" autocomplete=3D"o=
+ff" action-xhr=3D"https://docs.google.com/document/d/1sRm_6b9xsQmoDcqQBiWt7=
+X2AjJnBSifX2Ba-LJ2qNrc/dynamicmail/reply?emailToken=3DAORGpRcXBzyaFAOwDvLdI=
+sYy96aY0GXF2KqGydgxcJBip40BpfTfKH8Qd5Xhum-R5YLS-pCzMUj0pVMh65axlo4XdcTfBqxV=
+Q3uP3UhbYmc3YUiPTA_TO8IqWA7d5jUNeOcFaEvcl47g&amp;buildLabel=3Dkix_2021.41-T=
+ue_RC01&amp;clientVersion=3D2&amp;ts=3D6172d667" custom-validation-reportin=
+g=3D"as-you-go" on=3D"submit-success: discussionList.refresh, AMP.setState(=
+{scope: {'pendingReply{{docoId}}': false}, pendingReplies: {'{{docoId}}': '=
+'}, cachedReplies: {'{{docoId}}': ''}}); submit: discussion-{{docoId}}.togg=
+leClass('class' =3D 'submitting-reply'), AMP.setState({scope: {'replyButton=
+{{docoId}}Disabled': true, 'pendingReply{{docoId}}': true}, cachedReplies: =
+pendingReplies}); submit-error: discussion-{{docoId}}.toggleClass('class' =
+=3D 'submit-error', force=3Dtrue), discussion-{{docoId}}.toggleClass('class=
+' =3D 'submitting-reply'), AMP.setState({scope: {'replyButton{{docoId}}Disa=
+bled': false, 'pendingReply{{docoId}}': false}}); valid:AMP.setState({scope=
+: {'replyButton{{docoId}}Disabled': false}}); invalid:AMP.setState({scope: =
+{'replyButton{{docoId}}Disabled': true}});"><div submit-success template=3D=
+"inline-action-post"></div><div class=3D"reply-form-textarea" style=3D"marg=
+in-top: 12px; word-break: break-word; word-wrap: break-word;"><table role=
+=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;=
+"><tr><td style=3D"vertical-align: top; width: 44px; padding-top: 11px;"><a=
+mp-img src=3D"{{requestor.photoUrl}}" alt=3D"" height=3D"32" width=3D"32" s=
+tyle=3D"border-radius: 50%;box-sizing: border-box; display: block;"></amp-i=
+mg></td><td><textarea autoexpand style=3D"font-family: Roboto, Arial, Helve=
+tica, sans-serif; font-size: 14px; background-color: #f8f9fa; border-radius=
+: 4px 4px 0 0; box-sizing: border-box; color: #3c4043; height: 54px; letter=
+-spacing: .2px; line-height: 20px; outline: none; padding: 16px 10px; resiz=
+e: none; width: 100%; word-break: break-word; vertical-align: top;" class=
+=3D"material-text-input" name=3D"replyText" autocomplete=3D"off" placeholde=
+r=3D"Reply" maxlength=3D"2048" on=3D"input-throttled: AMP.setState({pending=
+Replies: {'{{docoId}}': event.value}});" data-amp-bind-text=3D"cachedReplie=
+s['{{docoId}}'] || ''" data-amp-bind-disabled=3D"scope['pendingReply{{docoI=
+d}}']" pattern=3D".*\S+.*" aria-label=3D"Reply" required></textarea><input =
+type=3D"hidden" name=3D"commentId" value=3D"{{docoId}}"><input type=3D"hidd=
+en" name=3D"clientId" value=3D"{{replyClientId}}"></td></tr></table></div><=
+/form>{{/canReply}}<div style=3D"margin: 10px 0 0 42px; overflow: auto; pad=
+ding: 2px;">{{#canReply}}<input id=3D"discussion-reply-button-{{docoId}}" t=
+ype=3D"submit" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, Rob=
+oto, Arial, Helvetica, sans-serif; border: none; border-radius: 4px; box-si=
+zing: border-box; display: inline-block; letter-spacing: .25px; min-height:=
+ 36px; text-align: center; text-decoration: none;margin-right: 12px;" role=
+=3D"button" on=3D"tap:reply-form-{{docoId}}.submit()" class=3D"material-but=
+ton material-button-transparent" value=3D"Reply" title=3D"Reply to comment"=
+ disabled data-amp-bind-disabled=3D"scope['replyButton{{docoId}}Disabled']"=
+ tabindex=3D"0">{{/canReply}}{{#canResolve}}<input id=3D"discussion-resolve=
+-button-{{docoId}}" type=3D"submit" style=3D"padding: 0 8px;font: 500 14px/=
+36px Google Sans, Roboto, Arial, Helvetica, sans-serif; border: none; borde=
+r-radius: 4px; box-sizing: border-box; display: inline-block; letter-spacin=
+g: .25px; min-height: 36px; text-align: center; text-decoration: none;margi=
+n-right: 12px;" role=3D"button" on=3D"tap:resolve-form-{{docoId}}.submit()"=
+ class=3D"material-button material-button-transparent resolve-button" value=
+=3D"{{#isTodo}}Mark as done{{/isTodo}}{{^isTodo}}Resolve{{/isTodo}}" title=
+=3D"{{#isTodo}}Mark action item as done{{/isTodo}}{{^isTodo}}Mark as resolv=
+ed{{/isTodo}}" tabindex=3D"0">{{/canResolve}}<a id=3D"discussion-open-butto=
+n-{{docoId}}" href=3D"{{discussionLink}}" class=3D"material-button material=
+-button-transparent discussion-open-button" target=3D"_blank" tabindex=3D"0=
+" role=3D"button" style=3D"padding: 0 8px;font: 500 14px/36px Google Sans, =
+Roboto, Arial, Helvetica, sans-serif; border: none; border-radius: 4px; box=
+-sizing: border-box; display: inline-block; letter-spacing: .25px; min-heig=
+ht: 36px; text-align: center; text-decoration: none;">Open</a></div><div st=
+yle=3D"color: #d93025; font: 14px Roboto, Arial, Helvetica, sans-serif; hei=
+ght: 36px; line-height: 36px; letter-spacing: 0.25px; margin-left: 36px; pa=
+dding-left: 8px;" class=3D"reply-error-text">Something went wrong, please r=
+etry</div></div>{{#wasAssigned}}<div style=3D"margin: 18px 0;height: 1px; b=
+ackground-color: #eee;"></div><div><a style=3D"font: 400 14px Roboto, Arial=
+, Helvetica, sans-serif; line-height: 20px; letter-spacing: .2px;color: #1a=
+73e8; text-decoration: none;" target=3D"_blank" href=3D"https://drive.googl=
+e.com/drive/search?usp=3Dmanage_all_todos_url&amp;q=3Dfollowup:actionitems&=
+amp;usp_dm=3Dtrue">View files with action items assigned to you</a></div>{{=
+/wasAssigned}}</td></tr></table><table style=3D"border-collapse: collapse; =
+width: 100%;" role=3D"presentation"><tr><td style=3D"padding: 24px 4.5%"><t=
+able style=3D"border-collapse: collapse; width: 100%;" dir=3D"ltr"><tr><td =
+style=3D"padding: 0;font-family: Roboto, Arial, Helvetica, sans-serif; colo=
+r: #5F6368; width: 100%; font-size: 12px; line-height: 16px; min-height: 40=
+px; letter-spacing: .3px;"><p style=3D"margin: 0; padding: 0;">Google LLC, =
+1600 Amphitheatre Parkway, Mountain View, CA 94043, USA<br><br>You have rec=
+eived this email because you are mentioned in this thread. <a href=3D"https=
+://docs.google.com/document/u/100348406323779895805/docos/notify?ouid=3D100=
+348406323779895805&amp;id=3D1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc&am=
+p;title=3DThe+Rise+of+Forerunners+Script+v3&amp;resourcekey" target=3D"_bla=
+nk" style=3D"color: #1a73e8; text-decoration: none;">Change what Google Doc=
+s sends you.</a> You can reply to this email to reply to the discussion.</p=
+></td><td style=3D"padding: 0; padding-left: 20px;"><amp-img src=3D"https:/=
+/www.gstatic.com/images/branding/googlelogo/2x/googlelogo_tm_black54_color_=
+96x40dp.png" width=3D"96px" height=3D"40px"></amp-img></td></tr></table></t=
+d></tr></table></td></tr></table></td></tr></table>{{/singleThreadDiscussio=
+n}}</template></amp-list></div></body></html>
+--0000000000000ee43705cef288a2
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div itemscope itemtype=3D"http://schema.org/EmailMessage" style=3D"font: 1=
+4px Roboto, Arial, Helvetica, sans-serif;"><div itemprop=3D"about" itemscop=
+e itemtype=3D"http://schema.org/CreativeWork"><meta itemprop=3D"name" conte=
+nt=3D"The Rise of Forerunners Script v3"><meta itemprop=3D"url" content=3D"=
+https://docs.google.com/document/d/1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2=
+qNrc/edit?disco=3DAAAAQ_a1wPY&amp;ts=3D6172d667&amp;usp=3Dcomment_email_doc=
+ument"><table style=3D"border-collapse: collapse; width: 100%; background-c=
+olor: white; text-align: center;" role=3D"presentation"><tr><td style=3D"pa=
+dding: 24px 0 16px 0;"><table style=3D"border-collapse: collapse;font-famil=
+y: Roboto, Arial, Helvetica, sans-serif;hyphens: auto; overflow-wrap: break=
+-word; word-wrap: break-word; word-break: break-word;display: inline-block;=
+ width: 90%;max-width: 700px;min-width: 280px; text-align: left;" role=3D"p=
+resentation"><tr><td style=3D"padding: 0;"><table style=3D"width:100%; bord=
+er: 1px solid #dadce0; border-radius: 8px; border-spacing: 0; table-layout:=
+fixed; border-collapse: separate;" role=3D"presentation"><tr><td style=3D"p=
+adding: 4.5%;" dir=3D"ltr"><div itemprop=3D"action" itemscope itemtype=3D"h=
+ttp://schema.org/ViewAction"><meta itemprop=3D"url" content=3D"https://docs=
+.google.com/document/d/1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc/edit?di=
+sco=3DAAAAQ_a1wPY&amp;usp=3Dtodo_email_discussion&amp;ts=3D6172d667"><meta =
+itemprop=3D"name" content=3D"Open Discussion"></div><div id=3D"overview-car=
+d-contents"><div><div><h1 style=3D"color: #3c4043; font: 400 18px Google Sa=
+ns, Roboto, Arial, Helvetica, sans-serif; margin: 0;">Sara Joyner mentioned=
+ you in an action item in the following document</h1></div><div style=3D"ma=
+rgin-top: 12px;"><div><div><div id=3D"document-chip-section"><div id=3D"doc=
+ument-chip"><a href=3D"https://docs.google.com/document/d/1sRm_6b9xsQmoDcqQ=
+BiWt7X2AjJnBSifX2Ba-LJ2qNrc/edit?disco=3DAAAAQ_a1wPY&amp;ts=3D6172d667&amp;=
+usp=3Dcomment_email_document&amp;usp_dm=3Dfalse" target=3D"_blank" style=3D=
+"color: #3c4043; display: inline-block; max-width: 100%; text-decoration: n=
+one; vertical-align: top;border: 1px solid #DADCE0; border-radius: 16px; wh=
+ite-space: nowrap;min-width: 0;"><div style=3D"line-height: 18px; overflow:=
+ hidden; text-overflow: ellipsis;padding: 6px 12px;"><span style=3D"display=
+: inline-block; vertical-align: top; min-width: 26px; width: 26px;"><img sr=
+c=3D"https://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_=
+x64.png" width=3D"18" height=3D"18" style=3D"vertical-align: top;" role=3D"=
+presentation"></span><span style=3D"font: 500 14px/18px Google Sans, Roboto=
+, Arial, Helvetica, sans-serif; display: inline; letter-spacing: 0.2px;">Th=
+e Rise of Forerunners Script v3</span></div></a></div></div></div></div></d=
+iv></div><div style=3D"margin: 18px 0;height: 1px; background-color: #eee;"=
+></div></div><div style=3D"overflow: visible; line-height: 20px;"><div clas=
+s=3D"document-content-snippet" style=3D"border: 1px solid #DADCE0; border-r=
+adius: 8px; padding: 12px 16px;hyphens: auto; overflow-wrap: break-word; wo=
+rd-wrap: break-word; word-break: break-word;"><span class=3D"notranslate" s=
+tyle=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 2=
+0px; color: #3c4043;">Josh: Take for example, one of Hypergiant=E2=80=99s c=
+lients who came to them for a predictive maintenance solution for their fle=
+et of autonomous trains. You know, like the kind that shuttle you around be=
+tween airport terminals.=20
+
+Will: Big project, huge project. So obviously the statement of work comes i=
+n, designers and developers come up with really, really innovative solution=
+s to their problems that would have an immediate impact on safety for the w=
+orkers in an immediate impact on efficiency for the company.
+
+Josh: The developers had come up with a totally automated AI maintenance sy=
+stem. Powerful sensors would detect problems before they ever arose. The tr=
+ains would never break down. And at first glance, they thought it met the e=
+thical requirements. The developers believed there was positive intent, tha=
+t the world would be a great place if nothing ever broke down, and... they =
+thought it would benefit human beings.=20
+
+Will:  The challenge was it also would have led to the majority of the ma=
+=E2=80=A6</span></div><div style=3D"margin-top: 18px; word-break: break-wor=
+d; word-wrap: break-word;"><table role=3D"presentation" cellpadding=3D"0" c=
+ellspacing=3D"0" style=3D"width: 100%;color: #777777;"><tr><td style=3D"ver=
+tical-align: top; width: 44px;"><img src=3D"https://lh3.googleusercontent.c=
+om/a/AATXAJwAq8OM1xh6x2G8vB-GbBIrn0P_zVoOSIAOy2Uw=3Ds50-c-k-no" alt=3D"" he=
+ight=3D"32" width=3D"32" style=3D"border-radius: 50%;box-sizing: border-box=
+; display: block;"></td><td><h3 style=3D"display: inline-block; font: 500 1=
+4px Google Sans, Roboto, Arial, Helvetica, sans-serif; letter-spacing: .25p=
+x; line-height: 20px; margin: 6px 0 2px 0;">Sara Joyner</h3><div style=3D"f=
+ont: 400 14px Roboto, Arial, Helvetica, sans-serif; line-height: 20px; lett=
+er-spacing: .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">@<=
+a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a> @<a href=
+=3D"mailto:sam.mouser@nytimes.com" target=3D"_blank">sam.mouser@nytimes.com=
+</a> check this out!</div><div style=3D"margin-top: 6px;"><i>Assigned to yo=
+u</i></div></div></td></tr></table></div><div style=3D"margin-top: 12px; wo=
+rd-break: break-word; word-wrap: break-word;"><table role=3D"presentation" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #777777;"><=
+tr><td style=3D"vertical-align: top; width: 44px;"><img src=3D"https://lh3.=
+googleusercontent.com/a-/AOh14Gj4lMLpN2f8IIsZd6cXqwFNcYqPDyt8x_t0q51UQg=3Ds=
+50-c-k-no" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: 50%;=
+box-sizing: border-box; display: block;"></td><td><h3 style=3D"display: inl=
+ine-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, sans-serif=
+; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Josh Klei=
+n</h3><div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; li=
+ne-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top: 6px;" cla=
+ss=3D"notranslate">I love it except for =E2=80=9CWhen you use technology an=
+d robot process automation that displaces human workers, what you now creat=
+e is whole communities of idle people who don&#39;t have jobs and when that=
+ happens, it creates civil unrest and social unrest. And that is what tears=
+ at the fabric of society=E2=80=9D - does this piece make the point without=
+ that part?</div></div></td></tr></table></div><div style=3D"margin-top: 12=
+px; word-break: break-word; word-wrap: break-word;"><table role=3D"presenta=
+tion" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #3c40=
+43;"><tr><td style=3D"vertical-align: top; width: 44px;"><img src=3D"https:=
+//lh3.googleusercontent.com/a/AATXAJwAq8OM1xh6x2G8vB-GbBIrn0P_zVoOSIAOy2Uw=
+=3Ds50-c-k-no" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: =
+50%;box-sizing: border-box; display: block;"></td><td><h3 style=3D"display:=
+ inline-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, sans-s=
+erif; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Sara =
+Joyner</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #ff=
+f; display: inline-block; font: 700 12px/16px Roboto, Arial, Helvetica, san=
+s-serif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px=
+;">New</h4><div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-seri=
+f; line-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top: 6px;=
+" class=3D"notranslate">I&#39;d feel more comfortable leaving it in since t=
+hat is the context of his perspective, and we&#39;ll see if Accenture react=
+s to it.</div></div></td></tr></table></div><div style=3D"margin-top: 12px;=
+ word-break: break-word; word-wrap: break-word;"><table role=3D"presentatio=
+n" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;color: #3c4043;=
+"><tr><td style=3D"vertical-align: top; width: 44px;"><img src=3D"https://l=
+h3.googleusercontent.com/a/AATXAJwAq8OM1xh6x2G8vB-GbBIrn0P_zVoOSIAOy2Uw=3Ds=
+50-c-k-no" alt=3D"" height=3D"32" width=3D"32" style=3D"border-radius: 50%;=
+box-sizing: border-box; display: block;"></td><td><h3 style=3D"display: inl=
+ine-block; font: 500 14px Google Sans, Roboto, Arial, Helvetica, sans-serif=
+; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Sara Joyn=
+er</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff; d=
+isplay: inline-block; font: 700 12px/16px Roboto, Arial, Helvetica, sans-se=
+rif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;">N=
+ew</h4><div style=3D"font: 400 14px Roboto, Arial, Helvetica, sans-serif; l=
+ine-height: 20px; letter-spacing: .2px;"><div style=3D"margin-top: 6px;"><i=
+>Marked as done</i></div></div></td></tr></table></div><div style=3D"margin=
+: 10px 0 0 42px; overflow: auto; padding: 2px;"><a href=3D"https://docs.goo=
+gle.com/document/d/1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc/edit?disco=
+=3DAAAAQ_a1wPY&amp;usp=3Dtodo_email_discussion&amp;usp_dm=3Dfalse&amp;ts=3D=
+6172d667" class=3D"material-button material-button-transparent" target=3D"_=
+blank" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font: 500 14p=
+x/36px Google Sans, Roboto, Arial, Helvetica, sans-serif; border: none; bor=
+der-radius: 4px; box-sizing: border-box; display: inline-block; letter-spac=
+ing: .25px; min-height: 36px; text-align: center; text-decoration: none;bac=
+kground-color: transparent; color: #1a73e8; cursor: pointer;float: right;">=
+Open</a></div></div><div style=3D"margin: 18px 0;height: 1px; background-co=
+lor: #eee;"></div><div><a style=3D"font: 400 14px Roboto, Arial, Helvetica,=
+ sans-serif; line-height: 20px; letter-spacing: .2px;color: #1a73e8; text-d=
+ecoration: none;" target=3D"_blank" href=3D"https://drive.google.com/drive/=
+search?usp=3Dmanage_all_todos_url&amp;q=3Dfollowup:actionitems&amp;usp_dm=
+=3Dfalse">View files with action items assigned to you</a></div></td></tr><=
+/table><table style=3D"border-collapse: collapse; width: 100%;" role=3D"pre=
+sentation"><tr><td style=3D"padding: 24px 4.5%"><table style=3D"border-coll=
+apse: collapse; width: 100%;" dir=3D"ltr"><tr><td style=3D"padding: 0;font-=
+family: Roboto, Arial, Helvetica, sans-serif; color: #5F6368; width: 100%; =
+font-size: 12px; line-height: 16px; min-height: 40px; letter-spacing: .3px;=
+"><p style=3D"margin: 0; padding: 0;">Google LLC, 1600 Amphitheatre Parkway=
+, Mountain View, CA 94043, USA<br><br>You have received this email because =
+you are mentioned in this thread. <a href=3D"https://docs.google.com/docume=
+nt/u/100348406323779895805/docos/notify?ouid=3D100348406323779895805&amp;id=
+=3D1sRm_6b9xsQmoDcqQBiWt7X2AjJnBSifX2Ba-LJ2qNrc&amp;title=3DThe+Rise+of+For=
+erunners+Script+v3&amp;resourcekey" target=3D"_blank" style=3D"color: #1a73=
+e8; text-decoration: none;">Change what Google Docs sends you.</a> You can =
+reply to this email to reply to the discussion.</p></td><td style=3D"paddin=
+g: 0; padding-left: 20px;"><img src=3D"https://www.gstatic.com/images/brand=
+ing/googlelogo/2x/googlelogo_tm_black54_color_96x40dp.png" width=3D"96px" h=
+eight=3D"40px"></td></tr></table></td></tr></table></td></tr></table></td><=
+/tr></table></div></div>
+--0000000000000ee43705cef288a2--

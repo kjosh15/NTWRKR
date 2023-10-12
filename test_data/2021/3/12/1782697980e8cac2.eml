@@ -1,0 +1,534 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp1187121ljm;
+        Fri, 12 Mar 2021 05:19:32 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyQitVcWCn3TY5jiDtaJvlQ0b4bOrFXuJedW+T/dVCAHfYFgDgpClJ31PlooIv9T1BXVu+e
+X-Received: by 2002:a17:907:98f5:: with SMTP id ke21mr8534791ejc.552.1615555172796;
+        Fri, 12 Mar 2021 05:19:32 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1615555172; cv=none;
+        d=google.com; s=arc-20160816;
+        b=fLmrTGMhA5QIwRmHzhcZTMuu1NHtsv3ycwekZP7/dMcrarSXUhIiT+ldGuh3FDeNLO
+         I1uK8OUJdwUEX2zQbHzhY7GjvrxlSeyMdZ68xNuvlAttUqmYvyhfSgdN/5uW1tUnFasY
+         f5ezeBHi9sDz1uSc+4L69THFAR6yDGgVfFxJLISSs6PVjpHOhhfgF0vJ31gOkb7XGW5A
+         f/hC8HVmfepPqStsh5mTLHn2TYrbFVc+25pCXFo/r6PqeknIbjf8zp5pWuobP7Yk05gr
+         wX9nB85idHycjgl+/PfZcocJk7CzgjhXOrVDaKJuPUauKWIEFXHdynaIsggSUmggHUFx
+         6MEw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:mime-version:msip_labels:accept-language
+         :in-reply-to:references:message-id:date:thread-index:thread-topic
+         :subject:cc:to:from:dkim-signature;
+        bh=fiSqKJsZLmZX5oOQTGQet4TOBcy/WChpJHO9wN44+O0=;
+        b=KGMtjZaQn1OKVi5GISH0mHEv3Xcm4jneN7/HjK4d8T1NjDTxqmMefq+jgfNaCSFDVd
+         3hH2z8SXGQWnLycg84/LrugHyL+oLNcrFBVxLoeoBsUWOIYZPBiNI149uRuJgeB3HTSV
+         tZ3wS/GWA/fLPPCYtXfFELmZOjU0WEiPDIFq2mIXxUpnMOwlSyJn0nnbWZMqTOgGbRue
+         mXDOtrZjOEhKBWkmFkD9oBFAOe2LMgMDt3PzAGvAiH/uu/WiS4uX7Az861znX/Yp5BSq
+         RlEnW1yzfmJisFmbpPjrjZlEDesP82+xEOnHUHZKw7OyZoHxctu6aBl5UNRHsASbJ3hL
+         FjbA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@bechtel.com header.s=mimecast20200909 header.b=OecZlCMV;
+       spf=pass (google.com: domain of djwilson@bechtel.com designates 63.128.21.123 as permitted sender) smtp.mailfrom=djwilson@bechtel.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=bechtel.com
+Return-Path: <djwilson@bechtel.com>
+Received: from us-smtp-delivery-123.mimecast.com (us-smtp-delivery-123.mimecast.com. [63.128.21.123])
+        by mx.google.com with ESMTPS id o2si3874983ejr.38.2021.03.12.05.19.32
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 12 Mar 2021 05:19:32 -0800 (PST)
+Received-SPF: pass (google.com: domain of djwilson@bechtel.com designates 63.128.21.123 as permitted sender) client-ip=63.128.21.123;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@bechtel.com header.s=mimecast20200909 header.b=OecZlCMV;
+       spf=pass (google.com: domain of djwilson@bechtel.com designates 63.128.21.123 as permitted sender) smtp.mailfrom=djwilson@bechtel.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=bechtel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bechtel.com;
+	s=mimecast20200909; t=1615555171;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fiSqKJsZLmZX5oOQTGQet4TOBcy/WChpJHO9wN44+O0=;
+	b=OecZlCMV/xFWa+s0BWiwBC90Iwf0jw4mF8D7fE99Ga8/uPkeq0LvIdKMn4/eWd8Mg8r2oU
+	G59EvYcSV4mnKIVEq75FVCaoTk3En+QSIS6Evm9/tgrJ1uRyfKiXrD+7Fl69ryWIWyUnQq
+	s/u/yvUekf1knZzvL7yEOncsdwsGN2VOYZFLz1GjMrYnsw8FPA64TVf7x1VcmCQUWpghem
+	oZ7BxZzELVg0Iw6aMdipngLFYrExnGJTN0mUflqN8idqA0Rn1lC3TYT7vSChap65maoqBf
+	VhhMW1ciyhnsSvdUXMuRNHFvsOtU/YSB9+QhINJraJu0ssQOSTNRa6l2hxpTdA==
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com
+ (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-AVb-2ftQNpikpmYknLmFwA-1; Fri, 12 Mar 2021 08:19:25 -0500
+Received: from CH2PR20MB3609.namprd20.prod.outlook.com (2603:10b6:610:35::22)
+ by CH2PR20MB3189.namprd20.prod.outlook.com (2603:10b6:610:a::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3912.17; Fri, 12 Mar
+ 2021 13:19:21 +0000
+Received: from CH2PR20MB3609.namprd20.prod.outlook.com
+ ([fe80::4cf:299c:6d4e:c071]) by CH2PR20MB3609.namprd20.prod.outlook.com
+ ([fe80::4cf:299c:6d4e:c071%3]) with mapi id 15.20.3933.032; Fri, 12 Mar 2021
+ 13:19:21 +0000
+From: "Wilson, David J" <djwilson@Bechtel.com>
+To: "chris@indigometrics.com" <chris@indigometrics.com>, "Edwards, Kevin"
+	<kedwards@bechtel.com>, "Nikulin, Misha" <mnikulin@bechtel.com>, "Bradford,
+ Jim" <jebradfo@Bechtel.com>
+CC: josh <josh@josh.is>
+Subject: RE: [*EXTERNAL*] Indigometrics Launch Day Data
+Thread-Topic: [*EXTERNAL*] Indigometrics Launch Day Data
+Thread-Index: AdcXHmY+7TcumO+TQ1CW8O/ZozFrnAAI3j3g
+Date: Fri, 12 Mar 2021 13:19:20 +0000
+Message-ID: <CH2PR20MB360918BD2338B7AD5AD4CFFACA6F9@CH2PR20MB3609.namprd20.prod.outlook.com>
+References: <057801d71720$e7ef7020$b7ce5060$@indigometrics.com>
+In-Reply-To: <057801d71720$e7ef7020$b7ce5060$@indigometrics.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+msip_labels: MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_Enabled=true;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_SetDate=2021-03-12T13:19:18Z;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_Method=Standard;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_Name=Show Visible Markings_0;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_SiteId=22d635a3-3930-4779-a82d-155e2d13b75e;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_ActionId=703d3640-bdcf-434f-b604-d38a43f5a3f3;
+ MSIP_Label_de5b8ec0-5b88-48fe-a244-1c0a4e91a8dd_ContentBits=2
+x-originating-ip: [165.225.8.245]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b386a37f-f3cf-4c28-b537-08d8e55972a7
+x-ms-traffictypediagnostic: CH2PR20MB3189:
+x-ld-processed: 22d635a3-3930-4779-a82d-155e2d13b75e,ExtAddr
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CH2PR20MB3189766959945063EBDF0E07CA6F9@CH2PR20MB3189.namprd20.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: mnA/TvKqip+JifXn+UY4TxC750lx6HJ4f8cZz4YDMLuhVxALPjVBXF1iSKnvuWhT1D0D/4RiIXIPQdG0b0CIiEHW7zcp7LBxkJkTjvNfnsk+nG7+8HeFx+5xHz8R/2ah2nPDRV1SUMl8gh+E23MPtza83LxHW1ch+u+Uqur3KeQfv28xXatabjDzCgcq8RRBqiAz1XgO2KgjVnTLpDmh2CKTkqDe0MLGiw2mKV06p1Uo5cOsLPfL9r/dIb9b1eTBfdZkoFfG6WlUL6Pp/u0U/FDD7Gvm1j6wg/YaTa2LD4c/f2QNRZ0QHscO9wszMF5ClaitZbzwpUVI2iseqthHETF5qiYdfYN4oFEH/xiZH5VOZEvtFybZkH0DiotUbron/YWdmKlW8s1dfYRs6P8vSUIgOn0VeHPPbvgco69vwaCU6ABdugVfF3O85q5zvLEQ3+pnChbR1vxZBgOD0J6nsdFSsYDGM4Q1Ga3kjA5x6yuYnTXVCx9Nvob+bGYFPrsBIff+miYHDN4XdhNRRr95UA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR20MB3609.namprd20.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(346002)(366004)(396003)(136003)(39860400002)(8936002)(76116006)(52536014)(55236004)(7696005)(33656002)(83380400001)(5660300002)(9686003)(6636002)(2906002)(26005)(316002)(186003)(71200400001)(66446008)(86362001)(55016002)(53546011)(6506007)(66556008)(8676002)(66476007)(64756008)(4326008)(110136005)(478600001)(66946007);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?TgqzqOj4hMZVT0lAsd7//zEJsYCDIBwD3BtKyj0AU0FAhKP9UKKBaqfTs0Qu?=
+ =?us-ascii?Q?AW5aApSoCfMn6Uvk2xNnAod6h4Rk5c7f12LuQzVWaHOA6wuQWQ+MZwzM+hbr?=
+ =?us-ascii?Q?rrUuoJVwjYQtcrWAQ0lhDnBKp7lUYBN03Nu51sOrsA+EWJRIT2f5xKds0Vp8?=
+ =?us-ascii?Q?lv/g8AO4t8Vd6r8ESjJHT7XngB6BcGA+RdXiUyCRX9luwLtzNFRU4ccGN6b2?=
+ =?us-ascii?Q?UvHv+Wi64my+7/yYjJC54XJZz87kgxGcKNZcD1ryN5Ea+J/mwFrHn36dQswb?=
+ =?us-ascii?Q?l7BgteljnOAYT3Q/oRajzTPx/b/H0oWLhmy6ZUzpI8G5J8XG/aLCMfMeNIiD?=
+ =?us-ascii?Q?WfDKskD8cS8xy4OBIp5zuC3S67m3XswJ3CMj8irKuz4HNvQhUGdTQqNMADPQ?=
+ =?us-ascii?Q?w1/vpJU/t8lua0jgR9wbgHisRZkIRNwh2b4/2pQuNzEEuBbW5jtVLwIgqXij?=
+ =?us-ascii?Q?0WyZZrP6FylICH4fnLLMI3sSkFC5UuWm0lVZzW0Kp7YhGKTMfNxUQaJADTf2?=
+ =?us-ascii?Q?kE7aMtB5fqSnKikJR9g1VaW8XfNCr+5+euowdp69eQFogX2BXRJGIQE7xnTP?=
+ =?us-ascii?Q?61HwoSM6+Qi9M8Zw8Qu1YZbeL5xPo/HAC6UxdR/Hv4PZ1P2mu/5sUQ27+Kos?=
+ =?us-ascii?Q?DPtsXgDHMZLENiIGhk7WhCHG8iL7wQty+gEvi3w9OfAHyG1r46MtnjSeeSUu?=
+ =?us-ascii?Q?XjE06QA6ps6Zlf/h3vVXj6W2xru+0HzzG2NGzinDJz9g9BbSkgDGzuCU8/Tn?=
+ =?us-ascii?Q?nfvW9+I0Zh91OMpYiJmm5P/Dv/Izs5reJvnGu1redSvLipxUKaF2MiAlFYQl?=
+ =?us-ascii?Q?SkykVJIf2SMmHtXthsOuJXZr4VV9/o/8hAGg2nzVinPH++lOz76Z8L2j4I9y?=
+ =?us-ascii?Q?IFERrq2vrf8dUfdEQei8jZvBCUIsdMwdf7TktH+AX5F25wjB7WR7zuZUPclK?=
+ =?us-ascii?Q?UqxB/xSP1+Y+1p5lOe7oEKxmsJK0BHMs6VihHQejK0gf6SWm0NHrjnpCtuMU?=
+ =?us-ascii?Q?QSvUXgTKHUKWtThhJrJjODGLuYtNE+gT2XLPaAN7IUnC+7dJc99t/KizinXY?=
+ =?us-ascii?Q?uFYqIoPV4Pt1xUz4GmRihP5Zh7el1z/SZYRvPqk5mvmk7YJ0BA+pf++1Wwd2?=
+ =?us-ascii?Q?5E0GDD/peom9LEKNawcjuA/9+Sul0sIKR6GICGuNY6qdkIfN/35PCtBMcyLI?=
+ =?us-ascii?Q?HQ3APswU23NFx9mpzFNI6g+fjpgSqB8E7fefQwmin8iSVUQP4kIpjy3BPNmy?=
+ =?us-ascii?Q?SYfuT4Rqg3LSrVR0PaBGbrohiqjoZXr2y1aAEhnEFCWQbt64wMeaNAquPN3b?=
+ =?us-ascii?Q?zK1yGZ3HabSNIaKbzMp06j6v?=
+x-mc-unique: AVb-2ftQNpikpmYknLmFwA-1
+x-mentions: mnikulin@bechtel.com
+x-originatororg: bechtel.com
+x-ms-exchange-crosstenant-authas: Internal
+x-ms-exchange-crosstenant-authsource: CH2PR20MB3609.namprd20.prod.outlook.com
+x-ms-exchange-crosstenant-network-message-id: b386a37f-f3cf-4c28-b537-08d8e55972a7
+x-ms-exchange-crosstenant-originalarrivaltime: 12 Mar 2021 13:19:20.7037 (UTC)
+x-ms-exchange-crosstenant-fromentityheader: Hosted
+x-ms-exchange-crosstenant-id: 22d635a3-3930-4779-a82d-155e2d13b75e
+x-ms-exchange-crosstenant-mailboxtype: HOSTED
+x-ms-exchange-crosstenant-userprincipalname: +N9fdlylBARlPDAdEaTFhcyWqAnN2gXxkZfS8+6F7RsJswhz/Xt0lbFrBdkim/W+91m+zP7zUbybAOUuq5ziJg==
+x-ms-exchange-transport-crosstenantheadersstamped: CH2PR20MB3189
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+	auth=pass smtp.auth=CUSA23A508 smtp.mailfrom=djwilson@bechtel.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: bechtel.com
+Content-Language: en-US
+Content-Type: multipart/alternative;
+	boundary="_000_CH2PR20MB360918BD2338B7AD5AD4CFFACA6F9CH2PR20MB3609namp_"
+
+--_000_CH2PR20MB360918BD2338B7AD5AD4CFFACA6F9CH2PR20MB3609namp_
+Content-Type: text/plain; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+
+Thank you Chris.
+
+Based on the email traffic I saw last night I believe bechtel.indigometrics=
+.com has now been whitelisted and should be good for the additional text pr=
+oposed below (great idea). @Nikulin, Misha<mailto:mnikulin@bechtel.com> ple=
+ase let me know if I misread the email string from our IST Threat team.
+
+And agreed - the sample populations should get better with the combination =
+of the SAP and MS Graph data.
+
+Cheers,
+David
+
+
+
+Level 3 - Bechtel Internal and Selected External Distribution
+From: chris@indigometrics.com <chris@indigometrics.com>
+Sent: Friday, March 12, 2021 4:20 AM
+To: Edwards, Kevin <kedwards@bechtel.com>; Nikulin, Misha <mnikulin@bechtel=
+.com>; Wilson, David J <djwilson@Bechtel.com>; Bradford, Jim <jebradfo@Bech=
+tel.com>
+Cc: josh <josh@josh.is>
+Subject: [*EXTERNAL*] Indigometrics Launch Day Data
+
+David, Kevin, Misha, Jim,
+
+Reporting on launch day stats:
+
+
+  *   512 reviews were sent out and 124 (24%) were completed
+This is a good launch day result given the VPN access problems that started=
+ around an hour after launch. Average launch day completion is approx. 25% =
+but varies widely depending on the comms package used prior to launch.
+  *   41% of reviews were "I did not interact"
+This is higher than expected (we expect 30% on launch day) and probably ref=
+lects the disperse nature of the teams involved in the launch. This figure =
+will reduce as our platform learns and also when we get the planned API acc=
+ess to your SAP data (because we will be able to code in a better understan=
+ding of your org structure). We will also increase the weighting given to t=
+he MS Graph People API Relevance Score to tailor our pair matching algorith=
+m to Bechtel's environment.
+  *   9 contact enquiries dealt with
+6 of these related to the VPN issue as below. 2 were questions about how th=
+e platform works and 1 participant asked not to be involved because they on=
+ly joined Bechtel a few months ago (we have put a 3 month hold on their par=
+ticipation)
+  *   VPN access challenges
+It looks like the main VPN used by Bechtel employees started blocking the s=
+ite about an hour after the launch email was sent, review traffic dropped o=
+ff significantly after that.
+The platform automatically sends a reminder email to anyone who hasn't comp=
+leted their review 48 hours after the first email. If our site can be white=
+ listed on the Bechtel VPN before those emails go out (tomorrow) we could a=
+dd text to that email such as "We understand that you may have experienced =
+problems accessing the Indigometrics site on Thursday. This was due to a VP=
+N blocking access, the Indigometrics site has now been white listed and you=
+ shouldn't experience any similar challenges going forward"
+We would then also propose to add a similar message to the emails sent with=
+ the 2nd reviews sent next Thursday to build back confidence that the site =
+will be available.
+
+Happy to discuss in more detail - and please let us know if we can help at =
+all with the VPN white listing.
+
+Thanks and regards
+
+Chris
+
+--_000_CH2PR20MB360918BD2338B7AD5AD4CFFACA6F9CH2PR20MB3609namp_
+Content-Type: text/html; charset=WINDOWS-1252
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:Wingdings;
+=09panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0in;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+=09{mso-style-priority:34;
+=09margin-top:0in;
+=09margin-right:0in;
+=09margin-bottom:0in;
+=09margin-left:.5in;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+span.EmailStyle19
+=09{mso-style-type:personal-reply;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+p.msipfooter69083fef, li.msipfooter69083fef, div.msipfooter69083fef
+=09{mso-style-name:msipfooter69083fef;
+=09mso-margin-top-alt:auto;
+=09margin-right:0in;
+=09mso-margin-bottom-alt:auto;
+=09margin-left:0in;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-size:10.0pt;}
+@page WordSection1
+=09{size:8.5in 11.0in;
+=09margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+=09{page:WordSection1;}
+/* List Definitions */
+@list l0
+=09{mso-list-id:543640377;
+=09mso-list-template-ids:624827908;}
+@list l0:level1
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:.5in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level2
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:1.0in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level3
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:1.5in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level4
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:2.0in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level5
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:2.5in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level6
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:3.0in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level7
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:3.5in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level8
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:4.0in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l0:level9
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:4.5in;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09mso-ansi-font-size:10.0pt;
+=09font-family:Symbol;}
+@list l1
+=09{mso-list-id:1524392938;
+=09mso-list-type:hybrid;
+=09mso-list-template-ids:230452218 1670150944 134807555 134807557 134807553=
+ 134807555 134807557 134807553 134807555 134807557;}
+@list l1:level1
+=09{mso-level-start-at:0;
+=09mso-level-number-format:bullet;
+=09mso-level-text:-;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:"Calibri",sans-serif;
+=09mso-fareast-font-family:Calibri;}
+@list l1:level2
+=09{mso-level-number-format:bullet;
+=09mso-level-text:o;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:"Courier New";}
+@list l1:level3
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0A7;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:Wingdings;}
+@list l1:level4
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:Symbol;}
+@list l1:level5
+=09{mso-level-number-format:bullet;
+=09mso-level-text:o;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:"Courier New";}
+@list l1:level6
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0A7;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:Wingdings;}
+@list l1:level7
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0B7;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:Symbol;}
+@list l1:level8
+=09{mso-level-number-format:bullet;
+=09mso-level-text:o;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:"Courier New";}
+@list l1:level9
+=09{mso-level-number-format:bullet;
+=09mso-level-text:\F0A7;
+=09mso-level-tab-stop:none;
+=09mso-level-number-position:left;
+=09text-indent:-.25in;
+=09font-family:Wingdings;}
+ol
+=09{margin-bottom:0in;}
+ul
+=09{margin-bottom:0in;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Thank you Chris. <o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Based on the email traffic I saw last night I believ=
+e bechtel.indigometrics.com has now been whitelisted and should be good for=
+ the additional text proposed below (great idea).
+<a id=3D"OWAAMB22908C98E064CEA950E6B2460FDA96F" href=3D"mailto:mnikulin@bec=
+htel.com">
+<span style=3D"font-family:&quot;Calibri&quot;,sans-serif;text-decoration:n=
+one">@Nikulin, Misha</span></a> please let me know if I misread the email s=
+tring from our IST Threat team.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">And agreed &#8211; the sample populations should get=
+ better with the combination of the SAP and MS Graph data.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal">Cheers,<o:p></o:p></p>
+<p class=3D"MsoNormal">David <o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"msipfooter69083fef" align=3D"center" style=3D"margin:0in;text-a=
+lign:center">
+<span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;co=
+lor:black">Level 3 - Bechtel Internal and Selected External Distribution</s=
+pan><o:p></o:p></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0in =
+0in 0in">
+<p class=3D"MsoNormal"><b>From:</b> chris@indigometrics.com &lt;chris@indig=
+ometrics.com&gt;
+<br>
+<b>Sent:</b> Friday, March 12, 2021 4:20 AM<br>
+<b>To:</b> Edwards, Kevin &lt;kedwards@bechtel.com&gt;; Nikulin, Misha &lt;=
+mnikulin@bechtel.com&gt;; Wilson, David J &lt;djwilson@Bechtel.com&gt;; Bra=
+dford, Jim &lt;jebradfo@Bechtel.com&gt;<br>
+<b>Cc:</b> josh &lt;josh@josh.is&gt;<br>
+<b>Subject:</b> [*EXTERNAL*] Indigometrics Launch Day Data<o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB">David, Kevin, Misha, Jim,<o:p><=
+/o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB">Reporting on launch day stats:<=
+o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB"><o:p>&nbsp;</o:p></span></p>
+<ul style=3D"margin-top:0in" type=3D"disc">
+<li class=3D"MsoListParagraph" style=3D"margin-left:0in;mso-list:l1 level1 =
+lfo3"><span lang=3D"EN-GB">512 reviews were sent out and 124 (24%) were com=
+pleted<br>
+This is a good launch day result given the VPN access problems that started=
+ around an hour after launch. Average launch day completion is approx. 25% =
+but varies widely depending on the comms package used prior to launch.<o:p>=
+</o:p></span></li><li class=3D"MsoListParagraph" style=3D"margin-left:0in;m=
+so-list:l1 level1 lfo3"><span lang=3D"EN-GB">41% of reviews were &#8220;I d=
+id not interact&#8221;<br>
+This is higher than expected (we expect 30% on launch day) and probably ref=
+lects the disperse nature of the teams involved in the launch. This figure =
+will reduce as our platform learns and also when we get the planned API acc=
+ess to your SAP data (because we
+ will be able to code in a better understanding of your org structure). We =
+will also increase the weighting given to the MS Graph People API Relevance=
+ Score to tailor our pair matching algorithm to Bechtel&#8217;s environment=
+.
+<o:p></o:p></span></li><li class=3D"MsoListParagraph" style=3D"margin-left:=
+0in;mso-list:l1 level1 lfo3"><span lang=3D"EN-GB">9 contact enquiries dealt=
+ with<br>
+6 of these related to the VPN issue as below. 2 were questions about how th=
+e platform works and 1 participant asked not to be involved because they on=
+ly joined Bechtel a few months ago (we have put a 3 month hold on their par=
+ticipation)<o:p></o:p></span></li><li class=3D"MsoListParagraph" style=3D"m=
+argin-left:0in;mso-list:l1 level1 lfo3"><span lang=3D"EN-GB">VPN access cha=
+llenges<br>
+It looks like the main VPN used by Bechtel employees started blocking the s=
+ite about an hour after the launch email was sent, review traffic dropped o=
+ff significantly after that.<br>
+The platform automatically sends a reminder email to anyone who hasn&#8217;=
+t completed their review 48 hours after the first email. If our site can be=
+ white listed on the Bechtel VPN before those emails go out (tomorrow) we c=
+ould add text to that email such as &#8220;We
+ understand that you may have experienced problems accessing the Indigometr=
+ics site on Thursday. This was due to a VPN blocking access, the Indigometr=
+ics site has now been white listed and you shouldn&#8217;t experience any s=
+imilar challenges going forward&#8221;<br>
+We would then also propose to add a similar message to the emails sent with=
+ the 2nd reviews sent next Thursday to build back confidence that the site =
+will be available.<o:p></o:p></span></li></ul>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB">Happy to discuss in more detail=
+ &#8211; and please let us know if we can help at all with the VPN white li=
+sting.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB">Thanks and regards<o:p></o:p></=
+span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span lang=3D"EN-GB">Chris<o:p></o:p></span></p>
+</div>
+</body>
+</html>
+
+--_000_CH2PR20MB360918BD2338B7AD5AD4CFFACA6F9CH2PR20MB3609namp_--
+

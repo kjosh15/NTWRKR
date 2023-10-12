@@ -1,0 +1,631 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9d41:0:0:0:0:0 with SMTP id y1csp4228521ljj;
+        Tue, 2 Mar 2021 02:53:18 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxDY3IV56oaNxCvHaq7otjcTFeOQVKIN0dNwHdj0X2uPE9bQqni4Nn0BoPmbJ7oQlJu6KNo
+X-Received: by 2002:a05:6402:26d3:: with SMTP id x19mr19710007edd.0.1614682398625;
+        Tue, 02 Mar 2021 02:53:18 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1614682398; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=a/1kr3c1LlAsd7IM5zQbyllqDfJByeHr1MGzawxIqshRVYHzWPTTXmKg/iSoDnh8g6
+         w6pEpaMquzVjXZBNbRMbMg/z/hpSNtPx7RtEzYGxVfI3LRXsSjCbROVcrAgs6IKJYz5h
+         MYNqDeaMESWVKAGSPnSurlbM8d+CZfArR+3vHmJkxKnTvYflk0u3z8+Gb/cz3Bg8RkJE
+         qAy9kwux5zR84ft1b1IoYPwWhAqCKmbr/0+ZQfkhT0sIX/y8fxGiO64Pdf3fL2KPHT8A
+         Svk/VJnR3ppKXs5WH9y0Y+q+wImmBSJV69/utsD/kHnu07UrjnA0tlmC/Ktpzk/kSR+z
+         ziyA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=auto-submitted:subject:references:in-reply-to:message-id
+         :content-language:date:to:from:mime-version:dkim-signature;
+        bh=QLNgO0NS/LNYgg8yhcJRmppyi4PLiTdd1BRpePRxWGU=;
+        b=ext1swTZkF4Qi5v/fZN2HV8iOZ67VGjKESvVp6URi9LaHh1kfgm1s/EkBc86F5ispJ
+         Vd6syXXIq7dgnjp9PEOi5fyLO4TmOrqziFy4/o3zPMFglm+gTM9XGf1wFypiikL3ZXAX
+         wzllwpszMn9yn5dzJPRD+7TS5MvJIt0BeaNVLMlnLnUh7Cjg2DxmOHslxNGiFXHMP1J4
+         b5RKxjOujDOwA0v6M0wYHZ1D4zUVfXWbaP23YngGERb1OHZHoVbYOmycPMbaVqgS3KrB
+         1yqtr+xg0JKWK+q7Uxu87qyXGEhTKzyzAjt9AnWp6IFQQrVc7qCUsH+tmeR4H8pQc/25
+         V4DA==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@mytakeda.com header.s=pp25032019 header.b=LV7wC6lk;
+       arc=pass (i=1 spf=pass spfdomain= dkim=pass dkdomain=mytakeda.com dmarc=pass fromdomain=mytakeda.com);
+       spf=pass (google.com: best guess record for domain of postmaster@mx08-00297f01.pphosted.com designates 91.207.212.250 as permitted sender) smtp.helo=mx08-00297f01.pphosted.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=mytakeda.com
+Return-Path: <>
+Received: from mx08-00297f01.pphosted.com (mx08-00297f01.pphosted.com. [91.207.212.250])
+        by mx.google.com with ESMTPS id cn4si2390646edb.52.2021.03.02.02.53.18
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 02 Mar 2021 02:53:18 -0800 (PST)
+Received-SPF: pass (google.com: best guess record for domain of postmaster@mx08-00297f01.pphosted.com designates 91.207.212.250 as permitted sender) client-ip=91.207.212.250;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@mytakeda.com header.s=pp25032019 header.b=LV7wC6lk;
+       arc=pass (i=1 spf=pass spfdomain= dkim=pass dkdomain=mytakeda.com dmarc=pass fromdomain=mytakeda.com);
+       spf=pass (google.com: best guess record for domain of postmaster@mx08-00297f01.pphosted.com designates 91.207.212.250 as permitted sender) smtp.helo=mx08-00297f01.pphosted.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=mytakeda.com
+Received: from pps.filterd (m0215289.ppops.net [127.0.0.1])
+	by mx07-00297f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122Aq7g9026556
+	for <josh@josh.is>; Tue, 2 Mar 2021 11:53:18 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mytakeda.com; h=mime-version : from
+ : to : date : content-type : message-id : in-reply-to : references :
+ subject; s=pp25032019; bh=QLNgO0NS/LNYgg8yhcJRmppyi4PLiTdd1BRpePRxWGU=;
+ b=LV7wC6lkiC0tdSFYvEgEAdadUwruGLq66abbQ20yEMCNQ8ZJ8VS7QGRE7ys+EWBIGQ3g
+ E11ICrVCdv/Ad7j60xeHqAF2wnNE/YlsoQkAUuJgqs9PRy8AdtIq8wvL+x7da0drTy8c
+ W2iGhFiPTf21+9A0Xy4lNOPyUwx/zx7x4S7x8wt0udDYPalqlcykv6STgGiKisGxhfl0
+ Y21b4muMwAjrlDo8DHh3cxcOdROjnAsS2C0svsNo0Q9XSSCh3x1kC4gKIr0CEEj/Fdld
+ C7Gzi+snSA+TVu4Bu3Qkx78gF3G1g2gkx+FHl20j3QGuhgFZO2DmOPXjZTWCjhiBFeB/ rw== 
+Received: from eur05-db8-obe.outbound.protection.outlook.com (mail-db8eur05lp2106.outbound.protection.outlook.com [104.47.17.106])
+	by mx07-00297f01.pphosted.com with ESMTP id 370yd5n195-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Tue, 02 Mar 2021 11:53:17 +0100
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MCob6M7/Z/V2w+He5DVFHvhZEcqdayoBAZsVlOg5lWXfSfmy/lpIBpwSme0oem3lg1TuKAGyXNaw9rlokkgqXu6sq9dNefcXFyrhsFhFKiyWnPZKyeS1GDOSspP4rw02qmGsGhFCloT7XEb6m17hP9G1wEKd7g4Iil34Sl+CHSzxquCX3XSrFNuxBYZ6uQ1vSRvER13W03Iowg76RzyHn+NjJeLVry0J2jZuejGl4GYFfaVCGjuaEgGEH3HbZ7zUK/5jKlzSyyAsPkkHL+hCfpfOSy/slS3K43zlmOGBZUPezaUXovZzUGUDfR2a7bhlZq751gl+gdsneh4CsXDzqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QLNgO0NS/LNYgg8yhcJRmppyi4PLiTdd1BRpePRxWGU=;
+ b=Dn2LT6QUm2R9bZB5mW3K2qFLVIFqie5mKSzVkbWGW3MBnh/+EWpAs/zO/JBGvGkoEvfhO9DlgC4/n9DUjaoR6+CESDZ/+a2b080S7j7gmAMAmAssJsYbqw5O3XakCHu/MLU8pMrEA+o6OOlVsgOi1jAzY3a3KG90IpbJskWmVgTwZ6i6geCr2R8r+ppZHIOj9T/qziYiZ6El+xvhoB2DqAtkmJ+5mzzPJpg/ce2D8diTSUUPUWz4lz3Y2YxXFL8UNm6C41J4iAIwDUpEEddcrfdDtFHyPQELYSwj9edKHbPL/de/U6p4GiD+lPzzJwUqRgRccI6HFznKeyYlq+sVsg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass; dmarc=pass
+ action=none header.from=mytakeda.com; dkim=pass header.d=mytakeda.com;
+ arc=none
+MIME-Version: 1.0
+From: <postmaster@mytakeda.com>
+To: <josh@josh.is>
+Date: Tue, 2 Mar 2021 10:53:16 +0000
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="a58bd96a-410d-4908-8403-bdb8cfd00378"
+X-MS-Exchange-Message-Is-Ndr: 
+Content-Language: en-US
+Message-ID: 
+ <f9c1915c-edea-48cf-a43a-5bb94b4e58ac@VI1PR08MB3341.eurprd08.prod.outlook.com>
+In-Reply-To: 
+ <CACNgykM9x8sq1CmQaopWa8j=665CxsghKFG+RNJz9=nwuSsNQw@mail.gmail.com>
+References: 
+ <CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gmail.com>
+ <CACNgykM9x8sq1CmQaopWa8j=665CxsghKFG+RNJz9=nwuSsNQw@mail.gmail.com>
+Subject: Undeliverable: Re: Thanks!
+Auto-Submitted: auto-replied
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: VI1PR08MB3341:
+X-MS-Exchange-MinimumUrlDomainAge: indigometrics.com#2182
+X-Microsoft-Antispam-PRVS: 
+	<VI1PR08MB334178F51E677783BA3BD529B8999@VI1PR08MB3341.eurprd08.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	fYA6ZCqYx7ClIjNxerL3xvN6VdhKs6ELrbGlpLKuHv0hiADU0MBPNBpxuLrzPgGsp4T8nw8RAWxQPVnWIyUI+lDEqIJCKxEUn2bEsS7t/SjPHkRyJVE8b415gOaytCIejqny63InW1bqvSNoNokaqI1+2COy6MjYunod/S0QD7LwlD/VzvJjuoGuMFoCcAMb57ifEsHVnLrob0ojoqQgOi118KN++uybeT3pPzTm+l1tbs70zZuizHeLl7xB8Ov6Jl44rRRfxLm4U738YbyAQPpiHOpeoDxvKizcheonQldlnbYDpTcMain5CasWf3NuFiaM7H1IAWz1Dn1raTuxyPVlj+rIE9iYOTg71y7aDJqCxGyblwzbiQ7dQ7rLZsbrERRyP/FQkjJ7y0ofFMQrnxs05PEnm7utXAISeHKHTmPSngSngYj4s7iS1qB4cTHjn/OJxDYwNEtCA3jUr1HQLjHHqzfzqGVFaKIMX2zKpiZWfPMfodCIuPvDY7M4PKOPkO+XJqE31IXZEmGpJAV+e0H0EklUsZSEFWM5mo+G77gj0tkKj4J4RNj62S3eSWbQXRdQsWozD0gg2HrZodGqPdyjrVK+esn/dnSIYEbupR7FEZBe9hGs+1mnINQtcjovI9gVpgQE6KLEcPyeCqOf1BSGgl9Ci2KFYJI2lq/eyRJRwoxofUqpJcBhkDV4i+oEKXrRO8uu7EMUYBzU3hD8+LHLGO/+8mc8965C1wsLv4A=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:;PTR:;CAT:NONE;SFS:(50650200002)(136003)(366004)(376002)(346002)(396003)(39860400002)(1930700014)(9686003)(66576008)(8676002)(498600001)(19627235002)(66574015)(78496005)(66946007)(31696002)(30864003)(42882007)(42186006)(316002)(6916009)(2876002)(5660300002)(83380400001)(2906002)(78352004)(45080400002)(32400700002)(82146005);DIR:OUT;SFP:1501;
+X-OriginatorOrg: mytakeda.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Mar 2021 10:53:16.8216
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR08MB3341.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-Network-Message-Id: 
+	6a0b9835-3ada-456a-fde8-08d8dd696295
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR08MB3341
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_03:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 ndrscore=0 priorityscore=1501
+ malwarescore=0 suspectscore=0 adultscore=0 impostorscore=0 adjustscore=0
+ phishscore=0 bulkscore=0 mlxlogscore=999 clxscore=1012 lowpriorityscore=0
+ mlxscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020090
+
+--a58bd96a-410d-4908-8403-bdb8cfd00378
+Content-Type: multipart/alternative; differences=Content-Type;
+	boundary="d5093884-0d9f-416e-bb13-9454f4d0e5cd"
+
+--d5093884-0d9f-416e-bb13-9454f4d0e5cd
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Delivery has failed to these recipients or groups:
+
+Thiruvengadam, Padma (Padma.Thiruvengadam@takeda.com)<mailto:Padma.Thiruven=
+gadam@takeda.com>
+Your message is too large to send. To send it, make the message smaller, fo=
+r example, by removing attachments.
+
+
+The maximum message size that's allowed is 0 KB. This message is 15 KB.
+
+
+
+
+
+
+
+
+Diagnostic information for administrators:
+
+Generating server: VI1PR08MB3341.eurprd08.prod.outlook.com
+
+Padma.Thiruvengadam@takeda.com
+Remote Server returned '550 5.2.3 RESOLVER.RST.RecipSizeLimit; message too =
+large for this recipient'
+
+Original message headers:
+
+Received: from MR2P264CA0151.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1::14)=
+ by
+ VI1PR08MB3341.eurprd08.prod.outlook.com (2603:10a6:803:42::13) with Micros=
+oft
+ SMTP Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA=
+384) id
+ 15.20.3890.23; Tue, 2 Mar 2021 10:53:16 +0000
+Received: from VE1EUR02FT015.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:501:1:cafe::83) by MR2P264CA0151.outlook.office365.com
+ (2603:10a6:501:1::14) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23 via Front=
+end
+ Transport; Tue, 2 Mar 2021 10:53:16 +0000
+Authentication-Results: spf=3Dtemperror (sender IP is 185.132.180.23)
+ smtp.mailfrom=3Djosh.is; takeda.com; dkim=3Dtimeout (key query timeout)
+ header.d=3Djosh.is;takeda.com; dmarc=3Dtemperror action=3Dnone header.from=
+=3Djosh.is;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx07-00297f01.pphosted.com (185.132.180.23) by
+ VE1EUR02FT015.mail.protection.outlook.com (10.152.12.147) with Microsoft S=
+MTP
+ Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) =
+id
+ 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 10:53:14 +0000
+Received: from pps.filterd (m0115057.ppops.net [127.0.0.1])
+        by mx07-00297f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 12=
+2AqfT8010020
+        for <Padma.Thiruvengadam@takeda.com>; Tue, 2 Mar 2021 11:53:13 +010=
+0
+Authentication-Results-Original: ppops.net;     spf=3Dpass
+ smtp.mailfrom=3Djosh@josh.is;    dkim=3Dpass header.d=3Djosh.is header.s=
+=3Dgoogle;
+        dmarc=3Dpass header.from=3Djosh.is
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167=
+.41])
+        by mx07-00297f01.pphosted.com with ESMTP id 370yd7566p-1
+        (version=3DTLSv1.2 cipher=3DECDHE-RSA-AES128-GCM-SHA256 bits=3D128 =
+verify=3DNOT)
+        for <Padma.Thiruvengadam@takeda.com>; Tue, 02 Mar 2021 11:53:13 +01=
+00
+Received: by mail-lf1-f41.google.com with SMTP id n16so13640907lfb.4
+        for <Padma.Thiruvengadam@takeda.com>; Tue, 02 Mar 2021 02:53:13 -08=
+00 (PST)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dmime-version:references:in-reply-to:from:date:message-id:subjec=
+t:to;
+        bh=3DxSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=3D;
+        b=3DUuuR0loZRKBhyXl1iB+vj0dNGsErvDZON6xDSny+zBo1KZVtjLuklzimpSvgMIX=
+8Yo
+         8Wux2m3bjGF/A6CNIaqHSNxT1iVMdaAWG/ra9ZL0bfDiCj7ibCJLtdujSe1HljAdgM=
+va
+         VkPnF7PYOzrgJT6UUGozQQ3OGUiDBxoahsfEc/tXnb1VWqpJvxT4CRrjwdgZcEo5+L=
+/4
+         ka58S596a211GK5clDJQMqBfMbHQqpQm94e8O+T2Tq5LLGdIbESR3EUk9iwb3uHMf5=
+L5
+         s3vogA1W2jh3t4E2tvqn9CBYIiAad8y+qm8u4C20dgdoShvQQJ3g9Kj/02qVSwxaAF=
+l5
+         561Q=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:mime-version:references:in-reply-to:from:dat=
+e
+         :message-id:subject:to;
+        bh=3DxSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=3D;
+        b=3DoKyddziwmp7HVu6xQy/H7AktcEjBBukizGk/6w/C+AiWfnEP0UBk9QndFsUdo92=
+txK
+         UiBSm2m7D3UOg4JFvKvZiHGt+8jG07B1eOB5YupUjQL67SUEQ9weeIco7aZaAzv5Pr=
+/5
+         EAcC42hpDrMHh9RvpYI3JajDNjAd68Bp4K3LYuSu/XWpdhslRaPmaK2rzCRDCj4Bch=
+5D
+         Fskt+0H1G29XCp5wygQEcmByZGDd8GFENuLXhQjCefOdCFgWHSP2qMsCeeJwvcJGgY=
+Yi
+         CgaJo2Xe8LVuIDZZSbwC6pLKA3R2rd7rC7i9d96uYBSzYWm7b/mAxL47x+dl0RE1MX=
+kn
+         lR8Q=3D=3D
+X-Gm-Message-State: AOAM531yeyU2LwQxEub8Sj55njVOb3i66AwgDBr0xVUHoYdUm/hfGfy=
+S
+        PXoc7chsghXiTL9xA219dZk5bxo7ZWwHyCcMvFcsfaD+t1hH8OcUenw=3D
+X-Google-Smtp-Source: ABdhPJxz8mxN8c3436uwxRksFHlBZqNhL1jtnpV0DH2Bc2I7QnSi1=
+gQk7dhuncdW0ab3jwvmpjFy00GG8TkPaEcRYrk=3D
+X-Received: by 2002:a05:6512:31d0:: with SMTP id j16mr12282199lfe.467.16146=
+82392294;
+ Tue, 02 Mar 2021 02:53:12 -0800 (PST)
+References: <CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gmail=
+.com>
+In-Reply-To: <CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gmai=
+l.com>
+From: Josh Klein <josh@josh.is>
+Date: Tue, 2 Mar 2021 10:52:36 +0000
+Message-ID: <CACNgykM9x8sq1CmQaopWa8j=3D665CxsghKFG+RNJz9=3DnwuSsNQw@mail.g=
+mail.com>
+Subject: Re: Thanks!
+To: "Thiruvengadam, Padma" <Padma.Thiruvengadam@takeda.com>
+Content-Type: multipart/alternative; boundary=3D"0000000000006b01da05bc8b8a=
+9f"
+X-CLX-Shades: Deliver
+X-CLX-Response: 1TFkXGxoaHxEKTHoXGhEKWUQXZkNJWwEeaF1FTnARClhYF2ZkSEQYcmRSf1=
+N AEQp4ThdmUnJhQVkaQW5dExEKeUwXellfG1oSY0JSenARCkNIFwcZHhoRCkNZFwcTHREKQ0kX=
+Gg QaGhoRCllNF25PRkNcT1gRCl9ZFxsSHxEKX00XZ2ZyEQpZSRcacRoQGncGGxwfcR4eEBp3Bh=
+gaB
+ hoRClleF2xseREKSUYXXktBT05LdUJFWV5PThEKQ04XX0NcXWN7fFh6TGRhXkh1Ux57S0kZTUk=
+f E10dfHpFdR8RClhcFx8EGgQYGB8FGxoEHRoEHh8EGxoYEBseGh8aEQpeWRdySR0YGhEKTVwXB=
+xk SEQpMWhdvaWsaaxEKTEYXb2trbGtrEQpCTxdiZE9dHmR8TV9SXBEKQ1oXGBoTBBIfBBscHQQ=
+eGx
+ EKQl4XGxEKQlwXGxEKXk4XGxEKQksXZlJyYUFZGkFuXRMRCkJJF2ZScmFBWRpBbl0TEQpCRRdg=
+Q k5HXUNBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn=
+1i eREKQkAXYWdlG3IFREBffBgRCkJYF2xbbmlEYXxmR3BjEQpNXhcbEQpaWBcZEQp5QxdkYxtu=
+eFp
+ HGlIfYhEKcGgXekwaGF4FRk8BZnkQGhEKcGgXaWxsWWh5QGsbTlgQGhEKcGgXbllmHgFjYWgbW=
+W QQGhEKcGgXZx9rE1kYUEF7cH0QGhEKcGgXehpacmBBc19aQ0IQGhEKcH0XelNHH0xHGX9tcxI=
+QG hEKcH0XemgdeXpAbV4SenkQGhEKcH0XZQFaSGVrfEd6Qx8QGhEKcH8XelNHH0xHGX9tcxIQG=
+hEK
+ cH8XYVBnYR95Gxh7fkQQHxkRCnBfF2lrXW5NcEBsYWtGEB0ZEQpwbBdoXUBjTVplH0dMcBAZGh=
+E KcEwXbk19bVl9RkBBUhIQGhEKbX4XGxEKWE0XSxEg
+MIME-Version: 1.0
+X-Proofpoint-VisualCue: Yes
+X-Proofpoint-Virus-Version: vendor=3Dfsecure engine=3D2.50.10434:6.0.369,18=
+.0.761
+ definitions=3D2021-03-02_03:2021-03-01,2021-03-02 signatures=3D0
+X-Proofpoint-Spam-Details: rule=3Dinbound_plugin_notspam policy=3Dinbound_p=
+lugin score=3D0 mlxscore=3D0
+ malwarescore=3D0 bulkscore=3D0 phishscore=3D0 adultscore=3D0 mlxlogscore=
+=3D863
+ suspectscore=3D0 clxscore=3D1005 priorityscore=3D0 spamscore=3D0 impostors=
+core=3D0
+ lowpriorityscore=3D0 classifier=3Dclx:Deliver adjust=3D0 reason=3Dmlx scan=
+count=3D1
+ engine=3D8.12.0-2009150000 definitions=3Dmain-2103020090
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 57fdf63b-7e22-45a3-83dc-d37003163aae:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c16c0dcf-0fa2-4c58-2712-08d8dd6961=
+1d
+X-MS-TrafficTypeDiagnostic: VI1PR08MB3341:
+X-MS-Exchange-MinimumUrlDomainAge: indigometrics.com#2182
+
+
+--d5093884-0d9f-416e-bb13-9454f4d0e5cd
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<Head></head><body>
+<p><b><font color=3D"#000066" size=3D"3" face=3D"Arial">Delivery has failed=
+ to these recipients or groups:</font></b></p>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><p><a href=3D"mailto:Pad=
+ma.Thiruvengadam@takeda.com">Thiruvengadam, Padma (Padma.Thiruvengadam@take=
+da.com)</a><br>
+</font>
+<font color=3D"#000000" size=3D"3" face=3D"Arial">Your message is too large=
+ to send. To send it, make the message smaller, for example, by removing at=
+tachments.<br>
+</font>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><br>
+<br>
+The maximum message size that's allowed is 0 KB. This message is 15 KB.<br>
+<br>
+</p>
+</font>
+<br><br><br><br><br><br>
+<font color=3D"#808080" size=3D"2" face=3D"Tahoma"><p><b>Diagnostic informa=
+tion for administrators:</b></p>
+<p>Generating server: VI1PR08MB3341.eurprd08.prod.outlook.com<br>
+</p>
+<p>Padma.Thiruvengadam@takeda.com<br>
+Remote Server  returned '550 5.2.3 RESOLVER.RST.RecipSizeLimit; message too=
+ large for this recipient'<br>
+</p>
+<p>Original message headers:</p>
+<pre>Received: from MR2P264CA0151.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1=
+::14) by
+ VI1PR08MB3341.eurprd08.prod.outlook.com (2603:10a6:803:42::13) with Micros=
+oft
+ SMTP Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA=
+384) id
+ 15.20.3890.23; Tue, 2 Mar 2021 10:53:16 +0000
+Received: from VE1EUR02FT015.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:501:1:cafe::83) by MR2P264CA0151.outlook.office365.com
+ (2603:10a6:501:1::14) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23 via Front=
+end
+ Transport; Tue, 2 Mar 2021 10:53:16 +0000
+Authentication-Results: spf=3Dtemperror (sender IP is 185.132.180.23)
+ smtp.mailfrom=3Djosh.is; takeda.com; dkim=3Dtimeout (key query timeout)
+ header.d=3Djosh.is;takeda.com; dmarc=3Dtemperror action=3Dnone header.from=
+=3Djosh.is;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx07-00297f01.pphosted.com (185.132.180.23) by
+ VE1EUR02FT015.mail.protection.outlook.com (10.152.12.147) with Microsoft S=
+MTP
+ Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) =
+id
+ 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 10:53:14 +0000
+Received: from pps.filterd (m0115057.ppops.net [127.0.0.1])
+	by mx07-00297f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122AqfT80=
+10020
+	for &lt;Padma.Thiruvengadam@takeda.com&gt;; Tue, 2 Mar 2021 11:53:13 +0100
+Authentication-Results-Original: ppops.net;	spf=3Dpass
+ smtp.mailfrom=3Djosh@josh.is;	dkim=3Dpass header.d=3Djosh.is header.s=3Dgo=
+ogle;
+	dmarc=3Dpass header.from=3Djosh.is
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167=
+.41])
+	by mx07-00297f01.pphosted.com with ESMTP id 370yd7566p-1
+	(version=3DTLSv1.2 cipher=3DECDHE-RSA-AES128-GCM-SHA256 bits=3D128 verify=
+=3DNOT)
+	for &lt;Padma.Thiruvengadam@takeda.com&gt;; Tue, 02 Mar 2021 11:53:13 +010=
+0
+Received: by mail-lf1-f41.google.com with SMTP id n16so13640907lfb.4
+        for &lt;Padma.Thiruvengadam@takeda.com&gt;; Tue, 02 Mar 2021 02:53:=
+13 -0800 (PST)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dmime-version:references:in-reply-to:from:date:message-id:subjec=
+t:to;
+        bh=3DxSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=3D;
+        b=3DUuuR0loZRKBhyXl1iB+vj0dNGsErvDZON6xDSny+zBo1KZVtjLuklzimpSvgMIX=
+8Yo
+         8Wux2m3bjGF/A6CNIaqHSNxT1iVMdaAWG/ra9ZL0bfDiCj7ibCJLtdujSe1HljAdgM=
+va
+         VkPnF7PYOzrgJT6UUGozQQ3OGUiDBxoahsfEc/tXnb1VWqpJvxT4CRrjwdgZcEo5+L=
+/4
+         ka58S596a211GK5clDJQMqBfMbHQqpQm94e8O+T2Tq5LLGdIbESR3EUk9iwb3uHMf5=
+L5
+         s3vogA1W2jh3t4E2tvqn9CBYIiAad8y+qm8u4C20dgdoShvQQJ3g9Kj/02qVSwxaAF=
+l5
+         561Q=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:mime-version:references:in-reply-to:from:dat=
+e
+         :message-id:subject:to;
+        bh=3DxSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=3D;
+        b=3DoKyddziwmp7HVu6xQy/H7AktcEjBBukizGk/6w/C+AiWfnEP0UBk9QndFsUdo92=
+txK
+         UiBSm2m7D3UOg4JFvKvZiHGt+8jG07B1eOB5YupUjQL67SUEQ9weeIco7aZaAzv5Pr=
+/5
+         EAcC42hpDrMHh9RvpYI3JajDNjAd68Bp4K3LYuSu/XWpdhslRaPmaK2rzCRDCj4Bch=
+5D
+         Fskt+0H1G29XCp5wygQEcmByZGDd8GFENuLXhQjCefOdCFgWHSP2qMsCeeJwvcJGgY=
+Yi
+         CgaJo2Xe8LVuIDZZSbwC6pLKA3R2rd7rC7i9d96uYBSzYWm7b/mAxL47x+dl0RE1MX=
+kn
+         lR8Q=3D=3D
+X-Gm-Message-State: AOAM531yeyU2LwQxEub8Sj55njVOb3i66AwgDBr0xVUHoYdUm/hfGfy=
+S
+	PXoc7chsghXiTL9xA219dZk5bxo7ZWwHyCcMvFcsfaD+t1hH8OcUenw=3D
+X-Google-Smtp-Source: ABdhPJxz8mxN8c3436uwxRksFHlBZqNhL1jtnpV0DH2Bc2I7QnSi1=
+gQk7dhuncdW0ab3jwvmpjFy00GG8TkPaEcRYrk=3D
+X-Received: by 2002:a05:6512:31d0:: with SMTP id j16mr12282199lfe.467.16146=
+82392294;
+ Tue, 02 Mar 2021 02:53:12 -0800 (PST)
+References: &lt;CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gm=
+ail.com&gt;
+In-Reply-To: &lt;CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.g=
+mail.com&gt;
+From: Josh Klein &lt;josh@josh.is&gt;
+Date: Tue, 2 Mar 2021 10:52:36 +0000
+Message-ID: &lt;CACNgykM9x8sq1CmQaopWa8j=3D665CxsghKFG+RNJz9=3DnwuSsNQw@mai=
+l.gmail.com&gt;
+Subject: Re: Thanks!
+To: &quot;Thiruvengadam, Padma&quot; &lt;Padma.Thiruvengadam@takeda.com&gt;
+Content-Type: multipart/alternative; boundary=3D&quot;0000000000006b01da05b=
+c8b8a9f&quot;
+X-CLX-Shades: Deliver
+X-CLX-Response: 1TFkXGxoaHxEKTHoXGhEKWUQXZkNJWwEeaF1FTnARClhYF2ZkSEQYcmRSf1=
+N AEQp4ThdmUnJhQVkaQW5dExEKeUwXellfG1oSY0JSenARCkNIFwcZHhoRCkNZFwcTHREKQ0kX=
+Gg QaGhoRCllNF25PRkNcT1gRCl9ZFxsSHxEKX00XZ2ZyEQpZSRcacRoQGncGGxwfcR4eEBp3Bh=
+gaB
+ hoRClleF2xseREKSUYXXktBT05LdUJFWV5PThEKQ04XX0NcXWN7fFh6TGRhXkh1Ux57S0kZTUk=
+f E10dfHpFdR8RClhcFx8EGgQYGB8FGxoEHRoEHh8EGxoYEBseGh8aEQpeWRdySR0YGhEKTVwXB=
+xk SEQpMWhdvaWsaaxEKTEYXb2trbGtrEQpCTxdiZE9dHmR8TV9SXBEKQ1oXGBoTBBIfBBscHQQ=
+eGx
+ EKQl4XGxEKQlwXGxEKXk4XGxEKQksXZlJyYUFZGkFuXRMRCkJJF2ZScmFBWRpBbl0TEQpCRRdg=
+Q k5HXUNBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn=
+1i eREKQkAXYWdlG3IFREBffBgRCkJYF2xbbmlEYXxmR3BjEQpNXhcbEQpaWBcZEQp5QxdkYxtu=
+eFp
+ HGlIfYhEKcGgXekwaGF4FRk8BZnkQGhEKcGgXaWxsWWh5QGsbTlgQGhEKcGgXbllmHgFjYWgbW=
+W QQGhEKcGgXZx9rE1kYUEF7cH0QGhEKcGgXehpacmBBc19aQ0IQGhEKcH0XelNHH0xHGX9tcxI=
+QG hEKcH0XemgdeXpAbV4SenkQGhEKcH0XZQFaSGVrfEd6Qx8QGhEKcH8XelNHH0xHGX9tcxIQG=
+hEK
+ cH8XYVBnYR95Gxh7fkQQHxkRCnBfF2lrXW5NcEBsYWtGEB0ZEQpwbBdoXUBjTVplH0dMcBAZGh=
+E KcEwXbk19bVl9RkBBUhIQGhEKbX4XGxEKWE0XSxEg
+MIME-Version: 1.0
+X-Proofpoint-VisualCue: Yes
+X-Proofpoint-Virus-Version: vendor=3Dfsecure engine=3D2.50.10434:6.0.369,18=
+.0.761
+ definitions=3D2021-03-02_03:2021-03-01,2021-03-02 signatures=3D0
+X-Proofpoint-Spam-Details: rule=3Dinbound_plugin_notspam policy=3Dinbound_p=
+lugin score=3D0 mlxscore=3D0
+ malwarescore=3D0 bulkscore=3D0 phishscore=3D0 adultscore=3D0 mlxlogscore=
+=3D863
+ suspectscore=3D0 clxscore=3D1005 priorityscore=3D0 spamscore=3D0 impostors=
+core=3D0
+ lowpriorityscore=3D0 classifier=3Dclx:Deliver adjust=3D0 reason=3Dmlx scan=
+count=3D1
+ engine=3D8.12.0-2009150000 definitions=3Dmain-2103020090
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 57fdf63b-7e22-45a3-83dc-d37003163aae:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c16c0dcf-0fa2-4c58-2712-08d8dd6961=
+1d
+X-MS-TrafficTypeDiagnostic: VI1PR08MB3341:
+X-MS-Exchange-MinimumUrlDomainAge: indigometrics.com#2182
+</pre>
+</font>
+</body>
+</html>=
+
+--d5093884-0d9f-416e-bb13-9454f4d0e5cd--
+
+--a58bd96a-410d-4908-8403-bdb8cfd00378
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns;VI1PR08MB3341.eurprd08.prod.outlook.com
+Received-From-MTA: dns;mx07-00297f01.pphosted.com
+Arrival-Date: Tue, 2 Mar 2021 10:53:16 +0000
+
+Final-Recipient: rfc822;Padma.Thiruvengadam@takeda.com
+Action: failed
+Status: 5.2.3
+Diagnostic-Code: smtp;550 5.2.3 RESOLVER.RST.RecipSizeLimit; message too large for this recipient
+X-Display-Name: Thiruvengadam, Padma
+
+
+--a58bd96a-410d-4908-8403-bdb8cfd00378
+Content-Type: message/rfc822
+
+Received: from MR2P264CA0151.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1::14) by
+ VI1PR08MB3341.eurprd08.prod.outlook.com (2603:10a6:803:42::13) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.23; Tue, 2 Mar 2021 10:53:16 +0000
+Received: from VE1EUR02FT015.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:501:1:cafe::83) by MR2P264CA0151.outlook.office365.com
+ (2603:10a6:501:1::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3890.23 via Frontend
+ Transport; Tue, 2 Mar 2021 10:53:16 +0000
+Authentication-Results: spf=temperror (sender IP is 185.132.180.23)
+ smtp.mailfrom=josh.is; takeda.com; dkim=timeout (key query timeout)
+ header.d=josh.is;takeda.com; dmarc=temperror action=none header.from=josh.is;
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx07-00297f01.pphosted.com (185.132.180.23) by
+ VE1EUR02FT015.mail.protection.outlook.com (10.152.12.147) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3890.19 via Frontend Transport; Tue, 2 Mar 2021 10:53:14 +0000
+Received: from pps.filterd (m0115057.ppops.net [127.0.0.1])
+	by mx07-00297f01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 122AqfT8010020
+	for <Padma.Thiruvengadam@takeda.com>; Tue, 2 Mar 2021 11:53:13 +0100
+Authentication-Results-Original: ppops.net;	spf=pass
+ smtp.mailfrom=josh@josh.is;	dkim=pass header.d=josh.is header.s=google;
+	dmarc=pass header.from=josh.is
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	by mx07-00297f01.pphosted.com with ESMTP id 370yd7566p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <Padma.Thiruvengadam@takeda.com>; Tue, 02 Mar 2021 11:53:13 +0100
+Received: by mail-lf1-f41.google.com with SMTP id n16so13640907lfb.4
+        for <Padma.Thiruvengadam@takeda.com>; Tue, 02 Mar 2021 02:53:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=josh.is; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=xSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=;
+        b=UuuR0loZRKBhyXl1iB+vj0dNGsErvDZON6xDSny+zBo1KZVtjLuklzimpSvgMIX8Yo
+         8Wux2m3bjGF/A6CNIaqHSNxT1iVMdaAWG/ra9ZL0bfDiCj7ibCJLtdujSe1HljAdgMva
+         VkPnF7PYOzrgJT6UUGozQQ3OGUiDBxoahsfEc/tXnb1VWqpJvxT4CRrjwdgZcEo5+L/4
+         ka58S596a211GK5clDJQMqBfMbHQqpQm94e8O+T2Tq5LLGdIbESR3EUk9iwb3uHMf5L5
+         s3vogA1W2jh3t4E2tvqn9CBYIiAad8y+qm8u4C20dgdoShvQQJ3g9Kj/02qVSwxaAFl5
+         561Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=xSlw6d+Ec696rycb5DLEjsSTUP7JGtOYGtx4GHZBFNI=;
+        b=oKyddziwmp7HVu6xQy/H7AktcEjBBukizGk/6w/C+AiWfnEP0UBk9QndFsUdo92txK
+         UiBSm2m7D3UOg4JFvKvZiHGt+8jG07B1eOB5YupUjQL67SUEQ9weeIco7aZaAzv5Pr/5
+         EAcC42hpDrMHh9RvpYI3JajDNjAd68Bp4K3LYuSu/XWpdhslRaPmaK2rzCRDCj4Bch5D
+         Fskt+0H1G29XCp5wygQEcmByZGDd8GFENuLXhQjCefOdCFgWHSP2qMsCeeJwvcJGgYYi
+         CgaJo2Xe8LVuIDZZSbwC6pLKA3R2rd7rC7i9d96uYBSzYWm7b/mAxL47x+dl0RE1MXkn
+         lR8Q==
+X-Gm-Message-State: AOAM531yeyU2LwQxEub8Sj55njVOb3i66AwgDBr0xVUHoYdUm/hfGfyS
+	PXoc7chsghXiTL9xA219dZk5bxo7ZWwHyCcMvFcsfaD+t1hH8OcUenw=
+X-Google-Smtp-Source: ABdhPJxz8mxN8c3436uwxRksFHlBZqNhL1jtnpV0DH2Bc2I7QnSi1gQk7dhuncdW0ab3jwvmpjFy00GG8TkPaEcRYrk=
+X-Received: by 2002:a05:6512:31d0:: with SMTP id j16mr12282199lfe.467.1614682392294;
+ Tue, 02 Mar 2021 02:53:12 -0800 (PST)
+References: <CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gmail.com>
+In-Reply-To: <CACNgykNeecz-COFoTCeDQjW1hzmxgzdoVFz9aZBM7Hze_Ey01g@mail.gmail.com>
+From: Josh Klein <josh@josh.is>
+Date: Tue, 2 Mar 2021 10:52:36 +0000
+Message-ID: <CACNgykM9x8sq1CmQaopWa8j=665CxsghKFG+RNJz9=nwuSsNQw@mail.gmail.com>
+Subject: Re: Thanks!
+To: "Thiruvengadam, Padma" <Padma.Thiruvengadam@takeda.com>
+Content-Type: multipart/alternative; boundary="0000000000006b01da05bc8b8a9f"
+X-CLX-Shades: Deliver
+X-CLX-Response: 1TFkXGxoaHxEKTHoXGhEKWUQXZkNJWwEeaF1FTnARClhYF2ZkSEQYcmRSf1N AEQp4ThdmUnJhQVkaQW5dExEKeUwXellfG1oSY0JSenARCkNIFwcZHhoRCkNZFwcTHREKQ0kXGg QaGhoRCllNF25PRkNcT1gRCl9ZFxsSHxEKX00XZ2ZyEQpZSRcacRoQGncGGxwfcR4eEBp3BhgaB
+ hoRClleF2xseREKSUYXXktBT05LdUJFWV5PThEKQ04XX0NcXWN7fFh6TGRhXkh1Ux57S0kZTUkf E10dfHpFdR8RClhcFx8EGgQYGB8FGxoEHRoEHh8EGxoYEBseGh8aEQpeWRdySR0YGhEKTVwXBxk SEQpMWhdvaWsaaxEKTEYXb2trbGtrEQpCTxdiZE9dHmR8TV9SXBEKQ1oXGBoTBBIfBBscHQQeGx
+ EKQl4XGxEKQlwXGxEKXk4XGxEKQksXZlJyYUFZGkFuXRMRCkJJF2ZScmFBWRpBbl0TEQpCRRdgQ k5HXUNBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn1i eREKQkAXYWdlG3IFREBffBgRCkJYF2xbbmlEYXxmR3BjEQpNXhcbEQpaWBcZEQp5QxdkYxtueFp
+ HGlIfYhEKcGgXekwaGF4FRk8BZnkQGhEKcGgXaWxsWWh5QGsbTlgQGhEKcGgXbllmHgFjYWgbWW QQGhEKcGgXZx9rE1kYUEF7cH0QGhEKcGgXehpacmBBc19aQ0IQGhEKcH0XelNHH0xHGX9tcxIQG hEKcH0XemgdeXpAbV4SenkQGhEKcH0XZQFaSGVrfEd6Qx8QGhEKcH8XelNHH0xHGX9tcxIQGhEK
+ cH8XYVBnYR95Gxh7fkQQHxkRCnBfF2lrXW5NcEBsYWtGEB0ZEQpwbBdoXUBjTVplH0dMcBAZGhE KcEwXbk19bVl9RkBBUhIQGhEKbX4XGxEKWE0XSxEg
+MIME-Version: 1.0
+X-Proofpoint-VisualCue: Yes
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.369,18.0.761
+ definitions=2021-03-02_03:2021-03-01,2021-03-02 signatures=0
+X-Proofpoint-Spam-Details: rule=inbound_plugin_notspam policy=inbound_plugin score=0 mlxscore=0
+ malwarescore=0 bulkscore=0 phishscore=0 adultscore=0 mlxlogscore=863
+ suspectscore=0 clxscore=1005 priorityscore=0 spamscore=0 impostorscore=0
+ lowpriorityscore=0 classifier=clx:Deliver adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2103020090
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 57fdf63b-7e22-45a3-83dc-d37003163aae:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: c16c0dcf-0fa2-4c58-2712-08d8dd69611d
+X-MS-TrafficTypeDiagnostic: VI1PR08MB3341:
+X-MS-Exchange-MinimumUrlDomainAge: indigometrics.com#2182
+
+--0000000000006b01da05bc8b8a9f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: Quoted-printable
+
+Padma,
+
+I had a note to follow up and see if you've had a chance to catch your
+breath. Let me know if you would like to reconnect. If nothing else I'd be
+keen to get your take on Indigometrics <https://urldefense.com/v3/__http://=
+indigometrics.com__;!!KDurfCY!tJZrm1bcmtJZhpTq-CTdWZEPU5TUsDAmIR5emXJdkO_kR=
+MQD6d8ovnY2u_QUCPxmgJ78v_c$ > (the
+culture measurement SaaS platform I've been working on), but would also
+love to hear what's got your interest looking forward!
+
+- J
+=E1=90=A7
+
+On Sun, Jan 31, 2021 at 8:21 PM Josh Klein <josh@josh.is> wrote:
+
+> Padma,
+>
+> Thanks again for our recent call. I was flattered you took the time.
+>
+> Please do keep in touch and let me know how and when is best to loop back
+> around after you've had a much needed rest!
+>
+> All best wishes,
+> Josh
+> =E1=90=A7
+>
+
+--0000000000006b01da05bc8b8a9f
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: Quoted-printable
+
+<div dir=3D"ltr">Padma,<br><br>I had a note to follow up=C2=A0and see if yo=
+u&#39;ve had a chance to catch your breath. Let me know if you would like t=
+o reconnect. If nothing else I&#39;d be keen to get your take on <a href=3D=
+"https://urldefense.com/v3/__http://indigometrics.com__;!!KDurfCY!tJZrm1bcm=
+tJZhpTq-CTdWZEPU5TUsDAmIR5emXJdkO_kRMQD6d8ovnY2u_QUCPxmgJ78v_c$">Indigometr=
+ics</a> (the culture measurement SaaS platform I&#39;ve been working on), b=
+ut would also love to hear what&#39;s got your interest looking forward!<br=
+><br>- J<br></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><=
+img alt=3D"" style=3D"width:0px;max-height:0px;overflow:hidden" src=3D"http=
+s://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocont=
+ent&amp;guid=3D9840c9a3-0b95-4bc2-a6c3-01d259f0ae7e"><font color=3D"#ffffff=
+" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Sun, Jan 31, 2021 at 8:21 PM Josh Klein &l=
+t;<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:<br></div><blo=
+ckquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left=
+:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Padma,<br><b=
+r>Thanks again for our recent call. I was flattered you took the time.<br><=
+br>Please do keep in touch and let me know how and when is best to loop bac=
+k around after you&#39;ve had a much needed rest!<br><br>All best wishes,<b=
+r>Josh<br></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><im=
+g alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"=
+https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzero=
+content&amp;guid=3D2c9594a4-aa24-403e-b967-45f17988be35"><font color=3D"#ff=
+ffff" size=3D"1">=E1=90=A7</font></div>
+</blockquote></div>
+
+--0000000000006b01da05bc8b8a9f--
+
+--a58bd96a-410d-4908-8403-bdb8cfd00378--

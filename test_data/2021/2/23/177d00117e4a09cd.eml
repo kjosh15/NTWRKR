@@ -1,0 +1,537 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9d41:0:0:0:0:0 with SMTP id y1csp2911613ljj;
+        Tue, 23 Feb 2021 09:47:48 -0800 (PST)
+X-Received: by 2002:a05:6512:6c6:: with SMTP id u6mr16788201lff.347.1614102468150;
+        Tue, 23 Feb 2021 09:47:48 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1614102468; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=KMMMLDU6BfbuWHSiA+jcbjZK32GdjVaaaUgAMgv4dqszjRUryU7OWXwEu1fG8EVdQj
+         VstsEVFqNr8DLpBXCl1PT6LLrQU3WZAUFn/6i0lLerWYx5B5Yer5xXvtxhl7pM4lQTJD
+         UXrB5mv1f+RZhBVNwqJY49GrKSd2F8V4k17FsiqGpx99Vw4rG4sSiuyH2hx2nXMS7tq0
+         wFnfNtK/xaz5AfqmSUepto5V/R5Qvcd+qka0W/2sVkD4zqZAzbekFrI/1NhkBx3s4o1i
+         Yfoi7vOiAOFF/cfQcyFIb1HnV/Kd8JLX9S0gKdexxC/BViGSL0vhqVWrQDlJjE0Cwhw8
+         oEdQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature:delivered-to;
+        bh=T78wFxjyeyoRerDdhzPtTURYhybk/5mO3HiXA+z2SHM=;
+        b=RXq7kfpMSFVHgAZO6pxo/c7AsSRz4729vKTC1a1npgsNlMKw1M4rX8zjuRiMIIw+DO
+         W61NQUXhzFAzGfN+cDJ+qsp+71zO22s57UXon0G7lnB3ZUb/ItzDV8YaUE2YNoNVlhA1
+         1U9tU78GPpsalHxbbYF/fFw+GB1Ug2moBC+vz9F8QeMgSU4rwig+R9K5B+itCfM2cKdX
+         54KIzTbOGz8vH+kO38rjNc4yhsweo2ywWxzvfNjey2R/kNgHSXdl6/kul71DItros0Ts
+         QrDE1VNRJhQdZloAGyT5dymgO0MkfPzz3u4bRFzbdMzvtMWnFYG/uC33ZZXN42r8oHhm
+         tJKQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@mongodb.com header.s=google header.b=Y8rCPjKp;
+       arc=pass (i=1 spf=pass spfdomain=mongodb.com dkim=pass dkdomain=mongodb.com dmarc=pass fromdomain=mongodb.com);
+       spf=pass (google.com: domain of joshuaklein+caf_=josh=josh.is@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom="joshuaklein+caf_=josh=josh.is@gmail.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=mongodb.com
+Return-Path: <joshuaklein+caf_=josh=josh.is@gmail.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id t3sor3283605ljg.44.2021.02.23.09.47.48
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 23 Feb 2021 09:47:48 -0800 (PST)
+Received-SPF: pass (google.com: domain of joshuaklein+caf_=josh=josh.is@gmail.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@mongodb.com header.s=google header.b=Y8rCPjKp;
+       arc=pass (i=1 spf=pass spfdomain=mongodb.com dkim=pass dkdomain=mongodb.com dmarc=pass fromdomain=mongodb.com);
+       spf=pass (google.com: domain of joshuaklein+caf_=josh=josh.is@gmail.com designates 209.85.220.41 as permitted sender) smtp.mailfrom="joshuaklein+caf_=josh=josh.is@gmail.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=mongodb.com
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:delivered-to:dkim-signature:mime-version
+         :references:in-reply-to:from:date:message-id:subject:to;
+        bh=T78wFxjyeyoRerDdhzPtTURYhybk/5mO3HiXA+z2SHM=;
+        b=SyVzNCMQUW+VcUGoG00mwwLXm/WxtBP4gRSKJnhod5Lc0BCGSQt18KpXAEEu2X/PEz
+         gEOE7rk2sZ33C0sljMWCSyZ6sSlVyqU/AgoZEOiR+Nc0JqtNTph5DLDXSayTDBgvtcIq
+         FgfUUkwgTfmNgaTkhFsISa+n0X0olxvhLJN+cUosWTpzU8Q85eqW6Yl6jV1KBHdnszpC
+         v91X2qJuY3/Z74RQ3YC36HjBJNGkXkrERlQdqx2PQEqJK9bUEEEhPRSbgD0CUtkOeb0y
+         JXee3ebKxqJRkW33Fswyhr1Y0PYRy6dL0jOs4gqTON3VycmTztF8yLzbn9AQAQl5EpaD
+         rEJg==
+X-Gm-Message-State: AOAM532x+Lt4avmdEWyPUyCalmOTST13k/a8e3uCpltDYMc5AJMk5jHB
+	HDGZlZt6ZY0VjQ77rfbw6TsX1dYzvPNFVwtGdewzmlPgcd4QU0M24w==
+X-Received: by 2002:a05:651c:555:: with SMTP id q21mr17371288ljp.471.1614102467963;
+        Tue, 23 Feb 2021 09:47:47 -0800 (PST)
+X-Forwarded-To: josh@josh.is
+X-Forwarded-For: joshuaklein@gmail.com josh@josh.is
+Delivered-To: joshuaklein@gmail.com
+Received: by 2002:ac2:4214:0:0:0:0:0 with SMTP id y20csp2534471lfh;
+        Tue, 23 Feb 2021 09:47:46 -0800 (PST)
+X-Received: by 2002:a2e:9857:: with SMTP id e23mr10640224ljj.302.1614102466599;
+        Tue, 23 Feb 2021 09:47:46 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1614102466; cv=none;
+        d=google.com; s=arc-20160816;
+        b=OuRthGjZnz6AWQ+i49CO8z2iaxMDuor5wzljNmYrvkU8x3diaP1VRr0eavx4rOfT4b
+         pYTN0YqkqDezXVaDpJp6N9Rqyim0idqcB7AmllrqQ6GoqYUqVJd909Gc06+ltpjt7hbc
+         aS/DeBjY/gB3fEl01zQKeYr961C5G7Q89bwrta9//dv/NAhpkmmgETq/3ZhzqtUnTkuo
+         /M+tqZzyt4h5zdY4+Pzn5tyq52wnTMSE+kMk4kCcqJ/xHC11nIOyxfzD050x2Xgoj+Y2
+         W+0ay5faD7WaqtXfmiKg9Y1i2MMnx3vTYlUVZKPdaliHMDN9LQt1Hs8erePm59NX3dua
+         fWFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=T78wFxjyeyoRerDdhzPtTURYhybk/5mO3HiXA+z2SHM=;
+        b=HX2vRk/QR5IsIYEdUbTt0iiOqNqYCX2SWonIM1pqxvOXEZL6xStlU8gYMIuCCHXc9O
+         QlrSi+qYztJYvHhJCOPMIW99MIdBKpBDsolmkQtmiSZjfblu6xsOAD8u7B5NvKeXQ5EB
+         nnRcm9ZQhksdyNb81dbPNI9nTLBLVVtEn5Ofi66cVYfsKur7MDrFVLd6snEL1YJ2zvnV
+         UKE0eDlPV8r/yinyBLVWERNJoN4qalT4iibg6aFcTBZOUtDBbmYyjVj/U8h6L64ZXigE
+         bfkEp7bJI1so1D4IGiqccdq7SiBtQJY7pipIcPCjdrum/koXgaKcQlKITkH4vsNX2XOE
+         mlIQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@mongodb.com header.s=google header.b=Y8rCPjKp;
+       spf=pass (google.com: domain of donovan.sarr@mongodb.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=donovan.sarr@mongodb.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=mongodb.com
+Return-Path: <donovan.sarr@mongodb.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id f13sor4721917lfr.109.2021.02.23.09.47.46
+        for <joshuaklein@gmail.com>
+        (Google Transport Security);
+        Tue, 23 Feb 2021 09:47:46 -0800 (PST)
+Received-SPF: pass (google.com: domain of donovan.sarr@mongodb.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mongodb.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=T78wFxjyeyoRerDdhzPtTURYhybk/5mO3HiXA+z2SHM=;
+        b=Y8rCPjKpbxS3N530TRDKJsyoHZq+Lt6Jv1NsGoyp9DpHhDp/Qjwe0ri0oiJO6FBgWW
+         wQuCogEeoGgNBs4Kw4hOmk4/ZK96dY0nEpMctwz8LbjIRzr/+a68kea4yciZg+VhQ6mi
+         ITMtOSp/xIRx28eAm+Et8I+7XyqhWDwFlmKk8=
+X-Google-Smtp-Source: ABdhPJxX4K/8VkJ7s436IoQ0K1OgBa2yBqHzc7nJWwWijg0+sbf62fv4sJpIydDR+XF3y7fxt9l4mzYrW2G2ubqB7GY=
+X-Received: by 2002:a05:6512:1148:: with SMTP id m8mr16668074lfg.64.1614102465465;
+ Tue, 23 Feb 2021 09:47:45 -0800 (PST)
+MIME-Version: 1.0
+References: <CAKJpOX2bPcfSYBLb-uPNMc3yTfqmw=SfkM0SqYK8g2cS2C5DRA@mail.gmail.com>
+ <CACNgykNgzMu6Dz820tKQOL2wHMJ3bmSYDCuxR2RLgWjcOy=fUA@mail.gmail.com>
+ <CAKJpOX3aGbtnohCgm8ei0ES4pc2Q6mRxz2y_Qd1xcBKvPbveug@mail.gmail.com>
+ <CACNgykOxy6rX=MVn6EMo2qrLhWLXoCaHH7nXExWRaDFTxXdYeg@mail.gmail.com>
+ <CAKJpOX3E0mJ_DbiTHwOq79Mf0Q7BCB2btwRKxpdQ2K_PcH2c_Q@mail.gmail.com> <CACNgykPMtjJ88-sH+2LKnD3kyOvi8nKZX5wUx5q+2uHoqnOsSw@mail.gmail.com>
+In-Reply-To: <CACNgykPMtjJ88-sH+2LKnD3kyOvi8nKZX5wUx5q+2uHoqnOsSw@mail.gmail.com>
+From: Donovan Sarr <donovan.sarr@mongodb.com>
+Date: Tue, 23 Feb 2021 12:47:34 -0500
+Message-ID: <CAKJpOX2UFsBOCdmDXqNf0E3Q2r51vjv-yxsfxQRST4d+cbHU_Q@mail.gmail.com>
+Subject: Re: MongoDB?
+To: Josh Klein <joshuaklein@gmail.com>
+Content-Type: multipart/alternative; boundary="00000000000015e39c05bc0484d0"
+
+--00000000000015e39c05bc0484d0
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hey Josh,
+
+Appreciate the suggestion, however a phone interview will be more than
+sufficient for the first conversation.
+
+Looking forward to chatting!
+Donovan
+
+On Tue, Feb 23, 2021 at 3:43 AM Josh Klein <joshuaklein@gmail.com> wrote:
+
+> Hey Donovan,
+>
+> You can call me at +1.347-268-0376, but wouldn't it be better to do a zoo=
+m
+> or hangout or teams or something? Let me know if that's possible - I'll b=
+e
+> curious to learn more from you directly!
+>
+> All best,
+> Josh
+>
+> =E1=90=A7
+>
+> On Mon, Feb 22, 2021 at 7:20 PM Donovan Sarr <donovan.sarr@mongodb.com>
+> wrote:
+>
+>> Hey Josh,
+>>
+>> Just sent over a confirmation for Wednesday (2/24) at 1:00pm EST. What
+>> will be the best number to reach you at that time?
+>>
+>> Thanks,
+>> Donovan
+>>
+>> On Sat, Feb 20, 2021 at 6:18 AM Josh Klein <joshuaklein@gmail.com> wrote=
+:
+>>
+>>> Great! Does Monday noon EST or Wednesday at 1pm EST work?
+>>>
+>>> Best,
+>>> Josh
+>>>
+>>>
+>>>
+>>> On Fri, Feb 19, 2021 at 7:51 PM Donovan Sarr <donovan.sarr@mongodb.com>
+>>> wrote:
+>>>
+>>>> Hey Josh,
+>>>>
+>>>> Thanks for the response - happy to set up some time to chat! It looks
+>>>> like your calendly auto sets to 45 min mtgs and there is nothing befor=
+e
+>>>> March 18th. Feel free to let me know your avails and I will email over=
+ a
+>>>> confirmation.
+>>>>
+>>>> Please let me know:
+>>>>
+>>>>    1. Your full availability next week, including multiple days and
+>>>>    time frames, for a brief phone interview (I am in EST and can take =
+calls
+>>>>    between 10am-5pm)
+>>>>    2. The best number to reach you at
+>>>>    3. What is the primary email address you would like me to use for
+>>>>    confirmations/future scheduling? (joshuaklein@gmail.com or
+>>>>    josh@josh.is)
+>>>>
+>>>> Looking forward to connecting!
+>>>> Donovan
+>>>>
+>>>> On Fri, Feb 19, 2021 at 4:03 AM Josh Klein <joshuaklein@gmail.com>
+>>>> wrote:
+>>>>
+>>>>> Interesting! I'm passing familiar with MongoDB, and recently wrapped
+>>>>> up some work to make a gap in my schedule. Let me know if any times
+>>>>> here <http://josh.is/scheduling> work to chat, or suggest something
+>>>>> that works for you GMT. Looking forward to it!
+>>>>>
+>>>>> All best,
+>>>>> Josh
+>>>>>
+>>>>> =E1=90=A7
+>>>>>
+>>>>> On Thu, Feb 18, 2021 at 11:57 PM Donovan Sarr <
+>>>>> donovan.sarr@mongodb.com> wrote:
+>>>>>
+>>>>>> Hi Joshua,
+>>>>>>
+>>>>>> Thanks for reading my message! I hope you are staying safe during
+>>>>>> these strange times and I hope you've had a fabulous week.
+>>>>>>
+>>>>>> Joshua, we're in the process of growing our business operations team
+>>>>>> and the hiring manager thought your experience could add a lot of va=
+lue.
+>>>>>> We're looking for someone to help with our pricing and packaging str=
+ategy,
+>>>>>> optimize spend in our relationships with the major cloud providers, =
+and
+>>>>>> work on high priority ad-hoc projects across the business. Are you o=
+pen to
+>>>>>> considering opportunities outside of McKinsey & Company at this poin=
+t in
+>>>>>> time?
+>>>>>>
+>>>>>> You may not know too much about us so I've included some information
+>>>>>> below to get you started.
+>>>>>>
+>>>>>>    - https://www.mongodb.com/careers/jobs/2560780
+>>>>>>    <https://www.gem.com/api/click/ltiazreujn>
+>>>>>>    - Fastest growing database company in the world, with the IDC
+>>>>>>    estimating the market to be $98B+ by 2023
+>>>>>>    - Named a leader in the NoSQL database category by the Forrester
+>>>>>>    Wave report, and named a leader in the Database-as-a-Service spac=
+e in June
+>>>>>>    2019.
+>>>>>>    - Morgan Stanley predicted that "only three software companies
+>>>>>>    will sustain 'hyper' growth". We're one of them.
+>>>>>>    - Glassdoor rating of 4.6, and recently voted one of Crain's New
+>>>>>>    York Best Places to Work 2019 and Inc.=E2=80=99s Best Workplaces =
+of 2020
+>>>>>>
+>>>>>> If you're interested in learning more, let's find some time to chat!
+>>>>>>
+>>>>>> Cheers,
+>>>>>> Donovan
+>>>>>>
+>>>>>> *{* name     : "*donovan sarr*",
+>>>>>>   title    : "sr. recruiter",
+>>>>>>   phone    : "917-708-2274",
+>>>>>>
+>>>>>>   pronouns : ["he","him","his"],
+>>>>>>
+>>>>>>   location : "new york, ny" *}*
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> Think Big, Go Far | Make It Matter | Build Together | Be
+>>>>>> Intellectually Honest | Own What You Do | Embrace the Power of Diffe=
+rences
+>>>>>>
+>>>>>
+>>>>
+>>>> --
+>>>>
+>>>> *{* name     : "*donovan sarr*",
+>>>>   title    : "sr. recruiter",
+>>>>   phone    : "917-708-2274",
+>>>>
+>>>>   pronouns : ["he","him","his"],
+>>>>
+>>>>   location : "new york, ny" *}*
+>>>>
+>>>>
+>>>>
+>>>> Think Big, Go Far | Make It Matter | Build Together | Be Intellectuall=
+y
+>>>> Honest | Own What You Do | Embrace the Power of Differences
+>>>>
+>>>
+>>
+>> --
+>>
+>> *{* name     : "*donovan sarr*",
+>>   title    : "sr. recruiter",
+>>   phone    : "917-708-2274",
+>>
+>>   pronouns : ["he","him","his"],
+>>
+>>   location : "new york, ny" *}*
+>>
+>>
+>>
+>> Think Big, Go Far | Make It Matter | Build Together | Be Intellectually
+>> Honest | Own What You Do | Embrace the Power of Differences
+>>
+>
+
+--=20
+
+*{* name     : "*donovan sarr*",
+  title    : "sr. recruiter",
+  phone    : "917-708-2274",
+
+  pronouns : ["he","him","his"],
+
+  location : "new york, ny" *}*
+
+
+
+Think Big, Go Far | Make It Matter | Build Together | Be Intellectually
+Honest | Own What You Do | Embrace the Power of Differences
+
+--00000000000015e39c05bc0484d0
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hey Josh,=C2=A0<br><div><br></div><div>Appreciate the sugg=
+estion, however a phone interview=C2=A0will be more than sufficient=C2=A0fo=
+r the=C2=A0first=C2=A0conversation.=C2=A0</div><div><br></div><div>Looking =
+forward to chatting!</div><div>Donovan=C2=A0</div></div><br><div class=3D"g=
+mail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb 23, 2021 at 3=
+:43 AM Josh Klein &lt;<a href=3D"mailto:joshuaklein@gmail.com">joshuaklein@=
+gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr">Hey Donovan,<div><br></div><div>You can call me=
+ at +1.347-268-0376, but wouldn&#39;t it be better to do a zoom or hangout=
+=C2=A0or teams or something? Let me know if that&#39;s possible - I&#39;ll =
+be curious to learn more from you directly!</div><div><br></div><div>All be=
+st,</div><div>Josh</div><div><br></div></div><div hspace=3D"streak-pt-mark"=
+ style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0p=
+x; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9=
+zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D6997d4c6-e670-4daf-afae-878=
+b690033fa"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><di=
+v class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Feb 2=
+2, 2021 at 7:20 PM Donovan Sarr &lt;<a href=3D"mailto:donovan.sarr@mongodb.=
+com" target=3D"_blank">donovan.sarr@mongodb.com</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hey Josh,=
+=C2=A0<br><div><br></div><div>Just sent over a confirmation for Wednesday (=
+2/24) at 1:00pm EST. What will be the best number to reach you at that time=
+?</div><div><br></div><div>Thanks,</div><div>Donovan=C2=A0</div></div><br><=
+div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Feb=
+ 20, 2021 at 6:18 AM Josh Klein &lt;<a href=3D"mailto:joshuaklein@gmail.com=
+" target=3D"_blank">joshuaklein@gmail.com</a>&gt; wrote:<br></div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div dir=3D"auto">Great! Does Mond=
+ay noon EST or Wednesday at 1pm EST work?=C2=A0</div><div dir=3D"auto"><br>=
+</div><div dir=3D"auto">Best,</div><div dir=3D"auto">Josh</div><div dir=3D"=
+auto"><br></div><div dir=3D"auto"><br></div><div><br><div class=3D"gmail_qu=
+ote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Feb 19, 2021 at 7:51 PM =
+Donovan Sarr &lt;<a href=3D"mailto:donovan.sarr@mongodb.com" target=3D"_bla=
+nk">donovan.sarr@mongodb.com</a>&gt; wrote:<br></div><blockquote class=3D"g=
+mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
+,204,204);padding-left:1ex"><div dir=3D"ltr">Hey Josh,=C2=A0<div><br></div>=
+<div><div>Thanks for the response - happy to set up some time to chat! It l=
+ooks like your calendly auto sets to 45 min mtgs and there is nothing befor=
+e March 18th. Feel free to let me know your avails and I will email over a =
+confirmation.=C2=A0</div><div><br></div><div>Please let me know:=C2=A0</div=
+><div><ol><li style=3D"margin-left:15px">Your full availability next week, =
+including multiple days and time frames, for a brief phone interview (I am =
+in EST and can take calls between 10am-5pm)</li><li style=3D"margin-left:15=
+px">The best number to reach you at</li><li style=3D"margin-left:15px">What=
+ is the primary email address you would like me to use for confirmations/fu=
+ture scheduling? (<a href=3D"mailto:joshuaklein@gmail.com" target=3D"_blank=
+">joshuaklein@gmail.com</a>=C2=A0or=C2=A0<a href=3D"mailto:josh@josh.is" ta=
+rget=3D"_blank">josh@josh.is</a>)</li></ol><div>Looking forward to connecti=
+ng!=C2=A0</div></div><div>Donovan=C2=A0</div></div></div><br><div class=3D"=
+gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Feb 19, 2021 at =
+4:03 AM Josh Klein &lt;<a href=3D"mailto:joshuaklein@gmail.com" target=3D"_=
+blank">joshuaklein@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"g=
+mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
+,204,204);padding-left:1ex"><div dir=3D"ltr"><div dir=3D"ltr">Interesting! =
+I&#39;m passing familiar with MongoDB, and recently wrapped up some work to=
+ make a gap in my schedule. Let me know if any times <a href=3D"http://josh=
+.is/scheduling" target=3D"_blank">here</a> work to chat, or suggest somethi=
+ng that works for you GMT. Looking=C2=A0forward to it!<div><br></div><div>A=
+ll best,<br>Josh</div><div><br></div></div></div><div hspace=3D"streak-pt-m=
+ark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height=
+: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3D=
+aam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D6db0361b-1d80-444c-9be0=
+-81b97a2e7a33"><font size=3D"1" style=3D"color:rgb(255,255,255)">=E1=90=A7<=
+/font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_=
+attr">On Thu, Feb 18, 2021 at 11:57 PM Donovan Sarr &lt;<a href=3D"mailto:d=
+onovan.sarr@mongodb.com" target=3D"_blank">donovan.sarr@mongodb.com</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div><di=
+v>Hi Joshua,</div><div><br></div><div>Thanks for reading my message! I hope=
+ you are staying safe during these strange times and I hope you&#39;ve had =
+a fabulous week.</div><div><br></div><div>Joshua, we&#39;re in the process =
+of growing our business operations team and the hiring manager thought your=
+ experience could add a lot of value. We&#39;re looking for someone to help=
+ with our pricing and packaging strategy, optimize spend in our relationshi=
+ps with the major cloud providers, and work on high priority ad-hoc project=
+s across the business. Are you open to considering opportunities outside of=
+ McKinsey &amp; Company at this point in time?</div><div><br></div><div>You=
+ may not know too much about us so I&#39;ve included some information below=
+ to get you started.</div><ul><li><a href=3D"https://www.gem.com/api/click/=
+ltiazreujn" target=3D"_blank">https://www.mongodb.com/careers/jobs/2560780<=
+/a></li><li>Fastest growing database company in the world, with the IDC est=
+imating the market to be $98B+ by 2023</li><li>Named a leader in the NoSQL =
+database category by the Forrester Wave report, and named a leader in the D=
+atabase-as-a-Service space in June 2019.</li><li>Morgan Stanley predicted t=
+hat &quot;only three software companies will sustain &#39;hyper&#39; growth=
+&quot;. We&#39;re one of them.</li><li>Glassdoor rating of 4.6, and recentl=
+y voted one of Crain&#39;s New York Best Places to Work 2019 and Inc.=E2=80=
+=99s Best Workplaces of 2020</li></ul><div>If you&#39;re interested in lear=
+ning more, let&#39;s find some time to chat!</div><div><br></div><div>Cheer=
+s,</div><div>Donovan</div><div><br></div><div dir=3D"ltr"><div><div dir=3D"=
+ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><p style=3D"ma=
+rgin:0px 5pt"><code style=3D"font-size:14px;font-family:monospace;color:rgb=
+(51,51,51)"><strong style=3D"font-family:monospace">{</strong>=C2=A0name =
+=C2=A0 =C2=A0 : &quot;<b style=3D"font-family:monospace">donovan sarr</b>&q=
+uot;,</code><br style=3D"color:rgb(51,51,51);font-family:Arial,sans-serif;f=
+ont-size:14px"><code style=3D"font-size:14px;font-family:monospace;color:rg=
+b(51,51,51)">=C2=A0 title =C2=A0 =C2=A0: &quot;sr. recruiter&quot;,</code><=
+br style=3D"color:rgb(51,51,51);font-family:Arial,sans-serif;font-size:14px=
+"><code style=3D"font-size:14px;font-family:monospace;color:rgb(51,51,51)">=
+=C2=A0 phone =C2=A0 =C2=A0: &quot;917-708-2274&quot;,</code></p><p style=3D=
+"margin:0px 5pt"><code style=3D"font-size:14px;font-family:monospace;color:=
+rgb(51,51,51)">=C2=A0 pronouns : [&quot;he&quot;,&quot;him&quot;,&quot;his&=
+quot;],</code></p><p style=3D"margin:0px 5pt"><code style=3D"font-size:14px=
+;font-family:monospace;color:rgb(51,51,51)">=C2=A0 location : &quot;new yor=
+k, ny&quot; <b style=3D"font-family:monospace">}</b>=C2=A0</code><span styl=
+e=3D"font-size:14px;color:rgb(51,51,51)">=C2=A0 =C2=A0 =C2=A0=C2=A0</span><=
+/p><p style=3D"margin:10px 0px 0px;padding:0px;font-size:14px;color:rgb(51,=
+51,51)">=C2=A0 =C2=A0 =C2=A0<img height=3D"96" src=3D"https://drive.google.=
+com/uc?id=3D1fG1jEsngtUXCZTqIREem7P8gH7BrrkcV&amp;export=3Ddownload" width=
+=3D"95">=C2=A0 =C2=A0=C2=A0<img height=3D"88" src=3D"https://drive.google.c=
+om/uc?id=3D19HNS_kaHjHbytgP5sGwSduRtxld_P53L&amp;export=3Ddownload" width=
+=3D"96"></p><p style=3D"margin:10px 0px 0px;padding:0px;font-size:14px;colo=
+r:rgb(51,51,51)"><img src=3D"https://webassets.mongodb.com/_com_assets/cms/=
+MongoDB-Lockup-ForGiantIdeas-NoReg-sig-rnh0z5s70o.png" style=3D"margin: 0px=
+; padding: 0px; border: 0px solid black;"></p><p style=3D"margin:0px 5pt"><=
+code style=3D"font-size:14px;font-family:monospace;color:rgb(51,51,51)"></c=
+ode></p><p style=3D"margin:10px 0px 0px;padding:0px;font-size:14px"><span s=
+tyle=3D"font-family:arial;font-size:10px"><font style=3D"font-family:arial;=
+color:rgb(153,153,153)">Think Big, Go Far | Make It Matter | Build Together=
+ | Be Intellectually Honest | Own What You Do | Embrace the Power of Differ=
+ences<br></font></span></p></div></div></div></div></div></div></div></div>=
+<img align=3D"left" width=3D"0" height=3D"0" style=3D"border: 0px; width: 0=
+px; height: 0px;" alt=3D"" src=3D"https://www.gem.com/api/o/sozixnlvcynx">
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"l=
+tr"><div dir=3D"ltr"><p style=3D"margin:0px 5pt"><code style=3D"font-size:1=
+4px;font-family:monospace;color:rgb(51,51,51)"><strong style=3D"font-family=
+:monospace">{</strong>=C2=A0name =C2=A0 =C2=A0 : &quot;<b style=3D"font-fam=
+ily:monospace">donovan sarr</b>&quot;,</code><br style=3D"color:rgb(51,51,5=
+1);font-family:Arial,sans-serif;font-size:14px"><code style=3D"font-size:14=
+px;font-family:monospace;color:rgb(51,51,51)">=C2=A0 title =C2=A0 =C2=A0: &=
+quot;sr. recruiter&quot;,</code><br style=3D"color:rgb(51,51,51);font-famil=
+y:Arial,sans-serif;font-size:14px"><code style=3D"font-size:14px;font-famil=
+y:monospace;color:rgb(51,51,51)">=C2=A0 phone =C2=A0 =C2=A0: &quot;917-708-=
+2274&quot;,</code></p><p style=3D"margin:0px 5pt"><code style=3D"font-size:=
+14px;font-family:monospace;color:rgb(51,51,51)">=C2=A0 pronouns : [&quot;he=
+&quot;,&quot;him&quot;,&quot;his&quot;],</code></p><p style=3D"margin:0px 5=
+pt"><code style=3D"font-size:14px;font-family:monospace;color:rgb(51,51,51)=
+">=C2=A0 location : &quot;new york, ny&quot; <b style=3D"font-family:monosp=
+ace">}</b>=C2=A0</code><span style=3D"font-size:14px;color:rgb(51,51,51)">=
+=C2=A0 =C2=A0 =C2=A0=C2=A0</span></p><p style=3D"margin:10px 0px 0px;paddin=
+g:0px;font-size:14px;color:rgb(51,51,51)">=C2=A0 =C2=A0 =C2=A0<img src=3D"h=
+ttps://drive.google.com/uc?id=3D1fG1jEsngtUXCZTqIREem7P8gH7BrrkcV&amp;expor=
+t=3Ddownload" width=3D"95" height=3D"96">=C2=A0 =C2=A0=C2=A0<img src=3D"htt=
+ps://drive.google.com/uc?id=3D19HNS_kaHjHbytgP5sGwSduRtxld_P53L&amp;export=
+=3Ddownload" width=3D"96" height=3D"88"></p><p style=3D"margin:10px 0px 0px=
+;padding:0px;font-size:14px;color:rgb(51,51,51)"><img src=3D"https://webass=
+ets.mongodb.com/_com_assets/cms/MongoDB-Lockup-ForGiantIdeas-NoReg-sig-rnh0=
+z5s70o.png" style=3D"margin: 0px; padding: 0px; border: 0px solid black;"><=
+/p><p style=3D"margin:0px 5pt"><code style=3D"font-size:14px;font-family:mo=
+nospace;color:rgb(51,51,51)"></code></p><p style=3D"margin:10px 0px 0px;pad=
+ding:0px;font-size:14px"><span style=3D"font-family:arial;font-size:10px"><=
+font style=3D"font-family:arial;color:rgb(153,153,153)">Think Big, Go Far |=
+ Make It Matter | Build Together | Be Intellectually Honest | Own What You =
+Do | Embrace the Power of Differences<br></font></span></p></div></div></di=
+v></div></div></div></div></div>
+</blockquote></div></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"l=
+tr"><div dir=3D"ltr"><p style=3D"margin:0px 5pt"><code style=3D"color:rgb(5=
+1,51,51);font-size:14px"><strong>{</strong>=C2=A0name =C2=A0 =C2=A0 : &quot=
+;<b>donovan sarr</b>&quot;,</code><br style=3D"color:rgb(51,51,51);font-fam=
+ily:Arial,sans-serif;font-size:14px"><code style=3D"color:rgb(51,51,51);fon=
+t-size:14px">=C2=A0 title =C2=A0 =C2=A0: &quot;sr. recruiter&quot;,</code><=
+br style=3D"color:rgb(51,51,51);font-family:Arial,sans-serif;font-size:14px=
+"><code style=3D"color:rgb(51,51,51);font-size:14px">=C2=A0 phone =C2=A0 =
+=C2=A0: &quot;917-708-2274&quot;,</code></p><p style=3D"margin:0px 5pt"><co=
+de style=3D"color:rgb(51,51,51);font-size:14px">=C2=A0 pronouns : [&quot;he=
+&quot;,&quot;him&quot;,&quot;his&quot;],</code></p><p style=3D"margin:0px 5=
+pt"><code style=3D"color:rgb(51,51,51);font-size:14px">=C2=A0 location : &q=
+uot;new york, ny&quot; <b>}</b>=C2=A0</code><span style=3D"color:rgb(51,51,=
+51);font-size:14px">=C2=A0 =C2=A0 =C2=A0=C2=A0</span></p><p style=3D"margin=
+:10px 0px 0px;padding:0px;color:rgb(51,51,51);font-size:14px">=C2=A0 =C2=A0=
+ =C2=A0<img src=3D"https://drive.google.com/uc?id=3D1fG1jEsngtUXCZTqIREem7P=
+8gH7BrrkcV&amp;export=3Ddownload" width=3D"95" height=3D"96">=C2=A0 =C2=A0=
+=C2=A0<img src=3D"https://drive.google.com/uc?id=3D19HNS_kaHjHbytgP5sGwSduR=
+txld_P53L&amp;export=3Ddownload" width=3D"96" height=3D"88"></p><p style=3D=
+"margin:10px 0px 0px;padding:0px;color:rgb(51,51,51);font-size:14px"><img s=
+rc=3D"https://webassets.mongodb.com/_com_assets/cms/MongoDB-Lockup-ForGiant=
+Ideas-NoReg-sig-rnh0z5s70o.png" style=3D"margin: 0px; padding: 0px; border:=
+ 0px solid black;"></p><p style=3D"margin:0px 5pt"><code style=3D"color:rgb=
+(51,51,51);font-size:14px"></code></p><p style=3D"margin:10px 0px 0px;paddi=
+ng:0px;font-size:14px"><span style=3D"font-family:arial;font-size:10px"><fo=
+nt color=3D"#999999">Think Big, Go Far | Make It Matter | Build Together | =
+Be Intellectually Honest | Own What You Do | Embrace the Power of Differenc=
+es<br></font></span></p></div></div></div></div></div></div></div></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div=
+ dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><p style=3D"margin:0px 5pt">=
+<code style=3D"color:rgb(51,51,51);font-size:14px"><strong>{</strong>=C2=A0=
+name =C2=A0 =C2=A0 : &quot;<b>donovan sarr</b>&quot;,</code><br style=3D"co=
+lor:rgb(51,51,51);font-family:Arial,sans-serif;font-size:14px"><code style=
+=3D"color:rgb(51,51,51);font-size:14px">=C2=A0 title =C2=A0 =C2=A0: &quot;s=
+r. recruiter&quot;,</code><br style=3D"color:rgb(51,51,51);font-family:Aria=
+l,sans-serif;font-size:14px"><code style=3D"color:rgb(51,51,51);font-size:1=
+4px">=C2=A0 phone =C2=A0 =C2=A0: &quot;917-708-2274&quot;,</code></p><p sty=
+le=3D"margin:0px 5pt"><code style=3D"color:rgb(51,51,51);font-size:14px">=
+=C2=A0 pronouns : [&quot;he&quot;,&quot;him&quot;,&quot;his&quot;],</code><=
+/p><p style=3D"margin:0px 5pt"><code style=3D"color:rgb(51,51,51);font-size=
+:14px">=C2=A0 location : &quot;new york, ny&quot; <b>}</b>=C2=A0</code><spa=
+n style=3D"color:rgb(51,51,51);font-size:14px">=C2=A0 =C2=A0 =C2=A0=C2=A0</=
+span></p><p style=3D"margin:10px 0px 0px;padding:0px;color:rgb(51,51,51);fo=
+nt-size:14px">=C2=A0 =C2=A0 =C2=A0<img src=3D"https://drive.google.com/uc?i=
+d=3D1fG1jEsngtUXCZTqIREem7P8gH7BrrkcV&amp;export=3Ddownload" width=3D"95" h=
+eight=3D"96">=C2=A0 =C2=A0=C2=A0<img src=3D"https://drive.google.com/uc?id=
+=3D19HNS_kaHjHbytgP5sGwSduRtxld_P53L&amp;export=3Ddownload" width=3D"96" he=
+ight=3D"88"></p><p style=3D"margin:10px 0px 0px;padding:0px;color:rgb(51,51=
+,51);font-size:14px"><img src=3D"https://webassets.mongodb.com/_com_assets/=
+cms/MongoDB-Lockup-ForGiantIdeas-NoReg-sig-rnh0z5s70o.png" style=3D"margin:=
+ 0px; padding: 0px; border: 0px solid black;"></p><p style=3D"margin:0px 5p=
+t"><code style=3D"color:rgb(51,51,51);font-size:14px"></code></p><p style=
+=3D"margin:10px 0px 0px;padding:0px;font-size:14px"><span style=3D"font-fam=
+ily:arial;font-size:10px"><font color=3D"#999999">Think Big, Go Far | Make =
+It Matter | Build Together | Be Intellectually Honest | Own What You Do | E=
+mbrace the Power of Differences<br></font></span></p></div></div></div></di=
+v></div></div></div></div>
+
+--00000000000015e39c05bc0484d0--

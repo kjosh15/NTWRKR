@@ -1,0 +1,893 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:b786:0:b0:25e:ef80:4753 with SMTP id t6csp605245vqh;
+        Wed, 17 Nov 2021 06:33:15 -0800 (PST)
+X-Received: by 2002:a05:6102:32c9:: with SMTP id o9mr68791666vss.46.1637159594952;
+        Wed, 17 Nov 2021 06:33:14 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1637159594; cv=none;
+        d=google.com; s=arc-20160816;
+        b=tVgKPHPJUQUZj/mdJiYrZOqjvdPIgTDwV0c7c0CHQ2JMkT1niyJNjJymHfk7vdCEcO
+         HpftrGQaMYarF+RNjly2fg3e3FbPijva1NPgWNBFrq/J2eHY4Mgtm7qbnvKLLNhCd8N6
+         c7/Ca6vfo1d+aYwLGAIqN267s28mmwCwIyw9wRs4wIQM5vQeYDhYs90RR2Nd4ixJtPGg
+         5U2IMGDK6gfQFcjroVvem8QLrZgKbjGFpPl0z2DVz60M41FbT4KAc6b/IrCuh4yMaBI3
+         XfpbDlSJM/P59VaVCDciLfFaSHjmTprL8VN2StdygfKD3gSP8zuXjz5KTPi9WircCVtJ
+         9vUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=G/oFV629EvVzD52GbzFHGox0jVTzewg8lbwfA72ovV0=;
+        b=gJnYfXYeHtFmxevC+Qy0J8UNrPAuHJ7W67bXKSHFUmh+4+VKMLS8Nflde/cuH0klSa
+         C5VncwRxO9tjeaG2O1BhWK3SCR4tqMXHkrST64fdV21FsJUmnnanw5XGUqTdN8hW6Q9M
+         SF3uI/99dCTN4o1iWUl2ZloQ0J20+ySO0I3L2Qr6dYSYAnHVyJWv+GGsjNytNKeS7PVZ
+         177eImor9AgGHDOg/rKE6nHVhTb4JpRn6q72/rsbXJd9/v4J1Ohh7PIkNWx2YlS6qDEU
+         kSKuN7n1nyIEHHYfZ2ku+SbvyIkJf6XP1Qu88wDckSLpom48qHrIPf772Si3XX5LqpNb
+         PAEQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@300brains-com.20210112.gappssmtp.com header.s=20210112 header.b=JHwEjBTs;
+       spf=pass (google.com: domain of vilhjalmur.gunnarsson@300brains.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=vilhjalmur.gunnarsson@300brains.com
+Return-Path: <vilhjalmur.gunnarsson@300brains.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id i193sor5705685vke.14.2021.11.17.06.33.14
+        for <josh@josh.is>
+        (Google Transport Security);
+        Wed, 17 Nov 2021 06:33:14 -0800 (PST)
+Received-SPF: pass (google.com: domain of vilhjalmur.gunnarsson@300brains.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@300brains-com.20210112.gappssmtp.com header.s=20210112 header.b=JHwEjBTs;
+       spf=pass (google.com: domain of vilhjalmur.gunnarsson@300brains.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=vilhjalmur.gunnarsson@300brains.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=300brains-com.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=G/oFV629EvVzD52GbzFHGox0jVTzewg8lbwfA72ovV0=;
+        b=JHwEjBTs9BrKNmHevLwewcfndgdZZ0V1GuGO2oqahxuF6E1iqN7drkeQK9+6oq5bVv
+         khi6uW1uS1rpanbThgm5oeMgZweC0A7060DJR0ar6xY/dXNAmsKodfMJ4njjNQTGiox6
+         i1tCAo+ZHvo6rU6pIpzWhu3+5PJ0Aeax1l1rK5fvIJplHbQFR3UQrw9MEjkq7bnZULgI
+         0x3q9rHTw5UnzfT12uIfLvcXa0WNo06zCJ0Ma7PD8pBNMRy5fp/bFb39yXgkEAQ9rtVn
+         mwJf3wxwhhp1i9oRSPGR57kU4Gv1q/vAZUUv97uFl2eeW6ipXwKF0R7ZJS1AGZZnDKAC
+         mCTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=G/oFV629EvVzD52GbzFHGox0jVTzewg8lbwfA72ovV0=;
+        b=zozNpneE+aR+Bb/wuUimtoodir+gZClpmAo1sFrUHUlKWzK88gEneB3eWKE/9I92o7
+         3pVZ1hCK1d6sYB8wrHQwe9UKX14cWRJwZmpfjIGhmpBpftIAm1dMomPvcCWVEJtC9tHP
+         iE1QTrQzFabGN4GxvpI/NnU2WcmGameF+uFC0bHqTn6N5DZ2cn+P/uedYQH1uxivNjV2
+         1146kEuUZfOsfuLA4eUtYNWaGQAA1rJVxLMwB4Nfum73ESke8aM6MivWCtLDtk6XbqBI
+         CaJQRACwPlV2zp9v211mRAml1dhYbfNKmej4Z1BF1EV1Q1W8/O292q9qUK0T0zD7ptRY
+         R5uQ==
+X-Gm-Message-State: AOAM531DWHu2wVuHwLeDnz416E0KoANKA5h1jbg44MAgIR2ZX+UOQrSl
+	bk5BxcNP7l27ZskbnPjqYcE+GvCorgc6iIeFFAi/rW6couc=
+X-Google-Smtp-Source: ABdhPJxt9Ya65p2o+pGMVQHMXLrd01auG6vH0ZwoFTN5SgbgGodohVW4se3vuj+tylXlpQNzlEEho7QE12gHC6VewG0=
+X-Received: by 2002:a1f:b64e:: with SMTP id g75mr86944673vkf.13.1637159593180;
+ Wed, 17 Nov 2021 06:33:13 -0800 (PST)
+MIME-Version: 1.0
+References: <CACNgykNtBQ_5KtanTGpnNv94cN6D3WmEOtRr2QNsHZznQ2NQbg@mail.gmail.com>
+ <CABtJdj6rR777ZU75KJG2FC9qxcpHePsfV6MRShdtgQJ1xM_noQ@mail.gmail.com>
+ <CACNgykM4uh9ke6CtAv9kRN=hp+dfjJ76DZqza=-F4JW4a6+SrA@mail.gmail.com>
+ <CABtJdj7P9VNZK77yKwwL7MWkJDduZpWAzy+wiLbyZbjSdAH5mg@mail.gmail.com>
+ <CABtJdj5xDswtO7VK4_Gy3Sx2c4FGONi08ufsi2g5jFShFHQOow@mail.gmail.com>
+ <CAMZ4FSsgWNG0zd2U4o9DySyPRKbT=E3FXjXcrWWZZ=chewbVPg@mail.gmail.com>
+ <CACNgykM_w86GqgCCxwdOQ882_XB2v6hqkM-E-XUvRGQo-6ohMA@mail.gmail.com>
+ <CAMZ4FSvw2EyCPDVYJs7Mk5thg0EU6WsmOxpFDRq05jyW+rF8Jg@mail.gmail.com>
+ <CACNgykP3mUaQYNnbfORC6QYj4DE_KnR+GyDq47+KYivpi5vRvg@mail.gmail.com>
+ <CACNgykMMt9HiPAz_TceeSnJo87rL0d3t4fRwcuun=DUS7K=OVA@mail.gmail.com>
+ <CACNgykOumV5eKsf0LmVpYCWcprvTsGUcWTyMXtWOMQnRYiu5Nw@mail.gmail.com>
+ <CAMZ4FStefNqrQmBxhZW4YGvUjdz0uXnGL1DmvAHHyoOqjqr+=A@mail.gmail.com>
+ <CACNgykOvexsyq6qFsAao8B1VVgRZGO87_9iibbiCq+Ondm7mwQ@mail.gmail.com>
+ <CAMZ4FSu7ajX5x1507MkCmEiQquRpEpd-RymHKu3hk8usmkDudw@mail.gmail.com>
+ <CACNgykPMQ_XAWVT6WJq2UotF4tydBGHjObVSJhBzBC_7xg63Aw@mail.gmail.com>
+ <CAMZ4FSsdSNGNouRacUQsoXicHDNOscW-kROqX7C4xQx98EmWcg@mail.gmail.com>
+ <CACNgykMcY4_1X3JYHEY_VQ5d=AgOf2vfRhXTZUs7g9E6iRJSoA@mail.gmail.com> <CAMZ4FSvMox90MOi1MxRwA7POqBVC4iebhaR1DBeKpcCZvngKvA@mail.gmail.com>
+In-Reply-To: <CAMZ4FSvMox90MOi1MxRwA7POqBVC4iebhaR1DBeKpcCZvngKvA@mail.gmail.com>
+From: Vilhjalmur Gunnarsson <vilhjalmur.gunnarsson@300brains.com>
+Date: Wed, 17 Nov 2021 14:33:02 +0000
+Message-ID: <CAMZ4FSuk3271n3ceAPT1VJZe4v=iqKZyNu5puYWgsmoaC7PKYg@mail.gmail.com>
+Subject: =?UTF-8?B?UmU6IEFsw75qw7PDsGxlZw==?=
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="000000000000fe205005d0fceb89"
+
+--000000000000fe205005d0fceb89
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi, saw you accepted the meeting.
+Seems my CTOs calendar is as busy as yours so this was the only time
+available that fitted your calendar.
+Looking forward seeing you next week :)
+
+
+K=C3=A6r kve=C3=B0ja / Best regards
+
+
+*Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson*
+
+*Business Brain | CEO 300Brains Nordic*
+
++354-8481437 | vilhjalmur.gunnarsson@300brains.com | www.300brains.com
+
+*WE ARE A MEMBER OF HOLLAND FINTECH *
+
+
+On Tue, 16 Nov 2021 at 00:40, Vilhjalmur Gunnarsson <
+vilhjalmur.gunnarsson@300brains.com> wrote:
+
+> Any time :)
+> I see you have little time this week and this little time is the only tim=
+e
+> i cant move meetings, so next week. I have sent your calendar to our CTO
+> and will book a meeting as soon as he gets back to me on what works for
+> him.
+>
+> Thank you
+>
+>
+> K=C3=A6r kve=C3=B0ja / Best regards
+>
+>
+> *Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson*
+>
+> *Business Brain | CEO 300Brains Nordic*
+>
+> +354-8481437 | vilhjalmur.gunnarsson@300brains.com | www.300brains.com
+>
+> *WE ARE A MEMBER OF HOLLAND FINTECH *
+>
+>
+> On Mon, 15 Nov 2021 at 16:11, Josh Klein <josh@josh.is> wrote:
+>
+>> Thanks for the tip on the dumbbells!
+>>
+>> A call sounds great; let me know if any times here
+>> <http://josh.is/scheduling> work, or suggest something GMT.
+>>
+>> All best,
+>> Josh
+>>
+>> =E1=90=A7
+>>
+>> On Mon, Nov 15, 2021 at 2:32 PM Vilhjalmur Gunnarsson <
+>> vilhjalmur.gunnarsson@300brains.com> wrote:
+>>
+>>> Hi Josh, nice to hear from you and that you are still alive in the
+>>> Icelandic weather ;)
+>>>
+>>> Sportvorur.is or hreysti.is should have the dumbbells :)
+>>> Regarding rebuilding the product I would like to take a short meeting
+>>> with you and our CTO,
+>>> could you send me few timeslots that work for you and I will try to
+>>> match it with our CTO schedule ?
+>>>
+>>> P.s. when in Reykjavik let me know
+>>>
+>>>
+>>> On Mon, 15 Nov 2021, 14:22 Josh Klein, <josh@josh.is> wrote:
+>>>
+>>>> Two questions for you:
+>>>>
+>>>> 1. What would it take to get a price + time estimate to rebuild this
+>>>> product <http://indigometrics.com>? (We may need a complete rewrite
+>>>> prior to M&A discussions.)
+>>>> 2. Where the hell do you order weight plates for dumbbells in this
+>>>> country? I only tried Bland.is and it's a nightmare.
+>>>>
+>>>> All best,
+>>>> Josh
+>>>>
+>>>> =E1=90=A7
+>>>>
+>>>> On Wed, Mar 17, 2021 at 9:15 AM Vilhjalmur Gunnarsson <
+>>>> vilhjalmur.gunnarsson@300brains.com> wrote:
+>>>>
+>>>>> Hi Josh, sorry for late reply :)
+>>>>> Haven't forgot about you and have mentioned you once or twice :) I
+>>>>> will go to the north for eastern so i will hit you up and see if you
+>>>>> are around.
+>>>>>
+>>>>>
+>>>>> K=C3=A6r kve=C3=B0ja / Best regards
+>>>>>
+>>>>>
+>>>>> *Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson*
+>>>>>
+>>>>> *Business Brain | CEO 300Brains Nordic*
+>>>>>
+>>>>> +354-8481437 | vilhjalmur.gunnarsson@300brains.com | www.300brains.co=
+m
+>>>>>
+>>>>> *WE ARE A MEMBER OF HOLLAND FINTECH *
+>>>>>
+>>>>>
+>>>>> On Tue, 16 Mar 2021 at 11:42, Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> Just checking in to see how things are going. Let me know if I can b=
+e
+>>>>>> of any help!
+>>>>>>
+>>>>>> All best,
+>>>>>> Josh
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Tue, Mar 2, 2021 at 12:12 PM Vilhjalmur Gunnarsson <
+>>>>>> vilhjalmur.gunnarsson@300brains.com> wrote:
+>>>>>>
+>>>>>>> Hi, thanks for this. Lets see how this will work :) Its basically
+>>>>>>> your value proposition im looking for and i will try this one out w=
+ith one
+>>>>>>> of my customers im meeting soon again i hope.
+>>>>>>>
+>>>>>>> Electric mountain bikes, its ok to look, just never try one!
+>>>>>>> I have contacted my brother about email or how a person with so
+>>>>>>> little tech skills that he does not even have Facebook should conta=
+ct the
+>>>>>>> club/him :P Will let you know.
+>>>>>>>
+>>>>>>>
+>>>>>>> K=C3=A6r kve=C3=B0ja / Best regards
+>>>>>>>
+>>>>>>>
+>>>>>>> *Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson*
+>>>>>>>
+>>>>>>> *Business Brain | CEO 300Brains Nordic*
+>>>>>>>
+>>>>>>> +354-8481437 | vilhjalmur.gunnarsson@300brains.com |
+>>>>>>> www.300brains.com
+>>>>>>>
+>>>>>>> *WE ARE A MEMBER OF HOLLAND FINTECH *
+>>>>>>>
+>>>>>>>
+>>>>>>> On Tue, 2 Mar 2021 at 10:51, Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> Villi,
+>>>>>>>>
+>>>>>>>> Thanks for the call the other day; I'm still working hard not to
+>>>>>>>> look at electric mountain bikes... In the meantime, how does this =
+look for
+>>>>>>>> a short summary of my services:
+>>>>>>>>
+>>>>>>>> "Josh Klein has provided technology and innovation strategy and
+>>>>>>>> project design for organizations from the CIA to Pfizer to BP, as =
+well as
+>>>>>>>> to numerous very early stage startups in a variety of verticals. H=
+is focus
+>>>>>>>> is on new and emerging technologies, cross-border markets, and lar=
+ge to
+>>>>>>>> small company integrations."
+>>>>>>>>
+>>>>>>>> Happy to add more to this how/where you think it'll have the best
+>>>>>>>> impact; for example, I can talk about my network in Asia + US + Eu=
+rope,
+>>>>>>>> access to senior leaders at most of the S&P, and role in ground-br=
+eaking
+>>>>>>>> technologies such as e-commerce, mobile, and cloud. As ever, I'm t=
+rying to
+>>>>>>>> balance the US propensity for outright bragging with the more stoi=
+c
+>>>>>>>> Icelandic approach to self-presentation, so any advice is apprecia=
+ted!
+>>>>>>>>
+>>>>>>>> Finally, can you introduce me to your brother here in Akureyri? I'=
+m
+>>>>>>>> extremely keen to find some punching bags and a community!
+>>>>>>>>
+>>>>>>>> Me=C3=B0 kve=C3=B0ja,
+>>>>>>>> Josh
+>>>>>>>> =E1=90=A7
+>>>>>>>>
+>>>>>>>> On Fri, Feb 5, 2021 at 6:26 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>
+>>>>>>>>> Sadly, we=E2=80=99ve headed to Egilssta=C3=B0ir for the weekend -=
+ next time!
+>>>>>>>>>
+>>>>>>>>> - J
+>>>>>>>>>
+>>>>>>>>> On Fri, Feb 5, 2021 at 6:25 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>
+>>>>>>>>>> Nice!!
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On Fri, Feb 5, 2021 at 2:03 PM Vilhjalmur Gunnarsson <
+>>>>>>>>>> vilhjalmur.gunnarsson@300brains.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Ahhh its a Nice place. Well i go there rather often as i have
+>>>>>>>>>>> family there, in fact im driving there as we speak :)
+>>>>>>>>>>>
+>>>>>>>>>>> =C3=9Eann f=C3=B6s., 5. feb. 2021, 13:51 Josh Klein skrifa=C3=
+=B0i <josh@josh.is
+>>>>>>>>>>> >:
+>>>>>>>>>>>
+>>>>>>>>>>>> Thank you for the invite, Vilhj=C3=A1lmur. Unfortunately I am
+>>>>>>>>>>>> currently in Akureyri so a coffee would entail a bit of a driv=
+e! Next time,
+>>>>>>>>>>>> I hope.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Looking forward to speaking soon,
+>>>>>>>>>>>> Josh
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> On Fri, Feb 5, 2021 at 9:44 AM Vilhjalmur Gunnarsson <
+>>>>>>>>>>>> vilhjalmur.gunnarsson@300brains.com> wrote:
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > Hi Josh and welcome to Iceland!
+>>>>>>>>>>>> > Happy to hear you are here and would like to invite you for =
+a
+>>>>>>>>>>>> coffee at our office and have a chat, whether it is when we ha=
+ve a
+>>>>>>>>>>>> scheduled call with Noemi or sooner, how does that sound?
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > Looking forward to hear from you
+>>>>>>>>>>>> >
+>>>>>>>>>>>> >
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > K=C3=A6r kve=C3=B0ja / Best regards
+>>>>>>>>>>>> >
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > Business Brain | CEO 300Brains Nordic
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > +354-8481437 | vilhjalmur.gunnarsson@300brains.com |
+>>>>>>>>>>>> www.300brains.com
+>>>>>>>>>>>> >
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > WE ARE A MEMBER OF HOLLAND FINTECH
+>>>>>>>>>>>> >
+>>>>>>>>>>>> >
+>>>>>>>>>>>> > On Thu, 4 Feb 2021 at 11:28, Noemi Malska <
+>>>>>>>>>>>> noemi@300brains.com> wrote:
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Dear Josh,
+>>>>>>>>>>>> >> I have scheduled a video meeting with you for 22nd February
+>>>>>>>>>>>> (the soonest spot in your calendar )
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> At the same time I would love to introduce you to the CEO o=
+f
+>>>>>>>>>>>> our Icelandic company Vilhjalmur Gunnarsson. Villi has been co=
+operating
+>>>>>>>>>>>> within uor structure successfully and we both see potential fo=
+r our
+>>>>>>>>>>>> cooperation.
+>>>>>>>>>>>> >> Villi would like to take this as an opportunity and invite
+>>>>>>>>>>>> you to our office in Iceland. So you could both meet in person=
+ and I can
+>>>>>>>>>>>> join you online. I hope you will accept this invitation :D
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Dear Villi,
+>>>>>>>>>>>> >> please meet Josh, who approached us with an option for a
+>>>>>>>>>>>> call and digging into potential cooperation. Since he moved to=
+ Iceland, you
+>>>>>>>>>>>> definitely shall meet in person and I will be pleased to join =
+you online.
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Villi, please take it from there, explain to Josh where our
+>>>>>>>>>>>> office is. Maybe Josh can find time before 22nd of February so=
+ you can meet
+>>>>>>>>>>>> earlier for a coffee.
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> I wish a nice day to both of you
+>>>>>>>>>>>> >> Noemi
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Kind regards,
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Noemi Malska,
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> Business Brain | Board Member
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> noemi@300brains.com | www.300brains.com
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> WE ARE A MEMBER OF HOLLAND FINTECH
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> 300Brains Sp. z o.o. | 00-066 Warsaw, Poland, Plac
+>>>>>>>>>>>> Malachowskiego 2, 4th floor
+>>>>>>>>>>>> <https://www.google.com/maps/search/00-066+Warsaw,+Poland,+Pla=
+c+Malachowskiego+2,+4th+floor?entry=3Dgmail&source=3Dg>,
+>>>>>>>>>>>>
+>>>>>>>>>>>> >> District Court for the Capital City of Warsaw, XII
+>>>>>>>>>>>> Commercial Division of the National
+>>>>>>>>>>>> >> Court Register KRS: 0000771127, Share capital of PLN
+>>>>>>>>>>>> 100,000.00, NIP: 5252779847
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >>
+>>>>>>>>>>>> >> =C5=9Br., 27 sty 2021 o 13:53 Noemi Malska <noemi@300brains=
+.com>
+>>>>>>>>>>>> napisa=C5=82(a):
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> Great to hear from you back.
+>>>>>>>>>>>> >>> Ok, let me talk internally first and then we will book som=
+e
+>>>>>>>>>>>> time for the meeting with you.
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> p.s. I understand you are based in Reykjavik?
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> Kind regards,
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> Noemi Malska,
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> Business Brain | Board Member
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> noemi@300brains.com | www.300brains.com
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> WE ARE A MEMBER OF HOLLAND FINTECH
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> 300Brains Sp. z o.o. | 00-066 Warsaw, Poland, Plac
+>>>>>>>>>>>> Malachowskiego 2, 4th floor
+>>>>>>>>>>>> <https://www.google.com/maps/search/00-066+Warsaw,+Poland,+Pla=
+c+Malachowskiego+2,+4th+floor?entry=3Dgmail&source=3Dg>,
+>>>>>>>>>>>>
+>>>>>>>>>>>> >>> District Court for the Capital City of Warsaw, XII
+>>>>>>>>>>>> Commercial Division of the National
+>>>>>>>>>>>> >>> Court Register KRS: 0000771127, Share capital of PLN
+>>>>>>>>>>>> 100,000.00, NIP: 5252779847
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>>
+>>>>>>>>>>>> >>> =C5=9Br., 27 sty 2021 o 13:50 Josh Klein <josh@josh.is>
+>>>>>>>>>>>> napisa=C5=82(a):
+>>>>>>>>>>>> >>>>
+>>>>>>>>>>>> >>>> Good to hear from you! Yes, up until last summer I was
+>>>>>>>>>>>> based in NYC, although my network is very international. Most =
+of my clients
+>>>>>>>>>>>> are US, followed by EU and then across Asia and LatAm.
+>>>>>>>>>>>> >>>>
+>>>>>>>>>>>> >>>> This week is pretty booked; my calendar is here if you'd
+>>>>>>>>>>>> like to pick a time, or suggest something mornings GMT next we=
+ek. Looking
+>>>>>>>>>>>> forward to connecting!
+>>>>>>>>>>>> >>>>
+>>>>>>>>>>>> >>>> All best,
+>>>>>>>>>>>> >>>> Josh
+>>>>>>>>>>>> >>>>
+>>>>>>>>>>>> >>>> =E1=90=A7
+>>>>>>>>>>>> >>>>
+>>>>>>>>>>>> >>>> On Wed, Jan 27, 2021 at 11:47 AM Noemi Malska <
+>>>>>>>>>>>> noemi@300brains.com> wrote:
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> Hello Josh,
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> thank you for reaching out to us.
+>>>>>>>>>>>> >>>>> My name is Noemi Malska and I am a Board Member and
+>>>>>>>>>>>> Partner at 300Brains. I have checked your linkedin and website=
+ and maybe
+>>>>>>>>>>>> there is a way we can cooperate.
+>>>>>>>>>>>> >>>>> Do I get it right, that you are currently based in
+>>>>>>>>>>>> Iceland but you have been based in NYC for many years, thus yo=
+ur biggest
+>>>>>>>>>>>> network is there?
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> How about we schedule a call and discuss options? We
+>>>>>>>>>>>> could learn more about our activities and see if there is a co=
+mmon way to
+>>>>>>>>>>>> go.
+>>>>>>>>>>>> >>>>> How about tomorrow at 11:00 CET (10am Icelandic time)?
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> Looking forward to hearing from you,
+>>>>>>>>>>>> >>>>> Cheers,
+>>>>>>>>>>>> >>>>> Noemi
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> Kind regards,
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> Noemi Malska,
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> Business Brain | Board Member
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> noemi@300brains.com | www.300brains.com
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> WE ARE A MEMBER OF HOLLAND FINTECH
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> 300Brains Sp. z o.o. | 00-066 Warsaw, Poland, Plac
+>>>>>>>>>>>> Malachowskiego 2, 4th floor
+>>>>>>>>>>>> <https://www.google.com/maps/search/00-066+Warsaw,+Poland,+Pla=
+c+Malachowskiego+2,+4th+floor?entry=3Dgmail&source=3Dg>,
+>>>>>>>>>>>>
+>>>>>>>>>>>> >>>>> District Court for the Capital City of Warsaw, XII
+>>>>>>>>>>>> Commercial Division of the National
+>>>>>>>>>>>> >>>>> Court Register KRS: 0000771127, Share capital of PLN
+>>>>>>>>>>>> 100,000.00, NIP: 5252779847
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>>
+>>>>>>>>>>>> >>>>> =C5=9Br., 27 sty 2021 o 12:23 'Josh Klein' via hello <
+>>>>>>>>>>>> hello@300brains.com> napisa=C5=82(a):
+>>>>>>>>>>>> >>>>>>
+>>>>>>>>>>>> >>>>>> To whom it may concern,
+>>>>>>>>>>>> >>>>>>
+>>>>>>>>>>>> >>>>>> I'm writing to connect to your business development
+>>>>>>>>>>>> team. Having recently moved to Iceland from NYC, the bulk of m=
+y business is
+>>>>>>>>>>>> consulting to C-Suite executives of large multinationals about=
+ new
+>>>>>>>>>>>> innovation opportunities.
+>>>>>>>>>>>> >>>>>>
+>>>>>>>>>>>> >>>>>> If possible, I'd like to learn more about what you
+>>>>>>>>>>>> provide internationally to see how I can help make connections=
+. Since the
+>>>>>>>>>>>> pandemic geography has become negligible, and I'd like to brin=
+g business to
+>>>>>>>>>>>> my new homeland where I can.
+>>>>>>>>>>>> >>>>>>
+>>>>>>>>>>>> >>>>>> Me=C3=B0 kve=C3=B0ja,
+>>>>>>>>>>>> >>>>>> Joshua Klein
+>>>>>>>>>>>> >>>>>>
+>>>>>>>>>>>> >>>>>> www.josh.is
+>>>>>>>>>>>> >>>>>> =E1=90=A7
+>>>>>>>>>>>>
+>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>
+>>>>>>>>>>>
+
+--000000000000fe205005d0fceb89
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi, saw you accepted the meeting.=C2=A0<div>Seems my CTOs =
+calendar is as busy as yours so this was the only time available that fitte=
+d your calendar.=C2=A0</div><div>Looking forward seeing you next week :)<br=
+ clear=3D"all"><div><div dir=3D"ltr" class=3D"gmail_signature" data-smartma=
+il=3D"gmail_signature"><div dir=3D"ltr"><div><p class=3D"MsoNormal"><font c=
+olor=3D"#000000"><br></font></p><p class=3D"MsoNormal"><font color=3D"#0000=
+00">K=C3=A6r kve=C3=B0ja / Best regards</font></p><p class=3D"MsoNormal"><f=
+ont color=3D"#000000"><b><br></b></font></p><p class=3D"MsoNormal"><span la=
+ng=3D"EN-US"><b><font color=3D"#000000">Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunna=
+rsson</font></b></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US"><b><=
+font color=3D"#000000">Business Brain | CEO 300Brains Nordic</font></b><br>=
+</span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">+354-8481437 |=C2=A0=
+<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_blank">vi=
+lhjalmur.gunnarsson@300brains.com</a>=C2=A0|=C2=A0<a href=3D"http://www.300=
+brains.com/" style=3D"color:rgb(17,85,204)" target=3D"_blank">www.300brains=
+.com</a></span></p></div><img src=3D"https://docs.google.com/uc?export=3Ddo=
+wnload&amp;id=3D10o2tPunU-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDoky=
+bnZRYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ"><br><span></span><span></span><b>WE=
+ ARE A MEMBER OF HOLLAND FINTECH=C2=A0</b><br></div></div></div><br></div><=
+div></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gm=
+ail_attr">On Tue, 16 Nov 2021 at 00:40, Vilhjalmur Gunnarsson &lt;<a href=
+=3D"mailto:vilhjalmur.gunnarsson@300brains.com">vilhjalmur.gunnarsson@300br=
+ains.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex"><div dir=3D"ltr"><div dir=3D"ltr">Any time :)<div>I see you have li=
+ttle time this week and this little time is the only time i cant=C2=A0move =
+meetings, so next week. I have sent your calendar to our CTO and will book =
+a meeting as soon as he gets back to me on what works for him.=C2=A0</div><=
+div><br></div><div>Thank you<br clear=3D"all"><div><div dir=3D"ltr"><div di=
+r=3D"ltr"><div><p class=3D"MsoNormal"><font color=3D"#000000"><br></font></=
+p><p class=3D"MsoNormal"><font color=3D"#000000">K=C3=A6r kve=C3=B0ja / Bes=
+t regards</font></p><p class=3D"MsoNormal"><font color=3D"#000000"><b><br><=
+/b></font></p><p class=3D"MsoNormal"><span lang=3D"EN-US"><b><font color=3D=
+"#000000">Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson</font></b></span></p><p =
+class=3D"MsoNormal"><span lang=3D"EN-US"><b><font color=3D"#000000">Busines=
+s Brain | CEO 300Brains Nordic</font></b><br></span></p><p class=3D"MsoNorm=
+al"><span lang=3D"EN-US">+354-8481437 |=C2=A0<a href=3D"mailto:vilhjalmur.g=
+unnarsson@300brains.com" target=3D"_blank">vilhjalmur.gunnarsson@300brains.=
+com</a>=C2=A0|=C2=A0<a href=3D"http://www.300brains.com/" style=3D"color:rg=
+b(17,85,204)" target=3D"_blank">www.300brains.com</a></span></p></div><img =
+src=3D"https://docs.google.com/uc?export=3Ddownload&amp;id=3D10o2tPunU-NWPH=
+KuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNrWFFPZlN5Z3=
+NCdXNJPQ"><br><span></span><span></span><b>WE ARE A MEMBER OF HOLLAND FINTE=
+CH=C2=A0</b><br></div></div></div><br></div></div><br><div class=3D"gmail_q=
+uote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, 15 Nov 2021 at 16:11, J=
+osh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.i=
+s</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div dir=3D"ltr">Thanks for the tip on the dumbbells!<div><br></div><div>A=
+ call sounds=C2=A0great; let me know if any times <a href=3D"http://josh.is=
+/scheduling" target=3D"_blank">here</a> work, or suggest something GMT.</di=
+v><div><br></div><div>All best,</div><div>Josh</div><div><br></div></div><d=
+iv hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=
+=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfoog=
+ae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=
+=3D61598015-4598-456c-990f-a6f4202145ae"><font color=3D"#ffffff" size=3D"1"=
+>=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Mon, Nov 15, 2021 at 2:32 PM Vilhjalmur Gunnarsson &lt;=
+<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_blank">vi=
+lhjalmur.gunnarsson@300brains.com</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><div dir=3D"auto">Hi Josh, nice to hear fr=
+om you and that you are still alive in the Icelandic weather ;)=C2=A0<div d=
+ir=3D"auto"><br></div><div dir=3D"auto">Sportvorur.is or <a href=3D"http://=
+hreysti.is" target=3D"_blank">hreysti.is</a> should have the dumbbells :)=
+=C2=A0</div><div dir=3D"auto">Regarding rebuilding the product I would like=
+ to take a short meeting with you and our CTO,=C2=A0</div><div dir=3D"auto"=
+>could you send me few timeslots that work for you and I will try to match =
+it with our CTO schedule ?</div><div dir=3D"auto"><br></div><div dir=3D"aut=
+o">P.s. when in Reykjavik let me know</div><br><br><div class=3D"gmail_quot=
+e" dir=3D"auto"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, 15 Nov 2021, =
+14:22 Josh Klein, &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">jos=
+h@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr">Two questions for you:<div><br></div><div>1. Wh=
+at would it take to get a price=C2=A0+ time estimate to rebuild <a href=3D"=
+http://indigometrics.com" rel=3D"noreferrer" target=3D"_blank">this product=
+</a>? (We may need a complete rewrite prior to M&amp;A discussions.)</div><=
+div>2. Where the hell do you order weight plates for dumbbells in this coun=
+try? I only tried Bland.is and it&#39;s a nightmare.=C2=A0</div><div><br></=
+div><div>All best,</div><div>Josh</div><div><br></div></div><div hspace=3D"=
+streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px;=
+ max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/=
+t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D3252adbf-068=
+8-4cf4-b41f-5bc9ea532ebe"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</fon=
+t></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr=
+">On Wed, Mar 17, 2021 at 9:15 AM Vilhjalmur Gunnarsson &lt;<a href=3D"mail=
+to:vilhjalmur.gunnarsson@300brains.com" rel=3D"noreferrer" target=3D"_blank=
+">vilhjalmur.gunnarsson@300brains.com</a>&gt; wrote:<br></div><blockquote c=
+lass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px soli=
+d rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hi Josh, sorry for la=
+te reply :)<div>Haven&#39;t forgot about you and have mentioned you once or=
+ twice :) I will go to the north for eastern so i will hit you up and see i=
+f you are=C2=A0around.=C2=A0<br clear=3D"all"><div><div dir=3D"ltr"><div di=
+r=3D"ltr"><div><p class=3D"MsoNormal"><font color=3D"#000000"><br></font></=
+p><p class=3D"MsoNormal"><font color=3D"#000000">K=C3=A6r kve=C3=B0ja / Bes=
+t regards</font></p><p class=3D"MsoNormal"><font color=3D"#000000"><b><br><=
+/b></font></p><p class=3D"MsoNormal"><span lang=3D"EN-US"><b><font color=3D=
+"#000000">Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson</font></b></span></p><p =
+class=3D"MsoNormal"><span lang=3D"EN-US"><b><font color=3D"#000000">Busines=
+s Brain | CEO 300Brains Nordic</font></b><br></span></p><p class=3D"MsoNorm=
+al"><span lang=3D"EN-US">+354-8481437 |=C2=A0<a href=3D"mailto:vilhjalmur.g=
+unnarsson@300brains.com" rel=3D"noreferrer" target=3D"_blank">vilhjalmur.gu=
+nnarsson@300brains.com</a>=C2=A0|=C2=A0<a href=3D"http://www.300brains.com/=
+" style=3D"color:rgb(17,85,204)" rel=3D"noreferrer" target=3D"_blank">www.3=
+00brains.com</a></span></p></div><img src=3D"https://docs.google.com/uc?exp=
+ort=3Ddownload&amp;id=3D10o2tPunU-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90B=
+t6yjDokybnZRYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ"><br><span></span><span></sp=
+an><b>WE ARE A MEMBER OF HOLLAND FINTECH=C2=A0</b><br></div></div></div><br=
+></div><div></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" cla=
+ss=3D"gmail_attr">On Tue, 16 Mar 2021 at 11:42, Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" rel=3D"noreferrer" target=3D"_blank">josh@josh.is</a>&g=
+t; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0p=
+x 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div d=
+ir=3D"ltr">Just checking in to see how things are going. Let me know if I c=
+an be of any help!<div><br></div><div>All best,</div><div>Josh</div></div><=
+div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=
+=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfoog=
+ae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=
+=3De0cdd085-dad7-48e7-900b-2c47baeace5b"><font color=3D"#ffffff" size=3D"1"=
+>=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Tue, Mar 2, 2021 at 12:12 PM Vilhjalmur Gunnarsson &lt;=
+<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" rel=3D"noreferrer" t=
+arget=3D"_blank">vilhjalmur.gunnarsson@300brains.com</a>&gt; wrote:<br></di=
+v><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;borde=
+r-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hi, th=
+anks for this. Lets see how this will work :) Its basically your value prop=
+osition im looking for and i will try this one out with one of my customers=
+ im meeting soon again i hope.=C2=A0<div><br><div>Electric mountain bikes, =
+its ok to look, just never try one!</div><div>I have contacted my brother a=
+bout email or how a person with so little tech skills that he does not even=
+ have Facebook should contact the club/him :P Will let you know.<br clear=
+=3D"all"><div><div dir=3D"ltr"><div dir=3D"ltr"><div><p class=3D"MsoNormal"=
+><font color=3D"#000000"><br></font></p><p class=3D"MsoNormal"><font color=
+=3D"#000000">K=C3=A6r kve=C3=B0ja / Best regards</font></p><p class=3D"MsoN=
+ormal"><font color=3D"#000000"><b><br></b></font></p><p class=3D"MsoNormal"=
+><span lang=3D"EN-US"><b><font color=3D"#000000">Vilhj=C3=A1lmur =C3=9E=C3=
+=B3r Gunnarsson</font></b></span></p><p class=3D"MsoNormal"><span lang=3D"E=
+N-US"><b><font color=3D"#000000">Business Brain | CEO 300Brains Nordic</fon=
+t></b><br></span></p><p class=3D"MsoNormal"><span lang=3D"EN-US">+354-84814=
+37 |=C2=A0<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" rel=3D"nor=
+eferrer" target=3D"_blank">vilhjalmur.gunnarsson@300brains.com</a>=C2=A0|=
+=C2=A0<a href=3D"http://www.300brains.com/" style=3D"color:rgb(17,85,204)" =
+rel=3D"noreferrer" target=3D"_blank">www.300brains.com</a></span></p></div>=
+<img src=3D"https://docs.google.com/uc?export=3Ddownload&amp;id=3D10o2tPunU=
+-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNrWFFPZ=
+lN5Z3NCdXNJPQ"><br><span></span><span></span><b>WE ARE A MEMBER OF HOLLAND =
+FINTECH=C2=A0</b><br></div></div></div><br></div></div><div></div></div><br=
+><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, 2=
+ Mar 2021 at 10:51, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" rel=3D"n=
+oreferrer" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Villi,<br><br>Tha=
+nks for the call the other day; I&#39;m still working hard not to look at e=
+lectric mountain bikes... In the meantime, how does this look for a short s=
+ummary of my services:<br><br>&quot;Josh Klein has provided technology and =
+innovation strategy and project design for organizations from the CIA to Pf=
+izer to BP, as well as to numerous very early stage startups in a variety o=
+f verticals. His focus is on new and emerging technologies, cross-border ma=
+rkets, and large to small company integrations.&quot;<br><br>Happy to add m=
+ore to this how/where you think it&#39;ll have the best impact; for example=
+, I can talk about my network in Asia + US + Europe, access to senior leade=
+rs at most of the S&amp;P, and role in ground-breaking technologies such as=
+ e-commerce, mobile, and cloud. As ever, I&#39;m trying to balance the US p=
+ropensity for outright bragging with the more stoic Icelandic approach to s=
+elf-presentation, so any advice is appreciated!<br><br>Finally, can you int=
+roduce me to your brother here in Akureyri? I&#39;m extremely keen to find =
+some punching bags and a community!<br><br><span style=3D"color:rgb(80,0,80=
+)">Me=C3=B0 kve=C3=B0ja</span>,<br>Josh<br></div><div hspace=3D"streak-pt-m=
+ark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height=
+: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3D=
+aam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D3f1ee649-0b2c-4812-acaa=
+-462d4ead3012"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br=
+><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, F=
+eb 5, 2021 at 6:26 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" rel=3D=
+"noreferrer" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"auto">Sadly, we=E2=
+=80=99ve headed to Egilssta=C3=B0ir for the weekend - next time!</div><div =
+dir=3D"auto"><br></div><div dir=3D"auto">- J</div><div><br><div class=3D"gm=
+ail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Feb 5, 2021 at 6:2=
+5 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" rel=3D"noreferrer" targ=
+et=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex"><div dir=3D"auto">Nice!!</div><div dir=3D"auto"><=
+br></div><div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmai=
+l_attr">On Fri, Feb 5, 2021 at 2:03 PM Vilhjalmur Gunnarsson &lt;<a href=3D=
+"mailto:vilhjalmur.gunnarsson@300brains.com" rel=3D"noreferrer" target=3D"_=
+blank">vilhjalmur.gunnarsson@300brains.com</a>&gt; wrote:<br></div><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
+ solid rgb(204,204,204);padding-left:1ex"><div dir=3D"auto">Ahhh its a Nice=
+ place. Well i go there rather often as i have family there, in fact im dri=
+ving there as we speak :)</div><br><div class=3D"gmail_quote"><div dir=3D"l=
+tr" class=3D"gmail_attr">=C3=9Eann f=C3=B6s., 5. feb. 2021, 13:51 Josh Klei=
+n skrifa=C3=B0i &lt;<a href=3D"mailto:josh@josh.is" rel=3D"noreferrer" targ=
+et=3D"_blank">josh@josh.is</a>&gt;:<br></div><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex"><div dir=3D"ltr">Thank you for the invite, Vilhj=C3=A1l=
+mur. Unfortunately I am currently in Akureyri so a coffee would entail a bi=
+t of a drive! Next time, I hope.=C2=A0<div><br></div><div>Looking forward t=
+o speaking soon,</div><div>Josh</div><div><br><br>On Fri, Feb 5, 2021 at 9:=
+44 AM Vilhjalmur Gunnarsson &lt;<a href=3D"mailto:vilhjalmur.gunnarsson@300=
+brains.com" rel=3D"noreferrer noreferrer" target=3D"_blank">vilhjalmur.gunn=
+arsson@300brains.com</a>&gt; wrote:<br>&gt;<br>&gt; Hi Josh and welcome to =
+Iceland!<br>&gt; Happy to hear you are here and would like to invite you fo=
+r a coffee at our office and have a chat, whether it is when we have a sche=
+duled call with Noemi or sooner, how does that sound?<br>&gt;<br>&gt; Looki=
+ng forward to hear from you<br>&gt;<br>&gt;<br>&gt;<br>&gt; K=C3=A6r kve=C3=
+=B0ja / Best regards<br>&gt;<br>&gt;<br>&gt; Vilhj=C3=A1lmur =C3=9E=C3=B3r =
+Gunnarsson<br>&gt;<br>&gt; Business Brain | CEO 300Brains Nordic<br>&gt;<br=
+>&gt; +354-8481437 | <a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com"=
+ rel=3D"noreferrer noreferrer" target=3D"_blank">vilhjalmur.gunnarsson@300b=
+rains.com</a> | <a href=3D"http://www.300brains.com" rel=3D"noreferrer nore=
+ferrer" target=3D"_blank">www.300brains.com</a><br>&gt;<br>&gt;<br>&gt; WE =
+ARE A MEMBER OF HOLLAND FINTECH <br>&gt;<br>&gt;<br>&gt; On Thu, 4 Feb 2021=
+ at 11:28, Noemi Malska &lt;<a href=3D"mailto:noemi@300brains.com" rel=3D"n=
+oreferrer noreferrer" target=3D"_blank">noemi@300brains.com</a>&gt; wrote:<=
+br>&gt;&gt;<br>&gt;&gt; Dear Josh,<br>&gt;&gt; I have scheduled a video mee=
+ting with you for 22nd February (the soonest spot in your calendar )<br>&gt=
+;&gt;<br>&gt;&gt; At the same time I would love to introduce you to the CEO=
+ of our Icelandic company Vilhjalmur Gunnarsson. Villi has been cooperating=
+ within uor structure successfully and we both see potential for our cooper=
+ation.<br>&gt;&gt; Villi would like to take this as an opportunity and invi=
+te you to our office in Iceland. So you could both meet in person and I can=
+ join you online. I hope you will accept this invitation :D<br>&gt;&gt;<br>=
+&gt;&gt; Dear Villi,<br>&gt;&gt; please meet Josh, who approached us with a=
+n option for a call and digging into potential cooperation. Since he moved =
+to Iceland, you definitely shall meet in person and I will be pleased to jo=
+in you online. <br>&gt;&gt;<br>&gt;&gt; Villi, please take it from there, e=
+xplain to Josh where our office is. Maybe Josh can find time before 22nd of=
+ February so you can meet earlier for a coffee.<br>&gt;&gt;<br>&gt;&gt; I w=
+ish a nice day to both of you <br>&gt;&gt; Noemi<br>&gt;&gt;<br>&gt;&gt;<br=
+>&gt;&gt; Kind regards,<br>&gt;&gt;<br>&gt;&gt; Noemi Malska,<br>&gt;&gt;<b=
+r>&gt;&gt; Business Brain | Board Member <br>&gt;&gt;<br>&gt;&gt; <a href=
+=3D"mailto:noemi@300brains.com" rel=3D"noreferrer noreferrer" target=3D"_bl=
+ank">noemi@300brains.com</a> | <a href=3D"http://www.300brains.com" rel=3D"=
+noreferrer noreferrer" target=3D"_blank">www.300brains.com</a><br>&gt;&gt;<=
+br>&gt;&gt;<br>&gt;&gt; WE ARE A MEMBER OF HOLLAND FINTECH <br>&gt;&gt;<br>=
+&gt;&gt; 300Brains Sp. z o.o. | <a href=3D"https://www.google.com/maps/sear=
+ch/00-066+Warsaw,+Poland,+Plac+Malachowskiego+2,+4th+floor?entry=3Dgmail&am=
+p;source=3Dg" rel=3D"noreferrer" target=3D"_blank">00-066 Warsaw, Poland, P=
+lac Malachowskiego 2, 4th floor</a>, <br>&gt;&gt; District Court for the Ca=
+pital City of Warsaw, XII Commercial Division of the National <br>&gt;&gt; =
+Court Register KRS: 0000771127, Share capital of PLN 100,000.00, NIP: 52527=
+79847<br>&gt;&gt;<br>&gt;&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 <br>&gt;&gt;<br>&=
+gt;&gt;<br>&gt;&gt; =C5=9Br., 27 sty 2021 o 13:53 Noemi Malska &lt;<a href=
+=3D"mailto:noemi@300brains.com" rel=3D"noreferrer noreferrer" target=3D"_bl=
+ank">noemi@300brains.com</a>&gt; napisa=C5=82(a):<br>&gt;&gt;&gt;<br>&gt;&g=
+t;&gt; Great to hear from you back.<br>&gt;&gt;&gt; Ok, let me talk interna=
+lly first and then we will book some time for the meeting with you.<br>&gt;=
+&gt;&gt;<br>&gt;&gt;&gt; p.s. I understand you are based in Reykjavik?<br>&=
+gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; Kind regards,<b=
+r>&gt;&gt;&gt;<br>&gt;&gt;&gt; Noemi Malska,<br>&gt;&gt;&gt;<br>&gt;&gt;&gt=
+; Business Brain | Board Member <br>&gt;&gt;&gt;<br>&gt;&gt;&gt; <a href=3D=
+"mailto:noemi@300brains.com" rel=3D"noreferrer noreferrer" target=3D"_blank=
+">noemi@300brains.com</a> | <a href=3D"http://www.300brains.com" rel=3D"nor=
+eferrer noreferrer" target=3D"_blank">www.300brains.com</a><br>&gt;&gt;&gt;=
+<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; WE ARE A MEMBER OF HOLLAND FINTECH <br>&gt=
+;&gt;&gt;<br>&gt;&gt;&gt; 300Brains Sp. z o.o. | <a href=3D"https://www.goo=
+gle.com/maps/search/00-066+Warsaw,+Poland,+Plac+Malachowskiego+2,+4th+floor=
+?entry=3Dgmail&amp;source=3Dg" rel=3D"noreferrer" target=3D"_blank">00-066 =
+Warsaw, Poland, Plac Malachowskiego 2, 4th floor</a>, <br>&gt;&gt;&gt; Dist=
+rict Court for the Capital City of Warsaw, XII Commercial Division of the N=
+ational <br>&gt;&gt;&gt; Court Register KRS: 0000771127, Share capital of P=
+LN 100,000.00, NIP: 5252779847<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 <br>&gt;&gt;&gt;<br>&gt;&gt;&gt;<br>&gt;&gt;&gt; =C5=9Br.=
+, 27 sty 2021 o 13:50 Josh Klein &lt;<a href=3D"mailto:josh@josh.is" rel=3D=
+"noreferrer noreferrer" target=3D"_blank">josh@josh.is</a>&gt; napisa=C5=82=
+(a):<br>&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt; Good to hear from you! Yes, up=
+ until last summer I was based in NYC, although my network is very internat=
+ional. Most of my clients are US, followed by EU and then across Asia and L=
+atAm. <br>&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt; This week is pretty booked; =
+my calendar is here if you&#39;d like to pick a time, or suggest something =
+mornings GMT next week. Looking forward to connecting!<br>&gt;&gt;&gt;&gt;<=
+br>&gt;&gt;&gt;&gt; All best,<br>&gt;&gt;&gt;&gt; Josh<br>&gt;&gt;&gt;&gt;<=
+br>&gt;&gt;&gt;&gt; =E1=90=A7<br>&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt; On We=
+d, Jan 27, 2021 at 11:47 AM Noemi Malska &lt;<a href=3D"mailto:noemi@300bra=
+ins.com" rel=3D"noreferrer noreferrer" target=3D"_blank">noemi@300brains.co=
+m</a>&gt; wrote:<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; Hello Josh=
+,<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; thank you for reaching ou=
+t to us. <br>&gt;&gt;&gt;&gt;&gt; My name is Noemi Malska and I am a Board =
+Member and Partner at 300Brains. I have checked your linkedin and website a=
+nd maybe there is a way we can cooperate. <br>&gt;&gt;&gt;&gt;&gt; Do I get=
+ it right, that you are currently based in Iceland but you have been based =
+in NYC for many years, thus your biggest network is there?<br>&gt;&gt;&gt;&=
+gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; How about we schedule a call and discuss op=
+tions? We could learn more about our activities and see if there is a commo=
+n way to go.<br>&gt;&gt;&gt;&gt;&gt; How about tomorrow at 11:00 CET (10am =
+Icelandic time)?<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; Looking fo=
+rward to hearing from you,<br>&gt;&gt;&gt;&gt;&gt; Cheers,<br>&gt;&gt;&gt;&=
+gt;&gt; Noemi<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&g=
+t;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; Kind regards,<br>&gt;&gt;&gt;&gt;&gt;<br=
+>&gt;&gt;&gt;&gt;&gt; Noemi Malska,<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;=
+&gt;&gt; Business Brain | Board Member <br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;=
+&gt;&gt;&gt; <a href=3D"mailto:noemi@300brains.com" rel=3D"noreferrer noref=
+errer" target=3D"_blank">noemi@300brains.com</a> | <a href=3D"http://www.30=
+0brains.com" rel=3D"noreferrer noreferrer" target=3D"_blank">www.300brains.=
+com</a><br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;=
+&gt; WE ARE A MEMBER OF HOLLAND FINTECH <br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt=
+;&gt;&gt;&gt; 300Brains Sp. z o.o. | <a href=3D"https://www.google.com/maps=
+/search/00-066+Warsaw,+Poland,+Plac+Malachowskiego+2,+4th+floor?entry=3Dgma=
+il&amp;source=3Dg" rel=3D"noreferrer" target=3D"_blank">00-066 Warsaw, Pola=
+nd, Plac Malachowskiego 2, 4th floor</a>, <br>&gt;&gt;&gt;&gt;&gt; District=
+ Court for the Capital City of Warsaw, XII Commercial Division of the Natio=
+nal <br>&gt;&gt;&gt;&gt;&gt; Court Register KRS: 0000771127, Share capital =
+of PLN 100,000.00, NIP: 5252779847<br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&=
+gt;&gt; =C2=A0 =C2=A0 =C2=A0 =C2=A0 <br>&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt=
+;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt; =C5=9Br., 27 sty 2021 o 12:23 &#39;Josh K=
+lein&#39; via hello &lt;<a href=3D"mailto:hello@300brains.com" rel=3D"noref=
+errer noreferrer" target=3D"_blank">hello@300brains.com</a>&gt; napisa=C5=
+=82(a):<br>&gt;&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;&gt; To whom it =
+may concern,<br>&gt;&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;&gt; I&#39;=
+m writing to connect to your business development team. Having recently mov=
+ed to Iceland from NYC, the bulk of my business is consulting to C-Suite ex=
+ecutives of large multinationals about new innovation opportunities.<br>&gt=
+;&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;&gt; If possible, I&#39;d like=
+ to learn more about what you provide internationally to see how I can help=
+ make connections. Since the pandemic geography has become negligible, and =
+I&#39;d like to bring business to my new homeland where I can.<br>&gt;&gt;&=
+gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;&gt;&gt;&gt; Me=C3=B0 kve=C3=B0ja,<br>&gt;&g=
+t;&gt;&gt;&gt;&gt; Joshua Klein<br>&gt;&gt;&gt;&gt;&gt;&gt;<br>&gt;&gt;&gt;=
+&gt;&gt;&gt; <a href=3D"http://www.josh.is" rel=3D"noreferrer noreferrer" t=
+arget=3D"_blank">www.josh.is</a><br>&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<div =
+class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"margin:0px=
+ 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><di=
+v class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:=
+1ex"><div class=3D"gmail_quote"><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex">
+
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div></div></div><div hspace=3D"streak-pt-mark" style=3D"max-=
+height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: h=
+idden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&=
+amp;type=3Dzerocontent&amp;guid=3D58d32ce5-cfd2-42f9-b1ce-4f588e26e6d0"><fo=
+nt size=3D"1" style=3D"color:rgb(255,255,255)">=E1=90=A7</font></div>
+</blockquote></div>
+</blockquote></div></div>
+</blockquote></div></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div></div>
+</blockquote></div>
+</blockquote></div><div></div></div>
+</blockquote></div>
+
+--000000000000fe205005d0fceb89--

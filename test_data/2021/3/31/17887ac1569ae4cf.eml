@@ -1,0 +1,934 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp212602ljm;
+        Wed, 31 Mar 2021 02:45:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz5daZR6g0njDOeJ+N/6GF5w5FGe6uYwnVrpyLk/VkwWGkpZBBto5db5tnzIu3MeflWSwfm
+X-Received: by 2002:a17:906:7d48:: with SMTP id l8mr2557683ejp.108.1617183905000;
+        Wed, 31 Mar 2021 02:45:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1617183904; cv=none;
+        d=google.com; s=arc-20160816;
+        b=ezSnWNGSmUdznf5+w8PcUT7v9DFmv48qmISbAxWasMcfPG86GSFFKUr2nFo54sWL5h
+         dhxOr7Kgs3qm9ZE7ljt5iWw8wHWPGMcbopMBJkBOVJuUHviSwYFOXfjPOWTMOQ8OM4dS
+         007D8HipubqDBKJTRCPw/DnaA1JgCQAy/1LTL2DK5aXUrzjrVkPdvrsv4PwPfgeQTZ8H
+         OKDdYV13EVlcH2Xyqg63vqR7p7/GdC75ro6EvNksnc62RXnLn12aDv8nyGUn0ARFld/Q
+         MFCqDPFWaU9oCwKb5njAlM2+PPfuU3q+6iW29ipJxJ2n3Qf7WeptjGeyR89S6iLpRWgo
+         7+mQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:to:subject:mime-version:from:date:dkim-signature;
+        bh=D3smucyBRDoneUufVV4+yAtrCa/AjHn2U2tNUWac3Lk=;
+        b=bzpryyz3rkzEXTVOw7dHO3yEOENjvQHRh6axcKxcZ/8awgIO8k4iEnYkneMFEAw4C1
+         yRc/ukei8QL9RGklUrgp8likjYoTfDVw6Sn8aX+QL2xblpImWgurBXmluf2xhRz8abPC
+         MZ2BroxbmXjPEwqPQpGQ6UfC3HBHWAd8WDLAPjSNJVeNWVPjkvTTWunrZ+tbSLc1Uawo
+         nQkU3vVkgRHRMGtuZOXmRsUdKUFZsJ8DWhCNVKa5fjBWXzugkEvFsfxGZmbSMhkSKO3p
+         LyZW0P3gZbddptDa+zMV1P8fjXcCmNz9tyYxRALPrHQyHDFeTXzwVAEH64pK4clCqDtm
+         NQrA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@email.fitbit.com header.s=smtpapi header.b=cdr7bVa3;
+       spf=pass (google.com: domain of bounces+30983-d831-josh=josh.is@email.fitbit.com designates 167.89.18.128 as permitted sender) smtp.mailfrom="bounces+30983-d831-josh=josh.is@email.fitbit.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=fitbit.com
+Return-Path: <bounces+30983-d831-josh=josh.is@email.fitbit.com>
+Received: from o3.email.fitbit.com (o3.email.fitbit.com. [167.89.18.128])
+        by mx.google.com with ESMTPS id yk13si1155251ejb.127.2021.03.31.02.45.04
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 31 Mar 2021 02:45:04 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounces+30983-d831-josh=josh.is@email.fitbit.com designates 167.89.18.128 as permitted sender) client-ip=167.89.18.128;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@email.fitbit.com header.s=smtpapi header.b=cdr7bVa3;
+       spf=pass (google.com: domain of bounces+30983-d831-josh=josh.is@email.fitbit.com designates 167.89.18.128 as permitted sender) smtp.mailfrom="bounces+30983-d831-josh=josh.is@email.fitbit.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=fitbit.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; 
+	d=email.fitbit.com; h=content-type:from:mime-version:subject:to; 
+	s=smtpapi; bh=D3smucyBRDoneUufVV4+yAtrCa/AjHn2U2tNUWac3Lk=; b=cd
+	r7bVa3hsB/ikoAUww2qAP82Ku7r92pPrCcib4wW3l4+y8hRL/BLZ6sUK1j4D1zBw
+	ae0jOUbFNWJwgRmWENVeaTjizEMo6pQK8RkvOZKh3Gdb9QJF3eIZD40tw1uV6HIl
+	p8Mg1AZPS1LreWEkLDSqAyoVs3vtkjEwSOnA/EEhc=
+Received: by filter2279p1las1.sendgrid.net with SMTP id filter2279p1las1-22386-6064449E-28
+        2021-03-31 09:45:02.744098692 +0000 UTC m=+46940.680039916
+Received: from MzA5ODM (unknown)
+	by ismtpd0190p1mdw1.sendgrid.net (SG) with HTTP id M_soQUbHQBCDSdaik3bG_g
+	Wed, 31 Mar 2021 09:45:02.669 +0000 (UTC)
+Content-Type: multipart/alternative; boundary=6b2c41e222ccb3498916ab7897fae38f7346558c6a4d95fc20cf1f6c3cab
+Date: Wed, 31 Mar 2021 09:45:03 +0000 (UTC)
+From: "orders@fitbit.com" <orders@fitbit.com>
+Mime-Version: 1.0
+Subject: Today is the day! Your order has been shipped.
+To: josh@josh.is
+Message-ID: <M_soQUbHQBCDSdaik3bG_g@ismtpd0190p1mdw1.sendgrid.net>
+X-SG-EID: FyJPS/4HFhLWsB6XUBQwMzaPSqgmvnl+yiKOw6PbxOAOLWeRJiLH04A2/0p8DEvoZlsAblht5JbPS3
+ 6SLIjOrTgiwr59PJtvTlMJKWyluG4oS7bkiJXi2TpLFEb/v9N5KiKYcGrrtKwHWL+KpCVasxMQ9MHM
+ O/pwYZmOMBKyrvtbTV9GUFn87ATbI4AUSKqhMzsuYl/ROCPGZVR/uJBaaQ==
+X-Entity-ID: EkU1loPj2PHozuhr+f5qEA==
+
+--6b2c41e222ccb3498916ab7897fae38f7346558c6a4d95fc20cf1f6c3cab
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+
+Your Fitbit order is in the mail.
+
+Are you smiling? You're totally smiling.
+
+No need to camp out by the mailbox!
+
+Use this number to track your package:
+
+JJD0000919411714000623068
+
+---------------------------------------------------------------
+
+Order #: YGTNYGM8T
+
+Order Date: 3/30/21
+
+Here's what we shipped:
+
+ITEM                              UNIT PRICE  QTY   COST    AVAILABILITY
+
+    Fitbit Charge 3 & Charge 4 Sport Band (Navy) - Large           EUR0.00 =
+    1     EUR0.00
+
+
+---------------------------------------------------------------
+
+SHIPPING METHOD: Free (5 Business Days*) (via DHL Express)
+
+*Some shipping areas may take up to 5 business days.
+
+
+
+
+
+
+Sent to:
+    Josh Klein
+=20=20=20=20
+    Vidifell
+=20=20=20=20
+=20=20=20=20
+     Akureyri,  607=20
+    Iceland
+
+
+
+
+If you have any questions about your order, or see something wrong, contact=
+ us at http://help.fitbit.com.
+
+
+    This is not an official invoice. For invoice requests, contact us at ht=
+tp://help.fitbit.com.
+
+
+
+--6b2c41e222ccb3498916ab7897fae38f7346558c6a4d95fc20cf1f6c3cab
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+Mime-Version: 1.0
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns=3D"http://www.w3.org/1999/xhtml"
+      xmlns:v=3D"urn:schemas-microsoft-com:vml"
+      xmlns:o=3D"urn:schemas-microsoft-com:office:office">
+<head>
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+    <title>
+=20=20=20=20=20=20
+        Today is the day! Your order has been shipped.
+=20=20=20=20=20=20
+    </title>
+    <!--[if gte mso 9]><xml>
+        <o:OfficeDocumentSettings>
+            <o:AllowPNG/>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml><![endif]-->
+    <style type=3D"text/css">
+        @font-face {
+            font-family: "Proxima Nova Regular";
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.h00e2fc72fb=
+5ef844e5b551084c457860.pack?items=3D%2Ffonts%2Fproxima-nova-regular.eot);
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.h00e2fc72fb=
+5ef844e5b551084c457860.pack?items=3D%2Ffonts%2Fproxima-nova-regular.eot#ief=
+ix) format("embedded-opentype"),
+            url(http://fitbit.com/simple.b-cssdisabled-woff.h9b6ce0ea9fc542=
+3658c5fa4cb9e16371.pack?items=3D%2Ffonts%2Fproxima-nova-regular.woff) forma=
+t("woff"),
+            url(http://fitbit.com/simple.b-cssdisabled-ttf.hd49742d9b24301b=
+494882b0826f16fd6.pack?items=3D%2Ffonts%2Fproxima-nova-regular.ttf) format(=
+"truetype"),
+            url(http://fitbit.com/simple.b-cssdisabled-bin.h58fb66bfe136dd3=
+643b02ca104e34f90.pack?items=3D%2Ffonts%2Fproxima-nova-regular.svg#ProximaN=
+ovaRegular) format("svg");
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: "Proxima Nova Light";
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.hb3a6ef6a98=
+5371fdb5230a87195b72f0.pack?items=3D%2Ffonts%2Fproxima-nova-light.eot);
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.hb3a6ef6a98=
+5371fdb5230a87195b72f0.pack?items=3D%2Ffonts%2Fproxima-nova-light.eot#iefix=
+) format("embedded-opentype"),
+            url(http://fitbit.com/simple.b-cssdisabled-woff.h0f8fab28d191d8=
+21e920190a1bd628e5.pack?items=3D%2Ffonts%2Fproxima-nova-light.woff) format(=
+"woff"),
+            url(http://fitbit.com/simple.b-cssdisabled-ttf.he8f73b338474e1e=
+242b1ace77b1edac3.pack?items=3D%2Ffonts%2Fproxima-nova-light.ttf) format("t=
+ruetype"),
+            url(http://fitbit.com/simple.b-cssdisabled-bin.h72558f65d8766f6=
+cdec7f9e7d91a989a.pack?items=3D%2Ffonts%2Fproxima-nova-light.svg#ProximaNov=
+aLight) format("svg");
+            font-weight: normal;
+            font-style: normal;
+        }
+        @font-face {
+            font-family: "Proxima Nova Bold";
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.hf06ba88907=
+1475a26f168caee47c5134.pack?items=3D%2Ffonts%2Fproxima-nova-bold.eot);
+            src: url(http://fitbit.com/simple.b-cssdisabled-eot.hf06ba88907=
+1475a26f168caee47c5134.pack?items=3D%2Ffonts%2Fproxima-nova-bold.eot#iefix)=
+ format("embedded-opentype"),
+            url(http://fitbit.com/simple.b-cssdisabled-woff.hb2f62d815f965a=
+ade01935cbb09a008a.pack?items=3D%2Ffonts%2Fproxima-nova-bold.woff) format("=
+woff"),
+            url(http://fitbit.com/simple.b-cssdisabled-ttf.h551f74038960ee9=
+3bdc3307133f54e1b.pack?items=3D%2Ffonts%2Fproxima-nova-bold.ttf) format("tr=
+uetype"),
+            url(http://fitbit.com/simple.b-cssdisabled-bin.h1580de87484f29b=
+8137af930f0a4cdf0.pack?items=3D%2Ffonts%2Fproxima-nova-bold.svg#ProximaNova=
+Bold) format("svg");
+            font-weight: normal;
+            font-style: normal;
+        }
+    </style>
+    <style type=3D"text/css">
+        @import url(http://fonts.googleapis.com/css?family=3DOpen+Sans);
+        body { width:100% !important; -webkit-text-size-adjust:100%; -ms-te=
+xt-size-adjust:100%; margin:0; padding:0; }
+        .ExternalClass { width:100%; }
+        .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalCla=
+ss font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
+        .ExternalClass img[class^=3DEmoji] {width: 10px !important;	height:=
+ 10px !important; display: inline !important;}
+        img { outline:none; text-decoration:none; border:none; -ms-interpol=
+ation-mode: bicubic; }
+        a img { border:none; }
+        p { margin: 0px 0px }
+        table td { border-collapse: collapse; }
+        table { border-collapse:collapse; mso-table-lspace:0pt; mso-table-r=
+space:0pt; }
+        .browswerview, .browswerview a {font-family:'Proxima Nova Regular',=
+'Open Sans',arial,sans-serif; font-size:12px; line-height:50px; color:#939c=
+9e; text-decoration:underline}
+        .trackingtext a {color:#ee3d6e!important}
+        .troubletext a {color:#52C1BF!important}
+        .invoicenoticetext a {color:#c3c8c9!important}
+    </style>
+</head>
+<body bgcolor=3D"#f6f6f6" style=3D"-webkit-font-smoothing:antialiased;width=
+:100%;background-color:#f6f6f6;background-image:none;background-repeat:repe=
+at;background-position:top left;background-attachment:scroll;-webkit-text-s=
+ize-adjust:none;margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;p=
+adding-top:0;padding-bottom:0;padding-right:0;padding-left:0;" >
+  <div style=3D"background-color:#f6f6f6;" >
+    <table width=3D"100%" height=3D"100%" border=3D"0" cellspacing=3D"0" ce=
+llpadding=3D"0" id=3D"fullwidth-container" style=3D"border-collapse:collaps=
+e;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+      <tr>
+        <td bgcolor=3D"#f6f6f6" valign=3D"top" align=3D"left" style=3D"bord=
+er-collapse:collapse;" >
+          <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" align=3D"=
+center" class=3D"content-holder" width=3D"650" style=3D"border-collapse:col=
+lapse;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+            <tr>
+              <td style=3D"border-collapse:collapse;" >
+                <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-tabl=
+e-rspace:0pt;" >
+                  <tr>
+                    <td align=3D"right" style=3D"border-collapse:collapse;"=
+ >&nbsp;</td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td bgcolor=3D"#ffffff" class=3D"header" style=3D"border-coll=
+apse:collapse;" >
+                <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-tabl=
+e-rspace:0pt;" >
+                  <tr>
+                    <td align=3D"left" width=3D"170" style=3D"border-collap=
+se:collapse;padding:25px 0 25px 25px;" >
+                      <a href=3D"http://email.fitbit.com/ls/click?upn=3DZ5v=
+B-2FoiL7T6mrL7iTHaxBYue99Zf3LhA704ygXi-2ByLNI59FrPa2fQkJ9kTdHz6ptuq-2FVxIYW=
+hIwzmkURuj-2FvEg-3D-3D9Yqa_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7PeZ9=
+FVvS5HAchbfhVaV7YJo0diH4Q4YV9YURGtpa-2FU42X72wFZicMSswPgy-2BreiT4WLpFqPNHsB=
+dT-2Be4ZQP5T8EXK-2BhXOvQ737YNde-2B1it9c3DcykXCyGfLBt0hub8EAQUaCkEaP1CYlDdcm=
+o59oB-2F6hv27cWeKcvlNf6i3L62iBJA-3D-3D"><img editable src=3D"https://www.fi=
+tbit.com/cart/resources/img/mail/header_fitbit_logo.png" height=3D"32" alt=
+=3D"fitbit" border=3D"0" style=3D"display:block;margin-top:0;margin-bottom:=
+0;margin-right:0;margin-left:0;padding-top:0;padding-bottom:0;padding-right=
+:0;padding-left:0;outline-style:none;text-decoration:none;-ms-interpolation=
+-mode:bicubic;border-style:none;" ></a>
+                    </td>
+                    <td width=3D"414" align=3D"right" style=3D"border-colla=
+pse:collapse;" >
+                      <a href=3D"http://email.fitbit.com/ls/click?upn=3DZ5v=
+B-2FoiL7T6mrL7iTHaxBYue99Zf3LhA704ygXi-2ByLOkFIR28VasZIsATuJFExEg-2B-2FwIjG=
+tWe7ou1X-2FAUtSbqg-3D-3D_pJz_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7Pe=
+Z9FVvS5HAchbfhVaV7YJo0CV-2BiSCgpf-2FJOOUZ-2Bz2RKD32bbBzycitIiFMRBvRU-2BdYQU=
+Jpvce-2FsYjv6Rqms-2BqpeymIli0zfZNU8J0-2Fp-2BEkNL8FkxTacfGtfcNQ990Vu71zw5cJ-=
+2FYqcXp6ba5o0OtjyM10Q41GO8sQjxw1j9A0F87w-3D-3D" style=3D"text-decoration: n=
+one"><span  class=3D"storetext" style=3D"font-family:Arial, sans-serif;font=
+-size:16px;color:#e7225b;font-weight:normal;" >
+                        <!--[if (!mso 14)&(!mso 15)]><!--><font style=3D"fo=
+nt-family:'Proxima Nova Bold','Open Sans', Arial, sans-serif;font-size:16px=
+;color:#e7225b;font-weight:normal;" ><!--<![endif]-->
+                        Store
+                        <!--[if (!mso 14)&(!mso 15)]><!--></font><!--<![end=
+if]-->
+                      </span></a>
+                    </td>
+                    <td align=3D"right" width=3D"66" style=3D"border-collap=
+se:collapse;" >
+                      <a href=3D"http://email.fitbit.com/ls/click?upn=3DZ5v=
+B-2FoiL7T6mrL7iTHaxBYue99Zf3LhA704ygXi-2ByLOkFIR28VasZIsATuJFExEg-2B-2FwIjG=
+tWe7ou1X-2FAUtSbqg-3D-3D0SR1_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7Pe=
+Z9FVvS5HAchbfhVaV7YJo0xh4fR0QOagN9U7JtZ9GxYDQk3tffYyi9-2FGJD8nGaIkSm89pc2oI=
+f-2Fu1j1dhgL3Vj2oAWoM5RPLbmHiVrnEf8my6C8xtbcAv-2FomPhRo7ufP53bnZbqKjx8H8cZ-=
+2B5tb9GrSOruXn7aq13u7GAoJQ4LZw-3D-3D"><img editable src=3D"http://i4.cmail1=
+.com/ei/r/65/4BF/F37/130246/assets/cart.gif" alt=3D"Fitbit Store" width=3D"=
+66" height=3D"23" align=3D"right" border=3D"0" style=3D"display:block;margi=
+n-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;padding-=
+bottom:0;padding-right:0;padding-left:0;outline-style:none;text-decoration:=
+none;-ms-interpolation-mode:bicubic;border-style:none;" ></a>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr class=3D"maincontent">
+              <td bgcolor=3D"#ffffff" style=3D"border-collapse:collapse;" >
+                <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-tabl=
+e-rspace:0pt;" >
+                  <tr>
+                    <td style=3D"border-collapse:collapse;" >
+                      <table width=3D"100%" border=3D"0" cellspacing=3D"0" =
+cellpadding=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;ms=
+o-table-rspace:0pt;" >
+                        <tr>
+                            <td width=3D"60">&nbsp;</td>
+                            <td align=3D"center" style=3D"border-collapse:c=
+ollapse;" >
+                              <br>
+                              <span style=3D"font-family:Arial, sans-serif;=
+font-size:30px;line-height:36px;color:#52C1BF;font-weight:normal;white-spac=
+e:nowrap;display:inline-block;" >
+                                <!--[if (!mso 14)&(!mso 15)]><!--><font sty=
+le=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;font-=
+size:30px;line-height:36px;color:#52C1BF;font-weight:normal;" ><!--<![endif=
+]-->
+                                  Your Fitbit order is in the mail.
+                                <!--[if (!mso 14)&(!mso 15)]><!--></font><!=
+--<![endif]-->
+                              </span><br>
+                              <span style=3D"line-height:5px;" >&nbsp;</spa=
+n><br>
+                              <span style=3D"font-family:Arial, sans-serif;=
+font-size:20px;line-height:24px;color:#52C1BF;font-weight:normal;" >
+                                <!--[if (!mso 14)&(!mso 15)]><!--><font sty=
+le=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;font-=
+size:20px;line-height:24px;color:#52C1BF;font-weight:normal;" ><!--<![endif=
+]-->
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20
+                                    Are you smiling? You're totally smiling.
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20
+                                <!--[if (!mso 14)&(!mso 15)]><!--></font><!=
+--<![endif]-->
+                              </span><br>
+                              <span style=3D"line-height:20px;" >&nbsp;</sp=
+an><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+                              <span style=3D"font-family:Arial, sans-serif;=
+font-size:22px;line-height:36px;color:#52C1BF;font-weight:normal;white-spac=
+e:nowrap;display:inline-block;" >
+                                <!--[if (!mso 14)&(!mso 15)]><!--><font sty=
+le=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;font-=
+size:22px;line-height:36px;color:#52C1BF;font-weight:normal;" ><!--<![endif=
+]-->
+                                  No need to camp out by the mailbox!
+                                <!--[if (!mso 14)&(!mso 15)]><!--></font><!=
+--<![endif]-->
+                              </span><br>
+                              <span style=3D"line-height:5px;" >&nbsp;</spa=
+n><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+                              <span style=3D"font-family:Arial, sans-serif;=
+font-size:18px;line-height:24px;color:#ee3d6e;font-weight:normal;" >
+                                <!--[if (!mso 14)&(!mso 15)]><!--><font sty=
+le=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;font-=
+size:18px;line-height:24px;color:#ee3d6e;font-weight:normal;" ><!--<![endif=
+]-->
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+                                    Use this number to track your package:
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+                                <!--[if (!mso 14)&(!mso 15)]><!--></font><!=
+--<![endif]-->
+                              </span><br>
+                              <span style=3D"line-height:5px;" >&nbsp;</spa=
+n><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+                              <span class=3D"trackingtext" style=3D"font-fa=
+mily:Arial, sans-serif;font-size:18px;line-height:24px;color:#ee3d6e;font-w=
+eight:bold;" >
+                                <!--[if (!mso 14)&(!mso 15)]><!--><font sty=
+le=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;font-=
+size:18px;line-height:24px;color:#ee3d6e;font-weight:bold;" ><!--<![endif]-=
+->
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+                                  <a href=3D"http://email.fitbit.com/ls/cli=
+ck?upn=3DXYqaiYZOly0XWaC-2FAm5sTTnaLIxXxmShTlfo-2BUJgZoFvfRxLzp5u-2BfCQbVib=
+KsVbYT-2FL9i1QZuh6ufYR6l0dM1T3dXLPQ-2BddU2TyRH1i-2BlkA8amRcVBEyWsd-2BRNsNUE=
+c3qfu_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7PeZ9FVvS5HAchbfhVaV7YJo0A=
+1yZhem-2B-2BM1llgZgeEBWtk1zr8LDv02vCgv4Neq4xjX-2F1gXnwpgoZnSlnN9KQC3pZ5E0-2=
+Bz-2FZZ3udNXI5WI8F0M3xx-2FfUguzBI2GfoYwEvgAH7AeTz-2BhRUiM9YwY9OJ799f4UEvvtE=
+KA-2BaDvO0t4pKQ-3D-3D" target=3D"_blank" style=3D"color:#ee3d6e!important;"=
+ >JJD0000919411714000623068</a>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20
+                                <!--[if (!mso 14)&(!mso 15)]><!--></font><!=
+--<![endif]-->
+                              </span><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20
+                                <br>
+                            </td>
+                            <td width=3D"60">&nbsp;</td>
+                          </tr>
+                        </table>
+                      </td>
+                    </tr>
+                  <tr>
+                      <td align=3D"center" style=3D"border-collapse:collaps=
+e;" >
+                        <table width=3D"550" border=3D"0" cellspacing=3D"0"=
+ cellpadding=3D"0" align=3D"center" class=3D"orderinfobox" style=3D"border-=
+collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                          <tr>
+                            <td align=3D"center" bgcolor=3D"#FFFFFF" style=
+=3D"border-collapse:collapse;" >
+                                <span style=3D"line-height:14px;" >&nbsp;</=
+span>
+                                <br>
+                                <span  class=3D"orderheader" style=3D"font-=
+family:Arial, sans-serif;font-size:24px;line-height:36px;color:#4ac1c0;font=
+-weight:normal;" >
+                                  <!--[if (!mso 14)&(!mso 15)]><!--><font s=
+tyle=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans-serif;fon=
+t-size:24px;line-height:32px;color:#4ac1c0;font-weight:normal;" ><!--<![end=
+if]-->
+                                    Here's what we shipped:
+                                    <!--[if (!mso 14)&(!mso 15)]><!--></fon=
+t><!--<![endif]-->
+                                </span>
+                                <br>
+                                <span style=3D"line-height:18px;" >&nbsp;</=
+span>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align=3D"center" bgcolor=3D"#FFFFFF" style=
+=3D"border-collapse:collapse;" >
+                                <table width=3D"480" border=3D"0" cellspaci=
+ng=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collapse:collap=
+se;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                                    <tr>
+                                        <td align=3D"left" style=3D"border-=
+collapse:collapse;" >
+                                          <span class=3D"ordernumber" style=
+=3D"font-family:Arial, sans-serif;font-size:16px;line-height:26px;color:#57=
+6569;font-weight:normal;" >
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--><font style=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans=
+-serif;font-size:16px;line-height:26px;color:#576569;font-weight:normal;" >=
+<!--<![endif]-->
+                                            Order #: YGTNYGM8T
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--></font><!--<![endif]-->
+                                          </span>
+                                        </td>
+                                        <td align=3D"right" style=3D"border=
+-collapse:collapse;" >
+                                          <span class=3D"ordernumber" style=
+=3D"font-family:Arial, sans-serif;font-size:16px;line-height:26px;color:#57=
+6569;font-weight:normal;" >
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--><font style=3D"font-family:'Proxima Nova Light','Open Sans', Arial, sans=
+-serif;font-size:16px;line-height:26px;color:#576569;font-weight:normal;" >=
+<!--<![endif]-->
+                                            Order Date: 3/30/21
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--></font><!--<![endif]-->
+                                          </span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><span style=3D"line-height:10px=
+;" >&nbsp;</span></td>
+                                    </tr>
+                                </table>
+                            </td>
+                          </tr>
+                          <tr>
+                            <td align=3D"center" bgcolor=3D"#FFFFFF" style=
+=3D"border-collapse:collapse;" >
+                              <table width=3D"500" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collapse:collapse=
+;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                                <tr>
+                                    <td style=3D"border-collapse:collapse;"=
+ ><img src=3D"http://i10.cmail1.com/ei/r/65/4BF/F37/130246/assets/boxinnerd=
+ivider.gif" width=3D"500" height=3D"1" border=3D"0" style=3D"display:block;=
+margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;pad=
+ding-bottom:0;padding-right:0;padding-left:0;outline-style:none;text-decora=
+tion:none;border-style:none;-ms-interpolation-mode:bicubic;" ></td>
+                                </tr>
+                                <tr>
+                                  <td style=3D"border-collapse:collapse;" >=
+<span style=3D"line-height:14px;" >&nbsp;</span></td>
+                                </tr>
+                                <tr>
+                                  <td style=3D"border-collapse:collapse;" >
+                                    <table width=3D"500" border=3D"0" cells=
+pacing=3D"0" cellpadding=3D"0" class=3D"orderinfohead" style=3D"border-coll=
+apse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                                      <tr>
+                                        <td width=3D"10" style=3D"border-co=
+llapse:collapse;" >&nbsp;</td>
+                                        <td width=3D"49" style=3D"border-co=
+llapse:collapse;" >&nbsp;</td>
+                                        <td width=3D"295" align=3D"left" st=
+yle=3D"border-collapse:collapse;" >
+                                          <span  class=3D"orderheader" styl=
+e=3D"font-family:Arial, sans-serif;font-size:12px;line-height:22px;color:#c=
+3c8c9;font-weight:normal;" >
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--><font style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, sans-=
+serif;font-size:12px;line-height:22px;color:#c3c8c9;font-weight:normal;" ><=
+!--<![endif]-->
+                                              ITEM
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--></font><!--<![endif]-->
+                                          </span>
+                                        </td>
+                                        <td width=3D"43" align=3D"center" s=
+tyle=3D"border-collapse:collapse;" >
+                                          <span  class=3D"orderheader" styl=
+e=3D"font-family:Arial, sans-serif;font-size:12px;line-height:22px;color:#c=
+3c8c9;font-weight:normal;" >
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--><font style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, sans-=
+serif;font-size:12px;line-height:22px;color:#c3c8c9;font-weight:normal;" ><=
+!--<![endif]-->
+                                              QTY
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--></font><!--<![endif]-->
+                                          </span>
+                                        </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                            <td width=3D"95" align=3D"right=
+" style=3D"border-collapse:collapse;" >
+                                              <span  class=3D"orderheader" =
+style=3D"font-family:Arial, sans-serif;font-size:12px;line-height:22px;colo=
+r:#c3c8c9;font-weight:normal;" >
+                                                <!--[if (!mso 14)&(!mso 15)=
+]><!--><font style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, s=
+ans-serif;font-size:12px;line-height:22px;color:#c3c8c9;font-weight:normal;=
+" ><!--<![endif]-->
+                                                  COST
+                                                <!--[if (!mso 14)&(!mso 15)=
+]><!--></font><!--<![endif]-->
+                                              </span>
+                                            </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                        <td width=3D"8" style=3D"border-col=
+lapse:collapse;" >&nbsp;</td>
+                                      </tr>
+                                      <tr>
+                                        <td colspan=3D"6" style=3D"border-c=
+ollapse:collapse;" ><span style=3D"line-height:4px;" >&nbsp;</span></td>
+                                      </tr>
+                                    </table>
+
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20
+                                      <table width=3D"500" border=3D"0" cel=
+lspacing=3D"0" cellpadding=3D"0" class=3D"orderinfoproduct" style=3D"border=
+-collapse:collapse;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                                        <tr>
+                                          <td width=3D"10" style=3D"border-=
+collapse:collapse;" >&nbsp;</td>
+                                          <td width=3D"49" height=3D"43" al=
+ign=3D"left" style=3D"border-collapse:collapse; font-size: 43px; line-heigh=
+t: 43px;" >
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              &nbsp;
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                          </td>
+                                          <td width=3D"235" align=3D"left" =
+style=3D"border-collapse:collapse;" >
+                                              <span  class=3D"orderitem" st=
+yle=3D"font-family:Arial, sans-serif;font-size:16px;line-height:22px;color:=
+#123036;font-weight:normal;" >
+                                                <!--[if (!mso 14)&(!mso 15)=
+]><!--><font style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, s=
+ans-serif;font-size:16px;line-height:22px;color:#123036;font-weight:normal;=
+" ><!--<![endif]-->
+                                                Fitbit Charge 3 & Charge 4 =
+Sport Band (Navy) - Large
+                                                <!--[if (!mso 14)&(!mso 15)=
+]><!--></font><!--<![endif]-->
+                                              </span><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                                  <span  class=3D"orderunit=
+cost" style=3D"font-family:Arial, sans-serif;font-size:16px;line-height:22p=
+x;color:#4ac1c0;font-weight:normal;" >
+                                                    <!--[if (!mso 14)&(!mso=
+ 15)]><!--><font style=3D"font-family:'Proxima Nova Regular','Open Sans', A=
+rial, sans-serif;font-size:16px;line-height:22px;color:#4ac1c0;font-weight:=
+normal;" ><!--<![endif]-->
+                                                    &euro;0.00
+                                                    <!--[if (!mso 14)&(!mso=
+ 15)]><!--></font><!--<![endif]-->
+                                                  </span><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                          </td>
+                                          <td width=3D"60" align=3D"left" s=
+tyle=3D"border-collapse:collapse;" >&nbsp;</td>
+                                          <td width=3D"43" align=3D"center"=
+ style=3D"border-collapse:collapse;" >
+                                            <span  class=3D"orderquantity" =
+style=3D"font-family:Arial, sans-serif;font-size:16px;line-height:22px;colo=
+r:#123036;font-weight:normal;" >
+                                              <!--[if (!mso 14)&(!mso 15)]>=
+<!--><font style=3D"font-family:'Proxima Nova Regular','Open Sans', Arial, =
+sans-serif;font-size:16px;line-height:22px;color:#123036;font-weight:normal=
+;" ><!--<![endif]-->
+                                              1
+                                              <!--[if (!mso 14)&(!mso 15)]>=
+<!--></font><!--<![endif]-->
+                                            </span>
+                                          </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td width=3D"95" align=3D"rig=
+ht" style=3D"border-collapse:collapse;" >
+                                                <span  class=3D"orderquanti=
+ty" style=3D"font-family:Arial, sans-serif;font-size:16px;line-height:22px;=
+color:#123036;font-weight:normal;" >
+                                                  <!--[if (!mso 14)&(!mso 1=
+5)]><!--><font style=3D"font-family:'Proxima Nova Regular','Open Sans', Ari=
+al, sans-serif;font-size:16px;line-height:22px;color:#123036;font-weight:no=
+rmal;" ><!--<![endif]-->
+                                                  &euro;0.00
+                                                  <!--[if (!mso 14)&(!mso 1=
+5)]><!--></font><!--<![endif]-->
+                                                </span>
+                                              </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                          <td width=3D"8" style=3D"border-c=
+ollapse:collapse;" >&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                          <td colspan=3D"7" style=3D"border=
+-collapse:collapse;" ><span style=3D"line-height:36px;" >&nbsp;</span></td>
+                                        </tr>
+                                      </table>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20
+
+                                  </td>
+                                </tr>
+                                <tr>
+                                    <td style=3D"border-collapse:collapse;"=
+ ><img src=3D"http://i10.cmail1.com/ei/r/65/4BF/F37/130246/assets/boxinnerd=
+ivider.gif" width=3D"500" height=3D"1" border=3D"0" style=3D"display:block;=
+margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:0;pad=
+ding-bottom:0;padding-right:0;padding-left:0;outline-style:none;text-decora=
+tion:none;border-style:none;-ms-interpolation-mode:bicubic;" ></td>
+                                </tr>
+                                <tr>
+                                    <td style=3D"border-collapse:collapse;"=
+ ><span style=3D"line-height:26px;" >&nbsp;</span></td>
+                                </tr>
+                                <tr>
+                                  <td align=3D"left" style=3D"border-collap=
+se:collapse;">
+                                  <span style=3D"font-family:Arial, sans-se=
+rif;font-size:14px;line-height:22px;color:#c3c8c9;font-weight:normal;" >
+                                    <!--[if (!mso 14)&(!mso 15)]><!--><font=
+ style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, sans-serif;fo=
+nt-size:14px;line-height:22px;color:#c3c8c9;font-weight:normal;" ><!--<![en=
+dif]-->
+                                      SHIPPING METHOD:
+                                      <!--[if (!mso 14)&(!mso 15)]><!--></f=
+ont><!--<![endif]-->
+                                  </span>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20
+                                  &nbsp;
+                                  <span style=3D"font-family:Arial, sans-se=
+rif;font-size:14px;line-height:22px;color:#123036;font-weight:normal;" >
+                                    <!--[if (!mso 14)&(!mso 15)]><!--><font=
+ style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial, sans-serif;fo=
+nt-size:14px;line-height:22px;color:#123036;font-weight:normal;" ><!--<![en=
+dif]-->
+                                      Free (5 Business Days*)
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      (via DHL Express)
+                                      <!--[if (!mso 14)&(!mso 15)]><!--></f=
+ont><!--<![endif]-->
+                                  </span>
+                                    <div style=3D"font-family:Arial, sans-s=
+erif;font-size:12px;line-height:22px;color:#123036;font-weight:normal;font-=
+style:italic">
+                                          *Some shipping areas may take up =
+to 5 business days.
+                                      </div>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td bgcolor=3D"#FFFFFF" style=3D"border-c=
+ollapse:collapse;" ><span style=3D"line-height:26px;" >&nbsp;</span></td>
+                                </tr>
+                              </table>
+                            </td>
+                          </tr>
+                          <tr>
+                              <td bgcolor=3D"#FFFFFF" style=3D"border-colla=
+pse:collapse;" ><img src=3D"http://i2.cmail1.com/ei/r/6F/709/882/063009/ass=
+ets/boxdivider.gif" width=3D"550" height=3D"1" border=3D"0" style=3D"displa=
+y:block;margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-t=
+op:0;padding-bottom:0;padding-right:0;padding-left:0;outline-style:none;tex=
+t-decoration:none;border-style:none;-ms-interpolation-mode:bicubic;" ></td>
+                          </tr>
+                          <tr>
+                              <td bgcolor=3D"#FFFFFF"style=3D"border-collap=
+se:collapse;" ><span style=3D"line-height:18px;" >&nbsp;</span></td>
+                          </tr>
+                          <tr>
+                              <td align=3D"center" bgcolor=3D"#FFFFFF" styl=
+e=3D"border-collapse:collapse;" >
+                                  <table width=3D"500" border=3D"0" cellspa=
+cing=3D"0" cellpadding=3D"0" align=3D"center" style=3D"border-collapse:coll=
+apse;mso-table-lspace:0pt;mso-table-rspace:0pt;" >
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td style=3D"border-collapse:=
+collapse;" >
+                                          <span  class=3D"orderaddressheade=
+r" style=3D"font-family:Arial, sans-serif;font-size:20px;line-height:36px;c=
+olor:#4ac1c0;font-weight:normal;" >
+                                            <!--[if (!mso 14)&(!mso 15)]><!=
+--><font style=3D"font-family:'Proxima Nova Regular','Open Sans', Arial, sa=
+ns-serif;font-size:20px;line-height:36px;color:#4ac1c0;font-weight:normal;"=
+ ><!--<![endif]-->
+                                              Sent to:
+                                              <!--[if (!mso 14)&(!mso 15)]>=
+<!--></font><!--<![endif]-->
+                                          </span>
+                                              </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      </tr>
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td style=3D"border-collapse:=
+collapse;" ><span style=3D"line-height:13px;" >&nbsp;</span></td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      </tr>
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td valign=3D"top" style=3D"b=
+order-collapse:collapse;" >
+                                                <span style=3D"font-family:=
+Arial, sans-serif;font-size:16px;line-height:22px;color:#123036;font-weight=
+:normal;" >
+                                                  <!--[if (!mso 14)&(!mso 1=
+5)]><!--><font style=3D"font-family:'Proxima Nova Bold','Open Sans', Arial,=
+ sans-serif;font-size:16px;line-height:22px;color:#123036;font-weight:norma=
+l;" ><!--<![endif]-->
+                                                  <b>Josh Klein</b><br>
+
+Vidifell<br>
+
+
+ Akureyri 607 <br>
+Iceland
+
+                                                  <!--[if (!mso 14)&(!mso 1=
+5)]><!--></font><!--<![endif]-->
+                                                </span>
+                                              </td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      </tr>
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td valign=3D"top" style=3D"b=
+order-collapse:collapse;" ><span style=3D"line-height:22px;" >&nbsp;</span>=
+</td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      </tr>
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                                <td style=3D"border-collaps=
+e:collapse;" >&nbsp;</td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                          <td style=3D"border-collapse:coll=
+apse;" >&nbsp;</td>
+                                      </tr>
+                                      <tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                              <td style=3D"border-collapse:=
+collapse;" ><span style=3D"line-height:12px;" >&nbsp;</span></td>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                      </tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20
+                                  </table>
+                              </td>
+                          </tr>
+                        </table>
+                      </td>
+                  </tr>
+                  <tr>
+                    <td style=3D"border-collapse:collapse;">
+                        <img src=3D"https://www.fitbit.com/cart/resources/i=
+mg/mail/runners.png" width=3D"650" editable border=3D"0" style=3D"display:b=
+lock;margin-top:0;margin-bottom:0;margin-right:0;margin-left:0;padding-top:=
+0;padding-bottom:0;padding-right:0;padding-left:0;outline-style:none;text-d=
+ecoration:none;border-style:none;-ms-interpolation-mode:bicubic;" >
+                    </td>
+                  </tr>
+                  <tr>
+                      <td align=3D"center" style=3D"border-collapse:collaps=
+e;" >
+                          <br>
+                          <span  class=3D"troubletext" style=3D"font-family=
+:Arial, sans-serif;font-size:16px;line-height:24px;color:#52C1BF;font-weigh=
+t:normal;" >
+                            <!--[if (!mso 14)&(!mso 15)]><!--><font style=
+=3D"font-family:'Proxima Nova Regular','Open Sans', Arial, sans-serif;font-=
+size:16px;line-height:24px;color:#52C1BF;font-weight:normal;" ><!--<![endif=
+]-->
+                              If you have any questions about your order,<b=
+r>
+                              or see something wrong, please <a href=3D"htt=
+p://email.fitbit.com/ls/click?upn=3D4QswZCx3ku9igOQ2owLzX1JmedQBO7FssYcFrob=
+b3zI-3DFLHJ_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7PeZ9FVvS5HAchbfhVaV=
+7YJo0W1Wj0CzFN-2FOcqV8EyfDi-2BbSW-2F0DSdLH3g0EX9xeQ-2F5ItMvlWKGCbMQ0XJNB5aY=
+BT53VEo348mHkyFIQlOKqOMxZ8dH2iBR46gCZD97zbF5R-2B0aNHvXox-2FVs7IPnwdIjx1bYdr=
+4TOPOG8KGyukahi0w-3D-3D">contact us</a>.<br>
+                              <!--[if (!mso 14)&(!mso 15)]><!--></font><!--=
+<![endif]-->
+                          </span>
+                          <br>
+                      </td>
+                  </tr>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                </table>
+              </td>
+            </tr>
+            <tr>
+                <td bgcolor=3D"#f6f6f6" style=3D"border-collapse:collapse;"=
+ align=3D"center">
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                        <br><br>
+                    <span style=3D"font-family:Arial, sans-serif;font-size:=
+12px;line-height:22px;color:#c3c8c9;font-weight:normal;" class=3D"invoiceno=
+ticetext">
+                      <!--[if (!mso 14)&(!mso 15)]><!--><font style=3D"font=
+-family:'Proxima Nova Bold','Open Sans', Arial, sans-serif;font-size:12px;l=
+ine-height:22px;color:#c3c8c9;font-weight:normal;" ><!--<![endif]-->
+                        This is not an official invoice. For invoice reques=
+ts, <a href=3D"http://email.fitbit.com/ls/click?upn=3D4QswZCx3ku9igOQ2owLzX=
+1JmedQBO7FssYcFrobb3zI-3D-2gN_nrbcMZxZBQxLIRfusj-2FT4A-2BIhaRp31AVPQkZLFx7P=
+eZ9FVvS5HAchbfhVaV7YJo00kv4zAyQBJeSFKyWQjoCWKQ1laCU1N2kXFD8-2BBPOMpB2xyqcVs=
+80Y-2BZ1uDeg-2BYbp105gwmYpTawrMSIHwTHPQ9nb3gFmD3pmLHf5SJ7Z7GZdEbBup1HA0aU8w=
+xj9jRULgCo5XyQjEQBOTlVCn3LDKQ-3D-3D">contact us</a>.
+                      <!--[if (!mso 14)&(!mso 15)]><!--></font><!--<![endif=
+]-->
+                    </span>
+                        <br><br><br>
+=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20
+                </td>
+            </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </div>
+  <img src=3D"https://cmail1.com/t/r-o-cdtttg-l/o.gif"  width=3D"1" height=
+=3D"1" border=3D"0" alt=3D"" style=3D"height:1px !important;width:1px !impo=
+rtant;border-width:0 !important;margin-top:0 !important;margin-bottom:0 !im=
+portant;margin-right:0 !important;margin-left:0 !important;padding-top:0 !i=
+mportant;padding-bottom:0 !important;padding-right:0 !important;padding-lef=
+t:0 !important;outline-style:none;text-decoration:none;border-style:none;-m=
+s-interpolation-mode:bicubic;" />
+
+<img src=3D"http://email.fitbit.com/wf/open?upn=3DuTRf4eeJqtKXLgXKYi7KzOVU9=
+W-2FSFO22jLk6YghY5tu-2B1-2FQGG55AkhfpuYJyP9F5W9U5zNeV6eX-2FOO1hzH5z0aPSm-2B=
+0z7LzIH-2FkAnzYgFlN8Wk-2F77biGJ9BuaHarjml7KiEaZqjnKEvex91QsnPtELIl0KpEfVq0Z=
+oyZ6m5KcMhO-2FPY09vXiBEgYvz-2BCPF875K-2F98MCLT-2BqO0wIfb2KR2w-3D-3D" alt=3D=
+"" width=3D"1" height=3D"1" border=3D"0" style=3D"height:1px !important;wid=
+th:1px !important;border-width:0 !important;margin-top:0 !important;margin-=
+bottom:0 !important;margin-right:0 !important;margin-left:0 !important;padd=
+ing-top:0 !important;padding-bottom:0 !important;padding-right:0 !important=
+;padding-left:0 !important;"/>
+</body>
+</html>
+
+--6b2c41e222ccb3498916ab7897fae38f7346558c6a4d95fc20cf1f6c3cab--

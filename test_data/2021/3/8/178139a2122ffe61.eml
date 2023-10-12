@@ -1,0 +1,963 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp1851547ljm;
+        Mon, 8 Mar 2021 12:49:31 -0800 (PST)
+X-Received: by 2002:ab0:1c45:: with SMTP id o5mr6125254uaj.13.1615236571392;
+        Mon, 08 Mar 2021 12:49:31 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1615236571; cv=none;
+        d=google.com; s=arc-20160816;
+        b=LWliYlycRsVYkWa/BdJXuHd2kcNqUCHuPMFo/ntQLdYaeIlBbEu+H4Fp44pAZYMBcU
+         hvk0k7Axs/hbaX3iT7dPqH8Ck8qYk4lXKMEzSNvrNpjd+Per8AZYymxEWRhO2JvBUTps
+         L6oKHiH+r0OGNJkHrjajQP/PIfoST4NFph5XQT6WrN2PEJ/Pm6ekLmNA1vflcndvHNlT
+         kxJEUHmUMY9TDupe64j3xsohfGO6+eIg/YhFcQXMQPpDwEyuGAtfwzBF9xN38RmxF4kH
+         41hYr3Yf+MtUBrlIu2sKo+FQn1rAJrzc2KX/F69AI/gUeBYeSyORXesAbUM0NlYcqHT1
+         +HjQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=from:references:in-reply-to:mime-version:to:message-id:subject:date
+         :mime-version:dkim-signature;
+        bh=Mfa0chSVn7LfLcGMUpKnGYSKLw2pM+yw/ZoF1NfQrJc=;
+        b=gLEZosfm8UhwU8pIcoUYoT0TUAEhNRYnDM5rLxUymKl7LJNoh6uOiI7Xd1VAQdlqU2
+         AGcmwhdwAgwaAdXw4oOtOWK8fvlie6ostHt6nmfwppqFteSs1E+QHrUz6xR533XPh/6F
+         V39uBwDPMN525JgZjIpQ3VPRB2WalspHNTFiSgMnuLuRP+fSKqBhOFUMniHzRqL5jEI0
+         Qj7qczvyJHVp3XK8YAexoNwhkU9nPB5xqqIZHfgPfwdcX9faDZ/Slrj9G1+qwnu/qoaT
+         HBN5wDTW6DrFy5NX5hDKLxqDcJ71xY9unETjmpmeB3hUmsIIiI8J6UCzf8KuNF3cFYtj
+         nUyw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@northstack-is.20150623.gappssmtp.com header.s=20150623 header.b=lceWrc5j;
+       spf=pass (google.com: domain of kristinn@northstack.is designates 209.85.220.41 as permitted sender) smtp.mailfrom=kristinn@northstack.is
+Return-Path: <kristinn@northstack.is>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 126sor1936407vkw.59.2021.03.08.12.49.31
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 08 Mar 2021 12:49:31 -0800 (PST)
+Received-SPF: pass (google.com: domain of kristinn@northstack.is designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@northstack-is.20150623.gappssmtp.com header.s=20150623 header.b=lceWrc5j;
+       spf=pass (google.com: domain of kristinn@northstack.is designates 209.85.220.41 as permitted sender) smtp.mailfrom=kristinn@northstack.is
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=northstack-is.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:date:subject:message-id:to:mime-version:in-reply-to
+         :references:from;
+        bh=Mfa0chSVn7LfLcGMUpKnGYSKLw2pM+yw/ZoF1NfQrJc=;
+        b=lceWrc5j2X3Og3Nf7fNBiambB8WENJ0GjHI7xe7fiyHzKLfY1uHjmKoy+l0T/3Emge
+         gDlVoNgWdUlQsPfDO0PS8RAtfYadKYozw7JVeYUTbqrL3JqN/vx/EdLbAl9VOZF6Ebc3
+         r+4e/RvOzI09kqT8CNY227GKRdpbwmdBDuRjpCK1qieRZJaf9TkQyhWhsayyktQW0nrL
+         kubWzuVgtLK5AUEDE9WLeT2ybAsfo7JjmwckBjHs8dV+/rA80M4EzeZGNh8N7PX0JZqF
+         +fHclWknzYXLeRpMyAch2Xegut/JjHxmfSxSx9obMWcCy1hlnzbjZzrCLPsc7QK18bgn
+         M3Fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:subject:message-id:to
+         :mime-version:in-reply-to:references:from;
+        bh=Mfa0chSVn7LfLcGMUpKnGYSKLw2pM+yw/ZoF1NfQrJc=;
+        b=eovItE6k+uzDcY765hxG7TW8f4DUomRjGQufFcFw0NE5qdDexNj9Y6C+fz6bPycImo
+         2Cv+PadPJKdVt7yLRkE4Sn4jAAmtMCS8yLcdRcST+/f129MT5VLNPC1MUsl8ifVIGQos
+         dvgBdAkAyHBWJR4inteh7TETsfZKbbXE8iZSCbDqQ8XVe/22CFRRlDp1Pok6pYQlFrp3
+         SmmxvilnHnzV53Fa3rp4HwPT2HTW5/syXEw5pW7nrE2f82hjhj4gFx8vltoyeC/3ZsKs
+         XR3oWZRsIjM6xH9Hwjvc0hc1rNPLeKqXg9OrBkdHV8Q2391N8LBefON2cxeJIDVnq2Ls
+         Zsmw==
+X-Gm-Message-State: AOAM531doPno4df7WgZoGu0BLoMtFRS0GTcIdtIeBUB8IZEmwtKwLlgM
+	OrMDK4s6qiUrI8LanOFAZ7VMa7BZW7GbIQ==
+X-Google-Smtp-Source: ABdhPJzlBvcYPG6wUtt9kmQOWclKhqfnjTcLVnyWg882IS3CSAvpC7mL8Hvq/FFvIsfoS9oqAvgT0g==
+X-Received: by 2002:ac5:c3c4:: with SMTP id t4mr349798vkk.13.1615236570476;
+        Mon, 08 Mar 2021 12:49:30 -0800 (PST)
+Return-Path: <kristinn@northstack.is>
+Received: from localhost (177.143.196.104.bc.googleusercontent.com. [104.196.143.177])
+        by smtp.gmail.com with ESMTPSA id i74sm1858191vke.44.2021.03.08.12.49.29
+        for <josh@josh.is>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 08 Mar 2021 12:49:29 -0800 (PST)
+Mime-Version: 1.0
+X-Superhuman-Draft-ID: draft00bf25f08f71e949
+Date: Mon, 08 Mar 2021 20:49:28 +0000
+Subject: Re: Kiddi <> Josh
+X-Superhuman-ID: km124wrm.62037413-5456-4dce-992f-ac416bfd2a00
+Message-ID: <km124gs4.48c07878-3416-400d-b2a5-a0819f97eef5@we.are.superhuman.com>
+To: "Josh Klein" <josh@josh.is>
+X-Mailer: Superhuman iOS 8866
+MIME-Version: 1.0
+In-Reply-To: <CACNgykOZVkTfbOMeV8uF9YmWjegoMHY8YvWJ5d4BtT8_SLurbw@mail.gmail.com>
+References: <CAEWdE5zKs2KMVRfz1yj908uXrbYHqBfKTDjQmKgEGDaYXxF6Cg@mail.gmail.com> <khxen07k.bbd7e2ea-0191-42c4-a2f9-7cde951ab0da@we.are.superhuman.com>
+ <CACNgykOTUigJigLgM4o3cMMgH_16qxZc9onSk7g9MASH3KOrBg@mail.gmail.com>
+ <khyrr7ns.3bb96667-0e43-48ea-946c-88ac5b2f9a34@we.are.superhuman.com>
+ <CACNgykOHYZa4z-p-WnbazdtZwXrEnbVQpebaTURKt1dnd3AnAw@mail.gmail.com>
+ <khytfn0o.87b5e276-c32c-4534-8326-92d4bc59afe7@we.are.superhuman.com>
+ <CACNgykMd+VPoVJSZcyvSz2q5DV52DXx=Qd-+BXdjmzUibAEVJA@mail.gmail.com>
+ <ki7kjqpe.d4c74489-7b00-4f2b-9f56-9adbcdee6dc1@we.are.superhuman.com>
+ <CACNgykNX--4Ldb14RqmbP=RMds_otDdSUzdxB1c-mhDGStxBnw@mail.gmail.com>
+ <kj69w0ng.02a78cf1-4f36-4ac4-a964-3ea74631ec73@we.are.superhuman.com>
+ <CACNgykORVW7JQ-F1szvzHdpCDh4C_o1ZJbHp4K621XufHS-0jQ@mail.gmail.com>
+ <CACNgykOD9-9=u75dGMSCDepCDxdDA_o90bnc5rBo70J=hb=WWg@mail.gmail.com>
+ <kjw0ko66.d9eb9014-fef4-4b45-82be-835011a0ab97@we.are.superhuman.com>
+ <CACNgykNmBo1F5zAUbCvFuQ6uyNWUHTc68z62A-iERc3cD_7R4w@mail.gmail.com>
+ <kktqzd4z.97cd6b44-2bf9-44e5-a7c4-3e1bc14c6f06@we.are.superhuman.com>
+ <CACNgykO3STpvkUXPBBb9Xd7Gcz1MWFYT=A5hbpNm41_rZbpMvA@mail.gmail.com>
+ <klrysydf.17fe601d-39cb-425e-bb3d-c5b2adef311e@we.are.superhuman.com>
+ <klw39hbd.1f1b1b12-1408-4310-bb84-4bebc7dfde95@we.are.superhuman.com>
+ <CACNgykMqPBW8YgkcW1X6+execGDnFs9Osvm8ziHCwjSLgSdZdg@mail.gmail.com>
+ <klz1tabi.a88515ed-0458-45b5-85d8-d0fc98756701@we.are.superhuman.com>
+ <CACNgykOZVkTfbOMeV8uF9YmWjegoMHY8YvWJ5d4BtT8_SLurbw@mail.gmail.com>
+From: =?UTF-8?q?Kristinn_=C3=81rni_L=C3=A1r_Hr=C3=B3bjartsson?=
+ <kristinn@northstack.is>
+Content-Type: multipart/alternative;
+ boundary=4657e71a8e6113b5b14e7a5bc781e21380dace85c0334194048b8b5cc5f2
+
+--4657e71a8e6113b5b14e7a5bc781e21380dace85c0334194048b8b5cc5f2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+invite sent! btw. did you know that I can see your schedule (everything as =
+=E2=80=9Cbusy=E2=80=9D) ? Can you see mine?
+
+Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northstack.is )
+
+On Mon, Mar 8 2021 at 11:16 AM, Josh Klein < josh@josh.is > wrote:
+
+>=20
+> Would 10am on the 11th (Thursday) work for you? I'm still in Akureyri, so
+> zoom/ghangouts/FaceTime/whatever works best.
+>=20
+>=20
+> - J
+> =E1=90=A7
+>=20
+> On Sun, Mar 7, 2021 at 11:05 AM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjart=
+sson < kristinn@northstack.is
+> > wrote:
+>=20
+>=20
+>> Thanks! I can do something Thursday or Friday before noon Iceland time, =
+or
+>> sometime before noon the week after, I=E2=80=99m fairly available in the=
+ mornings
+>> =E2=80=94 are you still in Akureyri or do you want to meet face to face?
+>>=20
+>>=20
+>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northstack.is =
+)
+>>=20
+>>=20
+>>=20
+>> On Fri, Mar 5 2021 at 9:33 AM, Josh Klein < josh@josh.is > wrote:
+>>=20
+>>> Congratulations! Let me know how your next couple of weeks look in the
+>>> morning. Excited=C2=A0to hear more!
+>>>=20
+>>>=20
+>>> - J
+>>> =E1=90=A7
+>>>=20
+>>> On Fri, Mar 5, 2021 at 9:22 AM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjar=
+tsson < kristinn@northstack.is
+>>> > wrote:
+>>>=20
+>>>=20
+>>>> Hey! Not sure if you saw the news, but I'm officially on the board of =
+Kr=C3=ADa
+>>>> and paperwork has been completed. Would love to catch up again...
+>>>>=20
+>>>>=20
+>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northstack.i=
+s )
+>>>>=20
+>>>>=20
+>>>>=20
+>>>> On Tue, Mar 2 2021 at 12:06 PM, Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bj=
+artsson < kristinn@northstack.is
+>>>> > wrote:
+>>>>=20
+>>>>> All still stuck in process! Things move slower just before elections.
+>>>>>=20
+>>>>>=20
+>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northstack.=
+is )
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> On Tue, Mar 2 2021 at 11:49 AM, Josh Klein < josh@josh.is > wrote:
+>>>>>=20
+>>>>>> Hey Kiddi,
+>>>>>>=20
+>>>>>>=20
+>>>>>> Not trying to be a bother - just keeping the conversation alive. Let=
+ me
+>>>>>> know if you have any feedback on Kr=C3=ADa / NYC / etc!
+>>>>>>=20
+>>>>>>=20
+>>>>>> All best,
+>>>>>> Josh
+>>>>>>=20
+>>>>>>=20
+>>>>>> =E1=90=A7
+>>>>>>=20
+>>>>>> On Sat, Feb 6, 2021 at 1:25 PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3b=
+jartsson < kristinn@northstack.is
+>>>>>> > wrote:
+>>>>>>=20
+>>>>>>=20
+>>>>>>> Hey! Sorry again, haven't forgotten you!-- Kr=C3=ADa is just in bur=
+eaucracy
+>>>>>>> final steps, was thinking of introing to the people that'll sit on =
+the
+>>>>>>> board etc when that happens. Until then it's just legal stuff being=
+ pushed
+>>>>>>> through the system.
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> And new york - well no time set yet but hoping for summer - depends=
+ on
+>>>>>>> vaccinations and such. Thanks for that will most definitely take yo=
+u up on
+>>>>>>> your offer to connect. Also would love thoughts on neighborhoods!
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> Kiddi
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northstac=
+k.is )
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> On Sun, Jan 31 2021 at 7:42 PM, Josh Klein < josh@josh.is > wrote:
+>>>>>>>=20
+>>>>>>>> Wanted to check in. Any news on Kr=C3=ADa and/or NYC? I recently r=
+eached out to
+>>>>>>>> a few of my contacts=C2=A0in the startup space (esp. Betaworks) I =
+think you
+>>>>>>>> should=C2=A0meet!
+>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>> All best wishes,
+>>>>>>>> Josh
+>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>> =E1=90=A7
+>>>>>>>>=20
+>>>>>>>> On Wed, Jan 13, 2021 at 10:48 PM Kristinn =C3=81rni L=C3=A1r Hr=C3=
+=B3bjartsson < kristinn@northstack.is
+>>>>>>>> > wrote:
+>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>>> Hey, thanks for checking in! Yeah, I'm just waiting for some news=
+/clarity
+>>>>>>>>> on the Kr=C3=ADa front and will then reach out!
+>>>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@northst=
+ack.is )
+>>>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>> On Wed, Jan 13 2021 at 4:48 PM, Josh Klein < josh@josh.is > wrote=
+:
+>>>>>>>>>=20
+>>>>>>>>>> Kiddi,
+>>>>>>>>>>=20
+>>>>>>>>>>=20
+>>>>>>>>>> Curious where you stand on the US given all the recent news; let=
+ me know
+>>>>>>>>>> if a conversation reg. that=C2=A0+ the topic of Kr=C3=ADa would =
+be welcome in the
+>>>>>>>>>> next=C2=A0few weeks!
+>>>>>>>>>>=20
+>>>>>>>>>>=20
+>>>>>>>>>> All best,
+>>>>>>>>>> Josh
+>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>=20
+>>>>>>>>>> On Mon, Dec 28, 2020 at 9:57 AM Josh Klein < josh@josh.is > wrot=
+e:
+>>>>>>>>>>=20
+>>>>>>>>>>=20
+>>>>>>>>>>> Sounds good; keep me posted! And always happy to talk NYC neigh=
+borhoods.
+>>>>>>>>>>> :)
+>>>>>>>>>>>=20
+>>>>>>>>>>>=20
+>>>>>>>>>>> All best,
+>>>>>>>>>>> Josh
+>>>>>>>>>>>=20
+>>>>>>>>>>>=20
+>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>=20
+>>>>>>>>>>> On Sat, Dec 26, 2020 at 10:27 PM Kristinn =C3=81rni L=C3=A1r Hr=
+=C3=B3bjartsson < kristinn@northstack.is
+>>>>>>>>>>> > wrote:
+>>>>>>>>>>>=20
+>>>>>>>>>>>=20
+>>>>>>>>>>>> Hi Josh! Happy Holidays =E2=80=94 hope you've been good.
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> There's been some movement in the legal proceedings and we sho=
+uld
+>>>>>>>>>>>> reconnect early January on the topic of Kr=C3=ADa.
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> And yes, H1 is looking very plausible right now at least as a
+>>>>>>>>>>>> back-and-forth thing, and potentially moving late H1, which is=
+ great. I've
+>>>>>>>>>>>> got a meeting with HR & legal in early Jan and will hopefully =
+have a
+>>>>>>>>>>>> better timeline then.
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> Would love your thoughts on neighborhoods etc. at some point :=
+)
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> Kiddi
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> Sent via Superhuman ( https://sprh.mn/?vip=3Dkristinn@northsta=
+ck.is )
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>> On Wed, Dec 16, 2020 at 11:58:56, Josh Klein < josh@josh.is > =
+wrote:
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>> Just following up. Let me know if Hildur has time for a brief=
+ call and/or
+>>>>>>>>>>>>> if we could set time for a call early in the new year.
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>> Separately, with the vaccines=C2=A0NY must be looking more re=
+al to you, no? Let
+>>>>>>>>>>>>> me know if you have=C2=A0a timeline!
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>> All best,
+>>>>>>>>>>>>> - J
+>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>> On Wed, Dec 2, 2020 at 3:32 PM Kristinn =C3=81rni L=C3=A1r Hr=
+=C3=B3bjartsson < kristinn@northstack.is
+>>>>>>>>>>>>> > wrote:
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>> Thanks for the chat as well! I'll be in touch :)
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@no=
+rthstack.is )
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>> On Wed, Dec 2 2020 at 1:44 PM, Josh Klein < josh@josh.is > w=
+rote:
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> Kiddi,
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> Thanks for the conversation today! I'll let you know how th=
+e hangikj=C3=B6t
+>>>>>>>>>>>>>>> comes out...
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> If Hildur is willing to connect reg. Kria that would be hug=
+ely helpful,
+>>>>>>>>>>>>>>> and/or if you can think of anyone else in the community tha=
+t I might be
+>>>>>>>>>>>>>>> able to assist or to whose efforts I could add value I'm qu=
+ite keen. My
+>>>>>>>>>>>>>>> wife jokes that I've been saying Iceland's startup communit=
+y is about to
+>>>>>>>>>>>>>>> blow up for the past ten years, and that now it's time for =
+me to put my
+>>>>>>>>>>>>>>> money where my mouth is!
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> Separately, let me know when you're getting close to a NYC =
+move - there's
+>>>>>>>>>>>>>>> a LOT of folks you should meet and/or connect with before h=
+and. What an
+>>>>>>>>>>>>>>> adventure you're signed up for now!!!
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> Gratefully.
+>>>>>>>>>>>>>>> Josh
+>>>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>> On Thu, Nov 26, 2020 at 12:32 PM Kristinn =C3=81rni L=C3=A1=
+r Hr=C3=B3bjartsson < kristinn@northstack.is
+>>>>>>>>>>>>>>> > wrote:
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>> Nice! Talk to you soon. I'm assuming remote (although by D=
+ec 2 things will
+>>>>>>>>>>>>>>>> be different wrt rules and lock downs)
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristinn@=
+northstack.is )
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>> On Thu, Nov 26 2020 at 11:56 AM, Josh Klein < josh@josh.is=
+ > wrote:
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>> Works for me - just sent you an invite. Looking forward t=
+o it!
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>> best,
+>>>>>>>>>>>>>>>>> Josh
+>>>>>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>> On Thu, Nov 26, 2020 at 11:44 AM Kristinn =C3=81rni L=C3=
+=A1r Hr=C3=B3bjartsson < kristinn@northstack.is
+>>>>>>>>>>>>>>>>> > wrote:
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>> Would 9am work? Otherwise good.
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>> Kiddi
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkristin=
+n@northstack.is )
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>> On Wed, Nov 25 2020 at 5:14 PM, Josh Klein < josh@josh.i=
+s > wrote:
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>> Would 10am GMT Wednesday the 2nd work for you?
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>> best,
+>>>>>>>>>>>>>>>>>>> Josh
+>>>>>>>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>> On Wed, Nov 25, 2020 at 12:57 PM Kristinn =C3=81rni L=
+=C3=A1r Hr=C3=B3bjartsson < kristinn@northstack.is
+>>>>>>>>>>>>>>>>>>> > wrote:
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> Hey!
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> Thanks for intro Sal=C3=B3me (BCC)
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> Happy to chat, how is your availability in the morning=
+s? Next week for
+>>>>>>>>>>>>>>>>>>>> example?
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> Kiddi
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> Sent via Superhuman iOS ( https://sprh.mn/?vip=3Dkrist=
+inn@northstack.is )
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>> On Wed, Nov 25 2020 at 11:32 AM, Salome Gudmundsdottir=
+ < salome@icelandicstartups.is
+>>>>>>>>>>>>>>>>>>>> > wrote:
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> Hi Kiddi,
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> Please meet Josh ( https://www.linkedin.com/in/joshua=
+klein/ ) , a highly
+>>>>>>>>>>>>>>>>>>>>> experienced tech enthusiast from NYC now living in Ic=
+eland.
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> He would love to learn more about Kria so I suggested=
+ I'd connect him with
+>>>>>>>>>>>>>>>>>>>>> you.
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> @Josh, Kiddi ( https://www.linkedin.com/in/hrobjartss=
+on/ ) is a good friend
+>>>>>>>>>>>>>>>>>>>>> of mine and one of the key people of the Icelandic te=
+ch and startup
+>>>>>>>>>>>>>>>>>>>>> ecosystem. He's the only one who's been writing news =
+about what's going on
+>>>>>>>>>>>>>>>>>>>>> within the scene in English. Check out Northstack.is =
+( http://Northstack.is
+>>>>>>>>>>>>>>>>>>>>> ) ! Kiddi has been working with the Ministry of Innov=
+ation on the Kria
+>>>>>>>>>>>>>>>>>>>>> bill. I believe Kiddi is currently in Iceland but he'=
+s actually working in
+>>>>>>>>>>>>>>>>>>>>> NYC as the VP of Platform & Application Strategy at S=
+otheby's
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> I'm sure the=C2=A0two of you will have a lot to talk =
+about. Happy networking!
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>> Best,
+>>>>>>>>>>>>>>>>>>>>> Sal=C3=B3me
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>>=20
+>>>>>>>>>>>=20
+>>>>>>>>>>>=20
+>>>>>>>>>>=20
+>>>>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>=20
+>>>>=20
+>>>=20
+>>>=20
+>>=20
+>>=20
+>=20
+>
+--4657e71a8e6113b5b14e7a5bc781e21380dace85c0334194048b8b5cc5f2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<html><head></head><body><div>
+    <div>
+        <div>invite sent! btw. did you know that I can see your schedule (e=
+verything as =E2=80=9Cbusy=E2=80=9D) ? Can you see mine? </div>
+        <div></div>
+        <br/>
+        <div class=3D"gmail_signature">
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Mon, Mar 8 2021 at 11:16 AM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0 0 0.8ex; border=
+-left: 1px #ccc solid; padding-left: 1ex;">
+        <div><div dir=3D"ltr">Would 10am on the 11th (Thursday) work for yo=
+u? I&#39;m still in Akureyri, so zoom/ghangouts/FaceTime/whatever works bes=
+t.<div><br/></div><div>- J</div></div><div hspace=3D"streak-pt-mark" style=
+=3D"max-height:1px"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></di=
+v><br/><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On =
+Sun, Mar 7, 2021 at 11:05 AM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson =
+&lt;<a href=3D"mailto:kristinn@northstack.is">kristinn@northstack.is</a>&gt=
+; wrote:<br/></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0p=
+x 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div><=
+div>
+    <div>
+        <div>Thanks! I can do something Thursday or Friday before noon Icel=
+and time, or sometime before noon the week after, I=E2=80=99m fairly availa=
+ble in the mornings =E2=80=94 are you still in Akureyri or do you want to m=
+eet face to face?</div>
+        <div></div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Fri, Mar 5 2021 at 9:33 AM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+        <div><div dir=3D"ltr">Congratulations! Let me know how your next co=
+uple of weeks look in the morning. Excited=C2=A0to hear more!<br/><div><br/=
+></div><div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-heig=
+ht:1px"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br/><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Mar 5, =
+2021 at 9:22 AM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson &lt;<a href=
+=3D"mailto:kristinn@northstack.is" target=3D"_blank">kristinn@northstack.is=
+</a>&gt; wrote:<br/></div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div><div>
+    <div>
+        <div>Hey! Not sure if you saw the news, but I&#39;m officially on t=
+he board of Kr=C3=ADa and paperwork has been completed. Would love to catch=
+ up again...</div>
+        <div></div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Tue, Mar 2 2021 at 12:06 PM, Kristinn =C3=81rni L=C3=A1r Hr=C3=
+=B3bjartsson
+        &lt;<a href=3D"mailto:kristinn@northstack.is" target=3D"_blank">kri=
+stinn@northstack.is</a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+        <div><div>
+    <div>
+        <div>All still stuck in process! Things move slower just before ele=
+ctions.</div>
+        <div></div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Tue, Mar 2 2021 at 11:49 AM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+        <div><div dir=3D"ltr">Hey Kiddi,<div><br/></div><div>Not trying to =
+be a bother - just keeping the conversation alive. Let me know if you have =
+any feedback on Kr=C3=ADa / NYC / etc!</div><div><br/></div><div>All best,<=
+/div><div>Josh</div><div><br/></div></div><div hspace=3D"streak-pt-mark" st=
+yle=3D"max-height:1px"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font><=
+/div><br/><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">=
+On Sat, Feb 6, 2021 at 1:25 PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsso=
+n &lt;<a href=3D"mailto:kristinn@northstack.is" target=3D"_blank">kristinn@=
+northstack.is</a>&gt; wrote:<br/></div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div><div>
+    <div>
+        <div>Hey! Sorry again, haven&#39;t forgotten you!-- Kr=C3=ADa is ju=
+st in bureaucracy final steps, was thinking of introing to the people that&=
+#39;ll sit on the board etc when that happens. Until then it&#39;s just leg=
+al stuff being pushed through the system.</div><div><br/></div><div>And new=
+ york - well no time set yet but hoping for summer - depends on vaccination=
+s and such.  Thanks for that will most definitely take you up on your offer=
+ to connect. Also would love thoughts on neighborhoods!</div><div><br/></di=
+v><div>Kiddi</div>
+        <div></div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Sun, Jan 31 2021 at 7:42 PM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+        <div><div dir=3D"ltr">Wanted to check in. Any news on Kr=C3=ADa and=
+/or NYC? I recently reached out to a few of my contacts=C2=A0in the startup=
+ space (esp. Betaworks) I think you should=C2=A0meet!<div><br/></div><div>A=
+ll best wishes,<br/>Josh</div><div><br/></div></div><div hspace=3D"streak-p=
+t-mark" style=3D"max-height:1px"><font color=3D"#ffffff" size=3D"1">=E1=90=
+=A7</font></div><br/><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"g=
+mail_attr">On Wed, Jan 13, 2021 at 10:48 PM Kristinn =C3=81rni L=C3=A1r Hr=
+=C3=B3bjartsson &lt;<a href=3D"mailto:kristinn@northstack.is" target=3D"_bl=
+ank">kristinn@northstack.is</a>&gt; wrote:<br/></div><blockquote class=3D"g=
+mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
+,204,204);padding-left:1ex"><div><div>
+    <div>
+        <div>Hey, thanks for checking in! Yeah, I&#39;m just waiting for so=
+me news/clarity on the Kr=C3=ADa front and will then reach out! </div>
+        <div></div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" target=3D"_blank">Superhuman iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Wed, Jan 13 2021 at 4:48 PM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt;
+        wrote:
+        <br/>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex">
+        <div><div dir=3D"ltr">Kiddi,<div><br/></div><div>Curious where you =
+stand on the US given all the recent news; let me know if a conversation re=
+g. that=C2=A0+ the topic of Kr=C3=ADa would be welcome in the next=C2=A0few=
+ weeks!</div><div><br/></div><div>All best,</div><div>Josh</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px"><font color=3D"#ffffff" =
+size=3D"1">=E1=90=A7</font></div><br/><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Mon, Dec 28, 2020 at 9:57 AM Josh Klein &l=
+t;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wr=
+ote:<br/></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Sounds good; keep me posted! And always happy to talk NYC neighbor=
+hoods. :)<br/><div><br/></div><div>All best,</div><div>Josh</div><div><br/>=
+</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><font c=
+olor=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br/><div class=3D"gmail_=
+quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sat, Dec 26, 2020 at 10:27 =
+PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson &lt;<a href=3D"mailto:kris=
+tinn@northstack.is" target=3D"_blank">kristinn@northstack.is</a>&gt; wrote:=
+<br/></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.=
+8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div><div><div=
+><div><div>Hi Josh! Happy Holidays =E2=80=94 hope you&#39;ve been good.<br/=
+></div><div><br/></div><div>There&#39;s been some movement in the legal pro=
+ceedings and we should reconnect early January on the topic of Kr=C3=ADa.<b=
+r/></div><div><br/></div><div>And yes, H1 is looking very plausible right n=
+ow at least as a back-and-forth thing, and potentially moving late H1, whic=
+h is great. I&#39;ve got a meeting with HR &amp; legal in early Jan and wil=
+l hopefully have a better timeline then.<br/></div><div><br/></div><div>Wou=
+ld love your thoughts on neighborhoods etc. at some point :)<br/></div><div=
+><br/></div><div>Kiddi</div></div><div></div><br/><div><div style=3D"clear:=
+both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkristinn@northstack.is" ta=
+rget=3D"_blank">Superhuman</a></div><br/></div></div><br/><div><div class=
+=3D"gmail_quote">On Wed, Dec 16, 2020 at 11:58:56, Josh Klein <span dir=3D"=
+ltr">&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>=
+&gt;</span> wrote:<br/><blockquote class=3D"gmail_quote" style=3D"margin:0p=
+x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><d=
+iv class=3D"gmail_extra"><div class=3D"gmail_quote" id=3D"gmail-m_-23697060=
+44463193127gmail-m_-8164717024010605064gmail-m_-3075642078061963241gmail-m_=
+8362223703132343279gmail-m_-2207978531629338471gmail-m_-1380489218253559743=
+null"><div dir=3D"ltr">Just following up. Let me know if Hildur has time fo=
+r a brief call and/or if we could set time for a call early in the new year=
+.=C2=A0<div><br/></div><div>Separately, with the vaccines=C2=A0NY must be l=
+ooking more real to you, no? Let me know if you have=C2=A0a timeline!</div>=
+<div><br/></div><div>All best,</div><div>- J</div></div><div style=3D"max-h=
+eight:1px"><font size=3D"1" color=3D"#ffffff">=E1=90=A7</font></div><br/><d=
+iv class=3D"gmail_quote"><div class=3D"gmail_attr" dir=3D"ltr">On Wed, Dec =
+2, 2020 at 3:32 PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson &lt;<a hre=
+f=3D"mailto:kristinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_=
+blank">kristinn@northstack.is</a>&gt; wrote:<br/></div><blockquote style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex" class=3D"gmail_quote"><div><div>
+    <div></div>
+    <div>
+        <div>Thanks for the chat as well! I&#39;ll be in touch :)</div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank">Superhu=
+man iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Wed, Dec 2 2020 at 1:44 PM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" rel=3D"noopener noreferrer" tar=
+get=3D"_blank">josh@josh.is</a>&gt;
+        wrote:
+        <br/>
+        <blockquote style=3D"margin:0px 0px 0.8ex;border-left:1px solid rgb=
+(204,204,204);padding-left:1ex" class=3D"gmail_quote">
+        <div><div dir=3D"ltr">Kiddi,<div><br/></div><div>Thanks for the con=
+versation today! I&#39;ll let you know how the hangikj=C3=B6t comes out...<=
+/div><div><br/></div><div>If Hildur is willing to connect reg. Kria that wo=
+uld be hugely helpful, and/or if you can think of anyone else in the commun=
+ity that I might be able to assist or to whose efforts I could add value I&=
+#39;m quite keen. My wife jokes that I&#39;ve been saying Iceland&#39;s sta=
+rtup community is about to blow up for the past ten years, and that now it&=
+#39;s time for me to put my money where my mouth is!</div><div><br/></div><=
+div>Separately, let me know when you&#39;re getting close to a NYC move - t=
+here&#39;s a LOT of folks you should meet and/or connect with before hand. =
+What an adventure you&#39;re signed up for now!!!</div><div><br/></div><div=
+>Gratefully.</div><div>Josh</div></div><div style=3D"max-height:1px"><font =
+size=3D"1" color=3D"#ffffff">=E1=90=A7</font></div><br/><div class=3D"gmail=
+_quote"><div class=3D"gmail_attr" dir=3D"ltr">On Thu, Nov 26, 2020 at 12:32=
+ PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson &lt;<a href=3D"mailto:kri=
+stinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank">kristinn=
+@northstack.is</a>&gt; wrote:<br/></div><blockquote style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex" class=
+=3D"gmail_quote"><div><div>
+    <div></div>
+    <div>
+        <div>Nice! Talk to you soon. I&#39;m assuming remote (although by D=
+ec 2 things will be different wrt rules and lock downs)</div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank">Superhu=
+man iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Thu, Nov 26 2020 at 11:56 AM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" rel=3D"noopener noreferrer" tar=
+get=3D"_blank">josh@josh.is</a>&gt;
+        wrote:
+        <br/>
+        <blockquote style=3D"margin:0px 0px 0.8ex;border-left:1px solid rgb=
+(204,204,204);padding-left:1ex" class=3D"gmail_quote">
+        <div><div dir=3D"ltr">Works for me - just sent you an invite. Looki=
+ng forward to it!<br/><div><br/></div><div>best,</div><div>Josh</div></div>=
+<div style=3D"max-height:1px"><font size=3D"1" color=3D"#ffffff">=E1=90=A7<=
+/font></div><br/><div class=3D"gmail_quote"><div class=3D"gmail_attr" dir=
+=3D"ltr">On Thu, Nov 26, 2020 at 11:44 AM Kristinn =C3=81rni L=C3=A1r Hr=C3=
+=B3bjartsson &lt;<a href=3D"mailto:kristinn@northstack.is" rel=3D"noopener =
+noreferrer" target=3D"_blank">kristinn@northstack.is</a>&gt; wrote:<br/></d=
+iv><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(=
+204,204,204);padding-left:1ex" class=3D"gmail_quote"><div><div>
+    <div></div>
+    <div>
+        <div>Would 9am work? Otherwise good.</div><div><br/></div><div>Kidd=
+i</div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank">Superhu=
+man iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Wed, Nov 25 2020 at 5:14 PM, Josh Klein
+        &lt;<a href=3D"mailto:josh@josh.is" rel=3D"noopener noreferrer" tar=
+get=3D"_blank">josh@josh.is</a>&gt;
+        wrote:
+        <br/>
+        <blockquote style=3D"margin:0px 0px 0.8ex;border-left:1px solid rgb=
+(204,204,204);padding-left:1ex" class=3D"gmail_quote">
+        <div><div dir=3D"ltr">Would 10am GMT Wednesday the 2nd work for you=
+?<div><br/></div><div>best,<br/>Josh</div></div><div style=3D"max-height:1p=
+x"><font size=3D"1" color=3D"#ffffff">=E1=90=A7</font></div><br/><div class=
+=3D"gmail_quote"><div class=3D"gmail_attr" dir=3D"ltr">On Wed, Nov 25, 2020=
+ at 12:57 PM Kristinn =C3=81rni L=C3=A1r Hr=C3=B3bjartsson &lt;<a href=3D"m=
+ailto:kristinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank"=
+>kristinn@northstack.is</a>&gt; wrote:<br/></div><blockquote style=3D"margi=
+n:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex=
+" class=3D"gmail_quote"><div><div>
+    <div></div>
+    <div>
+        <div>Hey!=C2=A0</div><div><br/></div><div>Thanks for intro Sal=C3=
+=B3me (BCC)</div><div><br/></div><div>Happy to chat, how is your availabili=
+ty in the mornings? Next week for example?</div><div><br/></div><div>Kiddi<=
+/div>
+        <br/>
+        <div>
+   =20
+    <div style=3D"clear:both">Sent via <a href=3D"https://sprh.mn/?vip=3Dkr=
+istinn@northstack.is" rel=3D"noopener noreferrer" target=3D"_blank">Superhu=
+man iOS</a></div><br/>
+</div>
+    </div>
+    <div class=3D"gmail_extra">
+    <br/>
+    <div class=3D"gmail_quote">
+        On Wed, Nov 25 2020 at 11:32 AM, Salome Gudmundsdottir
+        &lt;<a href=3D"mailto:salome@icelandicstartups.is" rel=3D"noopener =
+noreferrer" target=3D"_blank">salome@icelandicstartups.is</a>&gt;
+        wrote:
+        <br/>
+        <blockquote style=3D"margin:0px 0px 0.8ex;border-left:1px solid rgb=
+(204,204,204);padding-left:1ex" class=3D"gmail_quote">
+        <div><div dir=3D"ltr">Hi Kiddi,<div><br/></div><div>Please meet <a =
+href=3D"https://www.linkedin.com/in/joshuaklein/" rel=3D"noopener noreferre=
+r" target=3D"_blank">Josh</a>, a highly experienced tech enthusiast from NY=
+C now living in Iceland.</div><div><br/></div><div>He would love to learn m=
+ore about Kria so I suggested I&#39;d connect him with you.</div><div><br/>=
+</div><div>@Josh, <a href=3D"https://www.linkedin.com/in/hrobjartsson/" rel=
+=3D"noopener noreferrer" target=3D"_blank">Kiddi</a> is a good friend of mi=
+ne and one of the key people of the Icelandic tech and startup ecosystem. H=
+e&#39;s the only one who&#39;s been writing news about what&#39;s going on =
+within the scene in English. Check out <a href=3D"http://Northstack.is" rel=
+=3D"noopener noreferrer" target=3D"_blank">Northstack.is</a>! Kiddi has bee=
+n working with the Ministry of Innovation on the Kria bill. I believe Kiddi=
+ is currently in Iceland but he&#39;s actually working in NYC as the VP of =
+Platform &amp; Application Strategy at Sotheby&#39;s</div><div><br/></div><=
+div>I&#39;m sure the=C2=A0two of you will have a lot to talk about. Happy n=
+etworking!</div><div><br/></div><div>Best,<br/>Sal=C3=B3me<br/><div><div><d=
+iv dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"=
+><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D"ltr"><im=
+g src=3D"https://docs.google.com/uc?export=3Ddownload&amp;id=3D0B_koM-AEEVO=
+mYW0ydWpMYlp0UlU&amp;revid=3D0B_koM-AEEVOmRkc5S1RLNTdBUGc1QWVlOVk4UCs4R0MxN=
+UZNPQ/////////"/></div></div></div></div></div></div></div></div></div></di=
+v></div></div></div></div></div></div></div></div></div></div></div></block=
+quote></div></div></div></div></blockquote></div></div></blockquote></div><=
+/div></div></div></blockquote></div></div></blockquote></div></div></div></=
+div></blockquote></div></div></blockquote></div></div></div></div></blockqu=
+ote></div></div></div></blockquote></div></div><br/></div></div></blockquot=
+e></div>
+</blockquote></div>
+</div>
+        </blockquote>
+    </div>
+</div>
+</div></div></blockquote></div>
+</div>
+        </blockquote>
+    </div>
+</div>
+</div></div></blockquote></div>
+</div>
+        </blockquote>
+    </div>
+</div>
+</div></div>
+        </blockquote>
+    </div>
+</div>
+</div></div></blockquote></div>
+</div>
+        </blockquote>
+    </div>
+</div>
+</div></div></blockquote></div>
+</div>
+        </blockquote>
+    </div>
+</div>
+</div></body></html>
+--4657e71a8e6113b5b14e7a5bc781e21380dace85c0334194048b8b5cc5f2--

@@ -1,0 +1,465 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:740b:0:0:0:0:0 with SMTP id p11csp317587ljc;
+        Thu, 26 Aug 2021 04:38:33 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyosfd4lEo2O/9aw1nyulYsVSARLww4/tbjnvSVjuE04LtkAhqaWBxHcrhk0HewAlhRyT6p
+X-Received: by 2002:a62:7b8d:0:b0:3ed:205c:2a5b with SMTP id w135-20020a627b8d000000b003ed205c2a5bmr3211724pfc.68.1629977913364;
+        Thu, 26 Aug 2021 04:38:33 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1629977913; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vKVIkP2kyI73EJgbkveT0H44IMpNXyjncsk4gVq8Q18U0zR3HyMV4UdWX4DK5mxLlU
+         GHqqVNyF4qiWXoknxCtv3aPohF43Hqfm97ZzmLnd1EQUkDr0O4GA1d4MPWqXSul6+vHy
+         qKDvH2Y8YXAGYNM9Xy+bb6IgwktSxpt40NcV3WcWV1uRXcvDvIRcail/psn4r44qsRQx
+         6tWZmiCkFGR0Xp4x0DB+0G/GsnKjZsR5Nzj7786WOveOxX6xYoNZ9DsFVnWinBurT9gR
+         xvRdfOGVH0zdHR8Fffo0WGlBQCUs1JrJCq+ObwqAm3fzxVyR/enuhEz7vfKu+Y+9O8yF
+         C6CQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=require-recipient-valid-since:date:to:mime-version:subject
+         :message-id:from:dkim-signature:dkim-signature;
+        bh=g3oZMk90nqdmiSn+zp/3kgNawTFUoDE8FoBUKJV6Ovg=;
+        b=fIYXEKSxswtA9yeV9wmgYKyYoROVliECpAixHq4nvp2VOWlc1QL0SvdrPDOvT9VPst
+         gT72UIofC3kT6nB/phJdHjvdVxp7nUkcYqiWDNdjV0Un47XNHWiywvKMfYYJGD9upOJb
+         61EuxiBi9+FUvlJNxietwieoRGuiBVi/J8zKzy9XKIJmgml7PRorCf3RQsnBNxb1fBka
+         qt3t4JtzLfVg8VQtJpuuTn7ulDMSkaqkejo2sulVvP3IdZNponnYIGphpVFZBAq40eCQ
+         5HPC9qjXQHXChpMYtBqiSVGAOdnJ8enF5f7qIUQZqwKkl81KpJLIByaYOlztXjy8tZIr
+         LezQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@linkedin.com header.s=d2048-201806-01 header.b=v8vhq8Ma;
+       dkim=pass header.i=@maila.linkedin.com header.s=proddkim1024 header.b=pJ1xmvDq;
+       spf=pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com designates 2620:109:c003:104::134 as permitted sender) smtp.mailfrom=m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=linkedin.com
+Return-Path: <m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com>
+Received: from maila-cf.linkedin.com (maila-cf.linkedin.com. [2620:109:c003:104::134])
+        by mx.google.com with ESMTPS id t13si9897619pjg.47.2021.08.26.04.38.32
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 26 Aug 2021 04:38:33 -0700 (PDT)
+Received-SPF: pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com designates 2620:109:c003:104::134 as permitted sender) client-ip=2620:109:c003:104::134;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@linkedin.com header.s=d2048-201806-01 header.b=v8vhq8Ma;
+       dkim=pass header.i=@maila.linkedin.com header.s=proddkim1024 header.b=pJ1xmvDq;
+       spf=pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com designates 2620:109:c003:104::134 as permitted sender) smtp.mailfrom=m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btudedyog8j0md5cy@bounce.linkedin.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=linkedin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linkedin.com;
+	s=d2048-201806-01; t=1629977904;
+	bh=g3oZMk90nqdmiSn+zp/3kgNawTFUoDE8FoBUKJV6Ovg=;
+	h=From:Subject:MIME-Version:Content-Type:To:Date:X-LinkedIn-Class:
+	 X-LinkedIn-Template:X-LinkedIn-fbl;
+	b=v8vhq8MatvrhcaQAFuDfsPToojC0Imo88acMHBdOtMuu2q4tS0hTMQtJFI5SiLexM
+	 wMetMBqLyAx5ajiF5LlIXFsJPW14WO8461sVplWvOFvVbmC+2BVyxi6vXx0m2yInwB
+	 hhdOLVz2EDn0MIvhZYgqiPj5Y/GL35Gw/+0fPlnldMw4IZwLuidwYmCrZZ6L20+TNK
+	 dC7WaFuyqPJo1A6BgUpYuEo92mXMh5DwcPCIGUhufMpCB6FXGtVjYc++XVk3CElXKu
+	 osv8jqXwqfRReoV6OhEAwM8Dyis9MJMtLzINm+a29F7s57BIForEAkrz4PkW1Y4+wj
+	 OxAIT5ZzqUGRg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maila.linkedin.com;
+	s=proddkim1024; t=1629977904;
+	bh=g3oZMk90nqdmiSn+zp/3kgNawTFUoDE8FoBUKJV6Ovg=;
+	h=From:Subject:MIME-Version:Content-Type:To:Date:X-LinkedIn-Class:
+	 X-LinkedIn-Template:X-LinkedIn-fbl;
+	b=pJ1xmvDqstEE/j0Kro2BooeA+N7g5Z8ZcRoFdWs1khcCaEKU7s6KZJM7vZMI2o0ll
+	 iCY1r+JCnFe2aIJwzHgNC28CuQH5s3OZ6aLse5Io70Azb2c4ZeF1am+ik6ZOq+yFAo
+	 NvNAXSEqg9wpwKOvinG20BiudWZNwIM23cUa+mNE=
+From: billing-noreply@linkedin.com
+Message-ID: <1682196890.60398.1629977903954.JavaMail.app@lva1-app59203.prod.linkedin.com>
+Subject: Your LinkedIn Order 6754899413
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_60396_632443443.1629977903951"
+To: Josh Klein <josh@josh.is>
+Date: Thu, 26 Aug 2021 11:38:23 +0000 (UTC)
+X-LinkedIn-Class: BILLING
+X-LinkedIn-Template: pmt_purchase_receipt
+X-LinkedIn-fbl: m2-1turwzhlvh7u5us286aq75ft3fg5txj5holxu3yrwwizk8x2yk7w8avuf4841c49v0rzo8
+X-LinkedIn-Id: 1o4w3-kssur801-bb
+Require-Recipient-Valid-Since: josh@josh.is; Wed, 31 Dec 1969 23:59:59 +0000
+
+------=_Part_60396_632443443.1629977903951
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-ID: text-body
+
+Order ID: 6754899413
+-------------------------------------------
+
+LinkedIn Ireland Unlimited Company
+Gardner House, Wilton Plaza, Dublin 2, Ireland
+VAT: IE9740425P
+
+Billed To:
+CG Carman
+
+
+ SL6 6NW
+United Kingdom
+
+
+
+Date: 8/26/2021
+Order Total: $0.00
+Payment Method: VISA....5010
+Receipt #: 1619560983
+
+
+Description: Sales Navigator Professional Subscription (Monthly)
+
+Sales Navigator Professional Seat
+Sales Navigator Recurring InMail
+Sales Navigator Admin Seat
+
+Qty: 1
+Rate: $0.00
+Price: $0.00
+
+
+Description: Promotion
+
+
+Price: $0.00
+
+Total Purchases: $0.00
+Order Total: $0.00
+Payment: $0.00
+Balance: $0.00
+
+1 You&#39;ll pay $99.99 each month (plus tax) once your free trial ends on =
+September 26, 2021 until you cancel. &lt;a href=3D&quot;https://www.linkedi=
+n.com/help/linkedin/answer/50&quot;&gt;Learn how&lt;/a&gt;. Prices may chan=
+ge
+2 You may be required to account for VAT under the reverse charge procedure=
+ according to the local VAT rules in your country.
+-------------------------------------------
+
+Customer Service
+https://www.linkedin.com/e/v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Ap=
+age%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3Dcus=
+tomerServiceUrl&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&a=
+mp;tracking=3Dpmts_purchase_receipt_email&amp;ek=3Dpmt_purchase_receipt&amp=
+;path=3Dapp%2Fhome
+
+Purchase History
+https://www.linkedin.com/e/v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Ap=
+age%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3Dpmt=
+PurchaseHistory&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&a=
+mp;tracking=3Dpmts_purchase_receipt_email&amp;ek=3Dpmt_purchase_receipt
+
+Terms of Sale
+https://www.linkedin.com/e/v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Ap=
+age%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3Dmic=
+rosites-urls&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&amp;=
+tracking=3Dpmts_purchase_receipt_email&amp;ek=3Dpmt_purchase_receipt&amp;ke=
+y=3Dlegal%2Fuser-agreement
+
+
+
+
+This email was intended for Josh Klein (Building the present with the recen=
+tly possible.).=20
+Learn why we included this: https://www.linkedin.com/e/v2?e=3D1o4w3-kssur80=
+1-bb&lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1=
+ZyHFew%3D%3D&a=3DcustomerServiceUrl&midToken=3DAQHgYRT7Hw5z9A&midSig=3D2CHJ=
+Qw1oZqxFU1&ek=3Dpmt_purchase_receipt&articleId=3D4788
+
+If you need assistance or have questions, please contact LinkedIn Customer =
+Service: https://www.linkedin.com/e/v2?e=3D1o4w3-kssur801-bb&lipi=3Durn%3Al=
+i%3Apage%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&a=3Dcu=
+stomerServiceUrl&midToken=3DAQHgYRT7Hw5z9A&midSig=3D2CHJQw1oZqxFU1&ek=3Dpmt=
+_purchase_receipt
+
+=C2=A9 2021 LinkedIn Corporation, 1000 West Maude Avenue, Sunnyvale, CA 940=
+85. LinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.
+------=_Part_60396_632443443.1629977903951
+Content-Type: text/html;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-ID: html-body
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html xmlns=3D"http://www.w3=
+.org/1999/xhtml" style=3D"-webkit-text-size-adjust:none;"> <head> <meta htt=
+p-equiv=3D"Content-Type" content=3D"text/html;charset=3Dutf-8"> <meta name=
+=3D"HandheldFriendly" content=3D"true"> <meta name=3D"viewport" content=3D"=
+width=3Ddevice-width; initial-scale=3D0.666667; maximum-scale=3D0.666667; u=
+ser-scalable=3D0"> <meta name=3D"viewport" content=3D"width=3Ddevice-width"=
+> <title></title> <style type=3D"text/css">@media all and (max-width:590px)=
+ { *[class].responsive { width:290px !important; } *[id]#center { width:50%=
+; margin:0 auto; display:table; } *[class].display-none { display:none !imp=
+ortant; } *[class].display-block { display:block !important; } *[class].fix=
+-table-content { table-layout:fixed; } *[class].hide-for-mobile { display:n=
+one !important; } *[class].show-for-mobile { width:auto !important; max-hei=
+ght:none !important; visibility:visible !important; overflow:visible !impor=
+tant; float:none !important; height:auto !important; display:block !importa=
+nt; } *[class].responsive_header { display:table-cell !important; width:100=
+% !important; color:#0077b5 !important; font-size:12px !important; } *[clas=
+s].res-font10 { font-size:10px !important; } *[class].res-font12 { font-siz=
+e:12px !important; } *[class].res-font13 { font-size:13px !important; } *[c=
+lass].res-font14 { font-size:14px !important; } *[class].res-font16 { font-=
+size:16px !important; } *[class].res-font18 { font-size:18px !important; } =
+*[class].res-font20 { font-size:20px !important; } *[class].res-width10 { w=
+idth:10px !important; } *[class].res-width20 { width:20px !important; } *[c=
+lass].res-width25 { width:25px !important; } *[class].res-width120 { width:=
+120px !important; } *[class].res-height0 { height:0px !important; } *[class=
+].res-height10 { height:10px !important; } *[class].res-height20 { height:2=
+0px !important; } *[class].res-height30 { height:30px !important; } *[class=
+].res-img40 { width:40px !important; height:40px !important; } *[class].res=
+-img60 { width:60px !important; height:60px !important; } *[class].res-img7=
+5 { width:75px !important; height:75px !important; } *[class].res-img100 { =
+width:100px !important; height:100px !important; } *[class].res-img150 { wi=
+dth:150px !important; height:150px !important; } *[class].res-img320 { widt=
+h:320px !important; height:auto !important; } *[class].hideIMG { display:no=
+ne; height:0px !important; width:0px !important; } *[class].responsive-spac=
+er { width:10px !important; } *[class].header-spacer { table-layout:auto !i=
+mportant; width:250px !important; } *[class].header-spacer td, *[class].hea=
+der-spacer div { width:250px !important; } *[class].center-content { text-a=
+lign:center !important; } *[class].responsive-fullwidth { width:100% !impor=
+tant; } *[class].cellpadding-none, *[class].cellpadding-none table, *[class=
+].cellpadding-none table td { border-collapse:collapse !important; padding:=
+0 !important; } *[class].remove-margin { margin:0 !important; } *[class].re=
+move-border { border:none !important; } } @media all and (-webkit-min-devic=
+e-pixel-ratio:1.5) { *[id]#base-header-logo { background-image:url(https://=
+static.licdn.com/sc/p/com.linkedin.email-assets-frontend%3Aemail-assets-fro=
+ntend-static-content%2B__latest__/f/%2Femail-assets-frontend%2Fimages%2Fema=
+il%2Flogos%2Flogo_linkedin_tm_email_197x48_v1.png) !important; background-s=
+ize:95px; background-repeat:no-repeat; width:95px !important; height:21px !=
+important; } *[id]#base-header-logo img { display:none; } *[id]#base-header=
+-logo a { height:21px !important; } *[id]#base-header-logo-china { backgrou=
+nd-image:url(https://static.licdn.com/sc/p/com.linkedin.email-assets-fronte=
+nd%3Aemail-assets-frontend-static-content%2B__latest__/f/%2Femail-assets-fr=
+ontend%2Fimages%2Femail%2Flogos%2Flogo_linkedin_tm_china_email_266x42_v1.pn=
+g) !important; background-size:133px; background-repeat:no-repeat; width:13=
+3px !important; height:21px !important; } *[id]#base-header-logo-china img =
+{ display:none; } *[id]#base-header-logo-china a { height:21px !important; =
+} } </style> </head> <body style=3D"background-color:#dfdfdf;padding:0;marg=
+in:0 auto;width:100%;"> <span style=3D"visibility:hidden;color:transparent;=
+display:none !important;mso-hide:all;width:0;font-size:1px;opacity:0;height=
+:0;"></span> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=
+=3D"background-color:#dfdfdf;font-family:Helvetica,Arial,sans-serif;" width=
+=3D"100%" bgcolor=3D"#dfdfdf"> <tbody> <tr> <td> <table border=3D"0" cellsp=
+acing=3D"0" cellpadding=3D"0" style=3D"background-color:#dfdfdf;font-family=
+:Helvetica,Arial,sans-serif;" width=3D"1" bgcolor=3D"#dfdfdf"> <tbody> <tr>=
+ <td> <div style=3D"height:5px;font-size:5px;line-height:5px;"> &nbsp; </di=
+v></td> </tr> </tbody> </table></td> </tr> <tr> <td> <table cellspacing=3D"=
+0" cellpadding=3D"0" border=3D"0" align=3D"center" width=3D"100%" style=3D"=
+table-layout:fixed;font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <=
+td align=3D"center"> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"font-family:Helvetica,Arial,sans-serif;min-width:290px;" width=
+=3D"550" class=3D"responsive"> <tbody> <tr> <td align=3D"left"> <table bord=
+er=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:Helvetica=
+,Arial,sans-serif;" width=3D"100%" bgcolor=3D"#DFDFDF"> <tbody> <tr> <td> <=
+table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D=
+"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"=
+height:8px;font-size:8px;line-height:8px"> &nbsp; </div></td> </tr> </tbody=
+> </table></td> </tr> <tr> <td> <table border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" style=3D"font-family:Helvetica,Arial,sans-serif;" width=3D"100=
+%"> <tbody> <tr> <td align=3D"left" valign=3D"middle" width=3D"95" height=
+=3D"21" id=3D"base-header-logo"><a style=3D"text-decoration:none;cursor:poi=
+nter;border:none;display:block;height:21px;width:100%;" href=3D"https://www=
+.linkedin.com/comm/feed/?midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqx=
+FU1&amp;trk=3Deml-pmt_purchase_receipt-null-7-null&amp;trkEmail=3Deml-pmt_p=
+urchase_receipt-null-7-null-null-1o4w3%7Ekssur801%7Ebb-null-neptune%2Ffeed&=
+amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJTNO1Z=
+yHFew%3D%3D"><img src=3D"https://static.licdn.com/sc/p/com.linkedin.email-a=
+ssets-frontend%3Aemail-assets-frontend-static-content%2B__latest__/f/%2Fema=
+il-assets-frontend%2Fimages%2Femail%2Flogos%2Flogo_linkedin_tm_email_95x21_=
+v1.png" width=3D"95" height=3D"21" alt=3D"LinkedIn" style=3D"border:none;te=
+xt-decoration:none;"></a></td> </tr> </tbody> </table></td> </tr> </tbody> =
+</table> <table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div=
+ style=3D"height:8px;font-size:8px;line-height:8px"> &nbsp; </div></td> </t=
+r> </tbody> </table> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"font-family:Helvetica,Arial,sans-serif;" width=3D"100%" bgcolor=
+=3D"#333333"> <tbody> <tr> <td width=3D"20" class=3D"responsive-spacer"> <t=
+able width=3D"20" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" class=3D=
+"res-width10" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <t=
+r> <td> <div style=3D"height:0px;font-size:0px;line-height:0px"> &nbsp; </d=
+iv></td> </tr> </tbody> </table></td> <td width=3D"100%"> <table width=3D"5=
+10" cellspacing=3D"0" cellpadding=3D"1" border=3D"0" class=3D"header-spacer=
+" style=3D"table-layout:fixed;font-family:Helvetica,Arial,sans-serif;"> <tb=
+ody> <tr> <td width=3D"510"> <div style=3D"height:12px;font-size:12px;line-=
+height:12px;width:510px;"> &nbsp; </div></td> </tr> </tbody> </table></td> =
+<td width=3D"20"> <table width=3D"20" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" class=3D"res-width10" style=3D"font-family:Helvetica,Arial,sans=
+-serif;"> <tbody> <tr> <td> <div style=3D"height:0px;font-size:0px;line-hei=
+ght:0px"> &nbsp; </div></td> </tr> </tbody> </table></td> </tr> </tbody> </=
+table> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"col=
+or:#000000;font-size:12px;font-family:Helvetica,Arial,sans-serif;" width=3D=
+"100%"> <tbody> <tr> <td align=3D"left" style=3D"border-bottom:1px solid #B=
+BBBBB;"> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"f=
+ont-family:Helvetica,Arial,sans-serif;" width=3D"100%"> <tbody> <tr> <td st=
+yle=3D"font-size:14px;">Order ID:<br>6754899413</td> <td align=3D"right"> <=
+table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"1" style=3D=
+"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"=
+height:5px;font-size:5px;line-height:5px"> &nbsp; </div></td> </tr> </tbody=
+> </table><span style=3D"font-size:12px;">LinkedIn Ireland Unlimited Compan=
+y<br>Gardner House, Wilton Plaza, Dublin 2, Ireland<br>VAT: IE9740425P<br><=
+/span> <table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"1" =
+style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div s=
+tyle=3D"height:5px;font-size:5px;line-height:5px"> &nbsp; </div></td> </tr>=
+ </tbody> </table></td> </tr> </tbody> </table></td> </tr> <tr> <td align=
+=3D"left"> <table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D=
+"1" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <d=
+iv style=3D"height:30px;font-size:30px;line-height:30px"> &nbsp; </div></td=
+> </tr> </tbody> </table> <table border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" style=3D"font-family:Helvetica,Arial,sans-serif;" width=3D"100%"> <t=
+body> <tr> <td align=3D"left" valign=3D"top" width=3D"50%"> <table cellpadd=
+ing=3D"0" cellspacing=3D"0" border=3D"0" style=3D"font-family:Helvetica,Ari=
+al,sans-serif;"> <tbody> <tr> <td valign=3D"top" style=3D"padding-right:10p=
+x;"><b style=3D"font-size:12px;">Billed To:</b></td> <td valign=3D"top"> <t=
+able border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:=
+Helvetica,Arial,sans-serif;" width=3D"100%"> <tbody> <tr> <td style=3D"font=
+-size:12px;">CG Carman</td> </tr> <tr> <td style=3D"font-size:12px;"></td> =
+</tr> <tr> <td style=3D"font-size:12px;"> SL6 6NW</td> </tr> <tr> <td style=
+=3D"font-size:12px;">United Kingdom</td> </tr> </tbody> </table></td> </tr>=
+ </tbody> </table></td> <td align=3D"right" valign=3D"top" width=3D"50%"> <=
+table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"font-family=
+:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td align=3D"left" style=3D"pad=
+ding:2px 10px 2px 0;"><b style=3D"font-size:12px;">Date:</b></td> <td align=
+=3D"right" width=3D"30%" style=3D"font-size:12px;">8/26/2021</td> </tr> <tr=
+> <td align=3D"left" style=3D"padding:2px 10px 2px 0;"><b style=3D"font-siz=
+e:12px;">Order Total:</b></td> <td align=3D"right" width=3D"30%" style=3D"f=
+ont-size:12px;">$0.00</td> </tr> <tr> <td align=3D"left" style=3D"padding:2=
+px 10px 2px 0;"><b style=3D"font-size:12px;">Payment Method:</b></td> <td a=
+lign=3D"right" width=3D"30%" style=3D"font-size:12px;">VISA....5010</td> </=
+tr> <tr> <td align=3D"left" style=3D"padding:2px 10px 2px 0;"><b style=3D"f=
+ont-size:12px;">Receipt #:</b></td> <td align=3D"right" width=3D"30%" style=
+=3D"font-size:12px;">1619560983</td> </tr> </tbody> </table></td> </tr> </t=
+body> </table></td> </tr> <tr> <td align=3D"left"> <table width=3D"1" borde=
+r=3D"0" cellspacing=3D"0" cellpadding=3D"1" style=3D"font-family:Helvetica,=
+Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"height:25px;font-size:2=
+5px;line-height:25px"> &nbsp; </div></td> </tr> </tbody> </table> <table ce=
+llpadding=3D"5" cellspacing=3D"1" border=3D"0" width=3D"100%" style=3D"font=
+-family:Helvetica,Arial,sans-serif;border-collapse:collapse;"> <tbody> <tr>=
+ <td width=3D"11%" align=3D"center" style=3D"font-size:12px;border-top:1px =
+solid #BBBBBB;border-bottom:1px solid #BBBBBB;">Item</td> <td width=3D"51%"=
+ align=3D"left" style=3D"font-size:12px;border:1px solid #BBBBBB;">Descript=
+ion</td> <td width=3D"10%" align=3D"center" style=3D"font-size:12px;border-=
+top:1px solid #BBBBBB;border-bottom:1px solid #BBBBBB;">Qty</td> <td width=
+=3D"14%" align=3D"center" style=3D"font-size:12px;border:1px solid #BBBBBB;=
+">Rate</td> <td width=3D"14%" align=3D"center" style=3D"font-size:12px;bord=
+er-top:1px solid #BBBBBB;border-bottom:1px solid #BBBBBB;">Price</td> </tr>=
+ <tr> <td align=3D"center" valign=3D"top" style=3D"font-size:12px;">1</td> =
+<td align=3D"left" valign=3D"top"><span style=3D"font-size:12px;">Sales Nav=
+igator Professional Subscription (Monthly)</span> <ul style=3D"margin:0;pad=
+ding:0;list-style-position:inside;"> <li style=3D"margin:0;padding:0;font-s=
+ize:12px;">From August 26, 2021 to September 26, 2021</li> </ul> <ul style=
+=3D"margin:0;padding:0;list-style-position:inside;"> <li style=3D"margin:0;=
+padding:0;"><span style=3D"font-size:12px;">Sales Navigator Professional Se=
+at</span></li> <li style=3D"margin:0;padding:0;"><span style=3D"font-size:1=
+2px;">Sales Navigator Recurring InMail</span></li> <li style=3D"margin:0;pa=
+dding:0;"><span style=3D"font-size:12px;">Sales Navigator Admin Seat</span>=
+</li> </ul></td> <td align=3D"center" valign=3D"top" style=3D"font-size:12p=
+x;">1</td> <td align=3D"right" valign=3D"top" style=3D"white-space:nowrap;f=
+ont-size:12px;">$0.00</td> <td align=3D"right" valign=3D"top" style=3D"whit=
+e-space:nowrap;font-size:12px;">$0.00</td> </tr> <tr> <td align=3D"center" =
+valign=3D"top" style=3D"font-size:12px;">2</td> <td align=3D"left" valign=
+=3D"top"><span style=3D"font-size:12px;">Promotion</span></td> <td align=3D=
+"center" valign=3D"top" style=3D"font-size:12px;"></td> <td align=3D"right"=
+ valign=3D"top" style=3D"white-space:nowrap;font-size:12px;">&nbsp;</td> <t=
+d align=3D"right" valign=3D"top" style=3D"white-space:nowrap;font-size:12px=
+;">$0.00</td> </tr> </tbody> </table> <table width=3D"1" border=3D"0" cells=
+pacing=3D"0" cellpadding=3D"1" style=3D"font-family:Helvetica,Arial,sans-se=
+rif;"> <tbody> <tr> <td> <div style=3D"height:10px;font-size:10px;line-heig=
+ht:10px"> &nbsp; </div></td> </tr> </tbody> </table></td> </tr> <tr> <td al=
+ign=3D"left"> <table cellpadding=3D"4" cellspacing=3D"0" border=3D"0" width=
+=3D"100%" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <=
+td align=3D"left" width=3D"61%" rowspan=3D"6">&nbsp;</td> <td align=3D"left=
+" width=3D"27%" valign=3D"top" style=3D"font-size:12px;">Total Purchases:</=
+td> <td align=3D"right" width=3D"12%" valign=3D"top" style=3D"font-size:12p=
+x;">$0.00</td> </tr> <tr> <td align=3D"left" width=3D"27%" valign=3D"top" s=
+tyle=3D"border-bottom:1px solid #BBBBBB;font-size:12px;">VAT (0%):</td> <td=
+ align=3D"right" width=3D"12%" valign=3D"top" style=3D"border-bottom:1px so=
+lid #BBBBBB;font-size:12px;">$0.00</td> </tr> <tr> <td align=3D"left" width=
+=3D"27%" valign=3D"top" style=3D"font-size:12px;">Order Total:</td> <td ali=
+gn=3D"right" width=3D"12%" valign=3D"top" style=3D"font-size:12px;">$0.00</=
+td> </tr> <tr> <td align=3D"left" width=3D"27%" valign=3D"top" style=3D"bor=
+der-bottom:1px solid #BBBBBB;font-size:12px;">Payment:</td> <td align=3D"ri=
+ght" width=3D"12%" valign=3D"top" style=3D"border-bottom:1px solid #BBBBBB;=
+font-size:12px;">$0.00</td> </tr> <tr> <td align=3D"left" width=3D"27%" val=
+ign=3D"top" style=3D"font-size:12px;"><b>Balance:</b></td> <td align=3D"rig=
+ht" width=3D"12%" valign=3D"top" style=3D"white-space:nowrap;font-size:12px=
+;"><b>$0.00</b></td> </tr> </tbody> </table> <table width=3D"1" border=3D"0=
+" cellspacing=3D"0" cellpadding=3D"1" style=3D"font-family:Helvetica,Arial,=
+sans-serif;"> <tbody> <tr> <td> <div style=3D"height:15px;font-size:15px;li=
+ne-height:15px"> &nbsp; </div></td> </tr> </tbody> </table></td> </tr> <tr>=
+ <td align=3D"left"> <table border=3D"0" cellspacing=3D"0" cellpadding=3D"0=
+" style=3D"padding:0;margin:0;font-family:Helvetica,Arial,sans-serif;border=
+-collapse:collapse;" width=3D"100%"> <tbody> <tr> <td align=3D"left" width=
+=3D"50" valign=3D"top" style=3D"font-size:12px;">Notes:</td> <td align=3D"l=
+eft" valign=3D"top" style=3D"font-size:12px;"><sup style=3D"font-size:9px;v=
+ertical-align:top;">1</sup> You'll pay $99.99 each month (plus tax) once yo=
+ur free trial ends on September 26, 2021 until you cancel. <a href=3D"https=
+://www.linkedin.com/help/linkedin/answer/50">Learn how</a>. Prices may chan=
+ge</td> </tr> <tr> <td align=3D"left" width=3D"50" valign=3D"top" style=3D"=
+font-size:12px;">&nbsp;</td> <td align=3D"left" valign=3D"top" style=3D"fon=
+t-size:12px;"><sup style=3D"font-size:9px;vertical-align:top;">2</sup> You =
+may be required to account for VAT under the reverse charge procedure accor=
+ding to the local VAT rules in your country.</td> </tr> </tbody> </table> <=
+table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"1" style=3D=
+"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"=
+height:10px;font-size:10px;line-height:10px"> &nbsp; </div></td> </tr> </tb=
+ody> </table></td> </tr> <tr> <td align=3D"left" style=3D"border-top:1px so=
+lid #BBBBBB;font-size:11px;"> <table width=3D"1" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"1" style=3D"font-family:Helvetica,Arial,sans-serif;">=
+ <tbody> <tr> <td> <div style=3D"height:10px;font-size:10px;line-height:10p=
+x"> &nbsp; </div></td> </tr> </tbody> </table><a style=3D"text-decoration:n=
+one;color:#0077B5;" href=3D"https://www.linkedin.com/e/v2?e=3D1o4w3-kssur80=
+1-bb&amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purchase_receipt%3BZe2gE9iXRvKJ=
+TNO1ZyHFew%3D%3D&amp;a=3DcustomerServiceUrl&amp;midToken=3DAQHgYRT7Hw5z9A&a=
+mp;midSig=3D2CHJQw1oZqxFU1&amp;tracking=3Dpmts_purchase_receipt_email&amp;e=
+k=3Dpmt_purchase_receipt&amp;path=3Dapp%2Fhome">Customer Service</a> | <a s=
+tyle=3D"text-decoration:none;color:#0077B5;" href=3D"https://www.linkedin.c=
+om/e/v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purcha=
+se_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3DpmtPurchaseHistory&amp;mi=
+dToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&amp;tracking=3Dpmts_pur=
+chase_receipt_email&amp;ek=3Dpmt_purchase_receipt">Purchase History</a> | <=
+a style=3D"text-decoration:none;color:#0077B5;" href=3D"https://www.linkedi=
+n.com/e/v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_pur=
+chase_receipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3Dmicrosites-urls&amp;mi=
+dToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&amp;tracking=3Dpmts_pur=
+chase_receipt_email&amp;ek=3Dpmt_purchase_receipt&amp;key=3Dlegal%2Fuser-ag=
+reement">Terms of Sale</a></td> </tr> </tbody> </table></td> </tr> <tr> <td=
+></td> </tr> <tr> <td align=3D"left"> <table border=3D"0" cellspacing=3D"0"=
+ cellpadding=3D"0" style=3D"font-family:Helvetica,Arial,sans-serif;" width=
+=3D"100%" class=3D"responsive"> <tbody> <tr> <td> <table width=3D"1" border=
+=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:Helvetica,A=
+rial,sans-serif;"> <tbody> <tr> <td> <div style=3D"height:10px;font-size:10=
+px;line-height:10px"> &nbsp; </div></td> </tr> </tbody> </table></td> </tr>=
+ <tr> <td align=3D"left"> <table border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" style=3D"color:#999999;font-size:11px;font-family:Helvetica,Arial,sa=
+ns-serif;" width=3D"100%"> <tbody> <tr> <td></td> </tr> <tr> <td></td> </tr=
+> <tr> <td>This email was intended for Josh Klein (Building the present wit=
+h the recently possible.). <a href=3D"https://www.linkedin.com/e/v2?e=3D1o4=
+w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purchase_receipt%3BZe=
+2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3DcustomerServiceUrl&amp;midToken=3DAQHgYR=
+T7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&amp;ek=3Dpmt_purchase_receipt&amp;arti=
+cleId=3D4788" style=3D"color:#0077B5;text-decoration:none;">Learn why we in=
+cluded this.</a></td> </tr> <tr> <td>If you need assistance or have questio=
+ns, please contact <a target=3D"_blank" href=3D"https://www.linkedin.com/e/=
+v2?e=3D1o4w3-kssur801-bb&amp;lipi=3Durn%3Ali%3Apage%3Aemail_pmt_purchase_re=
+ceipt%3BZe2gE9iXRvKJTNO1ZyHFew%3D%3D&amp;a=3DcustomerServiceUrl&amp;midToke=
+n=3DAQHgYRT7Hw5z9A&amp;midSig=3D2CHJQw1oZqxFU1&amp;ek=3Dpmt_purchase_receip=
+t" style=3D"color:#0077B5;text-decoration:none;">LinkedIn Customer Service<=
+/a>.</td> </tr> <tr> <td> <table width=3D"1" border=3D"0" cellspacing=3D"0"=
+ cellpadding=3D"0" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbod=
+y> <tr> <td> <div style=3D"height:10px;font-size:10px;line-height:10px"> &n=
+bsp; </div></td> </tr> </tbody> </table></td> </tr> <tr> <td>=C2=A9 2021 Li=
+nkedIn Corporation, 1000 West Maude Avenue, Sunnyvale, CA 94085. LinkedIn a=
+nd the LinkedIn logo are registered trademarks of LinkedIn.</td> </tr> <tr>=
+ <td> <table width=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" s=
+tyle=3D"font-family:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div st=
+yle=3D"height:10px;font-size:10px;line-height:10px"> &nbsp; </div></td> </t=
+r> </tbody> </table></td> </tr> <tr> <td></td> </tr> <tr> <td> <table width=
+=3D"1" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"font-famil=
+y:Helvetica,Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"height:10px=
+;font-size:10px;line-height:10px"> &nbsp; </div></td> </tr> </tbody> </tabl=
+e></td> </tr> </tbody> </table></td> </tr> <tr> <td> <table width=3D"1" bor=
+der=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:Helvetic=
+a,Arial,sans-serif;"> <tbody> <tr> <td> <div style=3D"height:20px;font-size=
+:20px;line-height:20px"> &nbsp; </div></td> </tr> </tbody> </table></td> </=
+tr> </tbody> </table></td> </tr> </tbody> </table></td> </tr> </tbody> </ta=
+ble></td> </tr> <tr> <td> <table width=3D"1" border=3D"0" cellspacing=3D"0"=
+ cellpadding=3D"0" style=3D"font-family:Helvetica,Arial,sans-serif;"> <tbod=
+y> <tr> <td> <div style=3D"height:20px;font-size:20px;line-height:20px"> &n=
+bsp; </div></td> </tr> </tbody> </table></td> </tr> </tbody> </table> <img =
+alt=3D"" role=3D"presentation" src=3D"http://www.linkedin.com/emimp/ip_TVc4=
+MGR6TXRhM056ZFhJNE1ERXRZbUk9OmNHMTBYM0IxY21Ob1lYTmxYM0psWTJWcGNIUT06.gif" s=
+tyle=3D"width:1px; height:1px;"> </body> </html>
+------=_Part_60396_632443443.1629977903951--
+

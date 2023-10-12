@@ -1,0 +1,708 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:b786:0:b0:25e:ef80:4753 with SMTP id t6csp1868437vqh;
+        Fri, 26 Nov 2021 04:28:55 -0800 (PST)
+X-Received: by 2002:a17:906:3b18:: with SMTP id g24mr38458805ejf.27.1637929735655;
+        Fri, 26 Nov 2021 04:28:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1637929735; cv=none;
+        d=google.com; s=arc-20160816;
+        b=EnW0KNcHD2zY1dqmh4u2bGsKuwCLE6ctZCWYEQFLRcAK+VNDY2qvC2sEuQY6/Fa77v
+         7PGgv8CzbwpjdL4brvvAWjltBNoUenVfZm/jIe1fsjQDRpCcYhzoXeyd/mPtQLje9z2u
+         0eQSuGBDF4Ha42hvSt4nvMGi6k3jbppbLNQ3wpEMYkrMmzuP2tqwPvmGNNauU6a0XnaD
+         NWjshvoL9MhocM7Gf7JE++7uGBI+0dlgnpHx8Sp7TXqzZyurf60wu+AuRFOeIK2kNxF3
+         xNpyfQ6HyweKZl95fHalkQlMqLYdvG6p19fVPkldvmUd6ItCqmjNVloACPz1MKRu/FG+
+         WqPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from:dkim-signature;
+        bh=AZQUzjJa3/of5ynKXBLaVCjB42h8IsaA3h0vAsShaqA=;
+        b=buQfvQiiZGWkpcLVRfa/EfB6homITRmA7xcoWUykCMs62zk1mcevTTleA+5XO7ISk3
+         PgGSI4rThQZhKRMrVGC8XdrwxU7/zzgYGu9zbllTSoU5VgA/Ie94njYBpvtQGskakuQA
+         rQse37S1IUWh3SNFyge2wJ+y0viIUJtWEbD+nDn/CfEwfpT66t7wLJLti3G+kPNXy8+l
+         0ePKPc6m6Rp/jr7qqwURz6raQtb8WL0Dv4oOGEl2PzoKv/S1pCcPf3bhg6JSIm8JAEna
+         xgLViwNiIYq2vARJsEBirkG1OC3X7qg2PSRJ4MU0/pHO0rUmE7Y7HYu7Tq/Cj9jUwVPg
+         kVDg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@300brains-com.20210112.gappssmtp.com header.s=20210112 header.b=t1fIwePI;
+       spf=pass (google.com: domain of krzysztof.zielinski@300brains.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=krzysztof.zielinski@300brains.com
+Return-Path: <krzysztof.zielinski@300brains.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id e10sor3445177eje.0.2021.11.26.04.28.55
+        for <josh@josh.is>
+        (Google Transport Security);
+        Fri, 26 Nov 2021 04:28:55 -0800 (PST)
+Received-SPF: pass (google.com: domain of krzysztof.zielinski@300brains.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@300brains-com.20210112.gappssmtp.com header.s=20210112 header.b=t1fIwePI;
+       spf=pass (google.com: domain of krzysztof.zielinski@300brains.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=krzysztof.zielinski@300brains.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=300brains-com.20210112.gappssmtp.com; s=20210112;
+        h=from:to:references:in-reply-to:subject:date:message-id:mime-version
+         :thread-index:content-language;
+        bh=AZQUzjJa3/of5ynKXBLaVCjB42h8IsaA3h0vAsShaqA=;
+        b=t1fIwePIszenIcceOeCqXrUMuTbXJ3Izt5HX3Ej7hrxfjgWPKtCMjUjqcMvyLA5Ltb
+         RVkFRcsNWiWFiv2FqLbknU/5gJKRSyfJFKJUZ06t2qSz90NrEe/+ohMOd4/XpXWRTuhZ
+         sggasLie06h5HpfIS9KCu9PlAgrdGl8F0qg7baUmwEckLUvnzAkIMuCMkvXuaF4jHtY+
+         UJcN2vop0FhoOMyqKYBUZO/QIeCo/oequnjvBc84WYLghn+oxw5qUQBmCQrW+IdHSWKJ
+         wxaMH3xwhPP1Z11AT1BvMaa/kQi2HAAaL292mlG0xFm5L9FCQMpZfLU+WCVp/VF6HDum
+         E+3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20210112;
+        h=x-gm-message-state:from:to:references:in-reply-to:subject:date
+         :message-id:mime-version:thread-index:content-language;
+        bh=AZQUzjJa3/of5ynKXBLaVCjB42h8IsaA3h0vAsShaqA=;
+        b=H5CMrQv+OsxM0gVKqLF+zMAyYImEY+woBpvreI6MSMIWZNZL5xz2wktKmg4Mfvho5H
+         F0AYwpQfv1VsYpwT1fPb9mHBkBnXXc91iZLoKhkWm6i9IV0OxTWstOuroEgdDRv4+c2f
+         ITTcFG1Qd+H2fbkUEzLu0Rs3qer4Gtu1Pye7hAT0O4As6St+3oxCodB22e+0kEfUfar6
+         xpzCPDmks1+Yx2iEismhlYDiiK29Sj//qPVGaSzMbtYHmw6pJyxTVyZy5st+iMMajpnY
+         0dTmUgorTJQ0UPOaOCFyM+uoM3XYffV/KRDkCaggs+PH8HePtt3Tyu3q0X0ev5DXsFfd
+         AGug==
+X-Gm-Message-State: AOAM532c6eGojgBV463JnLMRGEi6fqf631JVl8rDLKM84nX1CPZLZHHt
+	kStTGv1Yfi7s8ukogIg3TuqOEC8Nt2dlg1po
+X-Google-Smtp-Source: ABdhPJxz7kgk9hasQtqNsqC1dImFhI6U8a7AZIsJEifhK1+TZkRQLyCjeW9xfvJGaCBKqi0jWt6TfQ==
+X-Received: by 2002:a17:907:3f9d:: with SMTP id hr29mr39823870ejc.369.1637929735068;
+        Fri, 26 Nov 2021 04:28:55 -0800 (PST)
+Return-Path: <krzysztof.zielinski@300brains.com>
+Received: from DESKTOP81NJK6B (nat-92-63-47-248.mgk.pl. [92.63.47.248])
+        by smtp.gmail.com with ESMTPSA id c11sm4184991ede.32.2021.11.26.04.28.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 26 Nov 2021 04:28:54 -0800 (PST)
+From: <krzysztof.zielinski@300brains.com>
+To: "'Vilhjalmur Gunnarsson'" <vilhjalmur.gunnarsson@300brains.com>,
+	"'Josh Klein'" <josh@josh.is>
+References: <CAMZ4FSssyF9mya9Jubey=4aG1FVwd15YTKwc8TxNWKBYEsOySw@mail.gmail.com> <CACNgykNy4tuewQiZ+NhRsQHNeeLCOPCe+YcrRCe4sv8+y_mgBw@mail.gmail.com> <CAMZ4FSswakdNrjqHLPvgYB_8Aq8n-XfKExipUhBc5AOA5s+xeA@mail.gmail.com> <CACNgykO9R9=rXQA1tGr2g_dwf+uWx+UkxU8gh3yt-tbFk8bESg@mail.gmail.com> <CAMZ4FSs3baq_+P++CTfFb267B-cZOH0WEK6Td1MVHi1=1UHQxw@mail.gmail.com> <CACNgykN3Zf=mY_CP0Wu0QefahLWWwRy2vGPR0pwnCSeNZNPd6w@mail.gmail.com> <CAMZ4FSup9QFNA2XQENiBifVqV6f6594N0gP2D-a055aHqaqifw@mail.gmail.com>
+In-Reply-To: <CAMZ4FSup9QFNA2XQENiBifVqV6f6594N0gP2D-a055aHqaqifw@mail.gmail.com>
+Subject: RE: Meeting
+Date: Fri, 26 Nov 2021 13:28:54 +0100
+Message-ID: <00c901d7e2c1$2d9935e0$88cba1a0$@300brains.com>
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_00CA_01D7E2C9.8F600EE0"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQG+SNu4rc1eTpcgfn9xcAR12XX3HAIJTrn+AIn3UWsCP26MRwLDWgkMAcNr1k0Cr4cAV6voqIpw
+Content-Language: pl
+X-Antivirus: Avast (VPS 211126-0, 26.11.2021), Outbound message
+X-Antivirus-Status: Clean
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_00CA_01D7E2C9.8F600EE0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_00CB_01D7E2C9.8F600EE0"
+
+
+------=_NextPart_001_00CB_01D7E2C9.8F600EE0
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+What about 15:30 CET ? 
+
+ 
+
+Best regards,
+
+Krzysztof Zieli=C5=84ski,
+
+Technology Brain | CTO 
+
+508 444 209 |  <mailto:krzysztof.zielinski@300brains.com> krzysztof.zielins=
+ki@300brains.com |  <http://www.300brains.com/> www.300brains.com
+
+ 
+
+  <https://drive.google.com/a/300brains.com/uc?id=3D1-eFW97AU31spUI_tEgaDxk=
+y2rSQ16hOv&export=3Ddownload> 
+
+WE ARE A MEMBER OF HOLLAND FINTECH 
+
+
+300Brains Sp. z o.o. | 00-066 Warsaw, Poland, Plac Malachowskiego 2, 4th fl=
+oor, 
+District Court for the Capital City of Warsaw, XXII Commercial Division of =
+the National 
+Court Register KRS: 0000771127, Share capital of PLN 100,000.00, NIP: 52527=
+79847
+
+ <https://facebook.com/300Brains>    <https://linkedin.com/company/300Brain=
+s>    <https://www.instagram.com/300brains/>    <https://twitter.com/300Bra=
+ins>    <http://300brains.com/blog/> 
+
+ 
+
+From: Vilhjalmur Gunnarsson <vilhjalmur.gunnarsson@300brains.com> 
+Sent: Friday, November 26, 2021 1:20 PM
+To: Josh Klein <josh@josh.is>
+Cc: Krzysztof Zieli=C5=84ski <krzysztof.zielinski@300brains.com>
+Subject: Re: Meeting
+
+ 
+
+Raincheck for sure.
+
+ <mailto:krzysztof.zielinski@300brains.com> @Krzysztof Zieli=C5=84ski  does=
+ the suggested time work for you ? It's fine for me.
+
+ 
+
+On Fri, 26 Nov 2021, 12:19 Josh Klein, <josh@josh.is <mailto:josh@josh.is> =
+> wrote:
+
+No problem; does noon or 2pm Monday work?
+
+ 
+
+Unfortunately one of my kids is home sick so dinner is off. Apologies; rain=
+ check?
+
+ 
+
+All best,
+
+Josh
+
+  <https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D11d2f74c-b9ae-4d1b-8333-b194f7c5dc9e> =E1=90=A7
+
+ 
+
+On Fri, Nov 26, 2021 at 10:15 AM Vilhjalmur Gunnarsson <vilhjalmur.gunnarss=
+on@300brains.com <mailto:vilhjalmur.gunnarsson@300brains.com> > wrote:
+
+Hi Josh, 
+
+Kris got some last minute urgent matters he needs to take care of today. 
+
+I see your calendar is completely booked until around 10th of december, is =
+it up to date or do you have a change to send us few time slots next week t=
+hat could work for you?
+
+ 
+
+By the way this means i can start driving to Akureyri earlier today, do you=
+ think you will have time for dinner tonight? (as long as the weather will =
+be fine and i will not be stuck in snow :) )
+
+
+ 
+
+K=C3=A6r kve=C3=B0ja / Best regards
+
+ 
+
+Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson
+
+Business Brain | CEO 300Brains Nordic
+
++354-8481437 | vilhjalmur.gunnarsson@300brains.com <mailto:vilhjalmur.gunna=
+rsson@300brains.com>  |  <http://www.300brains.com/> www.300brains.com
+
+  <https://docs.google.com/uc?export=3Ddownload&id=3D10o2tPunU-NWPHKuN6kQaJ=
+ddLbc5ed7NS&revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ> 
+WE ARE A MEMBER OF HOLLAND FINTECH 
+
+ 
+
+ 
+
+On Mon, 22 Nov 2021 at 11:15, Josh Klein <josh@josh.is <mailto:josh@josh.is=
+> > wrote:
+
+Great! Thursday is a US Holiday so I'll be unavailable, but could possibly =
+meet Friday.
+
+ 
+
+All best,
+
+Josh
+
+  <https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D17fe2a99-1eab-41ec-8eea-6101beb045f2> =E1=90=A7
+
+ 
+
+On Mon, Nov 22, 2021 at 11:09 AM Vilhjalmur Gunnarsson <vilhjalmur.gunnarss=
+on@300brains.com <mailto:vilhjalmur.gunnarsson@300brains.com> > wrote:
+
+Sorry yes noon. Ive updated it, thank you.
+
+I might be in Akureyri next Thursday and Friday. I will let you know if so =
+and we could grab dinner if you have time.
+
+ 
+
+Thank you
+
+
+ 
+
+K=C3=A6r kve=C3=B0ja / Best regards
+
+ 
+
+Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson
+
+Business Brain | CEO 300Brains Nordic
+
++354-8481437 | vilhjalmur.gunnarsson@300brains.com <mailto:vilhjalmur.gunna=
+rsson@300brains.com>  |  <http://www.300brains.com/> www.300brains.com
+
+  <https://docs.google.com/uc?export=3Ddownload&id=3D10o2tPunU-NWPHKuN6kQaJ=
+ddLbc5ed7NS&revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ> 
+WE ARE A MEMBER OF HOLLAND FINTECH 
+
+ 
+
+ 
+
+On Mon, 22 Nov 2021 at 11:06, Josh Klein <josh@josh.is <mailto:josh@josh.is=
+> > wrote:
+
+I have us at 1pm Friday, but can also do noon if that works better. Please =
+update the invite either way. Thanks!
+
+ 
+
+- J
+
+  <https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3Dcfaea587-b6dd-469d-ba16-e1cf8aaa36cc> =E1=90=A7
+
+ 
+
+On Mon, Nov 22, 2021 at 11:02 AM Vilhjalmur Gunnarsson <vilhjalmur.gunnarss=
+on@300brains.com <mailto:vilhjalmur.gunnarsson@300brains.com> > wrote:
+
+Hi Josh, i see our CTO (here in cc) proposed to move the meeting one hour e=
+arlier (11 gmt). Does that work for you?
+
+ 
+
+Thank you
+
+
+ 
+
+K=C3=A6r kve=C3=B0ja / Best regards
+
+ 
+
+Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson
+
+Business Brain | CEO 300Brains Nordic
+
++354-8481437 | vilhjalmur.gunnarsson@300brains.com <mailto:vilhjalmur.gunna=
+rsson@300brains.com>  |  <http://www.300brains.com/> www.300brains.com
+
+  <https://docs.google.com/uc?export=3Ddownload&id=3D10o2tPunU-NWPHKuN6kQaJ=
+ddLbc5ed7NS&revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ> 
+WE ARE A MEMBER OF HOLLAND FINTECH 
+
+
+
+-- 
+Ta wiadomo=C5=9B=C4=87 zosta=C5=82a sprawdzona na obecno=C5=9B=C4=87 wirus=
+=C3=B3w przez oprogramowanie antywirusowe Avast.
+https://www.avast.com/antivirus
+
+------=_NextPart_001_00CB_01D7E2C9.8F600EE0
+Content-Type: text/html;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40"><head><meta http-equiv=3DContent-Type content=
+=3D"text/html; charset=3Dutf-8"><meta name=3DGenerator content=3D"Microsoft=
+ Word 15 (filtered medium)"><!--[if !mso]><style>v\:* {behavior:url(#defaul=
+t#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+=2Eshape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Gadugi;
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.gmailchip
+	{mso-style-name:gmail_chip;}
+span.Stylwiadomocie-mail19
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+=2EMsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue vli=
+nk=3Dpurple style=3D'word-wrap:break-word'><div class=3DWordSection1><p cla=
+ss=3DMsoNormal><span style=3D'mso-fareast-language:EN-US'>What about 15:30 =
+CET ? <o:p></o:p></span></p><p class=3DMsoNormal><span style=3D'mso-fareast=
+-language:EN-US'><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><b>Best r=
+egards</b>,<o:p></o:p></p><p class=3DMsoNormal style=3D'mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto'><b><span lang=3DEN-US style=3D'color:black=
+'>Krzysztof Zieli=C5=84ski,</span></b><o:p></o:p></p><p class=3DMsoNormal s=
+tyle=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span lang=
+=3DEN-US style=3D'color:black'>Technology Brain | CTO</span></b><b><span la=
+ng=3DEN-US>&nbsp;</span></b><o:p></o:p></p><p class=3DMsoNormal>508&nbsp;44=
+4&nbsp;209 | <span lang=3DPL><a href=3D"mailto:krzysztof.zielinski@300brain=
+s.com"><span lang=3DEN-GB>krzysztof.zielinski@300brains.com</span></a></spa=
+n> | <span lang=3DPL><a href=3D"http://www.300brains.com/" target=3D"_blank=
+"><span lang=3DEN-US style=3D'color:#1155CC'>www.300brains.com</span></a></=
+span><o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMs=
+oNormal><span lang=3DPL><img border=3D0 width=3D200 height=3D60 style=3D'wi=
+dth:2.0833in;height:.625in' id=3D"_x0000_i1037" src=3D"https://drive.google=
+=2Ecom/a/300brains.com/uc?id=3D1-eFW97AU31spUI_tEgaDxky2rSQ16hOv&amp;export=
+=3Ddownload"></span><span lang=3DPL><img border=3D0 width=3D200 height=3D64=
+ style=3D'width:2.0833in;height:.6666in' id=3D"Obraz_x0020_6" src=3D"cid:im=
+age001.jpg@01D7E2C9.8EBD8D50"><o:p></o:p></span></p><p class=3DMsoNormal><b=
+>WE ARE A MEMBER OF HOLLAND FINTECH&nbsp;</b><o:p></o:p></p><p class=3DMsoN=
+ormal><br><span style=3D'color:#666666'>300Brains Sp. z o.o. | 00-066 Warsa=
+w, Poland, Plac Malachowskiego 2, 4th floor,&nbsp;<br>District Court for th=
+e Capital City of Warsaw, XXII Commercial Division of the National&nbsp;<br=
+>Court Register KRS: 0000771127, Share capital of PLN 100,000.00, NIP: 5252=
+779847</span><br><br><a href=3D"https://facebook.com/300Brains" target=3D"_=
+blank"><span lang=3DPL style=3D'font-family:"Helvetica",sans-serif;color:#E=
+D1E79;background:#FAFAFA;text-decoration:none'><img border=3D0 width=3D20 h=
+eight=3D20 style=3D'width:.2083in;height:.2083in' id=3D"_x0000_i1035" src=
+=3D"http://300brains.com/mail/p/fb.png" alt=3DFB></span></a><span style=3D'=
+font-family:"Helvetica",sans-serif;color:#999999;background:#FAFAFA'>&nbsp;=
+&nbsp;</span><a href=3D"https://linkedin.com/company/300Brains" target=3D"_=
+blank"><span lang=3DPL style=3D'font-family:"Helvetica",sans-serif;color:#E=
+D1E79;background:#FAFAFA;text-decoration:none'><img border=3D0 width=3D20 h=
+eight=3D20 style=3D'width:.2083in;height:.2083in' id=3D"_x0000_i1034" src=
+=3D"http://300brains.com/mail/p/linked.png" alt=3DLinkedIn></span></a><span=
+ style=3D'font-family:"Helvetica",sans-serif;color:#999999;background:#FAFA=
+FA'>&nbsp;&nbsp;</span><a href=3D"https://www.instagram.com/300brains/" tar=
+get=3D"_blank"><span lang=3DPL style=3D'font-family:"Helvetica",sans-serif;=
+color:#ED1E79;background:#FAFAFA;text-decoration:none'><img border=3D0 widt=
+h=3D20 height=3D20 style=3D'width:.2083in;height:.2083in' id=3D"_x0000_i103=
+3" src=3D"http://300brains.com/mail/p/insta.png" alt=3DInstagram></span></a=
+><span style=3D'font-family:"Helvetica",sans-serif;color:#999999;background=
+:#FAFAFA'>&nbsp;&nbsp;</span><a href=3D"https://twitter.com/300Brains" targ=
+et=3D"_blank"><span lang=3DPL style=3D'font-family:"Helvetica",sans-serif;c=
+olor:#ED1E79;background:#FAFAFA;text-decoration:none'><img border=3D0 width=
+=3D20 height=3D20 style=3D'width:.2083in;height:.2083in' id=3D"_x0000_i1032=
+" src=3D"http://300brains.com/mail/p/tw.png" alt=3DTwitter></span></a><span=
+ style=3D'font-family:"Helvetica",sans-serif;color:#999999;background:#FAFA=
+FA'>&nbsp;&nbsp;</span><a href=3D"http://300brains.com/blog/" target=3D"_bl=
+ank"><span lang=3DPL style=3D'font-family:"Helvetica",sans-serif;color:#ED1=
+E79;background:#FAFAFA;text-decoration:none'><img border=3D0 width=3D20 hei=
+ght=3D20 style=3D'width:.2083in;height:.2083in' id=3D"_x0000_i1031" src=3D"=
+http://300brains.com/mail/p/blog.png" alt=3DBlog></span></a><o:p></o:p></p>=
+<p class=3DMsoNormal><span style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;=
+</o:p></span></p><div style=3D'border:none;border-top:solid #E1E1E1 1.0pt;p=
+adding:3.0pt 0cm 0cm 0cm'><p class=3DMsoNormal><b><span lang=3DPL>From:</sp=
+an></b><span lang=3DPL> Vilhjalmur Gunnarsson &lt;vilhjalmur.gunnarsson@300=
+brains.com&gt; <br><b>Sent:</b> Friday, November 26, 2021 1:20 PM<br><b>To:=
+</b> Josh Klein &lt;josh@josh.is&gt;<br><b>Cc:</b> Krzysztof Zieli=C5=84ski=
+ &lt;krzysztof.zielinski@300brains.com&gt;<br><b>Subject:</b> Re: Meeting<o=
+:p></o:p></span></p></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p=
+ class=3DMsoNormal>Raincheck for sure.<o:p></o:p></p><div><p class=3DMsoNor=
+mal><span class=3Dgmailchip><a href=3D"mailto:krzysztof.zielinski@300brains=
+=2Ecom"><span style=3D'color:#1155CC'>@Krzysztof Zieli=C5=84ski</span></a><=
+/span>&nbsp; does the suggested time work for you ? It's fine for me.<o:p><=
+/o:p></p></div></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p=
+ class=3DMsoNormal>On Fri, 26 Nov 2021, 12:19 Josh Klein, &lt;<a href=3D"ma=
+ilto:josh@josh.is">josh@josh.is</a>&gt; wrote:<o:p></o:p></p></div><blockqu=
+ote style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0c=
+m 6.0pt;margin-left:4.8pt;margin-right:0cm'><div><p class=3DMsoNormal>No pr=
+oblem; does noon or 2pm Monday work?<o:p></o:p></p><div><p class=3DMsoNorma=
+l><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>Unfortunately one of=
+ my kids is home sick so dinner is off. Apologies; rain check?<o:p></o:p></=
+p></div><div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=
+=3DMsoNormal>All best,<o:p></o:p></p></div><div><p class=3DMsoNormal>Josh<o=
+:p></o:p></p></div></div><div><p class=3DMsoNormal><img border=3D0 width=3D=
+1 height=3D1 style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1030" src=
+=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3D=
+zerocontent&amp;guid=3D11d2f74c-b9ae-4d1b-8333-b194f7c5dc9e"><span style=3D=
+'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=90=A7</sp=
+an><o:p></o:p></p></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div=
+><p class=3DMsoNormal>On Fri, Nov 26, 2021 at 10:15 AM Vilhjalmur Gunnarsso=
+n &lt;<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_bla=
+nk">vilhjalmur.gunnarsson@300brains.com</a>&gt; wrote:<o:p></o:p></p></div>=
+<blockquote style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0c=
+m 0cm 0cm 6.0pt;margin-left:4.8pt;margin-right:0cm'><div><p class=3DMsoNorm=
+al>Hi Josh,&nbsp;<o:p></o:p></p><div><p class=3DMsoNormal>Kris got some las=
+t minute urgent matters he needs to take care of today.&nbsp;<o:p></o:p></p=
+></div><div><p class=3DMsoNormal>I see your calendar is completely booked u=
+ntil&nbsp;around 10th of december, is it up to date or do you have a change=
+ to send us few time slots next week that could work for you?<o:p></o:p></p=
+></div><div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=
+=3DMsoNormal>By the way this means i can start driving to Akureyri earlier =
+today, do you think you will have time for dinner tonight? (as long as the =
+weather will be fine and i will not be stuck in snow :) )<br clear=3Dall><o=
+:p></o:p></p><div><div><div><div><p class=3DMsoNormal style=3D'mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto'><o:p>&nbsp;</o:p></p><p class=3DMso=
+Normal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span s=
+tyle=3D'color:black'>K=C3=A6r kve=C3=B0ja / Best regards</span><o:p></o:p><=
+/p><p class=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-=
+alt:auto'><o:p>&nbsp;</o:p></p><p class=3DMsoNormal style=3D'mso-margin-top=
+-alt:auto;mso-margin-bottom-alt:auto'><b><span lang=3DEN-US style=3D'color:=
+black'>Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson</span></b><o:p></o:p></p><p=
+ class=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:a=
+uto'><b><span lang=3DEN-US style=3D'color:black'>Business Brain | CEO 300Br=
+ains Nordic</span></b><o:p></o:p></p><p class=3DMsoNormal style=3D'mso-marg=
+in-top-alt:auto;mso-margin-bottom-alt:auto'><span lang=3DEN-US>+354-8481437=
+ |&nbsp;<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_b=
+lank">vilhjalmur.gunnarsson@300brains.com</a>&nbsp;|&nbsp;<a href=3D"http:/=
+/www.300brains.com/" target=3D"_blank"><span style=3D'color:#1155CC'>www.30=
+0brains.com</span></a></span><o:p></o:p></p></div><p class=3DMsoNormal><img=
+ border=3D0 width=3D456 height=3D138 style=3D'width:4.75in;height:1.4375in'=
+ id=3D"_x0000_i1029" src=3D"https://docs.google.com/uc?export=3Ddownload&am=
+p;id=3D10o2tPunU-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDokybnZRYTBYW=
+jIvNklEbnNrWFFPZlN5Z3NCdXNJPQ"><br><b>WE ARE A MEMBER OF HOLLAND FINTECH&nb=
+sp;</b><o:p></o:p></p></div></div></div><p class=3DMsoNormal><o:p>&nbsp;</o=
+:p></p></div></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p c=
+lass=3DMsoNormal>On Mon, 22 Nov 2021 at 11:15, Josh Klein &lt;<a href=3D"ma=
+ilto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<o:p></o:p>=
+</p></div><blockquote style=3D'border:none;border-left:solid #CCCCCC 1.0pt;=
+padding:0cm 0cm 0cm 6.0pt;margin-left:4.8pt;margin-right:0cm'><div><p class=
+=3DMsoNormal>Great! Thursday is a US Holiday so I'll be unavailable, but co=
+uld possibly meet Friday.<o:p></o:p></p><div><p class=3DMsoNormal><o:p>&nbs=
+p;</o:p></p></div><div><p class=3DMsoNormal>All best,<o:p></o:p></p></div><=
+div><p class=3DMsoNormal>Josh<o:p></o:p></p></div></div><div><p class=3DMso=
+Normal><img border=3D0 width=3D1 height=3D1 style=3D'width:.0104in;height:.=
+0104in' id=3D"_x0000_i1028" src=3D"https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D17fe2a99-1eab-41ec-8=
+eea-6101beb045f2"><span style=3D'font-size:7.5pt;font-family:"Gadugi",sans-=
+serif;color:white'>=E1=90=A7</span><o:p></o:p></p></div><p class=3DMsoNorma=
+l><o:p>&nbsp;</o:p></p><div><div><p class=3DMsoNormal>On Mon, Nov 22, 2021 =
+at 11:09 AM Vilhjalmur Gunnarsson &lt;<a href=3D"mailto:vilhjalmur.gunnarss=
+on@300brains.com" target=3D"_blank">vilhjalmur.gunnarsson@300brains.com</a>=
+&gt; wrote:<o:p></o:p></p></div><blockquote style=3D'border:none;border-lef=
+t:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm 6.0pt;margin-left:4.8pt;margin-ri=
+ght:0cm'><div><p class=3DMsoNormal>Sorry yes noon. Ive updated it, thank yo=
+u.<o:p></o:p></p><div><p class=3DMsoNormal>I might be in Akureyri next Thur=
+sday and Friday. I will let you know if so and we could grab dinner if you =
+have time.<o:p></o:p></p></div><div><p class=3DMsoNormal><o:p>&nbsp;</o:p><=
+/p></div><div><p class=3DMsoNormal>Thank you<br clear=3Dall><o:p></o:p></p>=
+<div><div><div><div><p class=3DMsoNormal style=3D'mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto'><o:p>&nbsp;</o:p></p><p class=3DMsoNormal style=
+=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span style=3D'colo=
+r:black'>K=C3=A6r kve=C3=B0ja / Best regards</span><o:p></o:p></p><p class=
+=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><=
+o:p>&nbsp;</o:p></p><p class=3DMsoNormal style=3D'mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto'><b><span lang=3DEN-US style=3D'color:black'>Vilh=
+j=C3=A1lmur =C3=9E=C3=B3r Gunnarsson</span></b><o:p></o:p></p><p class=3DMs=
+oNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><sp=
+an lang=3DEN-US style=3D'color:black'>Business Brain | CEO 300Brains Nordic=
+</span></b><o:p></o:p></p><p class=3DMsoNormal style=3D'mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto'><span lang=3DEN-US>+354-8481437 |&nbsp;<a =
+href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_blank">vilhj=
+almur.gunnarsson@300brains.com</a>&nbsp;|&nbsp;<a href=3D"http://www.300bra=
+ins.com/" target=3D"_blank"><span style=3D'color:#1155CC'>www.300brains.com=
+</span></a></span><o:p></o:p></p></div><p class=3DMsoNormal><img border=3D0=
+ width=3D456 height=3D138 style=3D'width:4.75in;height:1.4375in' id=3D"_x00=
+00_i1027" src=3D"https://docs.google.com/uc?export=3Ddownload&amp;id=3D10o2=
+tPunU-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDokybnZRYTBYWjIvNklEbnNr=
+WFFPZlN5Z3NCdXNJPQ"><br><b>WE ARE A MEMBER OF HOLLAND FINTECH&nbsp;</b><o:p=
+></o:p></p></div></div></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p></di=
+v></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p class=3DMsoN=
+ormal>On Mon, 22 Nov 2021 at 11:06, Josh Klein &lt;<a href=3D"mailto:josh@j=
+osh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<o:p></o:p></p></div><=
+blockquote style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm=
+ 0cm 0cm 6.0pt;margin-left:4.8pt;margin-right:0cm'><div><p class=3DMsoNorma=
+l>I have us at 1pm Friday, but can also do noon if that works better. Pleas=
+e update the invite either way. Thanks!<o:p></o:p></p><div><p class=3DMsoNo=
+rmal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>- J<o:p></o:p></p=
+></div></div><div><p class=3DMsoNormal><img border=3D0 width=3D1 height=3D1=
+ style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1026" src=3D"https://=
+mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&=
+amp;guid=3Dcfaea587-b6dd-469d-ba16-e1cf8aaa36cc"><span style=3D'font-size:7=
+=2E5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=90=A7</span><o:p></=
+o:p></p></div><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p class=
+=3DMsoNormal>On Mon, Nov 22, 2021 at 11:02 AM Vilhjalmur Gunnarsson &lt;<a =
+href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=3D"_blank">vilhj=
+almur.gunnarsson@300brains.com</a>&gt; wrote:<o:p></o:p></p></div><blockquo=
+te style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm=
+ 6.0pt;margin-left:4.8pt;margin-right:0cm'><div><p class=3DMsoNormal>Hi Jos=
+h, i see our CTO (here in cc) proposed to move the meeting one hour earlier=
+ (11 gmt). Does that work for you?<o:p></o:p></p><div><p class=3DMsoNormal>=
+<o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>Thank you<br clear=3Da=
+ll><o:p></o:p></p><div><div><div><div><p class=3DMsoNormal style=3D'mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto'><o:p>&nbsp;</o:p></p><p class=
+=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><=
+span style=3D'color:black'>K=C3=A6r kve=C3=B0ja / Best regards</span><o:p><=
+/o:p></p><p class=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto'><o:p>&nbsp;</o:p></p><p class=3DMsoNormal style=3D'mso-marg=
+in-top-alt:auto;mso-margin-bottom-alt:auto'><b><span lang=3DEN-US style=3D'=
+color:black'>Vilhj=C3=A1lmur =C3=9E=C3=B3r Gunnarsson</span></b><o:p></o:p>=
+</p><p class=3DMsoNormal style=3D'mso-margin-top-alt:auto;mso-margin-bottom=
+-alt:auto'><b><span lang=3DEN-US style=3D'color:black'>Business Brain | CEO=
+ 300Brains Nordic</span></b><o:p></o:p></p><p class=3DMsoNormal style=3D'ms=
+o-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span lang=3DEN-US>+354-8=
+481437 |&nbsp;<a href=3D"mailto:vilhjalmur.gunnarsson@300brains.com" target=
+=3D"_blank">vilhjalmur.gunnarsson@300brains.com</a>&nbsp;|&nbsp;<a href=3D"=
+http://www.300brains.com/" target=3D"_blank"><span style=3D'color:#1155CC'>=
+www.300brains.com</span></a></span><o:p></o:p></p></div><p class=3DMsoNorma=
+l><img border=3D0 width=3D456 height=3D138 style=3D'width:4.75in;height:1.4=
+375in' id=3D"_x0000_i1025" src=3D"https://docs.google.com/uc?export=3Ddownl=
+oad&amp;id=3D10o2tPunU-NWPHKuN6kQaJddLbc5ed7NS&amp;revid=3D0B90Bt6yjDokybnZ=
+RYTBYWjIvNklEbnNrWFFPZlN5Z3NCdXNJPQ"><br><b>WE ARE A MEMBER OF HOLLAND FINT=
+ECH&nbsp;</b><o:p></o:p></p></div></div></div></div></div></blockquote></di=
+v></blockquote></div></blockquote></div></blockquote></div></blockquote></d=
+iv></blockquote></div></div><div id=3D"DAB4FAD8-2DD7-40BB-A1B8-4E2AA1F9FDF2=
+"><br /> <table style=3D"border-top: 1px solid #D3D4DE;">
+	<tr>
+      <td style=3D"width: 55px; padding-top: 18px;"><a href=3D"https://www.=
+avast.com/sig-email?utm_medium=3Demail&utm_source=3Dlink&utm_campaign=3Dsig=
+-email&utm_content=3Demailclient" target=3D"_blank"><img src=3D"https://ipm=
+cdn.avast.com/images/icons/icon-envelope-tick-round-orange-animated-no-repe=
+at-v1.gif" alt=3D"" width=3D"46" height=3D"29" style=3D"width: 46px; height=
+: 29px;" /></a></td>
+		<td style=3D"width: 470px; padding-top: 17px; color: #41424e; font-size: =
+13px; font-family: Arial, Helvetica, sans-serif; line-height: 18px;">Wolny =
+od wirus=C3=B3w. <a href=3D"https://www.avast.com/sig-email?utm_medium=3Dem=
+ail&utm_source=3Dlink&utm_campaign=3Dsig-email&utm_content=3Demailclient" t=
+arget=3D"_blank" style=3D"color: #4453ea;">www.avast.com</a> 		</td>
+	</tr>
+</table>
+<a href=3D"#DAB4FAD8-2DD7-40BB-A1B8-4E2AA1F9FDF2" width=3D"1" height=3D"1">=
+ </a></div></body></html>
+------=_NextPart_001_00CB_01D7E2C9.8F600EE0--
+
+------=_NextPart_000_00CA_01D7E2C9.8F600EE0
+Content-Type: image/jpeg;
+	name="image001.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <image001.jpg@01D7E2C9.8EBD8D50>
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsK
+CwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQU
+FBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCABAAMgDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD9U65D
+4kfFXw78KdH+369eeUXyILSIBp5yOyLn9TgDIya1/F2uzeGvDd/qVtpt1q9zBGWisbOMvJM/RVAA
+Pfqewya+CvE3w/8Ait8WPHCahr3h3WEuL6dIfOmspEgtYy2ABkfKi5z+ZJySa97Ksvp4yTnXmowj
+vrq/Q+dzjM6uBgqeHpuVSW2jsvN/5G78Qv2x/GPiieWHQCnhnTskL5IElwy88s5HB/3QMeteL6t4
+s1zXpTJqes6hqMnPzXV08p56/eJr0DWvGPg/wfq9xoOm+B9M1zTbN2tp9Q1SWf7XeMp2vIrJIohB
+I4ABwPc1znxQ8K6b4c1TTbvRHmbQ9asI9Ss47ghpYVZmVonI4JV0YZ7jFfpeDp4ehywp0eS+z01+
+d27+p+U46risRzVKtfntutdPRWStfTQ53TfEeraNKJdP1S8sZF6PbXDxkfiCK9Z8A/ta+O/Bs0Ud
+/ejxLpy4DW+pHMuO+2YfNn3bcPavFaK76+Ew+Jjy1oJ/I87D43E4WXNQqOPz/TY/Sv4SfHLw38YL
+F20uVrXU4VDXGmXOBNH23Ds65/iHqMgE4r0Ovyh0DX9Q8L6xaarpV1JZahauJIZ4zypH8wehB4IJ
+Br9FvgP8YLX4w+DEv8JDrFriHULVOAkmOHUf3WAJH0I5xX5nnWS/UP31HWm/w/4B+r5FnyzH9xX0
+qL7n/wAHuvmekUUUV8mfZBRWT4k8UWHhS1tLjUHaOK5u4bKMopb95K4RM+2Tyataxq1toOkX2p3j
+mOzsoJLmZwCSqIpZjgdeAavkk7O2+xHtIptN7blyiq+nX8Oq6fa3ts2+3uYlmiYgjKsAQcHpwa4m
+8+Nfh2G6uobKLVdcjtGKXN1o+mzXcETDqDIilSR3wTjvVwo1KjahFuxnUr0qSTnJK+x31FZnhzxN
+pfi7SYdT0e+h1Cwm+7NCcjI6gjqCO4OCO9M03xPYatrusaRbuzX2kmEXSMhAXzU3pg98j+VT7Oab
+TW2/l0/MtVINRafxbefXT5GtRRWR4a8Uaf4ss7i606RpIYLqazcuhX95E5R+D2yOtTytpyS0RTlF
+SUW9Wa9FFcz4i+IuheFvEmh6FqN55Go6y5jtY9pIJGANx/hyxCj1JApwhKo+WCuyalSFNc03Zf5n
+TUUVz3h3x9ofinWta0jTr0S6lo83kXluylWQ9iMjkZBGR6URhKScktFv5DlUjFqMnZvbzOhorIm8
+UWMPiq28PMZP7RuLOS+Qbfk8tHRGyfXLjj2NYfjP4saJ4G1i20u+i1G6v54DcrDp9jJcsIw23cdg
+OBnitIUatRqMYtt6/IzniKVOLlOSSTt8zs6K5Dwf8V/DPji8ex06+ePU0TzG0++gktrgL/eCSAFh
+7rkUVFSnOlLlqJp+ZVOrTrR56ck15Hyl+2V8Tb2++IcHhzT7ua2tdHhHm+RKV3zSAMc4PZdg9jur
+wnSfG+u6LqtlqFtql19otJknj8yZmXcrBhkE8jI6V6Z8Q/izoV5488QSXXw+0PUZ/t8yNdTT3QeX
+a5UMQJQMkAdABXP/APC0PDX/AETHw/8A+BF3/wDHa/X8FTdDCwo+wb0/u69+p+J4+qsRjKlf6wld
+6fFpbbp0Luqx/DTxlqk2vza7qfhmS6cz3ehx6d9pIkJJcQTBwu0npvAxnvWbrtxc/GTxtpuleGtO
+a00+ztUsNPt55B+4to9zGWZ+g6u7HoMnr3l/4Wh4a/6Jj4f/APAi7/8AjtdR4B8daB4ll13w/Z+G
+tH8H6lrOlT2NnqME83MzFSsTNLIyqrhSu7rkgdCacvaUI8/JL3Vpdxaj56O7t53dupMfZYiXs+eK
+5nryqScn21Vld9rK/Q52L4M2WsStp3h7xvouv+IlB/4lcKzRecQOVhmdAkh4OBkZxxXmkkbwyPHI
+jRyISrKwwQR1BHrXpXgv4PeMrPxnZy32j3/h610y5S6u9UvoGhhtY42DNJ5hGDgKSNpOccVynj/V
+7fxR4/8AEOp6fGRbahqU88CAHJV5GK8epz0967cPVbqOCnzq176aeWmmvTqcGIopUlUdPkd7W11X
+fXXTr016HO167+y38QJ/A/xa0uHf/oGsOunXMZPB3kCNvqH28+hYd68t1DSL7SJES/sriydxlVuI
+mjJHqARUVpdS2N1DcwOY5oXWSNx1Vgcg/mK6MRRhiqEqT1UlY58NWng8RCstHFpn60UVX066F9p9
+rcqcrNEsg/EA/wBasV+DtWdj+iU7q6PLP2imuU8HaM1nHHLdjX9OMMczFUZ/PXaGIBIGcZODWT8S
+NY+JMnw78UpfeG/D8Fk2lXQnlh1aV3SPyW3MqmEZIGcDIzXpPjTwdB41sLG1uJ5LdbTULbUFaMAl
+mhkDhTnscYq74m0OPxN4b1bR5pGhi1C0ltHkQDcqyIUJGe4Br1KOKp04U4yinZtu99Nuz8jyK+Eq
+ValWUZNXikrW133un3PPPGOoX+lfs03N3pm4XkXh2Mq0ZwyL5Kh2H0XcfwrvPBVjpmm+EdGt9FRE
+0pbSI23l4wYyoKtx1yDnPfNWtN0W30/w/aaQwF1awWqWhEygiRFQL8w6HIHI9683t/gnrPhvzbTw
+l4/1Tw/oUjErpcltFeLbqTnbC8nzRjJPHPXvUqVKtCVOU+X3m7u9nf0u9OmnVlOFWjUjVjDm91Ky
+aurdrtKz669FuSeB0jsPjl8QLPTWRdNktrK8uoUOFjvGDqxC9AWRVLHqSBmrXgP/AJLL8Ufrpf8A
+6TGul8B+AdN+HukyWdg01xPcSme7vrt/MnupSOXdu546dBWDqnwv1RvF2sa/ofjG+8Py6sIPtUEV
+nbToxiTYpBkRiOPT1rR1qVSdSPNZOKim762cd7X3sZxo1aUKcuW7UpSaVtOZS0V7LTmR6HXmfwB/
+5FTWv+xg1L/0peuv8J6Jq+h208er+I7jxHK7hkluLWGAxjH3QIlUH15rjbD4R67oMl+mheP9Q0mw
+urye9Fmun2kwjaVy7AM8ZYjJ7msKfs+SpSc0rtWettL+V+vY3qe0dSnWVNuyaa926vbzt07npzME
+UsxCqBkk9BXy9N418HfEUeO9S1rxBBp17qDLY6KzJIWtYbdt0MwIU4LzfvD7AV75ceE9Q1DwLeaB
+f+Irq6vbqCSB9XEMUU2HzyFRQoIU44HbPXmtnRdHtPD+kWWmWMQgsrOFIIY1/hRQAB+Qq8PWp4VS
+e8r6WdtE731T3dunQjE4eri3FaKKTumr6tWto1sr9eumxz3wp8cx/ETwHpWtqV+0SR+XdIv8E6Hb
+IPpuBI9iDXlWj+Dr++vvGfijw3tj8V6P4pvDCrHal9AY4TJayH+6wztP8LYIxya9i8O+DLfwzr3i
+HUbS4l8vWp47qSzbHlxTBNruvGcuApOe6+9O8KeEYfCcmuvDO8/9q6lJqThwB5bOqKVHqPk/Wqji
+KdGVSVHZ2svzT/LzJlhaleFKNfeN7td+kl59fI848MeM7Hx78Y/DerWG+MN4cvY57aYbZbaZbmAP
+FIvVXU9QfY9CK3Zv+TjrX/sU5v8A0sirVsfhTo+l/Ey68bWfmW2oXdm1rcW8eBDIzMhMuOzkRqDj
+rjJ55MXiz4c32ueLrXxHpHiW58PajDYtp7NDawzh4mkEhGJFIB3KOR6Vo61CU0oO0eRrW+jd9NL/
+AHmUaGIjTbmuaXOnpbVK2utu21zF+PVjEln4W1W1Cx+IrXXrKPTpFBDyF5QskRI52FC5YdMLRW9o
+Pwxisdct9b1rWtR8UazbqVtp9QMaRW2QQxiijVVUkcFiCccZorCWIhCEaSSna+r8+i8v1bOiGHnU
+qSrNuHNbRNdOr6X9OiR8VfEH4T6JaeOvEMVx8QNC0+X7fOxtZ4LrfFlyQpxERkAjoSPQ1gf8Kx8P
+f9FL8O/9+bz/AOM16X+2V8M7zTfiHD4jsbSSez1mEeb5MZOyeMBTnHquw+53V8/f2Dqf/QOu/wDv
+w3+FfqeBqPE4anVVZ6r+7v16H5BmFOOFxdSjKgtG+stunXsdt/wrHw9/0Uvw7/35vP8A4zR/wrHw
+9/0Uvw7/AN+bz/4zXE/2Dqf/AEDrv/vw3+Fekazo/gj4WyxaPruj3/irxGsSPqCxah9jt7N2UMIk
+wjM7AMNxPAI4HWuio5wajGpKTfRKP6pL8TmpqnUTlKlGMV1bn19G39yGXXhGyv7KOzufi9pNxaR4
+2W8pvmjXHTCmLArZsdOtfhP8OdW8T+G9e0/X9emv4dMTUrGKTOmxPHI7MvmoCrvsChgOBnBBNcN8
+QfB+m6PY6Nr3h+e5uPDuspJ5C3oUT280bBZYXK8NjcpDADIYccGqXgnx9e+CZL6JLa11TStQjEV9
+pd/GXguVByuQCCGU8qykEGs3RlWpXhJyV9YtJXs9U7L/AIHfQ1VeFGtyzgou2kk5O11o1dvv6par
+U7z4W+Mta+Imoah4R8T6jc69o99YXc2/UpTM1jNFA8iTxu2ShBTBAOCGOQa8gt7eS6uIoYlLyyME
+RR1JJwBXeal8U7W30W/0zwt4YsvCseoxGC9uIJ5bi4miJBMQkkYlUOOQPvYGc1ufsu+AJfHXxa0u
+RoPM07SXF/dMw+UbDmNfcl9vHoG9KvmWEp1cTKPJG17adL66aXei+SI5HjalHCwlzyva+uztprrZ
+av5s/QnTrNdP0+1tU+5BEsQ+igD+lWaKK/FG7u7P3pKysjhvjB4n1Xwv4ZspNGnhtb+91O009bie
+HzViEsoQtsyMkA9M1Da+FviHHcxPN4902eFXBeL/AIR0LvXPIz9o4yO9Zf7RVmuoeDtGtXeSNJ9f
+06Jnhco6hp1BKsOVPPBHIrY0f4QabouqW19DrniaaS3cSLHc63cSxNjsyM2GHsa9aEoU8NFtpNuX
+2U77dXseLUjUqYuUUm0lH7Tjbfoty18RvFN94YuPCKWRjA1PXYNPuPMXP7p45WbHocoOazvjR401
+7wTpOgTeHbSC/wBQvtYhsja3HAmRo5XKBv4WOwAHsTUHxn/4+/h3/wBjZaf+ip6d8ZADc/D728VW
+hH/fuaihCF6LlG9+a/na48RUqWrqMmrctvK9tjUPxAt9e+Fuo+KdEcho9PuJ0jmT54Jo0YmORT0Z
+WXBHt6Vc0m61fxP8O9Lu7S/h07WL7T7ef7XJbedGjuisx8vcuep4z3rzT4zaTffDm08TeJtFt3uN
+C1qymt9c06If6qVoykd7GvrkgSeq4btken/Db/knfhb/ALBVr/6JWprU4U6KrUtnLTrbTZ+n4rXq
+VRq1KleVCro1HW2ievxL1/B6dDzezuviPdfEfUfCn/Ca6av2PTob/wC1/wBgA7/Mdk2bPP4xtznP
+fpXZfFDxJq/gP4U6hqsFxBc61ZwQqbloNsbyM6Iz+XuOAdxIXJx0yaytKXb+0br59fDlof8AyPLT
+/wBpFUb4KeJhJxHsh3c448+PPNbu1TFUKcoqz5L2SW9r7I51zUsJiKkZO657Xk3a17btk/8AwiXx
+H/6KFpv4eGx/8kV0HjzxnB8P/CV1rF5G128ISOO3hGGuJnIVEUdtzEfSvNNPs/g7p19b3UHjqETQ
+yLIm7xfKRkHIyDPgj2NdZ8atFvfEngOK80SEale6ZeWusW1tGwIuhDIHKDqG3LnA5ycVEoKVanGr
+pFvrFQ/L+kaRqShQqzpO8kuk3P8AP8upUt9N+K+oWaalJrnh/TLxl3roZ055YRnkJJP5m7OOCyrj
+OcCtrxh4o1rw78JdX16e1t7LXrPTJLloFfzoo5lQnAPG4ZqpY/HjwHeaMdRPiWytdoxJZ3Ugju43
+HWMwH592QRgA5I4zUHxU1RfEHwH8U38Nvc28dxo1xKsN1CY5VXyyfmQ8jjmp5akqsI1qSiuZLa3y
+8/nd+Y+alGjUlQquT5W/iv038vlZeR3Oi3j6jo1hdyhRJPbxysFGBllBOPzrmvhF4svvG3gW11fU
+fK+1yXN1E3krtXbHcSRrxk/woK5jw/8AAbwzc6Dpszz64ryW0bsq63dqASgJwPM4FWv2bIBa/CDS
+4V3FY7q+UFySSBeTYyT1qKlOhGhOVN3akt1a2kvN9jSlVryxFONRWTjJ6O93eHku56fRRRXlnrmR
+4s0OXxJ4dvtOt9SutIuJ48RX1lIUlhccqwI6jI5HcZFfAXjzxz8Wfhz4mu9D1nxVrkF1Ax2v9rk2
+TJk7ZEOeVOP5g4IIr9FK5H4lfCzw/wDFbQ/7N161MmwloLqEhZ7dj1KNg4zxkEEHAyDgV7+U5jTw
+U3GvBSg/JNrzX+R85nGWVMfTUsPUcZrzaT8n+jPz5Hx0+IQ5/wCEy1r/AMDH/wAa6jxVpvh34x6o
+3iiz8WaV4b1a8RH1TTNcMkKpOFVWeF0Rg6MQWxwRk+2Nv4ifsc+MfC88k2gBPE+nckGEiO4Qf7Ub
+H5v+Ak59BXi+qeFdb0MsNS0e/wBPKnDC6tXixjrncBX6TRlg8Targ5pPyt16NH5XXjjsLeljabkv
+717XXVNPz9DqPiNr2jLomgeFPD90+pado/nTTak0ZjF3cTFS7KhGQihFUZ5OCe9cFV+w0HU9VkWO
+y067vJGOFW3gZyT6AAV634D/AGSvHni65ia/sf8AhHNPbBe41AgSY4yBEDuzj+8FHHWuqVbDYGna
+rUS33ervq/6SOONDFZhVvSpt7LRaJLRfh3Z5Joeh3/ibVrXS9LtZL2/unEcUEQyzE/09+1fox8Cf
+g/bfB3waunh1uNVuiJ7+5UcNJjAVf9leQPXJPepPhH8D/Dvwf01o9NjN3qcwxcalcKPNk/2R/dX/
+AGR+JNeh1+c51nX1/wDc0dKa/H/gH6jkWQ/2d+/r61H/AOS/8HzCiiivkz7IbJGkoAdFcAhgGGeQ
+cg/nTqKKAGSQxzMheNXMbbkLAHa2CMj0OCfzps1tDc+X50SS+W4kTeoO1h0YZ6H3qWindishskaz
+RsjqrowKsrDIIPUEUkMSW8SRRIscaKFVEGAoHAAHYU+ikMjEEazNMI1EzKEaTaNxUEkAn0BJ/M0l
+xbRXkLwzxJPC4w0cihlP1BqWind7istjK/4RTRP+gPp//gKn+FaiqFUADAHAApaKblKW7FGMY7Kx
+Rk0PTZr5b2TT7V71RgXDQqZB2+9jNW5YknjeORFkjcFWRhkMD1BHcU+ilzN7sFFLZCdOBwKbDDHb
+psiRY0yTtQADJOSfxJJp9FIoKKKKAP/Z
+
+------=_NextPart_000_00CA_01D7E2C9.8F600EE0--
+

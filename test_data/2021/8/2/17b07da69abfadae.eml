@@ -1,0 +1,630 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1614:0:0:0:0 with SMTP id f20csp2105511ljq;
+        Mon, 2 Aug 2021 10:12:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJydoXck1noTTLZjbmtwMpoOoG362CsJe8bugTOUFvKzvepIs0qtv5D/PNfqMrTbVStvFGpv
+X-Received: by 2002:ab0:4ac5:: with SMTP id t5mr11717368uae.54.1627924359628;
+        Mon, 02 Aug 2021 10:12:39 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1627924359; cv=none;
+        d=google.com; s=arc-20160816;
+        b=xw8WQTy5P2KJu0VEKqAf2Us8hIeDpE4BrbZ6av9APTIdieER1B1i0URFumCl1cdI6d
+         ZIytD/3NORsJ7C40QjKrhMzYPxqrcJlYh6c97W4/T6INMGM5JofjnOo4jyszLLTROZg5
+         JFvKHgK8bqbVHrBgj74PvQ3p1rzhkqyQUts46i5MjdGgolWctFRKf0s4j7EaIwobnHHl
+         5hWHb2gR9fFqmK/UOvJIOWUkwnC7AiHEh3vtrvDC8E9IvsiR+ijTLbRPQpMH8WIF18Un
+         Ixlbss2U0FxLRI/YrCTtKETH7uuH/NKx3Focgdwz5Lxf73QKP253jPYMbfmKbfkU/cvJ
+         CaOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:content-transfer-encoding:mime-version:subject
+         :message-id:to:reply-to:from:date:dkim-signature:dkim-signature
+         :dkim-signature;
+        bh=Eh25vAJOzmFROxOS4tLRPdO4aiHikZme9h/9aJLu0iQ=;
+        b=qM5HTlGyr7+kO6Xj2wYlCP4U6ky1zlC3wrp4Ls4IZoJUP0bKHVBIhQFd751MSvr+He
+         cupuKkBNsJCXUqSm+KT319tjkdx1jqrIYabDQvHuxPkagcw1t7pnrQbLZJweN74CvhLE
+         NKTY8bTNTwCQyPeLW3BBBuXumltLdnznaCPSPgUXNZBz3NzQZHzc097H4ZHvfKkmyr9/
+         UVzSLJX9Vzp55exsKn2/vSQiTzgUCh3RMFQlpfy27ubjOXVne3P8YewBAl+2tmkzfQGz
+         03e2CHyC/g4zh1m+ZrDVhEU4dPnW0V79M44914pMgm4MLaf1I9KkI802Y7KO+JCeJ7Jk
+         PObQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@clio.com header.s=aulpg6ftmfripmgxoyubiz6zsc2nel7b header.b=ScF35Ah6;
+       dkim=pass header.i=@amazonses.com header.s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug header.b=Ab5Kw49K;
+       dkim=fail header.i=@clio.com header.s=clious201905 header.b=KVwydFKn;
+       spf=pass (google.com: domain of 0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com designates 54.240.11.16 as permitted sender) smtp.mailfrom=0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=clio.com
+Return-Path: <0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com>
+Received: from a11-16.smtp-out.amazonses.com (a11-16.smtp-out.amazonses.com. [54.240.11.16])
+        by mx.google.com with ESMTPS id g21si2214712vsk.329.2021.08.02.10.12.39
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Mon, 02 Aug 2021 10:12:39 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com designates 54.240.11.16 as permitted sender) client-ip=54.240.11.16;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@clio.com header.s=aulpg6ftmfripmgxoyubiz6zsc2nel7b header.b=ScF35Ah6;
+       dkim=pass header.i=@amazonses.com header.s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug header.b=Ab5Kw49K;
+       dkim=fail header.i=@clio.com header.s=clious201905 header.b=KVwydFKn;
+       spf=pass (google.com: domain of 0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com designates 54.240.11.16 as permitted sender) smtp.mailfrom=0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@prod-us-a.ses.clio.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=clio.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=aulpg6ftmfripmgxoyubiz6zsc2nel7b; d=clio.com; t=1627924358;
+	h=Date:From:Reply-To:To:Message-ID:Subject:Mime-Version:Content-Type:Content-Transfer-Encoding;
+	bh=dERkElfGQ13XDox4nz9r7K0AhZ63ZbCfOiehmPzN1sc=;
+	b=ScF35Ah6HLGl8XtgnjQrL3/ownkY1SPSzpEDUxyAmfE5y6dbFCQ9v0BOJFhJB+bS
+	x2p5Rvzdo5sEsge+3wQiYv+yNyEUeCc5cPbyQRKbXVrSRfOQtMQX1A5j/d0VIqLKzIC
+	R0vYgbV4woZV6QQO0mq1qQ/qFxBTGr3dadCxSnHw=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=ug7nbtf4gccmlpwj322ax3p6ow6yfsug; d=amazonses.com; t=1627924358;
+	h=Date:From:Reply-To:To:Message-ID:Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=dERkElfGQ13XDox4nz9r7K0AhZ63ZbCfOiehmPzN1sc=;
+	b=Ab5Kw49K8lPiWHa0bHzMbQ9T+p9pdWQoemkeCC/0x35i7y52utm5/7+gOPanZw7z
+	UB7Sg6dFpS5nR3wuo/Ii5C3gO+2cb0tacYpK6oF1cPqq52XEOMq2tWllb2pEvMtiUxg
+	HmawFfjf6dAQvU0ysT6AEsUzm/5/MFPdARpdbOzk=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=clio.com;
+	s=clious201905; t=1627924358;
+	bh=dERkElfGQ13XDox4nz9r7K0AhZ63ZbCfOiehmPzN1sc=;
+	h=Date:From:Reply-To:To:Subject:From;
+	b=KVwydFKnp4c1sAXmYzRCsVxwa0IJUxDrwdEjvJrrw+ZaaYq69KtXnVR+LF3sL5F8J
+	 RLgNVHLeL/eWpDoVkZ4EwRYTNmNtjQ6nX705alUOc6viY3uWiofyrURQb9R52dGmJe
+	 KX/PFvwDmCMkmFK3XAVGIUGQBI2OMJVnwqVssxz4=
+Date: Mon, 2 Aug 2021 17:12:38 +0000
+X-Clio-Origin-Host: async07a.prod-us-a.clio.systems
+From: Hone Maxwell LLP <notifications@clio.com>
+Reply-To: josh@honemaxwell.com
+To: Josh Klein <josh@josh.is>
+Message-ID: <0100017b07da6655-dced520f-f54e-454f-9c41-12de2dba5d82-000000@email.amazonses.com>
+Subject: A bill from Hone Maxwell LLP
+Mime-Version: 1.0
+Content-Type: multipart/related;
+ boundary="--==_mimepart_6108278639209_3c5f02b16aa8419a8158e3";
+ charset=utf-8
+Content-Transfer-Encoding: 7bit
+Feedback-ID: 1.us-east-1.Bhonnyv3Gh1D4YWo47DKEkgBDI9WIAzYwK/n+mXZrnU=:AmazonSES
+X-SES-Outgoing: 2021.08.02-54.240.11.16
+
+
+----==_mimepart_6108278639209_3c5f02b16aa8419a8158e3
+Content-Type: multipart/alternative;
+ boundary="--==_mimepart_6108278639123_3c5f02b16aa8419a81572a";
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+
+----==_mimepart_6108278639123_3c5f02b16aa8419a81572a
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: base64
+
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09DQoNCkRlYXIgSm9zaCBLbGVpbiwNCg0KWW91ciBiaWxsIGlzIHJlYWR5
+LiBZb3UgY2FuIHNlZSB5b3VyIGFjY291bnQgc3VtbWFyeSBiZWxvdy4NCg0K
+VGhhbmsgeW91IGZvciB5b3VyIGJ1c2luZXNzLg0KDQo9PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCg0KQWNjb3Vu
+dCBzdW1tYXJ5DQoNCkFtb3VudCBkdWUgb24gQmlsbCAxOTQ4NiAkMSwwMDAu
+MDANCkRvd25sb2FkIDxodHRwczovL2FwcC5jbGlvLmNvbS9saW5rL3YyLzQv
+Mi82ZGE4ZWM3ZGNiZGI5ZGE1OWI4YzE4YWQyODY4YTQzMT9obWFjPWI2YTc0
+NzU2MDU5OTEzYWRhODA0YTdhNGVlMWQ0ZmZhOTljNjYyODVmM2NhMWMwOWIz
+NmM0YTgwZWRhMGI2NjU+DQpEdWUgZGF0ZTogMDgvMDUvMjAyMQ0KDQoNClRv
+dGFsIGFtb3VudCBkdWUgJDEsMDAwLjAwDQoNCj09PT09PT09PT09PT09PT09
+PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KDQpQYXkgb25saW5l
+IG5vdw0KaHR0cHM6Ly9hcHAuY2xpby5jb20vbGluay9BTkh3RmRqd0pUSmcN
+Cg0KPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09
+PT09PT09DQoNClBvd2VyZWQgYnkgQ2xpbw0KwqkgMjAyMSBUaGVtaXMgU29s
+dXRpb25zIEluYy4NCiMzMDAgLSA0NjExIENhbmFkYSBXYXksIEJ1cm5hYnks
+IEJDLCBWNUcgNFgzDQo=
+
+----==_mimepart_6108278639123_3c5f02b16aa8419a81572a
+Content-Type: text/html;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE>=0D
+<html>=0D
+  <head>=0D
+    <meta http-equiv=3D"content-type" content=3D"text/html; charset=3Dutf=
+-8">=0D
+    <meta name=3D"viewport" content=3D"width=3Ddevice-width, target-densi=
+tydpi=3Ddevice-dpi, initial-scale=3D0, maximum-scale=3D1, user-scalable=3D=
+yes">=0D
+    <title></title>=0D
+            <style type=3D"text/css">=0D
+          #outlook a{padding:0;} /* Force Outlook to provide a "view in b=
+rowser" message */=0D
+          .ReadMsgBody{width:100%;} .ExternalClass{width:100%;} /* Force =
+Hotmail to display emails at full width */=0D
+          .ExternalClass, .ExternalClass p, .ExternalClass span, .Externa=
+lClass font, .ExternalClass td, .ExternalClass div {line-height: 100%;} /=
+* Force Hotmail to display normal line spacing */=0D
+          body, table, td, p, a, li, blockquote{-webkit-text-size-adjust:=
+100%; -ms-text-size-adjust:100%;} /* Prevent WebKit and Windows mobile ch=
+anging default text sizes */=0D
+          table, td{mso-table-lspace:0pt; mso-table-rspace:0pt;} /* Remov=
+e spacing between tables in Outlook 2007 and up */=0D
+          img{-ms-interpolation-mode:bicubic;} /* Allow smoother renderin=
+g of resized image in Internet Explorer */=0D
+=0D
+          /* RESET STYLES */=0D
+          body{=0D
+            margin: 0;=0D
+            padding: 0;=0D
+          }=0D
+          img {=0D
+            border: 0 !important;=0D
+            height: auto;=0D
+            line-height: 100%;=0D
+            outline: none;=0D
+            text-decoration: none;=0D
+          }=0D
+          table {=0D
+            border-collapse: collapse !important;=0D
+            border-spacing: 0;=0D
+          }=0D
+          body, .email {=0D
+            height:100% !important;=0D
+            margin:0;=0D
+            padding:0;=0D
+            width:100% !important;=0D
+          }=0D
+=0D
+          /* CLIO CONNECT STYLES */=0D
+          a:link, a:visited, a .yshortcuts /* Yahoo! Mail Override */{=0D=
+
+            <%=3D link_style %>=0D
+          }=0D
+          img {=0D
+            display: inline;=0D
+          }=0D
+          /* Pad the email with 24px on desktop */=0D
+          .padded {=0D
+            font-size: 1px;=0D
+            line-height: 24px;=0D
+            background-color: #ffffff;=0D
+          }=0D
+          .padded-grey {=0D
+            font-size: 1px;=0D
+            line-height: 24px;=0D
+            background-color: #f4f4f4;=0D
+          }=0D
+          .padded-light-grey {=0D
+            font-size: 1px;=0D
+            line-height: 24px;=0D
+            background-color: #F5F7F8;=0D
+          }=0D
+          /* Empty space gap below avatar - hidden on mobile */=0D
+          .spacer {=0D
+            width: 124px;=0D
+            font-size: 1px;=0D
+            line-height: 24px;=0D
+            background-color: #ffffff;=0D
+            display: block;=0D
+          }=0D
+=0D
+          /* MOBILE STYLES */=0D
+          @media only screen and (max-width: 480px) {=0D
+            /* Prevent Webkit platforms from changing default text sizes =
+*/=0D
+            body, table, td, p, a, li, blockquote {=0D
+              -webkit-text-size-adjust: none !important;=0D
+            }=0D
+            /* Prevent iOS Mail from adding padding to the body */=0D
+            body{=0D
+              width:100% !important;=0D
+              min-width:100% !important;=0D
+            }=0D
+            .email {=0D
+              padding: 10px !important;=0D
+            }=0D
+            .spacer {=0D
+              display: none !important;=0D
+            }=0D
+            /* Pad the email with 15px on mobile */=0D
+            .padded, .padded-grey {=0D
+              width: 15px;=0D
+            }=0D
+          }=0D
+        </style>=0D
+=0D
+  </head>=0D
+=0D
+  <body leftmargin=3D"0" marginwidth=3D"0" topmargin=3D"0" marginheight=3D=
+"0" offset=3D"0">=0D
+    <center>=0D
+      <!DOCTYPE>=0D
+<html>=0D
+<head>=0D
+  <meta name=3D"viewport" content=3D"width=3Ddevice-width, target-density=
+dpi=3Ddevice-dpi, initial-scale=3D0, maximum-scale=3D1, user-scalable=3Dy=
+es" />=0D
+  <title></title>=0D
+  </head>=0D
+<body>=0D
+  <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" =
+bgcolor=3D"#F5F7F8" style=3D"font-family: arial;">=0D
+    <tr>=0D
+      <td>=0D
+        <!--[if (gte mso 9) | (IE)]>=0D
+          <table align=3D"center" width=3D"496" border=3D"0" cellspacing=3D=
+"0" cellpadding=3D"0">=0D
+            <tr>=0D
+              <td>=0D
+        <![endif]-->=0D
+        <table align=3D"center" style=3D"max-width: 496px;" width=3D"100%=
+" border=3D"0" cellspacing=3D"0" cellpadding=3D"0">=0D
+          <tr>=0D
+            <td style=3D"padding: 8px; padding-bottom: 32px; padding-top:=
+ 20px;">=0D
+                      <img style=3D"display:block; width: 100%; height: 4=
+px;" src=3D"cid:610827863374c_3c5f02b16aa8419a8154ea@async07a.mail" />=0D=
+
+=0D
+              <table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpa=
+dding=3D"0" style=3D"font-family: arial;">=0D
+                <tr>=0D
+                  <td style=3D"background-color: white; padding: 20px 20p=
+x 32px;">=0D
+                    <table align=3D"center" width=3D"100%" border=3D"0" c=
+ellspacing=3D"0" cellpadding=3D"0" style=3D"font-family: arial;">=0D
+                      <tr>=0D
+                        <td align=3D"left" colspan=3D"2" style=3D"padding=
+: 0" >=0D
+                          <h1 style=3D"margin: 0; font-size: 20px; line-h=
+eight: 24px; color: #263238;">Hone Maxwell LLP</h1>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td align=3D"left" valign=3D"top" colspan=3D"2" s=
+tyle=3D"padding: 20px 0 12px;">=0D
+                          <p style=3D"margin: 0; line-height: 18px; font-=
+size: 14px; color: #263238;">=0D
+                              Dear Josh Klein,<br /><br />Your bill is re=
+ady. You can see your account summary below.<br /><br />Thank you for you=
+r business.=0D
+                          </p>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td style=3D"padding-bottom: 20px; font-size: 0; =
+line-height: 0;" colspan=3D"2">=0D
+                          <hr style=3D"height: 1px; border: none; margin:=
+ 0px; color: #b0bec5; background-color: #b0bec5;"/>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td align=3D"left" colspan=3D"2" style=3D"padding=
+-bottom: 12px;">=0D
+                          <p style=3D"margin: 0; font-size: 16px; line-he=
+ight: 20px; color: #263238;">=0D
+                            <strong>=0D
+                              Account summary=0D
+                            </strong>=0D
+                          </p>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td  align=3D"left" valign=3D"top" style=3D"paddi=
+ng-bottom: 12px;">=0D
+                          <p style=3D"margin: 0; line-height: 18px; font-=
+size: 14px; color: #263238;">=0D
+                            <strong>=0D
+                              Amount due on Bill 19486=0D
+                            </strong>=0D
+                              (<img width=3D"11" height=3D"11" src=3D"htt=
+ps://d2jai5xo6vhevf.cloudfront.net/assets/email/fa-download-blue-2x-0b94c=
+2380c092aa866faed16b233c75761dac5a297c35881d7c13efef81d08e0.png" />=0D
+                              <a href=3D"https://app.clio.com/link/v2/4/2=
+/6da8ec7dcbdb9da59b8c18ad2868a431?hmac=3Db6a74756059913ada804a7a4ee1d4ffa=
+99c66285f3ca1c09b36c4a80eda0b665" style=3D"color: #0075bb;" target=3D"_bl=
+ank">Download</a>)=0D
+                            <br/>=0D
+                            Due date: 08/05/2021=0D
+                          </p>=0D
+                        </td>=0D
+                        <td align=3D"right" valign=3D"top" style=3D"paddi=
+ng-bottom: 12px;">=0D
+                          <p style=3D"margin: 0; line-height: 18px; font-=
+size: 14px; color: #263238;">=0D
+                            <strong>$1,000.00</strong></p></td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td style=3D"padding: 8px 0 12px; font-size: 0; l=
+ine-height: 0;" colspan=3D"2">=0D
+                          <hr style=3D"border: none; margin: 0px; height:=
+ 2px; background-color: #263238; color: #263238;"/>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td align=3D"left" style=3D"padding-bottom: 12px;=
+" >=0D
+                          <p style=3D"margin: 0; font-size: 16px; line-he=
+ight: 20px; color: #263238;">=0D
+                            <strong>=0D
+                              Total amount due=0D
+                            </strong>=0D
+                          </p>=0D
+                        </td>=0D
+                        <td align=3D"right" style=3D"padding-bottom: 12px=
+;" >=0D
+                          <p style=3D"margin: 0; font-size: 16px; line-he=
+ight: 20px; color: #263238;">=0D
+                            <strong>=0D
+                              $1,000.00=0D
+                            </strong>=0D
+                          </p>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td style=3D"padding: 0 0 20px; font-size: 0; lin=
+e-height: 0;" colspan=3D"2">=0D
+                          <hr style=3D"border: none; margin: 0px; height:=
+ 2px; background-color: #263238; color: #263238;"/>=0D
+                        </td>=0D
+                      </tr>=0D
+                      <tr>=0D
+                        <td align=3D"left" colspan=3D"2">=0D
+                          <table width=3D"100%" border=3D"0" cellspacing=3D=
+"0" cellpadding=3D"0">=0D
+                            <tr>=0D
+                              <td style=3D"margin: 0; padding-bottom: 12p=
+x;">=0D
+                                <table style=3D"font-size: 14px; font-fam=
+ily: Arial, sans-serif; color: #ffffff; -webkit-border-radius: 3px; -moz-=
+border-radius: 3px; border-radius: 3px; background: #1177b8; display: inl=
+ine-block;" border=3D"0" cellspacing=3D"0" cellpadding=3D"8">=0D
+                                  <tr>=0D
+                                    <td width=3D"12" valign=3D"middle" al=
+ign=3D"left" style=3D"padding: 8px 0px 8px 20px;">=0D
+                                      <a href=3D"https://app.clio.com/lin=
+k/ANHwFdjwJTJg" target=3D"_blank">=0D
+                                        <img width=3D"12" style=3D"width:=
+ 12px; height: 17px;" src=3D"cid:61082786352c5_3c5f02b16aa8419a81552d@asy=
+nc07a.mail" />=0D
+                                      </a>=0D
+                                    </td>=0D
+                                    <td style=3D"padding: 8px 20px 8px 4p=
+x;" valign=3D"middle" align=3D"left">=0D
+                                      <a style=3D"text-decoration: none;"=
+ href=3D"https://app.clio.com/link/ANHwFdjwJTJg" target=3D"_blank">=0D
+                                        <span style=3D"color:#ffffff;">=0D=
+
+                                          <font color=3D"#ffffff">=0D
+                                            Pay online now=0D
+                                          </font>=0D
+                                        </span>=0D
+                                      </a>=0D
+                                    </td>=0D
+                                  </tr>=0D
+                                </table>=0D
+                              </td>=0D
+                            </tr>=0D
+                          </table>=0D
+                          <p style=3D"font-size: 13px; line-height: 18px;=
+ color: #667881; margin: 0;">=0D
+                            The payment link will expire 90 days from rec=
+eipt.=0D
+                          </p>=0D
+                        </td>=0D
+                      </tr>=0D
+                    </table>=0D
+                  </td>=0D
+                </tr>=0D
+                <tr>=0D
+                  <td align=3D"left" style=3D"padding: 20px 20px 12px;">=0D=
+
+                    <img width=3D"119" height=3D"21" border=3D"0" style=3D=
+"display: block; width: 119px; height: 21px;" alt=3D"Clio" class=3D"clio"=
+ src=3D"cid:6108278635fea_3c5f02b16aa8419a8156ce@async07a.mail" />=0D
+                  </td>=0D
+                </tr>=0D
+                <tr>=0D
+                  <td align=3D"left" style=3D"padding: 0 20px 20px;">=0D
+                    <p style=3D"font-size: 13px; line-height: 18px; color=
+: #667881; margin: 0;">=0D
+                      =C2=A9 2021 Themis Solutions Inc.<br>=0D
+                      #300 - 4611 Canada Way, Burnaby, BC, V5G 4X3=0D
+                    </p>=0D
+                  </td>=0D
+                </tr>=0D
+              </table>=0D
+            </td>=0D
+          <tr>=0D
+        </table>=0D
+        <!--[if (gte mso 9) | (IE)]>=0D
+              </td>=0D
+            </tr>=0D
+          </table align=3D"center" width=3D"496" border=3D"0" cellspacing=
+=3D"0" cellpadding=3D"0">=0D
+        <![endif]-->=0D
+      </td>=0D
+    </tr>=0D
+  </table>=0D
+</body>=0D
+</html>=0D
+=0D
+    </center>=0D
+  </body>=0D
+</html>=0D
+
+----==_mimepart_6108278639123_3c5f02b16aa8419a81572a--
+
+----==_mimepart_6108278639209_3c5f02b16aa8419a8158e3
+Content-Type: image/png;
+ filename=powered-byclio.png
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename=powered-byclio.png
+Content-ID: <6108278635fea_3c5f02b16aa8419a8156ce@async07a.mail>
+
+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
+AElFTkSuQmCC
+
+----==_mimepart_6108278639209_3c5f02b16aa8419a8158e3
+Content-Type: image/png;
+ filename=clio-border.png
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename=clio-border.png
+Content-ID: <610827863374c_3c5f02b16aa8419a8154ea@async07a.mail>
+
+iVBORw0KGgoAAAANSUhEUgAAAfQAAAAEBAMAAACKHdAUAAAAMFBMVEULWaIp
+q+wUfrsSfLkVgLsSfboWg74ZiMQnqOklo+MhnNsfldMcjssPcbIMZaoLXaSl
+TVSDAAAAa0lEQVQoz2MYFID/rTEKCA0NVcIELuggLb3m9K6VMxoFyQIMgwL8
+u4zqddPQ0CBMr6ug+Nstrbzm9KqZMzoEBYew1+GRjvA6Nr+roMZ4+Zndu2YC
+PT6kvQ6LdATA6nUlJI8D0/qulR2ClAAAd99O3e52nXgAAAAASUVORK5CYII=
+
+----==_mimepart_6108278639209_3c5f02b16aa8419a8158e3
+Content-Type: image/png;
+ filename=lock.png
+Content-Transfer-Encoding: base64
+Content-Disposition: inline;
+ filename=lock.png
+Content-ID: <61082786352c5_3c5f02b16aa8419a81552d@async07a.mail>
+
+iVBORw0KGgoAAAANSUhEUgAAABgAAAAiCAMAAABySOkBAAAAYFBMVEUAAAD/
+///////////////j4+P/////////////////////////////////////////
+//////////////////+xsbGxsbH///////+xsbH/////////////////////
+//9VQglLAAAAH3RSTlMAZp6qVQ759t/KpZBGFfPw6tXHvrSwloF/XFs5MywJ
+f1FieQAAAJ5JREFUKM/tj8cSwyAQQzexwQXce+X//zLI4wCT4MklR7+TVhoW
+Lf2ETX3X9RP7sPchUgfRsLt+lihDkjlrKuVQ2XUpZl4LUXOo9O2vmOIFcomh
+V+dBmZ2/lc6TQuuZTmY9FHSwoSUZ0HsjINHRBmguCYRaBTYI9Bj+N2Bjg/Oe
+BpzYjIxa5aUl7g84qQvu4DvI/X5Owh8IIvnwIOmSFzEVPgFKIae0AAAAAElF
+TkSuQmCC
+
+----==_mimepart_6108278639209_3c5f02b16aa8419a8158e3--

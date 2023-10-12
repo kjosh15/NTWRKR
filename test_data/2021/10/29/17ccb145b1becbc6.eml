@@ -1,0 +1,592 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp2420006vqp;
+        Fri, 29 Oct 2021 01:04:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwKU5AZ+jwYMklDZvOSFTmDjdyMb7biuPUFm4BnDtSl4teSj6YTFROcBM0kYu9qgVH5vWk
+X-Received: by 2002:a05:6214:98d:: with SMTP id dt13mr9254204qvb.13.1635494681325;
+        Fri, 29 Oct 2021 01:04:41 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1635494681; cv=none;
+        d=google.com; s=arc-20160816;
+        b=VAMPw5Vs5N6w7ZjWGOdmVWuXGBJDc1LJa+KMOHeKPDgUJUG0dpSnRro14w515FrBPK
+         6REAyxUgwv2cmXJfLRewWpMjelxgNDlf3JD9u7TzCEoeQSS0loAfRLTOshvDIJjWU2ot
+         9lmzeyhGVJIjvQoAzuEZrxBKcU7tD7fAnTfVesPTMObm8NnUit97Lwq3fpDCTjE+qyWC
+         7LZpxsGwZZlpS1vaSi8JV1zk8yL2Ude31NQLSAIdppYnm4YqR67vzIwo6wgQc3TSovKS
+         v5iAce77aAfudprsYFnUSjmYeTu6ivM2IyCplpnOQIxKwTGKi73wH+s3obXVut+6emS2
+         fQHw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=require-recipient-valid-since:list-unsubscribe:date:to:mime-version
+         :subject:message-id:from:dkim-signature:dkim-signature;
+        bh=dhBJIfKEs/2PCqSxS/fl4tJgMOMhQ6f4O3cZrHyM1sI=;
+        b=DXXZIYKbbNHDZw1e2WzNpnPy+V2cZmv0AyeLHkfSIdgLvKHwKHy6rTDnBojSx12V/g
+         G/4IIiMwg3ghsCUop8trtbylCFa2EuSnTAghW4nDH1xRwbFb2ggPyvrrGwfPZ/7za1hW
+         dDdFBJ++lxHKXTyn/4n9zpNJoYeLvw5azJKJsdrdVLg3wNNXXFyCeKkVsiJWz6ccK4u5
+         /72xOvZtl+MT3f2WuXKqSAroJAO98s+AXZdL3u7qygYpGay9Dk/6ifVhah9XLhc1KSEV
+         /nKDoxmRHXjx2iCGv3Vj9WUjJ8Aud6I10as+HtTuG88OXHhFuFCI91fMqr3RuJtDXli2
+         +Puw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@linkedin.com header.s=d2048-201806-01 header.b=n95ZVDpj;
+       dkim=pass header.i=@maile.linkedin.com header.s=proddkim1024 header.b=EZ3H0KKS;
+       spf=pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com designates 108.174.6.194 as permitted sender) smtp.mailfrom=m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=linkedin.com
+Return-Path: <m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com>
+Received: from maile-cb.linkedin.com (maile-cb.linkedin.com. [108.174.6.194])
+        by mx.google.com with ESMTPS id jn1si4241540qvb.66.2021.10.29.01.04.41
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 29 Oct 2021 01:04:41 -0700 (PDT)
+Received-SPF: pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com designates 108.174.6.194 as permitted sender) client-ip=108.174.6.194;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@linkedin.com header.s=d2048-201806-01 header.b=n95ZVDpj;
+       dkim=pass header.i=@maile.linkedin.com header.s=proddkim1024 header.b=EZ3H0KKS;
+       spf=pass (google.com: domain of m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com designates 108.174.6.194 as permitted sender) smtp.mailfrom=m-1vzkgwe7buq7b4dfwdbpwr8fjplut1btwmoydnyhp4vlj03@bounce.linkedin.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=linkedin.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linkedin.com;
+	s=d2048-201806-01; t=1635494671;
+	bh=dhBJIfKEs/2PCqSxS/fl4tJgMOMhQ6f4O3cZrHyM1sI=;
+	h=From:Subject:MIME-Version:Content-Type:To:Date:X-LinkedIn-Class:
+	 X-LinkedIn-Template:X-LinkedIn-fbl;
+	b=n95ZVDpjdt0Mb/lNPBKDucBoWMqhYawNUgvMqsWa+CXJOBFJtfFxLIS8RA/5NI5Dg
+	 SYe89AyhgdqAhXE5/S3++yJOakFXivKLaoiYZpruINnNQuNq1fqtUtrPoeGDB5+Jb6
+	 RBqwXUqVknsWHXJpIS4fg8UJlb5gsFQe6lpjOniOatnL7RcKN5w8Y6ZILCRZZ7K9Lx
+	 nYXkx7B2qFLx+lzms3vSGfc3tl10znisqBmNiSOZr7+x73B1lFa6sDyDwm8TEHEYQ8
+	 rAglOpF6IqnzOMB60YZJwdD5Rou8j2a9a+XAf2bFd6tsiLnPYC0KyDKOwH8EotOFxi
+	 eG+rdssPlZYqg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=maile.linkedin.com;
+	s=proddkim1024; t=1635494671;
+	bh=dhBJIfKEs/2PCqSxS/fl4tJgMOMhQ6f4O3cZrHyM1sI=;
+	h=From:Subject:MIME-Version:Content-Type:To:Date:X-LinkedIn-Class:
+	 X-LinkedIn-Template:X-LinkedIn-fbl;
+	b=EZ3H0KKS9d2hhZjAX1TVs/g6b0P8lx8kGG+AcwI9bmk7LiaW6PijigYLe6CjXt1wL
+	 Np2qEbv7Mq+69DWOWru/hrPQC92dtbHb6DV+LG0VUJgIn/Bbp29hS+ryYOdHlZApRr
+	 X+l4vEZ+xZ8U5WClHwnJMZWqh0VCr/G/Tp7M/p6c=
+From: "Loren I. Shuster via LinkedIn" <newsletters-noreply@linkedin.com>
+Message-ID: <183722315.890626.1635494671699@lva1-app47801.prod.linkedin.com>
+Subject: Embracing the Leadership Mindset: Leadership for Everyone
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_890624_244415149.1635494671696"
+To: Josh Klein <josh@josh.is>
+Date: Fri, 29 Oct 2021 08:04:31 +0000 (UTC)
+X-LinkedIn-Class: EMAIL-DEFAULT
+X-LinkedIn-Template: email_series_follow_newsletter_01
+X-LinkedIn-fbl: m2-1tuqpm7o3wpijy2ag28u7twh54ngyn1huu397eav56npef42m2r1xyag05gtp7mlhctmxk
+X-LinkedIn-Id: 1o4w3-kvc3asva-2s
+List-Unsubscribe: <https://www.linkedin.com/e/v2?e=1o4w3-kvc3asva-2s&t=lun&midToken=AQHgYRT7Hw5z9A&midSig=1cz1v2TJu4XpY1&ek=email_series_follow_newsletter_01&li=14&m=unsub&ts=unsub&eid=1o4w3-kvc3asva-2s&loid=AQFMtq619dtwLwAAAXzLFDUiRf7RGWdQCWVAdeYmIi494mDdTyo5LxsFNXDQ9Cd2i58lQ6SmkWbmDSkmiuuZ1SVhVW3bo_VOcvUCjleSJQ>
+Require-Recipient-Valid-Since: josh@josh.is; Wed, 31 Dec 1969 23:59:59 +0000
+
+------=_Part_890624_244415149.1635494671696
+Content-Type: text/plain;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-ID: text-body
+
+NEWSLETTER ON LINKEDIN
+Embracing the Leadership Mindset: Leadership for Everyone
+By Loren I. Shuster
+
+At=C2=A0the LEGO Group, we believe that leadership is for everyone, not jus=
+t=C2=A0formal=C2=A0people leaders. That&#39;s because being a leader is not=
+ just a title =E2=80=93 it&#39;s a mindset.=C2=A0 To help us all succeed to=
+gether, we&#39;ve developed our own leadership approach: the Leadership Pla=
+yground,=C2=A0a=C2=A0concept created by a diverse group of LEGO=C2=AE colle=
+agues from across the business.=C2=A0At its core, the Leadership Playground=
+ is a network and a safe place where people and communities connect, where =
+you find inspiration and inspire others.=C2=A0 To bring the Leadership Play=
+ground to life we emphasise three key leadership behaviours: being=C2=A0cur=
+ious,=C2=A0focused=C2=A0and brave.=C2=A0=C2=A0 Children=C2=A0are our role m=
+odels=C2=A0due to their hands-on, minds-on approach to learning.=C2=A0This =
+has=C2=A0inspired our approach to leadership and how we all play and get in=
+spired in=C2=A0the=C2=A0Leadership Playground, just as kids do.=C2=A0We kno=
+w that=C2=A0curious,=C2=A0creative=C2=A0and imaginative people =E2=80=93 wh=
+o have a childlike way to learn =E2=80=93 are best equipped to thrive in a =
+constantly changing and challenging=C2=A0world. Creativity is at the very h=
+eart of not just the LEGO System in Play =E2=80=93 but everything we do. To=
+ continually=C2=A0innovate=C2=A0fun=C2=A0LEGO=C2=A0Play experiences,=C2=A0w=
+e need=C2=A0everyone to show leadership and dare to bring their ideas=C2=A0=
+and talent=C2=A0into play=C2=A0in the everyday.=C2=A0 =C2=A0 In the final e=
+pisode of=C2=A0Our LEGO=C2=AE Stories=C2=A0season 1, we discover how some o=
+f our awesome colleagues=C2=A0embrace the leadership mindset and what they&=
+#39;ve learned in the process =E2=80=93 not only about work but also=C2=A0a=
+bout themselves.=C2=A0 I speak with UK and Ireland Operations Director=C2=
+=A0Lydia Warren, who joined us in 2020 in the midst of the global pandemic,=
+ about how she approaches leadership in a context where leadership is for e=
+veryone. In the podcast, Lydia admits she was initially=C2=A0sceptical=C2=
+=A0about how leadership could be=C2=A0for=C2=A0everyone,=C2=A0but=C2=A0says=
+ this changed after meeting her own people leader on her very first day.=C2=
+=A0 For Senior Project Manager=C2=A0Sanne Dollerup, leadership for everyone=
+ instantly made sense. She talks to my co-host=C2=A0Julie Foster=C2=A0about=
+ why she was so excited to get involved with the Leadership Playground and =
+what she&#39;s learned about demonstrating leadership qualities every day h=
+ere at the LEGO Group.=C2=A0 We catch up with=C2=A0Gaurav Sahni, Senior Ope=
+rations Manager in the India Market Group, about his team&#39;s participati=
+on in 2020&#39;s Keep the Fire Alive Challenge. The competition was a chanc=
+e for each team to share their Leadership Playground story of success,=C2=
+=A0failure=C2=A0or learnings. Gaurav&#39;s team wrote and performed a song =
+about launching the India Market Group,=C2=A0securing=C2=A0them a place as =
+competition finalists. Listen out for a clip of their amazing song=C2=A0in =
+the episode.=C2=A0 We&#39;ll soon be back with season two of Our LEGO Stori=
+es. I&#39;m curious to know what topics you&#39;d like to hear about, so pl=
+ease share your thoughts with me. And, in the meantime, why not catch up wi=
+th=C2=A0any episodes you&#39;ve missed?=C2=A0Listen to the podcasts on your=
+ favourite podcast platforms:=C2=A0Spotify, Apple Podcasts, Stitcher, Googl=
+e Podcast &amp; YouTube.=C2=A0
+
+Join the conversation:
+https://www.linkedin.com/e/v2/pulse?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3A=
+li%3Apage%3Aemail_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3=
+A%3D%3D&amp;a=3Dpulse_web_view_article_detail_new_url&amp;midToken=3DAQHgYR=
+T7Hw5z9A&amp;midSig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_follow_newslette=
+r_01&amp;li=3D3&amp;m=3Dfooter_promo&amp;ts=3Dprimary_cta_link&amp;permLink=
+=3Dembracing-leadership-mindset-everyone-loren-i-shuster
+
+.....................................
+
+Unsubscribe: https://www.linkedin.com/e/v2?e=3D1o4w3-kvc3asva-2s&t=3Dlun&mi=
+dToken=3DAQHgYRT7Hw5z9A&midSig=3D1cz1v2TJu4XpY1&ek=3Demail_series_follow_ne=
+wsletter_01&li=3D14&m=3Dunsub&ts=3Dunsub&eid=3D1o4w3-kvc3asva-2s&loid=3DAQF=
+Mtq619dtwLwAAAXzLFDUiRf7RGWdQCWVAdeYmIi494mDdTyo5LxsFNXDQ9Cd2i58lQ6SmkWbmDS=
+kmiuuZ1SVhVW3bo_VOcvUCjleSJQ
+
+Help: https://www.linkedin.com/e/v2?e=3D1o4w3-kvc3asva-2s&lipi=3Durn%3Ali%3=
+Apage%3Aemail_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D=
+%3D&a=3DcustomerServiceUrl&midToken=3DAQHgYRT7Hw5z9A&midSig=3D1cz1v2TJu4XpY=
+1&ek=3Demail_series_follow_newsletter_01&li=3D13&m=3Dfooter&ts=3Dhelp&artic=
+leId=3D67
+
+
+You are receiving LinkedIn notification emails.
+
+This email was intended for Josh Klein (Building the present with the recen=
+tly possible.).
+Learn why we included this: https://www.linkedin.com/e/v2?e=3D1o4w3-kvc3asv=
+a-2s&lipi=3Durn%3Ali%3Apage%3Aemail_email_series_follow_newsletter_01%3BL63=
+DCj8DQZ6Mmb7is2wb3A%3D%3D&a=3DcustomerServiceUrl&midToken=3DAQHgYRT7Hw5z9A&=
+midSig=3D1cz1v2TJu4XpY1&ek=3Demail_series_follow_newsletter_01&articleId=3D=
+4788
+
+=C2=A9 2021 LinkedIn Corporation, 1000 West Maude Avenue, Sunnyvale, CA 940=
+85. LinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.
+------=_Part_890624_244415149.1635494671696
+Content-Type: text/html;charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+Content-ID: html-body
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> <html xmlns=3D"http://www.w3=
+.org/1999/xhtml" lang=3D"en" xml:lang=3D"en"> <head> <meta http-equiv=3D"Co=
+ntent-Type" content=3D"text/html;charset=3Dutf-8"> <meta name=3D"HandheldFr=
+iendly" content=3D"true"> <meta name=3D"viewport" content=3D"width=3Ddevice=
+-width; initial-scale=3D0.666667; user-scalable=3D0"> <meta name=3D"viewpor=
+t" content=3D"width=3Ddevice-width"> <title></title> <!--[if mso]><style ty=
+pe=3D"text/css">body {font-family: 'Helvetica Neue', Helvetica, Arial, sans=
+-serif;}.phoenix-email-container {width: 512px !important;}</style><![endif=
+]--> <!--[if IE]><style type=3D"text/css">.phoenix-email-container {width: =
+512px !important;}</style><![endif]--> <style type=3D"text/css">@media only=
+ screen and (max-width:32em) { .phoenix-email-container { width:100% !impor=
+tant; } } @media only screen and (max-width:20em) {} @media only screen and=
+ (max-device-width:30em) {} @media screen and (device-width:30em) and (devi=
+ce-height:22.5em), screen and (device-width:22.5em) and (device-height:30em=
+), screen and (device-width:20em) and (device-height:15em) {} @media screen=
+ and (-webkit-min-device-pixel-ratio:0) {} @media screen and (max-device-wi=
+dth:25.88em) and (max-device-height:48.5em) {} @media only screen and (max-=
+width:30em) { .slate-resizable-image-embed { text-align:center; } } </style=
+> </head> <body style=3D"padding:0;margin:0 auto;-webkit-text-size-adjust:1=
+00%;width:100% !important;-ms-text-size-adjust:100%;font-family:'Helvetica =
+Neue',Helvetica,Arial,sans-serif;"> <div style=3D"overflow:hidden;color:tra=
+nsparent;visibility:hidden;mso-hide:all;width:0;font-size:0;opacity:0;heigh=
+t:0;"> At&nbsp;the LEGO Group, we believe that leadership is for everyone, =
+not... </div> <table role=3D"presentation" align=3D"center" border=3D"0" ce=
+llspacing=3D"0" cellpadding=3D"0" width=3D"100%" bgcolor=3D"#EDF0F3" style=
+=3D"background-color:#EDF0F3;table-layout:fixed;-webkit-text-size-adjust:10=
+0%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;bord=
+er-collapse:separate;"> <tbody> <tr> <td align=3D"center" style=3D"-webkit-=
+text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-si=
+ze-adjust:100%;"> <center style=3D"width:100%;"> <table role=3D"presentatio=
+n" border=3D"0" class=3D"phoenix-email-container" cellspacing=3D"0" cellpad=
+ding=3D"0" width=3D"512" bgcolor=3D"#FFFFFF" style=3D"background-color:#FFF=
+FFF;margin:0 auto;max-width:512px;-webkit-text-size-adjust:100%;mso-table-r=
+space:0pt;width:inherit;mso-table-lspace:0pt;-ms-text-size-adjust:100%;bord=
+er-collapse:separate;"> <tbody> <tr> <td bgcolor=3D"#F6F8FA" style=3D"backg=
+round-color:#F6F8FA;padding:12px;-webkit-text-size-adjust:100%;mso-table-rs=
+pace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;border-bottom:1px s=
+olid #ECECEC;"> <table role=3D"presentation" border=3D"0" cellspacing=3D"0"=
+ cellpadding=3D"0" width=3D"100%" style=3D"-webkit-text-size-adjust:100%;ms=
+o-table-rspace:0pt;width:100% !important;mso-table-lspace:0pt;-ms-text-size=
+-adjust:100%;border-collapse:separate;min-width:100% !important;"> <tbody> =
+<tr> <td align=3D"left" valign=3D"middle" style=3D"-webkit-text-size-adjust=
+:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;"=
+><a href=3D"https://www.linkedin.com/comm/feed/?midToken=3DAQHgYRT7Hw5z9A&a=
+mp;midSig=3D1cz1v2TJu4XpY1&amp;trk=3Deml-email_series_follow_newsletter_01-=
+header-9-home&amp;trkEmail=3Deml-email_series_follow_newsletter_01-header-9=
+-home-null-1o4w3%7Ekvc3asva%7E2s-null-neptune%2Ffeed&amp;lipi=3Durn%3Ali%3A=
+page%3Aemail_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%=
+3D" style=3D"cursor:pointer;color:#0073B1;-webkit-text-size-adjust:100%;dis=
+play:inline-block;text-decoration:none;-ms-text-size-adjust:100%;"> <img al=
+t=3D"LinkedIn" border=3D"0" src=3D"https://static.licdn.com/sc/p/com.linked=
+in.email-assets-frontend%3Aemail-assets-frontend-static-content%2B__latest_=
+_/f/%2Femail-assets-frontend%2Fimages%2Femail%2Fphoenix%2Flogos%2Flogo_phoe=
+nix_header_blue_78x66_v1.png" height=3D"34" width=3D"40" style=3D"outline:n=
+one;-ms-interpolation-mode:bicubic;color:#FFFFFF;text-decoration:none;"></a=
+></td> <td valign=3D"middle" width=3D"100%" align=3D"right" style=3D"-webki=
+t-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-=
+size-adjust:100%;"><a href=3D"https://www.linkedin.com/comm/in/joshuaklein?=
+midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1cz1v2TJu4XpY1&amp;trk=3Deml-email_s=
+eries_follow_newsletter_01-header-17-profile&amp;trkEmail=3Deml-email_serie=
+s_follow_newsletter_01-header-17-profile-null-1o4w3%7Ekvc3asva%7E2s-null-ne=
+ptune%2Fprofile%7Evanity%2Eview&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_se=
+ries_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D" style=3D"cursor:p=
+ointer;margin:0;color:#0073B1;-webkit-text-size-adjust:100%;display:inline-=
+block;text-decoration:none;-ms-text-size-adjust:100%;"> <table role=3D"pres=
+entation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" s=
+tyle=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace=
+:0pt;-ms-text-size-adjust:100%;border-collapse:separate;"> <tbody> <tr> <td=
+ align=3D"left" valign=3D"middle" style=3D"padding:0 0 0 10px;-webkit-text-=
+size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-ad=
+just:100%;"><p style=3D"margin:0;font-weight:400;"> <span style=3D"word-wra=
+p:break-word;color:#4C4C4C;word-break:break-word;font-weight:400;-ms-word-b=
+reak:break-all;font-size:14px;line-height:1.429;overflow-wrap:break-word;">=
+Josh Klein</span></p></td> <td valign=3D"middle" width=3D"40" style=3D"-web=
+kit-text-size-adjust:100%;mso-table-rspace:0pt;padding-left:10px;mso-table-=
+lspace:0pt;-ms-text-size-adjust:100%;"> <img alt=3D"Josh Klein" border=3D"0=
+" height=3D"36" width=3D"36" src=3D"https://media-exp1.licdn.com/dms/image/=
+C4D03AQHwxOi4V1IFag/profile-displayphoto-shrink_100_100/0/1580923448661?e=
+=3D2159024400&amp;v=3Dbeta&amp;t=3DhC4S2mWsNWZalorRVXcIFSp8Onyrl0IeytnnRjSj=
+uDY" style=3D"border-radius:50%;outline:none;-ms-interpolation-mode:bicubic=
+;color:#FFFFFF;text-decoration:none;"></td> </tr> </tbody> </table></a></td=
+> <td width=3D"1" style=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0=
+pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;">&nbsp;</td> </tr> </tbo=
+dy> </table></td> </tr> <tr> <td style=3D"-webkit-text-size-adjust:100%;mso=
+-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;"> <table =
+role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" widt=
+h=3D"100%" style=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-=
+table-lspace:0pt;-ms-text-size-adjust:100%;border-collapse:separate;"> <tbo=
+dy> <tr> <td style=3D"padding:16px 0;-webkit-text-size-adjust:100%;mso-tabl=
+e-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;font-size:20px;=
+"> <table role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" width=3D"100%" style=3D"-webkit-text-size-adjust:100%;mso-table-rspa=
+ce:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;border-collapse:separ=
+ate;"> <tbody> <tr> <td style=3D"padding:0 16px 12px;-webkit-text-size-adju=
+st:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%=
+;border-bottom:solid 1px #EDF0F3;"> <div style=3D"color:#666;font-weight:bo=
+ld;letter-spacing:2px;font-size:16px;"> NEWSLETTER ON LINKEDIN </div> <div =
+style=3D"padding:4px 0 0;color:#000;font-weight:bold;font-size:28px;"> Our =
+LEGO=C2=AE Stories </div> <div style=3D"padding:8px 0 0;font-size:16px;"> <=
+a href=3D"https://www.linkedin.com/comm/profile/view?id=3DAAsAAAAAujUBy-w1p=
+yfoUWmVbSwGEVECI6d05EU&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1cz1v2TJu=
+4XpY1&amp;trk=3Deml-email_series_follow_newsletter_01-null-0-null&amp;trkEm=
+ail=3Deml-email_series_follow_newsletter_01-null-0-null-null-1o4w3%7Ekvc3as=
+va%7E2s-npv-nprofile%7Eview&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_series=
+_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D" style=3D"cursor:point=
+er;color:#0073B1;-webkit-text-size-adjust:100%;display:inline-block;text-de=
+coration:none;-ms-text-size-adjust:100%;"> <img alt=3D"" role=3D"presentati=
+on" border=3D"0" height=3D"36" width=3D"36" src=3D"https://media-exp1.licdn=
+.com/dms/image/C4E03AQEUEYR2V-Vo6w/profile-displayphoto-shrink_800_800/0/15=
+28377783951?e=3D2159024400&amp;v=3Dbeta&amp;t=3Ds4vQNDwC0Yo7F73sFZspF22SBqT=
+4vFh3VCQTfEj6MUo" style=3D"border-radius:50%;outline:none;-ms-interpolation=
+-mode:bicubic;color:#FFFFFF;text-decoration:none;vertical-align:middle;marg=
+in-right:6px;"> <span style=3D"color:#4C4C4C;">By Loren I. Shuster</span></=
+a> </div></td> </tr> <tr> <td bgcolor=3D"#F6F8FA" style=3D"background-color=
+:#F6F8FA;padding:16px;-webkit-text-size-adjust:100%;mso-table-rspace:0pt;ms=
+o-table-lspace:0pt;-ms-text-size-adjust:100%;"><a href=3D"https://www.linke=
+din.com/e/v2/pulse?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail=
+_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=3Dp=
+ulse_web_view_article_detail_new_url&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midS=
+ig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_follow_newsletter_01&amp;li=3D1&a=
+mp;m=3Dhero&amp;ts=3Dtitle_link&amp;permLink=3Dembracing-leadership-mindset=
+-everyone-loren-i-shuster" style=3D"cursor:pointer;color:#0073B1;-webkit-te=
+xt-size-adjust:100%;display:inline-block;text-decoration:none;-ms-text-size=
+-adjust:100%;"> <span style=3D"color:#4C4C4C;font-weight:400;font-size:16px=
+;line-height:1.25;">Open this article on LinkedIn to see what people are sa=
+ying about this topic.</span> <span style=3D"color:inherit;font-weight:700;=
+font-size:16px;line-height:1.25;">Open on LinkedIn</span></a></td> </tr> <t=
+r> <td style=3D"padding:12px 16px;word-wrap:break-word;word-break:break-wor=
+d;-webkit-text-size-adjust:100%;mso-table-rspace:0pt;-ms-word-break:break-a=
+ll;mso-table-lspace:0pt;-ms-text-size-adjust:100%;border-bottom:solid 1px #=
+EDF0F3;overflow-wrap:break-word;"><h1 style=3D"padding:0 0 16px;margin:0;fo=
+nt-weight:bold;font-size:24px;line-height:1.333;"><a href=3D"https://www.li=
+nkedin.com/e/v2/pulse?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aem=
+ail_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=
+=3Dpulse_web_view_article_detail_new_url&amp;midToken=3DAQHgYRT7Hw5z9A&amp;=
+midSig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_follow_newsletter_01&amp;li=
+=3D1&amp;m=3Dhero&amp;ts=3Dtitle_link&amp;permLink=3Dembracing-leadership-m=
+indset-everyone-loren-i-shuster" style=3D"cursor:pointer;color:#0073B1;-web=
+kit-text-size-adjust:100%;display:inline-block;text-decoration:none;-ms-tex=
+t-size-adjust:100%;"> <span style=3D"color:#000;">Embracing the Leadership =
+Mindset: Leadership for Everyone</span></a></h1><a href=3D"https://www.link=
+edin.com/e/v2/pulse?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemai=
+l_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=3D=
+pulse_web_view_article_detail_new_url&amp;midToken=3DAQHgYRT7Hw5z9A&amp;mid=
+Sig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_follow_newsletter_01&amp;li=3D2&=
+amp;m=3Dhero&amp;ts=3Dimage_link&amp;permLink=3Dembracing-leadership-mindse=
+t-everyone-loren-i-shuster" style=3D"cursor:pointer;color:#0073B1;-webkit-t=
+ext-size-adjust:100%;display:inline-block;text-decoration:none;-ms-text-siz=
+e-adjust:100%;"><img src=3D"https://media-exp1.licdn.com/dms/image/C4D12AQG=
+ArOeK2lIxCw/article-cover_image-shrink_720_1280/0/1635494436135?e=3D2159024=
+400&amp;v=3Dbeta&amp;t=3DvGfUNU6Nf_XGusLdz4Qp8tCl7W1k_YvOLIMcg1y8OQs" borde=
+r=3D"0" alt=3D"Newsletter cover image" width=3D"512" style=3D"outline:none;=
+-ms-interpolation-mode:bicubic;color:#FFFFFF;max-width:100%;text-decoration=
+:none;padding-bottom:16px;"></a> <div style=3D"font-size:16px;font-family:T=
+imes,Georgia,'Times New Roman',serif !important;"> <p style=3D"margin:1rem =
+0;color:#4C4C4C;font-weight:400;"></p> <p style=3D"margin:1rem 0;font-weigh=
+t:400;">At&nbsp;<a href=3D"https://www.linkedin.com/company/lego-group/" ta=
+rget=3D"_blank" style=3D"cursor:pointer;color:#0073B1;-webkit-text-size-adj=
+ust:100%;display:inline;text-decoration:none;-ms-text-size-adjust:100%;">th=
+e LEGO Group</a>, we believe that leadership is for everyone, not just&nbsp=
+;formal&nbsp;people leaders. That's because being a leader is not just a ti=
+tle =E2=80=93 it's a mindset.&nbsp;</p> <p style=3D"margin:1rem 0;font-weig=
+ht:400;">To help us all succeed together, we've developed our own leadershi=
+p approach: the Leadership Playground,&nbsp;a&nbsp;concept created by a div=
+erse group of LEGO=C2=AE colleagues from across the business.&nbsp;At its c=
+ore, the Leadership Playground is a network and a safe place where people a=
+nd communities connect, where you find inspiration and inspire others.&nbsp=
+; To bring the Leadership Playground to life we emphasise three key leaders=
+hip behaviours: being&nbsp;curious,&nbsp;focused&nbsp;and brave.&nbsp;&nbsp=
+;</p> <p style=3D"margin:1rem 0;font-weight:400;">Children&nbsp;are our rol=
+e models&nbsp;due to their hands-on, minds-on approach to learning.&nbsp;Th=
+is has&nbsp;inspired our approach to leadership and how we all play and get=
+ inspired in&nbsp;the&nbsp;Leadership Playground, just as kids do.&nbsp;We =
+know that&nbsp;curious,&nbsp;creative&nbsp;and imaginative people =E2=80=93=
+ who have a childlike way to learn =E2=80=93 are best equipped to thrive in=
+ a constantly changing and challenging&nbsp;world. Creativity is at the ver=
+y heart of not just the LEGO System in Play =E2=80=93 but everything we do.=
+ To continually&nbsp;innovate&nbsp;fun&nbsp;LEGO&nbsp;Play experiences,&nbs=
+p;we need&nbsp;everyone to show leadership and dare to bring their ideas&nb=
+sp;and talent&nbsp;into play&nbsp;in the everyday.&nbsp; &nbsp;</p> <p styl=
+e=3D"margin:1rem 0;font-weight:400;">In the final episode of&nbsp;<a href=
+=3D"https://www.lego.com/aboutus/our-lego-stories-podcast" target=3D"_blank=
+" rel=3D"nofollow noopener" style=3D"cursor:pointer;color:#0073B1;-webkit-t=
+ext-size-adjust:100%;display:inline;text-decoration:none;-ms-text-size-adju=
+st:100%;">Our LEGO=C2=AE Stories</a>&nbsp;season 1, we discover how some of=
+ our awesome colleagues&nbsp;embrace the leadership mindset and what they'v=
+e learned in the process =E2=80=93 not only about work but also&nbsp;about =
+themselves.&nbsp;</p> <p style=3D"margin:1rem 0;font-weight:400;">I speak w=
+ith UK and Ireland Operations Director&nbsp;<a href=3D"https://www.linkedin=
+.com/in/lydia-warren-42688a3/" target=3D"_blank" style=3D"cursor:pointer;co=
+lor:#0073B1;-webkit-text-size-adjust:100%;display:inline;text-decoration:no=
+ne;-ms-text-size-adjust:100%;">Lydia Warren</a>, who joined us in 2020 in t=
+he midst of the global pandemic, about how she approaches leadership in a c=
+ontext where leadership is for everyone. In the podcast, Lydia admits she w=
+as initially&nbsp;sceptical&nbsp;about how leadership could be&nbsp;for&nbs=
+p;everyone,&nbsp;but&nbsp;says this changed after meeting her own people le=
+ader on her very first day.&nbsp;</p> <p style=3D"margin:1rem 0;font-weight=
+:400;">For Senior Project Manager&nbsp;<a href=3D"https://www.linkedin.com/=
+in/dollerup/" target=3D"_blank" style=3D"cursor:pointer;color:#0073B1;-webk=
+it-text-size-adjust:100%;display:inline;text-decoration:none;-ms-text-size-=
+adjust:100%;">Sanne Dollerup</a>, leadership for everyone instantly made se=
+nse. She talks to my co-host&nbsp;<a href=3D"https://www.linkedin.com/in/ju=
+lie-christine-foster-0a287690/" target=3D"_blank" style=3D"cursor:pointer;c=
+olor:#0073B1;-webkit-text-size-adjust:100%;display:inline;text-decoration:n=
+one;-ms-text-size-adjust:100%;">Julie Foster</a>&nbsp;about why she was so =
+excited to get involved with the Leadership Playground and what she's learn=
+ed about demonstrating leadership qualities every day here at the LEGO Grou=
+p.&nbsp;</p> <p style=3D"margin:1rem 0;font-weight:400;">We catch up with&n=
+bsp;<a href=3D"https://www.linkedin.com/in/gauravsahni19/" target=3D"_blank=
+" style=3D"cursor:pointer;color:#0073B1;-webkit-text-size-adjust:100%;displ=
+ay:inline;text-decoration:none;-ms-text-size-adjust:100%;">Gaurav Sahni</a>=
+, Senior Operations Manager in the India Market Group, about his team's par=
+ticipation in 2020's Keep the Fire Alive Challenge. The competition was a c=
+hance for each team to share their Leadership Playground story of success,&=
+nbsp;failure&nbsp;or learnings. Gaurav's team wrote and performed a song ab=
+out launching the India Market Group,&nbsp;securing&nbsp;them a place as co=
+mpetition finalists. Listen out for a clip of their amazing song&nbsp;in th=
+e episode.&nbsp;</p> <p style=3D"margin:1rem 0;font-weight:400;">We'll soon=
+ be back with season two of Our LEGO Stories. I'm curious to know what topi=
+cs you'd like to hear about, so please share your thoughts with me. And, in=
+ the meantime, why not catch up with&nbsp;any episodes you've missed?&nbsp;=
+Listen to the podcasts on your favourite podcast platforms:&nbsp;<a href=3D=
+"https://open.spotify.com/show/0tctjrmyvWuNMUIGtl4QD8" target=3D"_blank" re=
+l=3D"nofollow noopener" style=3D"cursor:pointer;color:#0073B1;-webkit-text-=
+size-adjust:100%;display:inline;text-decoration:none;-ms-text-size-adjust:1=
+00%;">Spotify</a>, <a href=3D"https://podcasts.apple.com/dk/podcast/our-leg=
+o-stories/id1555699304" target=3D"_blank" rel=3D"nofollow noopener" style=
+=3D"cursor:pointer;color:#0073B1;-webkit-text-size-adjust:100%;display:inli=
+ne;text-decoration:none;-ms-text-size-adjust:100%;">Apple Podcasts</a>, <a =
+href=3D"https://www.stitcher.com/podcast/our-legor-stories" target=3D"_blan=
+k" rel=3D"nofollow noopener" style=3D"cursor:pointer;color:#0073B1;-webkit-=
+text-size-adjust:100%;display:inline;text-decoration:none;-ms-text-size-adj=
+ust:100%;">Stitcher</a>, <a href=3D"https://podcasts.google.com/feed/aHR0cH=
+M6Ly9hcHAudXN0dWRpby5jb20vc3R1ZGlvcy9PWkoyaFUzWDdsNE4vZGVzdGluYXRpb25zL0RPZ=
+Hd4dnhpV0tkcy9mZWVkLnhtbA" target=3D"_blank" rel=3D"nofollow noopener" styl=
+e=3D"cursor:pointer;color:#0073B1;-webkit-text-size-adjust:100%;display:inl=
+ine;text-decoration:none;-ms-text-size-adjust:100%;">Google Podcast</a> &am=
+p; <a href=3D"https://youtube.com/playlist?list=3DPLxfKorQRktFinfweZDFkWJh3=
+IJCEeyTxp" target=3D"_blank" rel=3D"nofollow noopener" style=3D"cursor:poin=
+ter;color:#0073B1;-webkit-text-size-adjust:100%;display:inline;text-decorat=
+ion:none;-ms-text-size-adjust:100%;">YouTube</a>.&nbsp;</p> <p style=3D"mar=
+gin:1rem 0;font-weight:400;"></p> </div> <div style=3D"padding:12px 0 16px;=
+text-align:center;"> <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" style=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0pt;display:inlin=
+e-block;mso-table-lspace:0pt;-ms-text-size-adjust:100%;border-collapse:sepa=
+rate;"> <tbody> <tr> <td align=3D"center" valign=3D"middle" style=3D"-webki=
+t-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-=
+size-adjust:100%;"><a href=3D"https://www.linkedin.com/e/v2/pulse?e=3D1o4w3=
+-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_series_follow_newslet=
+ter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=3Dpulse_web_view_article_detail=
+_new_url&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1cz1v2TJu4XpY1&amp;ek=
+=3Demail_series_follow_newsletter_01&amp;li=3D3&amp;m=3Dfooter_promo&amp;ts=
+=3Dprimary_cta_link&amp;permLink=3Dembracing-leadership-mindset-everyone-lo=
+ren-i-shuster" target=3D"_blank" style=3D"cursor:pointer;word-wrap:normal;c=
+olor:#0073B1;word-break:normal;white-space:nowrap;-webkit-text-size-adjust:=
+100%;display:block;text-decoration:none;-ms-text-size-adjust:100%;overflow-=
+wrap:normal;"> <table role=3D"presentation" border=3D"0" cellspacing=3D"0" =
+cellpadding=3D"0" width=3D"auto" style=3D"-webkit-text-size-adjust:100%;mso=
+-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;border-col=
+lapse:separate;"> <tbody> <tr> <td bgcolor=3D"#0073B1" style=3D"padding:8px=
+ 24px;color:#FFFFFF;-webkit-text-size-adjust:100%;font-weight:500;font-size=
+:18px;-ms-text-size-adjust:100%;border-color:#0073B1;background-color:#0073=
+B1;border-radius:2px;mso-table-rspace:0pt;mso-table-lspace:0pt;border-width=
+:1px;border-style:solid;"><a href=3D"https://www.linkedin.com/e/v2/pulse?e=
+=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_series_follow=
+_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=3Dpulse_web_view_articl=
+e_detail_new_url&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1cz1v2TJu4XpY1&=
+amp;ek=3Demail_series_follow_newsletter_01&amp;li=3D3&amp;m=3Dfooter_promo&=
+amp;ts=3Dprimary_cta_link&amp;permLink=3Dembracing-leadership-mindset-every=
+one-loren-i-shuster" target=3D"_blank" style=3D"cursor:pointer;color:#FFFFF=
+F;-webkit-text-size-adjust:100%;display:inline-block;text-decoration:none;-=
+ms-text-size-adjust:100%;">Join the conversation</a></td> </tr> </tbody> </=
+table></a></td> </tr> </tbody> </table> </div></td> </tr> <tr> <td align=3D=
+"center" style=3D"padding:16px 64px;-webkit-text-size-adjust:100%;mso-table=
+-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;text-align:cente=
+r;"> <p style=3D"margin:0;color:#4C4C4C;font-weight:400;font-size:16px;line=
+-height:1.25;">Know someone who might be interested in this newsletter? Sha=
+re it with them.</p> <div> <a href=3D"mailto:?subject=3DRe%3A%20Embracing%2=
+0the%20Leadership%20Mindset%3A%20Leadership%20for%20Everyone&amp;body=3DI%2=
+0thought%20you'd%20be%20interested%20in%20this%20article%20from%20a%20newsl=
+etter%20on%20LinkedIn%20I'm%20subscribed%20to%3A&nbsp;https%3A%2F%2Fwww.lin=
+kedin.com%2Fe%2Fv2%2Fpulse%3Fe%3D1o4w3-kvc3asva-2s%26lipi%3Durn%253Ali%253A=
+page%253Aemail_email_series_follow_newsletter_01%253BL63DCj8DQZ6Mmb7is2wb3A=
+%253D%253D%26a%3Dpulse_web_view_article_detail_new_url%26midToken%3DAQHgYRT=
+7Hw5z9A%26midSig%3D1cz1v2TJu4XpY1%26ek%3Demail_series_follow_newsletter_01%=
+26li%3D5%26m%3Dfooter_promo%26ts%3Dfrwd_link%26permLink%3Dembracing-leaders=
+hip-mindset-everyone-loren-i-shuster" style=3D"cursor:pointer;padding:12px =
+12px 0;color:#0073B1;-webkit-text-size-adjust:100%;display:inline-block;tex=
+t-decoration:none;-ms-text-size-adjust:100%;"><img src=3D"https://static.li=
+cdn.com/sc/p/com.linkedin.email-assets-frontend%3Aemail-assets-frontend-sta=
+tic-content%2B__latest__/f/%2Femail-assets-frontend%2Fimages%2Femail%2Fartd=
+eco%2Ficons%2F24%2Fenvelope-icon.png" height=3D"24" width=3D"24" alt=3D"NEW=
+SLETTER ON LINKEDIN" style=3D"outline:none;-ms-interpolation-mode:bicubic;c=
+olor:#FFFFFF;text-decoration:none;padding-left:0px;"></a> <a href=3D"https:=
+//www.linkedin.com/e/v2?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3A=
+email_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;=
+t=3Dplh&amp;midToken=3DAQHgYRT7Hw5z9A&amp;ek=3Demail_series_follow_newslett=
+er_01&amp;li=3D6&amp;m=3Dfooter_promo&amp;urlhash=3Dt4b5&amp;url=3Dhttps%3A=
+%2F%2Fwww%2Elinkedin%2Ecom%2FshareArticle%3Fmini%3Dtrue%26url%3Dhttps%3A%2F=
+%2Fwww%2Elinkedin%2Ecom%2Fpulse%2Fembracing-leadership-mindset-everyone-lor=
+en-i-shuster" style=3D"cursor:pointer;padding:12px 12px 0;color:#0073B1;-we=
+bkit-text-size-adjust:100%;display:inline-block;text-decoration:none;-ms-te=
+xt-size-adjust:100%;"><img src=3D"https://static.licdn.com/sc/p/com.linkedi=
+n.email-assets-frontend%3Aemail-assets-frontend-static-content%2B__latest__=
+/f/%2Femail-assets-frontend%2Fimages%2Femail%2Fartdeco%2Fsocial%2F24%2Flink=
+edin-color.png" height=3D"24" width=3D"24" alt=3D"Share this series on Link=
+edIn" style=3D"outline:none;-ms-interpolation-mode:bicubic;color:#FFFFFF;te=
+xt-decoration:none;padding-left:0px;"></a> <a href=3D"https://www.linkedin.=
+com/e/v2?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_ser=
+ies_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;t=3Dplh&amp;mid=
+Token=3DAQHgYRT7Hw5z9A&amp;ek=3Demail_series_follow_newsletter_01&amp;li=3D=
+7&amp;m=3Dfooter_promo&amp;urlhash=3DSfC9&amp;url=3Dhttps%3A%2F%2Fwww%2Efac=
+ebook%2Ecom%2Fsharer%2Fsharer%2Ephp%3Fu%3Dhttps%3A%2F%2Fwww%2Elinkedin%2Eco=
+m%2Fpulse%2Fembracing-leadership-mindset-everyone-loren-i-shuster" style=3D=
+"cursor:pointer;padding:12px 12px 0;color:#0073B1;-webkit-text-size-adjust:=
+100%;display:inline-block;text-decoration:none;-ms-text-size-adjust:100%;">=
+<img src=3D"https://static.licdn.com/sc/p/com.linkedin.email-assets-fronten=
+d%3Aemail-assets-frontend-static-content%2B__latest__/f/%2Femail-assets-fro=
+ntend%2Fimages%2Femail%2Fartdeco%2Fsocial%2F24%2Ffacebook-color.png" height=
+=3D"24" width=3D"24" alt=3D"Share this series on Faceoobk" style=3D"outline=
+:none;-ms-interpolation-mode:bicubic;color:#FFFFFF;text-decoration:none;pad=
+ding-left:0px;"></a> <a href=3D"https://www.linkedin.com/e/v2?e=3D1o4w3-kvc=
+3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_series_follow_newsletter_=
+01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;t=3Dplh&amp;midToken=3DAQHgYRT7Hw5z9A=
+&amp;ek=3Demail_series_follow_newsletter_01&amp;li=3D8&amp;m=3Dfooter_promo=
+&amp;urlhash=3DIr3k&amp;url=3Dhttps%3A%2F%2Fwww%2Etwitter%2Ecom%2Fintent%2F=
+tweet%3Furl%3Dhttps%3A%2F%2Fwww%2Elinkedin%2Ecom%2Fpulse%2Fembracing-leader=
+ship-mindset-everyone-loren-i-shuster" style=3D"cursor:pointer;padding:12px=
+ 12px 0;color:#0073B1;-webkit-text-size-adjust:100%;display:inline-block;te=
+xt-decoration:none;-ms-text-size-adjust:100%;"><img src=3D"https://static.l=
+icdn.com/sc/p/com.linkedin.email-assets-frontend%3Aemail-assets-frontend-st=
+atic-content%2B__latest__/f/%2Femail-assets-frontend%2Fimages%2Femail%2Fart=
+deco%2Fsocial%2F24%2Ftwitter-color.png" height=3D"24" width=3D"24" alt=3D"S=
+hare this series on Twitter" style=3D"outline:none;-ms-interpolation-mode:b=
+icubic;color:#FFFFFF;text-decoration:none;padding-left:0px;"></a> </div></t=
+d> </tr> </tbody> </table></td> </tr> </tbody> </table></td> </tr> <tr> <td=
+ style=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspa=
+ce:0pt;-ms-text-size-adjust:100%;"> <table role=3D"presentation" border=3D"=
+0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" bgcolor=3D"#EDF0F3" a=
+lign=3D"center" style=3D"background-color:#EDF0F3;padding:0 24px;color:#6A6=
+C6D;-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt=
+;-ms-text-size-adjust:100%;border-collapse:separate;text-align:center;"> <t=
+body> <tr> <td align=3D"center" style=3D"padding:16px 0 0 0;-webkit-text-si=
+ze-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adju=
+st:100%;text-align:center;"> <table role=3D"presentation" align=3D"center" =
+border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" style=3D"-w=
+ebkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-t=
+ext-size-adjust:100%;border-collapse:separate;"> <tbody> <tr> <td valign=3D=
+"middle" align=3D"center" style=3D"padding:0 0 16px 0;-webkit-text-size-adj=
+ust:100%;mso-table-rspace:0pt;vertical-align:middle;mso-table-lspace:0pt;-m=
+s-text-size-adjust:100%;text-align:center;"><a href=3D"https://www.linkedin=
+.com/e/v2?e=3D1o4w3-kvc3asva-2s&amp;t=3Dlun&amp;midToken=3DAQHgYRT7Hw5z9A&a=
+mp;midSig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_follow_newsletter_01&amp;l=
+i=3D14&amp;m=3Dunsub&amp;ts=3Dunsub&amp;eid=3D1o4w3-kvc3asva-2s&amp;loid=3D=
+AQFMtq619dtwLwAAAXzLFDUiRf7RGWdQCWVAdeYmIi494mDdTyo5LxsFNXDQ9Cd2i58lQ6SmkWb=
+mDSkmiuuZ1SVhVW3bo_VOcvUCjleSJQ" style=3D"cursor:pointer;color:#6A6C6D;-web=
+kit-text-size-adjust:100%;text-decoration:underline;display:inline-block;-m=
+s-text-size-adjust:100%;"> <span style=3D"color:#6A6C6D;font-weight:400;tex=
+t-decoration:underline;font-size:12px;line-height:1.333;">Unsubscribe</span=
+></a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=3D"https://www.linkedin.com/e/v2?e=3D=
+1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3Apage%3Aemail_email_series_follow_ne=
+wsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D&amp;a=3DcustomerServiceUrl&amp;m=
+idToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1cz1v2TJu4XpY1&amp;ek=3Demail_series_=
+follow_newsletter_01&amp;li=3D13&amp;m=3Dfooter&amp;ts=3Dhelp&amp;articleId=
+=3D67" style=3D"cursor:pointer;color:#6A6C6D;-webkit-text-size-adjust:100%;=
+text-decoration:underline;display:inline-block;-ms-text-size-adjust:100%;">=
+ <span style=3D"color:#6A6C6D;font-weight:400;text-decoration:underline;fon=
+t-size:12px;line-height:1.333;">Help</span></a></td> </tr> </tbody> </table=
+></td> </tr> <tr> <td style=3D"-webkit-text-size-adjust:100%;mso-table-rspa=
+ce:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;"> <table role=3D"pre=
+sentation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"100%" =
+style=3D"-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspac=
+e:0pt;-ms-text-size-adjust:100%;border-collapse:separate;"> <tbody> <tr> <t=
+d align=3D"center" style=3D"padding:0 0 12px 0;-webkit-text-size-adjust:100=
+%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;text-=
+align:center;"> <p style=3D"margin:0;color:#6A6C6D;font-weight:400;font-siz=
+e:12px;line-height:1.333;">You are receiving LinkedIn notification emails. =
+The newsletter author can see that you are a subscriber.</p></td> </tr> <tr=
+> <td align=3D"center" style=3D"padding:0 0 12px 0;-webkit-text-size-adjust=
+:100%;mso-table-rspace:0pt;mso-table-lspace:0pt;-ms-text-size-adjust:100%;t=
+ext-align:center;"> <p style=3D"margin:0;word-wrap:break-word;color:#6A6C6D=
+;word-break:break-word;font-weight:400;-ms-word-break:break-all;font-size:1=
+2px;line-height:1.333;overflow-wrap:break-word;">This email was intended fo=
+r Josh Klein (Building the present with the recently possible.). <a href=3D=
+"https://www.linkedin.com/e/v2?e=3D1o4w3-kvc3asva-2s&amp;lipi=3Durn%3Ali%3A=
+page%3Aemail_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%=
+3D&amp;a=3DcustomerServiceUrl&amp;midToken=3DAQHgYRT7Hw5z9A&amp;midSig=3D1c=
+z1v2TJu4XpY1&amp;ek=3Demail_series_follow_newsletter_01&amp;articleId=3D478=
+8" style=3D"cursor:pointer;color:#6A6C6D;-webkit-text-size-adjust:100%;text=
+-decoration:underline;display:inline-block;-ms-text-size-adjust:100%;">Lear=
+n why we included this.</a></p></td> </tr> <tr> <td align=3D"center" style=
+=3D"padding:0 0 8px 0;-webkit-text-size-adjust:100%;mso-table-rspace:0pt;ms=
+o-table-lspace:0pt;-ms-text-size-adjust:100%;text-align:center;"><a href=3D=
+"https://www.linkedin.com/comm/feed/?midToken=3DAQHgYRT7Hw5z9A&amp;midSig=
+=3D1cz1v2TJu4XpY1&amp;trk=3Deml-email_series_follow_newsletter_01-footer-11=
+-home&amp;trkEmail=3Deml-email_series_follow_newsletter_01-footer-11-home-n=
+ull-1o4w3%7Ekvc3asva%7E2s-null-neptune%2Ffeed&amp;lipi=3Durn%3Ali%3Apage%3A=
+email_email_series_follow_newsletter_01%3BL63DCj8DQZ6Mmb7is2wb3A%3D%3D" sty=
+le=3D"cursor:pointer;color:#6A6C6D;-webkit-text-size-adjust:100%;text-decor=
+ation:underline;display:inline-block;-ms-text-size-adjust:100%;"><img alt=
+=3D"LinkedIn" border=3D"0" height=3D"14" src=3D"https://static.licdn.com/sc=
+/p/com.linkedin.email-assets-frontend%3Aemail-assets-frontend-static-conten=
+t%2B__latest__/f/%2Femail-assets-frontend%2Fimages%2Femail%2Fphoenix%2Flogo=
+s%2Flogo_phoenix_footer_darkgray_197x48_v1.png" width=3D"58" style=3D"outli=
+ne:none;-ms-interpolation-mode:bicubic;color:#FFFFFF;display:block;text-dec=
+oration:none;"></a></td> </tr> <tr> <td align=3D"center" style=3D"padding:0=
+ 0 12px 0;-webkit-text-size-adjust:100%;mso-table-rspace:0pt;mso-table-lspa=
+ce:0pt;-ms-text-size-adjust:100%;text-align:center;"> <p style=3D"margin:0;=
+color:#6A6C6D;font-weight:400;font-size:12px;line-height:1.333;">=C2=A9 202=
+1 LinkedIn Corporation, 1=E2=80=8C000 West Maude Avenue, Sunnyvale, CA 9408=
+5. LinkedIn and the LinkedIn logo are registered trademarks of LinkedIn.</p=
+></td> </tr> </tbody> </table></td> </tr> </tbody> </table></td> </tr> </tb=
+ody> </table> </center></td> </tr> </tbody> </table> <img alt=3D"" role=3D"=
+presentation" src=3D"http://www.linkedin.com/emimp/ip_TVc4MGR6TXRhM1pqTTJGe=
+mRtRXRNbk09OlpXMWhhV3hmYzJWeWFXVnpYMlp2Ykd4dmQxOXVaWGR6YkdWMGRHVnlYekF4OmRY=
+SnVPbXhwT214cGJtdGxaRWx1UVhKMGFXTnNaVG8yT0RVNU56VTVOalExTkRNNU9EZzVOREE0.gi=
+f" style=3D"outline:none;-ms-interpolation-mode:bicubic;color:#FFFFFF;text-=
+decoration:none;width:1px;height:1px;"> </body> </html>
+------=_Part_890624_244415149.1635494671696--
+

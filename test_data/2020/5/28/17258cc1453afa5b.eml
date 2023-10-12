@@ -1,0 +1,2859 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:3e13:0:0:0:0:0 with SMTP id l19csp156904lja;
+        Wed, 27 May 2020 18:01:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw4faeDQD4BQVbqBvYOmSyKaUNKYEuBcJsQRK2SeuEL3yM65E6Bkhxz9GlhCVc/N75YwSZM
+X-Received: by 2002:ac8:2979:: with SMTP id z54mr719973qtz.14.1590627669350;
+        Wed, 27 May 2020 18:01:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1590627669; cv=none;
+        d=google.com; s=arc-20160816;
+        b=QAUA40bWqWBm5evlEnBOlJgGDlKjKe0BbWCBHiBAijPDgHC8hLoe9IHBBCoo3iFD0I
+         4iD54Vm/fX6fPddlwlpqgHH0K3szwc1VevJoJ5ntqcWZPjKfowOfWQM0aOePU683311F
+         K0FxA1Urr3kzpFGHWWSyTMnPbvSRaW+AMS2A5Uw9SPmXhtjqLW6yVPg3QAIPsNTRVMSR
+         gncITJpWGQfJ4bbvg1IwOt5ZiOVOIG2VLZCe1t6rOogtejJh8GrkbZ37iasJCnEoFgKY
+         T6o0to0kCt9QD2M2Yq9QvMQA2IxrdSLnpsUxOmlqF85PU/D/fe4dGdfz//UgbRyK9eGy
+         6CIw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:bounces-to:mime-version:subject:message-id:to:from
+         :dkim-signature:dkim-signature;
+        bh=SnTFoP+FViEesFywlMObd6SFNLImZUZmdE/J6kHbHh8=;
+        b=qGC1QbkTOZwEJDXjsg7DZzMW9U+LfAvqTU/uZ9hje8Bh8cIRxYbbweynw2MMW0CwEx
+         SODffu7sKboaSAxmzH5onmIRtJr+tAVMXX+hKyV2Q85PwxyCAq/uaXbsShuFEmMc6r7x
+         P0WWhqBZ4FRtf4YFvKcMLG4lGPQ0FYJKGyZNsxw4U04LDfJZw5p25lcl4M2db3Paq1SE
+         IsdS/0YVNOoylAXjeD+/3ZnuZ1UwOQioZVWYh8GHj8PRylZ36rNFEzyIf8kY0Y0zor0+
+         W5CciK2oxO260a5JfuGDm7C1n7LCFZ4y3E5AfI47x1bYfc03+w/UrKvwhrl1gdmZrAAW
+         XxTA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@zappos.com header.s=6didainoxeauoxixnm55kiioklrxb2fm header.b=bKTQfWvm;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=bw+DCEl8;
+       spf=pass (google.com: domain of 20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com designates 54.240.13.15 as permitted sender) smtp.mailfrom=20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=zappos.com
+Return-Path: <20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com>
+Received: from a13-15.smtp-out.amazonses.com (a13-15.smtp-out.amazonses.com. [54.240.13.15])
+        by mx.google.com with ESMTPS id r9si1693646qvl.37.2020.05.27.18.01.09
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 27 May 2020 18:01:09 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com designates 54.240.13.15 as permitted sender) client-ip=54.240.13.15;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@zappos.com header.s=6didainoxeauoxixnm55kiioklrxb2fm header.b=bKTQfWvm;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=bw+DCEl8;
+       spf=pass (google.com: domain of 20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com designates 54.240.13.15 as permitted sender) smtp.mailfrom=20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=zappos.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=6didainoxeauoxixnm55kiioklrxb2fm; d=zappos.com; t=1590627668;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date;
+	bh=UYvaFI/4E8BU4oPflVZNoq9qi2ZMIxo259tq9yEU7zw=;
+	b=bKTQfWvmVvCadb++m8q0Qz/qjLpcEkR75q5tqLFSLKj3HAHxqeeYGkPL5Y5d3FC3
+	vzBDU3V+z9vVbx0g2M59ayzlBAZY3JfXlO4HoJd8iZE8u70v4yX57/uPAjBThqdAirI
+	MjXm2mk39XdlmAm5U1rXA6f6/iZvwEa4HSrr0fnQ=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1590627668;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date:Feedback-ID;
+	bh=UYvaFI/4E8BU4oPflVZNoq9qi2ZMIxo259tq9yEU7zw=;
+	b=bw+DCEl8OwJCTDKxV8DoviufiOK7q0qdXWqYlLsDzoZ9lWoUKvIc1p6s4dMNNke1
+	TvubMPyYRkobAepTx3LEpxaeraugK/v7YZ3II80/CFhr13UwgAUAqVtoxG2GSwOBO0P
+	yZDFIWUXucsIM2IOST2Mc+hcD7zvT/rQIHs4vGaE=
+From: "Zappos.com" <cs@zappos.com>
+To: josh@josh.is
+Message-ID: <0100017258cc0935-0a385732-0d67-4393-905c-90998a47cf52-000000@email.amazonses.com>
+Subject: Your Return Request Confirmation For Order Number:
+ 114-2078754-2228246
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_61016437_1693358520.1590627666201"
+X-AMAZON-MAIL-RELAY-TYPE: notification
+Bounces-to: 20200528010105b2f978287d0d4b4e80de8c2a6370p0na@bounces.amazon.com
+X-AMAZON-METADATA: CA=C3C7T5PJ0M3ULX-CU=A2KFUELCE6ZS67
+X-Original-MessageID: <urn.rtn.msg.20200528010105b2f978287d0d4b4e80de8c2a6370p0na@1590627666204.rtn-svc-na-back-c42xl1d-c85567d7.us-east-1.amazon.com>
+Date: Thu, 28 May 2020 01:01:06 +0000
+X-SES-Outgoing: 2020.05.28-54.240.13.15
+Feedback-ID: 1.us-east-1.ZHcGJK6s+x+i9lRHKog4RW3tECwWIf1xzTYCZyUaiec=:AmazonSES
+
+------=_Part_61016437_1693358520.1590627666201
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+
+
+
+
+
+
+   =20
+   =20
+   =20
+
+
+
+
+------------------------------
+
+        Zappos.com
+
+------------------------------
+
+
+
+Your Return Request Confirmation
+
+You're one step closer to getting your refund...Hooray! Just print your ret=
+urn label and RMA ID and follow the instructions below. Cheers!
+
+
+------------------------------
+
+Your Return Information
+Return ID: D57ZdjnZRRMA
+Print Return Label and RMA ID at https://secure-www.zappos.com/returnLabel?=
+rmaId=3DD57ZdjnZRRMA
+
+Please print the return label and RMA ID on two separate pages. The label g=
+oes on the *outside* of the box while the RMA ID goes *inside* the box.
+
+------------------------------
+
+------------------------------
+
+Return Instructions
+
+1. Print Return Label &amp; RMA ID using the button above. Must print on 2 =
+separate pages.</p>
+
+2. Find a Zappos box or any unmarked cardboard box to use as your return sh=
+ipping box.</p>
+
+3. Remove pre-existing labels, barcodes, or stickers from the return shippi=
+ng box.</p>
+
+4. Place item(s) you're returning in their original packaging and put in yo=
+ur shipping box.</p>
+
+5. Include RMA ID printout inside the box. Learn more about the RMA IDs bel=
+ow!</p>
+
+6. Seal box, attach return label, and take to an authorized UPS location. S=
+ee more about UPS below!</p>
+
+------------------------------
+
+Q. Why do I need to print a return label and an RMA ID barcode?=20
+
+A. The RMA ID barcode helps us track and process your return once it's at t=
+he warehouse. We need this barcode if you're missing the original packaging=
+, splitting returns into multiple boxes, condensing multiple returns, or in=
+ case the shipping label gets damaged in transit.
+
+If you condense returns from multiple orders into one return shipping box, =
+you will need to print the RMA ID barcode from each of the return confirmat=
+ion emails and include them in the return shipping box.
+
+---
+
+Q.What's the timeline for my refund?
+
+=E2=9C=94 5-7 Business Days for your package to arrive at the fulfillment c=
+enter.
+=E2=9C=94 7-10 Days to inspect your return, process it into inventory, and =
+complete your refund.
+=E2=9C=94 2-10 Business Days for your financial institution to credit your =
+account.
+
+---
+
+Q. What if I don't have a printer or access to UPS?
+Our Customer Loyalty Team would love to help! Please call 1-877-513-7428 an=
+d ask us to mail you a USPS return label and your RMA ID barcode.
+
+---
+
+Q. Which UPS location do I use?
+Take your package to The UPS Store, UPS Customer Center, UPS Alliances (Off=
+ice Depot or Staples), or Authorized Shipping Outlet near you. Find your cl=
+osest UPS location at ( https://www.ups.com/dropoff ) and select Drop Off. =
+Daily collection customers: have your shipment(s) ready for the driver as u=
+sual.
+
+------------------------------
+
+Order ID: 114-2078754-2228246
+Return ID: D57ZdjnZRRMA
+RMA ID: D57ZdjnZRRMA
+https://trans-rmabarcode-images-na.s3.amazonaws.com/D57ZdjnZRRMA.gif?AWSAcc=
+essKeyId=3DAKIA2WXIS6QXUOYQ57NG&amp;Expires=3D1590631265&amp;Signature=3Dpv=
+5OwOPqOmrvUVFX%2F8u0a1H5s08%3D
+
+------------------------------
+
+
+Please give us a call if you have any questions: 1-877-513-7428. We=E2=80=
+=99re on standby 24/7!
+Sincerely,
+Your Friends at Zappos.com
+
+
+------------------------------
+
+Zappos Family Core Value
+7. Build a Positive Team and Family Spirit
+
+------------------------------------------------------------
+
+Please add cs@zappos.com to your address book to ensure our emails reach yo=
+ur inbox!
+If you'd rather not receive emails, simply manage your subscriptions ( http=
+s://secure-www.zappos.com/subscriptions ).
+We'll miss you terribly, though.
+
+Copyright 2009 - 2020
+Zappos.com, Inc. or its affiliates
+400 E Stewart Ave Las Vegas, Nevada 89101
+
+
+------=_Part_61016437_1693358520.1590627666201
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+
+
+
+
+
+
+
+
+   =20
+   =20
+
+
+   =20
+
+
+   =20
+       =20
+           =20
+               =20
+           =20
+       =20
+   =20
+   =20
+       =20
+           =20
+               =20
+           =20
+       =20
+   =20
+   =20
+
+
+<!DOCTYPE html>
+<html xmlns=3D"http://www.w3.org/1999/xhtml" xmlns:v=3D"urn:schemas-microso=
+ft-com:vml" xmlns:o=3D"urn:schemas-microsoft-com:office:office">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html;" charset=3D"utf-8=
+" />=20
+  <meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D=
+1" />=20
+  <meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge" />=20
+  <!--[if gte mso 9]><xml>
+    <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml><![endif]-->=20
+  <link href=3D"https://fonts.googleapis.com/css?family=3DOpen+Sans:400,600=
+,700" rel=3D"stylesheet" />=20
+  <style type=3D"text/css">
+    .preheader-wrapper {
+        max-width: 648px;
+        margin: 0 auto;
+        font-family: 'Open Sans', Verdana, sans-serif;
+    }
+    .email-wrapper {
+        max-width: 648px;
+        margin: 0 auto 24px;
+        background: #fff;
+        font-family: 'Open Sans', Verdana, sans-serif;
+    }
+    .email-wrapper table {
+        width: 100%;
+        max-width: 100%;
+        border-color: transparent;
+    }
+    .email-body h1 {
+        font-size: 28px;
+        font-weight: 400;
+        line-height: 40px;
+        margin: 0 0 30px;
+        padding: 0;
+    }
+    .email-body h2 {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 30px;
+        margin: 0 0 20px;
+        padding: 0;
+        color: #212b36;
+    }
+    .email-body h3 {
+        font-size: 18px;
+        font-weight: 600;
+        line-height: 25px;
+        margin: 0 0 15px;
+        padding: 0;
+    }
+    .email-body h4 {
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 20px;
+        margin: 0 0 15px;
+        padding: 0;
+    }
+    .email-body h5,
+    .email-body h6 {
+        font-size: 14px;
+        font-weight: 700;
+        line-height: 20px;
+        margin: 0 0 10px;
+        padding: 0;
+    }
+    .email-body td,
+    .email-body p {
+        font-size: 14px;
+        line-height: 20px;
+        color: #1f1f1f;
+    }
+    .email-body p {
+        margin: 0 0 10px;
+    }
+    .email-body p.last-child {
+        margin: 0;
+    }
+    .email-body a {
+        color: #003953;
+    }body,
+table,
+td,
+a {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+table,
+td {
+    border-collapse: collapse;
+    border-spacing: 0;
+    mso-table-lspace: 0pt;
+    mso-table-rspace: 0pt;
+}
+
+img {
+    border: 0;
+    line-height: 100%;
+    outline: none;
+    text-decoration: none;
+    max-width: 100%;
+    -ms-interpolation-mode: bicubic;=20
+}
+body {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+}
+
+a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important;
+}
+a {
+    border: none;
+    outline: none;
+}
+.inner-wrapper {
+    padding: 0 10px;
+}
+.align-left {
+    text-align: left;
+}
+.align-center {
+    text-align: center;
+}
+.align-right {
+    text-align: right;
+}
+.inline-div {
+    display: inline-block;
+    zoom: 1;
+}
+.justify-fix {
+    display: inline-block;=20
+    width: 100%;=20
+    height: 0;
+}
+
+#ze-header,
+#ze-content,
+#ze-footer {
+    width: 648px;
+    border-color: transparent;
+}
+.content-wrapper ul,
+.content-wrapper ol {
+    margin: 0 0 15px;
+    padding: 0 0 0 40px;
+}
+.content-wrapper ul {
+    list-style-type: disc;
+}
+.content-wrapper ol {
+    list-style-type: decimal;
+}
+div.hide-on-desktop {
+    width: 0;
+    height: 0;
+    max-width: 0px;
+    max-height: 0px;
+    padding: 0px;
+    overflow: hidden;
+}
+.hide-on-desktop td {
+    width: 0;
+    height: 0;
+    border: none;
+}
+table.hide-on-desktop,
+tr.hide-on-desktop,
+td.hide-on-desktop {
+    display: none;
+    mso-hide: all;
+}
+
+.preheader-wrapper td {
+    font-size: 11px;
+    line-height: 1.36em;
+    color: #1f1f1f;
+    text-decoration: none;
+}
+.desktop-preheader .preheader-wrapper {
+    padding: 15px 0;
+}
+.desktop-preheader .preheader-text {
+    padding-right: 15px;
+    text-align: left;
+}
+.desktop-preheader .preheader-text a {
+    color: #1f1f1f;
+}
+.desktop-preheader .preheader-cta {
+    padding: 0 0 0 15px;
+    text-align: right;
+}
+.desktop-preheader p.preheader-cta a {
+    font-size: 11px;
+    line-height: 1.36em;
+    color: #1f1f1f;
+    text-decoration: none;
+}
+
+.mobile-preheader table {
+    width: 100%;
+}
+.mobile-preheader .preheader-wrapper {
+    padding: 10px 0;
+    border-bottom: 1px solid #dddddd;
+}
+.mobile-preheader .preheader-text a {
+    color: #1f1f1f;
+}
+.mobile-preheader p.preheader-text {
+    margin: 0 0 10px;
+    text-align: center;
+}
+.mobile-preheader p.preheader-cta {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.36em;
+    color: #000;
+    text-align: center;
+}
+.mobile-preheader p.preheader-cta a {
+    font-size: 14px;
+    line-height: 1.36em;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.logo {
+    width: 134px;
+}
+.logo img {
+    width: 134px;
+}
+.header-nav-link {
+    font-size: 16px; font-weight: 600; text-align: left; color: #003953; te=
+xt-decoration: none;
+}
+.mobile-header .brand-identity {
+    padding: 10px 15px;
+}
+.mobile-header .logo {
+    text-align: center;
+}
+
+.footer-legal-content table {
+    text-align: left;
+}
+.footer-legal-content p {
+    font-size: 10px;
+    color: #585A5D;
+    text-decoration: none;
+    margin:0px;
+}
+.footer-legal-content a {
+    font-size: 10px;
+    color: #2C5987;
+    text-decoration: underline;
+}
+.footer-legal-content p span {
+    font-weight: bold;
+}
+   =20
+.email-intro,
+.return-info,
+.return-items,
+.rma-info,
+.return-instructions,
+.closing-remarks {
+    padding: 20px 30px 0;
+}
+.email-intro-wrapper,
+.return-info-wrapper,
+.return-items-wrapper,
+.return-instructions-wrapper,
+.rma-info-wrapper {
+    padding: 0 0 20px;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+}
+.return-qr p, .return-qr img {
+ text-align:center;
+}
+.closing-remarks-wrapper {
+    padding: 0 0 20px;
+    text-align: left;
+}
+.return-items .product-info-remainding-in-stock {
+    font-size: 0;
+    padding: 0;
+    color: #fff;
+}
+.return-items .orderSummary-name {
+    text-align: right;
+}
+.return-items .orderSummary-value {
+    width: 110px;
+    padding: 0 15px 0 0;
+    text-align: right;
+}
+.return-items .credit-total td {
+    font-weight: bold;
+}
+.payment-association td {
+    padding-bottom: 15px;
+}
+.row1 .return-instruction.col1 {
+    padding: 0;
+    border: 1px solid #dddddd !important;
+    vertical-align: top;
+}
+.row2 .return-instruction.col1 {
+    padding: 5px 5px 0 0;
+}
+.row1 .return-instruction.col2 {
+    padding: 0 5px 5px;
+    border: 1px solid #dddddd !important;
+    vertical-align: top;
+}
+.row2 .return-instruction.col2 {
+    padding: 5px 5px 0 5px;
+}
+.row1 .return-instruction.col3 {
+    padding: 0 0 5px 5px;
+    border: 1px solid #dddddd !important;
+    vertical-align: top;
+}
+.row1 .return-instruction.col4 {
+    padding: 0 0 5px 5px;
+    border: 1px solid #dddddd !important;
+    vertical-align: top;
+}
+.row2 .return-instruction.col3 {
+    padding: 5px 0 0 5px;
+}
+.row2 .return-instruction.col1.stacked,
+.row2 .return-instruction.col2.stacked,
+.row1 .return-instruction.col2.stacked,
+.row1 .return-instruction.col3.stacked,
+.row1 .return-instruction.col4.stacked,
+.row1 .return-instruction.col1.stacked {
+    display: block;
+    padding: 5px 0 !important;
+}
+
+.row1 .return-instruction.col2.stacked .return-instruction-wrapper .return-=
+instruction-icon,
+.row1 .return-instruction.col3.stacked .return-instruction-wrapper .return-=
+instruction-icon,
+.row1 .return-instruction.col4.stacked .return-instruction-wrapper .return-=
+instruction-icon,
+.row1 .return-instruction.col1.stacked .return-instruction-wrapper .return-=
+instruction-icon {
+    width: 80px !important;
+}
+
+.row1 .return-instruction.col2.stacked .return-instruction-wrapper .return-=
+instruction-icon img,
+.row1 .return-instruction.col3.stacked .return-instruction-wrapper .return-=
+instruction-icon img,
+.row1 .return-instruction.col4.stacked .return-instruction-wrapper .return-=
+instruction-icon img,
+.row1 .return-instruction.col1.stacked .return-instruction-wrapper .return-=
+instruction-icon img {
+    width: 100% important!;
+}
+
+.row1 .return-instruction.col1.stacked .return-instruction-wrapper,
+.row1 .return-instruction.col2.stacked .return-instruction-wrapper,
+.row1 .return-instruction.col3.stacked .return-instruction-wrapper,
+.row1 .return-instruction.col4.stacked .return-instruction-wrapper {
+    height: 90px !important;
+}
+
+.row1 .return-instruction.col4.stacked .return-instruction-wrapper td,
+.row1 .return-instruction.col3.stacked .return-instruction-wrapper td,
+.row1 .return-instruction.col2.stacked .return-instruction-wrapper td,
+.row1 .return-instruction.col1.stacked .return-instruction-wrapper td {
+    height: 90px !important;
+}
+
+.row1.stacked {
+    width: 100%;
+    float:left;
+}
+
+.return-instruction-wrapper {
+    width: 182px;
+    height: 210px;
+    padding: 10px;
+    border: 0 !important;
+    vertical-align: top;
+}
+.return-instruction-wrapper td {
+    text-align: center;
+    height: 90px;
+}
+.return-instruction-bullet-number {
+    width: 30px;
+    vertical-align: top;
+}
+.return-instruction-icon {
+    vertical-align: middle;
+}
+.return-instruction-icon img {
+    margin: 0 auto 10px;
+}
+.return-instruction-spacer {
+    width: 30px;
+}
+.return-instruction p {
+    text-align: left;
+}
+.return-instruction-col-spacer {
+   width: 10px;=20
+}
+.product-list {
+    padding: 30px 30px 0;
+}
+.product-list-wrapper {
+    padding: 0 0 15px;
+}
+.product-list-item .product-info {
+    vertical-align: top;
+    padding: 15px 0 15px 15px;
+}
+.product-list-item .product-quantity,
+.product-list-item .product-price {
+    vertical-align: top;
+    padding: 15px;
+}
+.product-list-item td div {
+    vertical-align: top;
+}
+.product-list-header th {
+    background: #f5f5f5;
+    font-size: 12px;
+    font-weight: normal;
+    padding: 5px 15px;
+    vertical-align: middle;
+}
+.product-info {
+    text-align: left;
+}
+.product-info .product-details {
+    max-width: 260px;
+}
+.product-info .image-link {
+    display: block;
+    padding: 0 15px 0 0;
+    text-decoration: none;
+}
+.product-details-link {
+    color: #1f1f1f !important;
+    text-decoration: none;
+}
+.product-details-link .product-info-name {
+    color: #003953 !important;
+    text-decoration: underline;
+}
+.product-quantity {
+    text-align: center;
+}
+.product-price {
+    text-align: right;
+}
+.product-info-name {
+    text-decoration: underline;
+}
+.transactional-details {
+    padding: 0 30px;
+}
+.transactional-details-wrapper {
+    padding: 0 0 30px;
+    border-bottom: 1px solid #dddddd;
+}
+.transactional-details-wrapper td {
+    text-align: right;
+}
+.transactional-details .order-total td,
+.transactional-details .shipment-total td,
+.transactional-details .shipment-gift-card td,
+.transactional-details .shipment-cc-payment td {
+    font-weight: bold;
+}
+.transactional-details .orderSummary-value {
+    width: 100px;
+    padding: 0 15px 0 0;
+}
+
+
+    body.yahoo .melody-button-text {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+    @media screen and (max-width: 647px), screen and (max-device-width: 647=
+px) {
+        .email-body h1 {
+            font-size: 24px !important;
+            line-height: 35px !important;
+            margin: 0 0 25px !important;
+        }
+        .email-body h2 {
+            font-size: 20px !important;
+            line-height: 30px !important;
+            margin: 0 0 15px !important;
+        }
+        .email-body h3 {
+            line-height: 20px !important;
+        }
+       =20
+#ze-header,
+#ze-content,
+#ze-footer {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+.hide-on-mobile {
+    display: none !important;
+    max-width: 0px !important;
+    max-height: 0px !important;
+    padding: 0px !important;
+    overflow: hidden !important;
+    mso-hide: all !important;
+    font-size: 0 !important;
+}
+.hide-on-mobile td {
+    width: 0 !important;
+    height: 0 !important;
+    border: none !important;
+    font-size: 0 !important;
+}
+.hide-on-mobile {
+    max-width: initial !important;
+    max-height: initial !important;
+    overflow: initial !important;
+    mso-hide: none !important;
+}
+div.hide-on-desktop {
+    display: block !important;
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: 100% !important;
+    overflow: visible !important;
+}
+div.inline-div.hide-on-desktop {
+    display: inline-block !important;
+    mso-hide: none;
+}
+table.hide-on-desktop {
+    display: table !important;
+}
+tr.hide-on-desktop {
+    display: table-row !important;
+}
+td.hide-on-desktop {
+    display: table-cell !important;
+}
+.hide-on-desktop tr,
+.hide-on-desktop td {
+    width: auto !important;
+    height: auto !important;
+}
+
+       =20
+.preheader-wrapper {
+=09background: #fff;
+}
+
+       =20
+       =20
+.email-intro,
+.return-info,
+.return-items,
+.return-instructions,
+.rma-info,
+.closing-remarks {
+    padding: 0 !important;
+}
+.email-intro-wrapper,
+.return-info-wrapper,
+.return-items-wrapper,
+.return-instructions-wrapper,
+.rma-info-wrapper,
+.closing-remarks-wrapper {
+    padding: 15px !important;
+}
+.credit-total td {
+    padding-top: 15px !important;
+}
+.row1 .return-instruction.col1 {
+    display: block;
+    padding: 0 0 5px 0 !important;
+    width: 100%;
+    float: left;
+}
+.row2 .return-instruction.col1,
+.row1 .return-instruction.col2,
+.row2 .return-instruction.col2,
+.row1 .return-instruction.col3 {
+    display: block;
+    padding: 5px 0 !important;
+}
+.row2 .return-instruction.col3 {
+    display: block;
+    padding: 5px 0 0 0 !important;
+}
+.return-instruction-wrapper {
+    display: inline-block;
+    height: auto !important;
+    width: auto !important;
+}
+.return-instruction-wrapper table {
+    display: block;
+    width: auto !important;
+    float: left;
+}
+.return-instruction-wrapper td {
+    height: 105px !important;
+}
+.return-instruction-bullet-number,
+.return-instruction-bullet-number img {
+    width: 20px !important;
+}
+.return-instruction-icon {
+=09width: 80px !important;
+}
+.return-instruction-icon img {
+=09margin: auto !important;
+}
+.return-instruction-spacer {
+   width: 10px !important;=20
+}
+.return-instruction-col-spacer {
+   height: 10px;
+   float:left;
+}
+.return-instruction.col1, .return-instruction.col2, .return-instruction.col=
+3 {
+    width: 100% !important;
+    float: left;
+    display: table-column;
+}
+.row1 {
+    width: 100%;
+    float:left;
+}
+.return-instruction-bullet-number, .return-instruction-bullet-number img, .=
+return-instruction-wrapper td, return-instruction-icon, return-instruction-=
+spacer {
+    height: auto !important;
+}
+hr {
+    background: red;
+}
+
+.product-list {
+    padding: 15px 15px 0 !important;
+}
+.product-list-wrapper {
+    padding: 0 0 15px !important;
+    border-bottom: 0px !important;
+}
+.product-list-item {
+    border-bottom: 1px solid #dddddd;
+}
+.product-info .image-link {
+    padding: 0 15px 15px 0 !important;
+}
+.product-list-item.last-item {
+    border-bottom: 0 !important;
+}
+.transactional-details {
+    padding: 0 15px !important;
+    border-bottom: 1px solid #dddddd !important;
+}
+.transactional-details-wrapper {
+    padding: 0 0 15px !important;
+    border-bottom: 0px !important;
+}
+.last-product-list-item{
+border-bottom: 0 !important;
+}
+
+
+    }
+   =20
+    @media screen and (min-width: 1px), screen and (min-device-width: 1px) =
+{
+        .email-wrapper img {
+            height: auto !important;
+        }
+    }
+</style>=20
+  <!--[if gte mso 9]>
+<style type=3D"text/css">
+.ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass =
+td {line-height: 100%;}
+.ExternalClass {width: 100%;}
+.email-wrapper td,
+.preheader-wrapper {
+    font-family: Verdana, Arial, sans-serif !important;
+}
+.brand-promises td,
+.header-nav-link,
+.link-farm a,
+.footer-nav-link,
+.footer-cta-link {
+=09font-size: 14px !important;
+}
+.email-body h1 {
+    font-size: 26px !important;
+}
+.email-body h2 {
+    font-size: 22px !important;
+    font-weight: 400 !important;
+}
+.email-body h3 {
+    font-size: 16px !important;
+}
+.email-body h4 {
+    font-size: 14px !important;
+}
+.email-body h5,
+.email-body h6 {
+    font-size: 13px !important;
+}
+.email-body td,
+.email-body p {
+    font-size: 13px !important;
+}
+.zappos-values-divider-line {
+    width: 455px;
+}
+
+</style>
+<![endif]-->=20
+ </head>=20
+ <body class=3D"zappos" style=3D"-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;height: 100% !important; margin: 0 !important; padding: 0 =
+!important; width: 100% !important"><img width=3D"1" height=3D"1" src=3D"ht=
+tps://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rt=
+n:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1EOGFH2DUOA49&T=3D=
+O&U=3Dhttps%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FG%2F01%2Fnav=
+%2Ftransp.gif&H=3DAY7KN4PDBWLFBYLTOYSFYVMRJVSA&ref_=3Dpe_2178840_145384230_=
+opens" />=20
+  <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 1=
+00%; background: #f5f5f5;-webkit-text-size-adjust: 100%; -ms-text-size-adju=
+st: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0p=
+t; mso-table-rspace: 0pt">=20
+   <tbody>
+    <tr>=20
+     <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-text-size-=
+adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace=
+: 0pt; mso-table-rspace: 0pt"></td>=20
+    </tr>=20
+    <tr>=20
+     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100=
+%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-=
+table-rspace: 0pt">=20
+      <!--[if (gte mso 9)|(IE)]>
+            <table align=3D"center" border=3D"0" cellspacing=3D"0" cellpadd=
+ing=3D"0" width=3D"648">
+            <tr>
+            <td align=3D"center" valign=3D"top" width=3D"648">
+            <![endif]-->=20
+      <table class=3D"preheader-wrapper" border=3D"0" cellpadding=3D"0" cel=
+lspacing=3D"0" width=3D"100%" style=3D"max-width: 648px; margin: 0 auto; fo=
+nt-family: &quot;Open Sans&quot;, Verdana, sans-serif;-webkit-text-size-adj=
+ust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spa=
+cing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+       <tbody>
+        <tr class=3D"desktop-preheader hide-on-mobile">=20
+         <td class=3D"preheader-wrapper" style=3D"max-width: 648px; margin:=
+ 0 auto; font-family: &quot;Open Sans&quot;, Verdana, sans-serif;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;font-size:=
+ 11px; line-height: 1.36em; color: rgb(31, 31, 31); text-decoration: none;p=
+adding: 15px 0">=20
+          <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"=
+100%" style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"preheader-text" style=3D"-webkit-text-size-adjust=
+: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacin=
+g: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;font-size: 11px; line-he=
+ight: 1.36em; color: rgb(31, 31, 31); text-decoration: none;padding-right: =
+15px; text-align: left"> Your FREE return label and instructions are inside=
+! XOXO, <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z6=
+1O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=
+=3D8I9RDG6VIRQ5&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%3Fref_%3Dpe_2178840_=
+145384230&H=3DP8VBKWQBMP2SI2KAKUVHN2OQJUEA&ref_=3Dpe_2178840_145384230" cla=
+ss=3D"preheader-link" title=3D"Zappos.com" style=3D"-webkit-text-size-adjus=
+t: 100%; -ms-text-size-adjust: 100%;border: none; outline: none;color: rgb(=
+31, 31, 31)">Zappos.com</a> </td>=20
+             <td class=3D"preheader-cta" style=3D"-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;font-size: 11px; line-hei=
+ght: 1.36em; color: rgb(31, 31, 31); text-decoration: none;padding: 0 0 0 1=
+5px; text-align: right"> 24/7 Customer Service 1-877-513-7428 </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <!--[if !mso 9]><!-->=20
+        <tr class=3D"mobile-preheader hide-on-desktop" style=3D"display: no=
+ne; mso-hide: all">=20
+         <td class=3D"preheader-wrapper" style=3D"max-width: 648px; margin:=
+ 0 auto; font-family: &quot;Open Sans&quot;, Verdana, sans-serif;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; =
+height: 0; border: none;font-size: 11px; line-height: 1.36em; color: rgb(31=
+, 31, 31); text-decoration: none;padding: 10px 0; border-bottom: 1px solid =
+rgb(221, 221, 221)">=20
+          <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"=
+100%" style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt;width: 100%">=20
+           <tbody>
+            <tr>=20
+             <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adj=
+ust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0=
+pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none;font-size: 11px=
+; line-height: 1.36em; color: rgb(31, 31, 31); text-decoration: none"> <p c=
+lass=3D"preheader-text" style=3D"margin: 0 0 10px; text-align: center"> You=
+r FREE return label and instructions are inside! XOXO, <a href=3D"https://r=
+.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:2=
+0200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D167OHNREKQAFV&T=3DC&U=3Dh=
+ttps%3A%2F%2Fwww.zappos.com%3Fref_%3Dpe_2178840_145384230&H=3D2CFJ0CPPADXWD=
+PGWVWO0UAQ6UC4A&ref_=3Dpe_2178840_145384230" class=3D"preheader-link" title=
+=3D"Zappos.com" style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adju=
+st: 100%;border: none; outline: none;color: rgb(31, 31, 31)">Zappos.com</a>=
+ </p> <p class=3D"preheader-cta" style=3D"margin: 0; font-size: 14px; line-=
+height: 1.36em; color: rgb(0, 0, 0); text-align: center"> 24/7 Customer Ser=
+vice <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2=
+KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D=
+1YJPB312E7KMO&T=3DC&U=3Dhttp%3A%2F%2Ftel%3A1-877-513-7428&H=3DA1IPSXXEWASKP=
+SASEESVLNA3X7OA" style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adj=
+ust: 100%;border: none; outline: none;font-size: 14px; line-height: 1.36em;=
+ color: rgb(0, 0, 0); font-weight: bold; text-decoration: none">1-877-513-7=
+428</a> </p> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <!--<![endif]-->=20
+       </tbody>
+      </table>=20
+      <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]--> </td>=20
+    </tr>=20
+    <tr>=20
+     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100=
+%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-=
+table-rspace: 0pt">=20
+      <!--[if (gte mso 9)|(IE)]>
+            <table align=3D"center" border=3D"0" cellspacing=3D"0" cellpadd=
+ing=3D"0" width=3D"648">
+            <tr>
+            <td align=3D"center" valign=3D"top" width=3D"648">
+            <![endif]-->=20
+      <table class=3D"email-wrapper" border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0" width=3D"100%" style=3D"max-width: 648px; margin: 0 auto 24px; b=
+ackground: rgb(255, 255, 255); font-family: &quot;Open Sans&quot;, Verdana,=
+ sans-serif;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;bord=
+er-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-=
+rspace: 0pt">=20
+       <tbody>
+        <tr class=3D"header-wrapper">=20
+         <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt">=20
+          <table id=3D"ze-header" class=3D"summer-2017" style=3D"width: 100=
+%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100=
+%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0;=
+ mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 648px; border-color: t=
+ransparent">=20
+           <tbody>
+            <tr class=3D"desktop-header hide-on-mobile">=20
+             <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-te=
+xt-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-tabl=
+e-lspace: 0pt; mso-table-rspace: 0pt">=20
+              <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=
+=3D"100%" style=3D"width: 100%; max-width: 100%; border-color: transparent;=
+-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse:=
+ collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"=
+>=20
+               <tbody>
+                <tr>=20
+                 <td class=3D"brand-identity" style=3D"padding: 15px 30px;-=
+webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: =
+collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=
+=20
+                  <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" w=
+idth=3D"100%" style=3D"width: 100%; max-width: 100%; border-color: transpar=
+ent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-colla=
+pse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: =
+0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"logo" style=3D"width: 134px;-webkit-text-=
+size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bo=
+rder-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 134px"=
+> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCC=
+R97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1ET=
+AG1T8VH845&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%3Futm_medium%3Demailtrx%2=
+6utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_c=
+ontent%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A=
+-logo%26ref_%3Dpe_2178840_145384230&H=3DL13HLAAGXAKJ00ZXY0BFIG0NABGA&ref_=
+=3Dpe_2178840_145384230" class=3D"logo-link" title=3D"Zappos.com" style=3D"=
+-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; ou=
+tline: none"> <img src=3D"https://m.media-amazon.com/images/G/01/zappos.com=
+/emails/zappos/zappos-pbs.jpg" width=3D"134" class=3D"image" alt=3D"Zappos.=
+com" style=3D"border: 0; line-height: 100%; outline: none; text-decoration:=
+ none; max-width: 100%; -ms-interpolation-mode: bicubic;width: 134px" /> </=
+a> </td>=20
+                     <td class=3D"divider" style=3D"width: 50px;-webkit-tex=
+t-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; =
+border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> &nbsp; </=
+td>=20
+                     <td class=3D"brand-promises" style=3D"width: 390px;-we=
+bkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: co=
+llapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=
+=20
+                      <table style=3D"width: 100%; max-width: 100%; border-=
+color: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 10=
+0%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt">=20
+                       <tbody>
+                        <tr>=20
+                         <td class=3D"returns" style=3D"font-size: 16px; li=
+ne-height: 1.19em; text-align: left; color: #000000; border-right: 2px soli=
+d #f5f5f5; width: 107px; padding: 0 15px 0 0;-webkit-text-size-adjust: 100%=
+; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; =
+mso-table-lspace: 0pt; mso-table-rspace: 0pt"> Free Shipping &amp; Returns =
+</td>=20
+                         <td class=3D"shipping" style=3D"font-size: 16px; l=
+ine-height: 1.19em; text-align: left; color: #000000; border-right: 2px sol=
+id #f5f5f5; width: 75px; padding: 0 15px;-webkit-text-size-adjust: 100%; -m=
+s-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-=
+table-lspace: 0pt; mso-table-rspace: 0pt"> 365-Day Returns </td>=20
+                         <td class=3D"customer-service" style=3D"font-size:=
+ 16px; line-height: 1.19em; text-align: left; color: #000000; width: 147px;=
+ padding: 0 0 0 15px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: =
+100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; m=
+so-table-rspace: 0pt"> Customer Service Available 24/7 </td>=20
+                        </tr>=20
+                       </tbody>
+                      </table> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"header-nav">=20
+                 <td class=3D"header-nav-wrapper" style=3D"background-color=
+: #EBEDEE; border-bottom: 1.5px solid #DADADA;-webkit-text-size-adjust: 100=
+%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0;=
+ mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                  <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" w=
+idth=3D"100%" style=3D"width: 100%; max-width: 100%; border-color: transpar=
+ent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-colla=
+pse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: =
+0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"header-nav-item" style=3D"width: 20%; pad=
+ding: 15px 0; text-align: center;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.htm=
+l?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f9782=
+87d0d4b4e80de8c2a6370p0na&R=3D82DD0QKMGXMN&T=3DC&U=3Dhttps%3A%2F%2Fwww.zapp=
+os.com%2Fshoes%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnReques=
+tConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtr=
+x_200528_ReturnRequestConfirmation_all_A-header_nav_link_1%26ref_%3Dpe_2178=
+840_145384230&H=3DQC1BG8PJU0HAL2ADAG9XTIRAOGYA&ref_=3Dpe_2178840_145384230"=
+ class=3D"header-nav-link" title=3D"Shoes" style=3D"font-size: 16px; font-w=
+eight: 600; text-align: left; color: #003953; text-decoration: none;-webkit=
+-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: =
+none;font-size: 16px; font-weight: 600; text-align: left; color: rgb(0, 57,=
+ 83); text-decoration: none">Shoes</a> </td>=20
+                     <td class=3D"header-nav-item" style=3D"width: 20%; pad=
+ding: 15px 0; text-align: center;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.htm=
+l?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f9782=
+87d0d4b4e80de8c2a6370p0na&R=3D1IGF1JR7IUMFC&T=3DC&U=3Dhttps%3A%2F%2Fwww.zap=
+pos.com%2Fclothing%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRe=
+questConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_ema=
+iltrx_200528_ReturnRequestConfirmation_all_A-header_nav_link_2%26ref_%3Dpe_=
+2178840_145384230&H=3DXCYDIO1VUK2NNPYDQLFRSCKBSWIA&ref_=3Dpe_2178840_145384=
+230" class=3D"header-nav-link" title=3D"Clothing" style=3D"font-size: 16px;=
+ font-weight: 600; text-align: left; color: #003953; text-decoration: none;=
+-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; ou=
+tline: none;font-size: 16px; font-weight: 600; text-align: left; color: rgb=
+(0, 57, 83); text-decoration: none">Clothing</a> </td>=20
+                     <td class=3D"header-nav-item" style=3D"width: 20%; pad=
+ding: 15px 0; text-align: center;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.htm=
+l?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f9782=
+87d0d4b4e80de8c2a6370p0na&R=3D1SDWNNBBV7JEE&T=3DC&U=3Dhttps%3A%2F%2Fwww.zap=
+pos.com%2Fbrands%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequ=
+estConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_email=
+trx_200528_ReturnRequestConfirmation_all_A-header_nav_link_3%26ref_%3Dpe_21=
+78840_145384230&H=3D0IIQHHG92QVEWWJPBJOHFKVE098A&ref_=3Dpe_2178840_14538423=
+0" class=3D"header-nav-link" title=3D"Brands" style=3D"font-size: 16px; fon=
+t-weight: 600; text-align: left; color: #003953; text-decoration: none;-web=
+kit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outlin=
+e: none;font-size: 16px; font-weight: 600; text-align: left; color: rgb(0, =
+57, 83); text-decoration: none">Brands</a> </td>=20
+                     <td class=3D"header-nav-item" style=3D"width: 20%; pad=
+ding: 15px 0; text-align: center;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.htm=
+l?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f9782=
+87d0d4b4e80de8c2a6370p0na&R=3DFBUBFJQ1D5NQ&T=3DC&U=3Dhttps%3A%2F%2Fwww.zapp=
+os.com%2Fnew-arrivals%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_Retur=
+nRequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_=
+emailtrx_200528_ReturnRequestConfirmation_all_A-header_nav_link_4%26ref_%3D=
+pe_2178840_145384230&H=3DDKXDFA9LRBY1XPBYCVGFAHJZ4DQA&ref_=3Dpe_2178840_145=
+384230" class=3D"header-nav-link" title=3D"New Arrivals" style=3D"font-size=
+: 16px; font-weight: 600; text-align: left; color: #003953; text-decoration=
+: none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: n=
+one; outline: none;font-size: 16px; font-weight: 600; text-align: left; col=
+or: rgb(0, 57, 83); text-decoration: none">New Arrivals</a> </td>=20
+                     <td class=3D"header-nav-item" style=3D"width: 20%; pad=
+ding: 15px 0; text-align: center;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.htm=
+l?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f9782=
+87d0d4b4e80de8c2a6370p0na&R=3D142NDIQ2Z5Y3P&T=3DC&U=3Dhttps%3A%2F%2Fwww.zap=
+pos.com%2Fsale%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnReques=
+tConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtr=
+x_200528_ReturnRequestConfirmation_all_A-header_nav_link_5%26ref_%3Dpe_2178=
+840_145384230&H=3DSBYXMU2VXK3XQFP3IDJGQHM2VJWA&ref_=3Dpe_2178840_145384230"=
+ class=3D"header-nav-link" title=3D"Clearance" style=3D"font-size: 16px; fo=
+nt-weight: 600; text-align: left; color: #003953; text-decoration: none;-we=
+bkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outli=
+ne: none;font-size: 16px; font-weight: 600; text-align: left; color: rgb(0,=
+ 57, 83); text-decoration: none">Clearance</a> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+            </tr>=20
+            <!--[if !mso 9]><!-->=20
+            <tr class=3D"mobile-header hide-on-desktop" style=3D"display: n=
+one; mso-hide: all">=20
+             <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-te=
+xt-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-tabl=
+e-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none">=20
+              <div class=3D"hide-on-desktop" style=3D"width: 0; height: 0; =
+max-width: 0px; max-height: 0px; padding: 0px; overflow: hidden">=20
+               <table style=3D"width: 100%; max-width: 100%; border-color: =
+transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;bord=
+er-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-=
+rspace: 0pt">=20
+                <tbody>
+                 <tr>=20
+                  <td class=3D"brand-identity" style=3D"-webkit-text-size-a=
+djust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-s=
+pacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0=
+; border: none;padding: 10px 15px">=20
+                   <table style=3D"width: 100%; max-width: 100%; border-col=
+or: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;=
+border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-ta=
+ble-rspace: 0pt">=20
+                    <tbody>
+                     <tr>=20
+                      <td class=3D"logo" style=3D"-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; bord=
+er: none;width: 134px;text-align: center"> <a href=3D"https://r.zappos.com/=
+gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:2020052801010=
+5b2f978287d0d4b4e80de8c2a6370p0na&R=3D1LM3XV6TJ37ZU&T=3DC&U=3Dhttps%3A%2F%2=
+Fwww.zappos.com%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnReque=
+stConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailt=
+rx_200528_ReturnRequestConfirmation_all_A-logo%26ref_%3Dpe_2178840_14538423=
+0&H=3DO819EONNORBQK9QQZCAVIHZU9V8A&ref_=3Dpe_2178840_145384230" class=3D"lo=
+go-link" title=3D"Zappos.com" style=3D"-webkit-text-size-adjust: 100%; -ms-=
+text-size-adjust: 100%;border: none; outline: none"> <img src=3D"https://m.=
+media-amazon.com/images/G/01/zappos.com/emails/zappos/zappos-pbs.jpg" class=
+=3D"image" alt=3D"Zappos.com" style=3D"border: 0; line-height: 100%; outlin=
+e: none; text-decoration: none; max-width: 100%; -ms-interpolation-mode: bi=
+cubic;width: 134px" /> </a> </td>=20
+                     </tr>
+                    </tbody>
+                   </table> </td>=20
+                 </tr>=20
+                </tbody>
+               </table>=20
+              </div> </td>=20
+            </tr>=20
+            <!--<![endif]-->=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr class=3D"content-wrapper">=20
+         <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt">=20
+          <table id=3D"ze-content" border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" width=3D"100%" style=3D"width: 100%; max-width: 100%; border-color=
+: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;bo=
+rder-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tabl=
+e-rspace: 0pt;width: 648px; border-color: transparent">=20
+           <tbody>
+            <tr class=3D"email-body">=20
+             <td style=3D"font-size: 14px; line-height: 20px; color: rgb(31=
+, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border=
+-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rs=
+pace: 0pt">=20
+              <table class=3D"order-confirmation" style=3D"width: 100%; max=
+-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%; -ms=
+-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-t=
+able-lspace: 0pt; mso-table-rspace: 0pt">=20
+               <tbody>
+                <tr class=3D"row">=20
+                 <td class=3D"email-intro" style=3D"font-size: 14px; line-h=
+eight: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;padding: 20px 30px 0">=20
+                  <table style=3D"width: 100%; max-width: 100%; border-colo=
+r: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"email-intro-wrapper" style=3D"font-size: =
+14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 1=
+00%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: =
+0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 20px; border-b=
+ottom: 1px solid rgb(221, 221, 221); text-align: left"> <h1 style=3D"font-s=
+ize: 28px; font-weight: 400; line-height: 40px; margin: 0 0 30px; padding: =
+0"> Your Return Request Confirmation </h1> <p style=3D"font-size: 14px; lin=
+e-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> You're one step c=
+loser to getting your refund...Hooray! You can print your return label usin=
+g the button below. Then, scroll down to read the return instructions. </p>=
+ </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"row">=20
+                 <td class=3D"return-info" style=3D"font-size: 14px; line-h=
+eight: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;padding: 20px 30px 0">=20
+                  <table style=3D"width: 100%; max-width: 100%; border-colo=
+r: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"return-info-wrapper" style=3D"font-size: =
+14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 1=
+00%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: =
+0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 20px; border-b=
+ottom: 1px solid rgb(221, 221, 221); text-align: left"> <h2 style=3D"font-s=
+ize: 24px; font-weight: 600; line-height: 30px; margin: 0 0 20px; padding: =
+0; color: rgb(33, 43, 54)"> Your Return Information </h2> <p style=3D"font-=
+size: 14px; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> <s=
+trong> RMA ID: </strong> D57ZdjnZRRMA </p>=20
+                      <!-- BG buttonMelody -->=20
+                      <!-- With BG buttonMelody --> <p style=3D"width:304px=
+; padding-left: 0 !important; padding-top: 0; padding-bottom: 0; margin-lef=
+t: 0 !important;font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);=
+margin: 0 0 10px"> </p>
+                      <table width=3D"304" cellpadding=3D"0" cellspacing=3D=
+"0" border=3D"0" style=3D"width: 304px !important; padding-left: 0;width: 1=
+00%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 1=
+00%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: =
+0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                       <tbody>=20
+                        <tr>=20
+                         <td class=3D"" style=3D"vertical-align:top; paddin=
+g-bottom:0; text-align:left;font-size: 14px; line-height: 20px; color: rgb(=
+31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;bord=
+er-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-=
+rspace: 0pt">=20
+                          <!--[if !mso]><!--> <a href=3D"https://r.zappos.c=
+om/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:2020052801=
+0105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1MMLQDGEL8OXG&T=3DC&U=3Dhttps%3A%2=
+F%2Fwww.zappos.com%2FreturnLabel%3FrmaId%3DD57ZdjnZRRMA%26utm_medium%3Demai=
+ltrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%2=
+6utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation=
+_all_A-print_return_label_cta%26ref_%3Dpe_2178840_145384230&H=3DTXRAXAINXC5=
+5ZTNQMI1M2UQCBWOA&ref_=3Dpe_2178840_145384230" style=3D"text-decoration:non=
+e;color:#ffffff;color: rgb(0, 57, 83);-webkit-text-size-adjust: 100%; -ms-t=
+ext-size-adjust: 100%;border: none; outline: none">=20
+                           <table width=3D"304" cellpadding=3D"0" cellspaci=
+ng=3D"0" border=3D"0" style=3D"width: 304px !important; float:left; padding=
+-left: 0;width: 100%; max-width: 100%; border-color: transparent;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                            <tbody>
+                             <tr>=20
+                              <td border=3D"0" style=3D"border:0 !important=
+; font-size: 14px; padding-left: 0 !important; padding-top: 12px !important=
+; padding-bottom: 12px !important; padding-right:16px !important; text-alig=
+n:center; vertical-align:middle; background-color:#003953; -moz-border-radi=
+us:4px; -webkit-border-radius:4px; border-radius:4px !important; width: 304=
+px;font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-=
+size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bo=
+rder-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" nowrap=3D"">=
+ <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR=
+97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1P0E=
+HFWYKAB48&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2FreturnLabel%3FrmaId%3DD5=
+7ZdjnZRRMA%26utm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestCon=
+firmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_20=
+0528_ReturnRequestConfirmation_all_A-print_return_label_cta%26ref_%3Dpe_217=
+8840_145384230&H=3DNT5VUMU4CI6PFKJ2KJGFIDPTKWEA&ref_=3Dpe_2178840_145384230=
+" style=3D"text-decoration:none; text-align:left; font-family: 'Helvetica N=
+eue LT Std', Helvetica, Arial, sans-serif, 'Open Sans'; font-weight:bold; t=
+ext-transform:uppercase; line-height:20px; text-align:left; text-decoration=
+:none; color: #ffffff !important; margin-left: 0px; margin-right: 0; margin=
+-bottom: 0; margin-top: 0px;color: rgb(0, 57, 83);-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border: none; outline: none" title=3D"Pri=
+nt Return Label">Print Return Label</a> </td>=20
+                             </tr>=20
+                            </tbody>
+                           </table> </a>=20
+                          <!--<![endif]-->=20
+                          <!--[if mso]>
+<v:roundrect xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:w=3D"urn:schem=
+as-microsoft-com:office:word" href=3D"https://www.zappos.com/returnLabel?rm=
+aId=3DD57ZdjnZRRMA&amp;utm_medium=3Demailtrx&amp;utm_campaign=3D200528_Retu=
+rnRequestConfirmation&amp;utm_term=3Dall_A&amp;utm_content=3Dzapposcom_emai=
+ltrx_emailtrx_200528_ReturnRequestConfirmation_all_A-print_return_label_cta=
+" style=3D"padding-left: 0 !important; padding-top: 12px !important; paddin=
+g-bottom: 12px !important; padding-right:16px !important; background-color:=
+#003953; width:304px; height:40px; vertical-align:middle; padding-left: 0 !=
+important; " arcsize=3D"8%" strokecolor=3D"#003953" fill=3D"t">
+<v:fill type=3D"tile" src=3D"" color=3D"#003953" ></v:fill>
+<w:anchorlock></w:anchorlock>
+<center style=3D"background-color:#003953; text-decoration:none; text-align=
+:center; font-family: 'Helvetica Neue LT Std', Helvetica, Arial, sans-serif=
+, 'Open Sans'; font-size:14px; font-weight:bold; text-transform:uppercase; =
+line-height:20px; color: #ffffff; margin-left: 0px !important; margin-right=
+: 0 !important; margin-bottom: 0 !important; margin-top: 0px; padding-left:=
+ 0 !important; ">
+Print Return Label
+</center>
+</v:roundrect>
+<br/>
+<![endif]--> </td>=20
+                        </tr>=20
+                       </tbody>=20
+                      </table> <p style=3D"font-size: 14px; line-height: 20=
+px; color: rgb(31, 31, 31);margin: 0 0 10px"></p>=20
+                      <!-- / With BG buttonMelody --> <br />=20
+                      <!-- buttonMelody --> <p style=3D"width:304px; paddin=
+g-left: 0; -moz-border-radius:4px; -webkit-border-radius:4px; border-radius=
+:4px;font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0=
+ 10px" width=3D"304"> </p>
+                      <table width=3D"304" cellpadding=3D"0" cellspacing=3D=
+"0" border=3D"0" style=3D"width: 304px !important; padding-left: 0; -moz-bo=
+rder-radius:4px; -webkit-border-radius:4px; border-radius:4px;width: 100%; =
+max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%; =
+-ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; ms=
+o-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                       <tbody>=20
+                        <tr>=20
+                         <td class=3D"" style=3D"vertical-align:top; paddin=
+g-bottom:16px; text-align:left;font-size: 14px; line-height: 20px; color: r=
+gb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                          <!--[if !mso]><!--> <a href=3D"https://r.zappos.c=
+om/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:2020052801=
+0105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2NEGI771L18RV&T=3DC&U=3Dhttps%3A%2=
+F%2Fwww.zappos.com%2Forders%2F114-2078754-2228246%3Futm_medium%3Demailtrx%2=
+6utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_c=
+ontent%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A=
+-check_return_cta%26ref_%3Dpe_2178840_145384230&H=3DOK5VACAZYX9MYJXPFVLNMN5=
+46HMA&ref_=3Dpe_2178840_145384230" style=3D"text-decoration:none;color:#003=
+953;color: rgb(0, 57, 83);-webkit-text-size-adjust: 100%; -ms-text-size-adj=
+ust: 100%;border: none; outline: none">=20
+                           <table width=3D"304" cellpadding=3D"0" cellspaci=
+ng=3D"0" border=3D"0" style=3D"float:left; padding-left: 0;width: 100%; max=
+-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%; -ms=
+-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-t=
+able-lspace: 0pt; mso-table-rspace: 0pt">=20
+                            <tbody>
+                             <tr>=20
+                              <td style=3D"font-size: 14px; padding: 12px 1=
+6px; text-align:left; vertical-align:middle; background-color:#ffffff; bord=
+er: solid 2px #003953; -moz-border-radius:4px; -webkit-border-radius:4px; b=
+order-radius:4px !important; display: block;font-size: 14px; line-height: 2=
+0px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-a=
+djust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace:=
+ 0pt; mso-table-rspace: 0pt" nowrap=3D""> <a href=3D"https://r.zappos.com/g=
+p/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105=
+b2f978287d0d4b4e80de8c2a6370p0na&R=3D3FX9CJN27Z28Q&T=3DC&U=3Dhttps%3A%2F%2F=
+www.zappos.com%2Forders%2F114-2078754-2228246%3Futm_medium%3Demailtrx%26utm=
+_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_conte=
+nt%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A-che=
+ck_return_cta%26ref_%3Dpe_2178840_145384230&H=3DCACDWRUYIGFWMUBHCRXC0Q6YAZE=
+A&ref_=3Dpe_2178840_145384230" style=3D"text-decoration:none; text-align:le=
+ft; font-family: 'Helvetica Neue LT Std', Helvetica, Arial, sans-serif, 'Op=
+en Sans'; font-weight:bold; text-transform:uppercase; line-height:20px; tex=
+t-align:left; text-decoration:none; color: #003953;color: rgb(0, 57, 83);-w=
+ebkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outl=
+ine: none" title=3D"CHECK RETURN &amp; REFUND STATUS">CHECK RETURN &amp; RE=
+FUND STATUS</a> </td>=20
+                             </tr>=20
+                            </tbody>
+                           </table> </a>=20
+                          <!--<![endif]-->=20
+                          <!--[if mso]>
+<v:roundrect xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:w=3D"urn:schem=
+as-microsoft-com:office:word" href=3D"https://www.zappos.com/orders/114-207=
+8754-2228246?utm_medium=3Demailtrx&amp;utm_campaign=3D200528_ReturnRequestC=
+onfirmation&amp;utm_term=3Dall_A&amp;utm_content=3Dzapposcom_emailtrx_email=
+trx_200528_ReturnRequestConfirmation_all_A-check_return_cta" style=3D"width=
+:304px; height:40px; vertical-align:middle; v-text-anchor:middle; padding-l=
+eft: 0 !important;" arcsize=3D"8%" strokecolor=3D"#003953" fill=3D"t">
+<v:fill type=3D"tile" src=3D"" color=3D"#ffffff" ></v:fill>
+<w:anchorlock></w:anchorlock>
+<center style=3D"text-decoration:none; text-align:left; font-family: 'Helve=
+tica Neue LT Std', Helvetica, Arial, sans-serif, 'Open Sans'; font-size:14p=
+x; font-weight:bold; text-transform:uppercase; line-height:20px; text-align=
+:left; text-decoration:none; color: #003953; padding-left: 0 !important;">
+CHECK RETURN & REFUND STATUS
+</center>
+</v:roundrect>
+<![endif]--> </td>=20
+                        </tr>=20
+                       </tbody>=20
+                      </table> <p style=3D"font-size: 14px; line-height: 20=
+px; color: rgb(31, 31, 31);margin: 0 0 10px"></p>=20
+                      <!-- /buttonMelody -->=20
+                      <!-- /buttonMelody -->=20
+                      <!-- /buttonMelody -->=20
+                      <!-- /buttonMelody --> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"row">=20
+                 <td class=3D"return-items" style=3D"font-size: 14px; line-=
+height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-te=
+xt-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-tabl=
+e-lspace: 0pt; mso-table-rspace: 0pt;padding: 20px 30px 0">=20
+                  <table style=3D"width: 100%; max-width: 100%; border-colo=
+r: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"return-items-wrapper" style=3D"font-size:=
+ 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 20px; border-=
+bottom: 1px solid rgb(221, 221, 221); text-align: left">=20
+                      <table style=3D"width: 100%; max-width: 100%; border-=
+color: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 10=
+0%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt">=20
+                       <tbody>
+                        <tr>=20
+                         <td style=3D"font-size: 14px; line-height: 20px; c=
+olor: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust:=
+ 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; =
+mso-table-rspace: 0pt"> <h2 style=3D"font-size: 24px; font-weight: 600; lin=
+e-height: 30px; margin: 0 0 20px; padding: 0; color: rgb(33, 43, 54)"> You=
+=E2=80=99re Returning the Following Item </h2> </td>=20
+                        </tr>=20
+                        <tr>=20
+                         <td style=3D"font-size: 14px; line-height: 20px; c=
+olor: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust:=
+ 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; =
+mso-table-rspace: 0pt">=20
+                          <table style=3D"width: 100%; max-width: 100%; bor=
+der-color: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust=
+: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt;=
+ mso-table-rspace: 0pt">=20
+                           <thead>=20
+                            <tr class=3D"product-list-header">=20
+                             <th class=3D"product-info" style=3D"background=
+: rgb(245, 245, 245); font-size: 12px; font-weight: normal; padding: 5px 15=
+px; vertical-align: middle;text-align: left">Item</th>=20
+                             <th class=3D"product-price" style=3D"backgroun=
+d: rgb(245, 245, 245); font-size: 12px; font-weight: normal; padding: 5px 1=
+5px; vertical-align: middle;text-align: right">Price</th>=20
+                            </tr>=20
+                           </thead>=20
+                           <tbody>=20
+                            <tr class=3D"product-list-item first-product-li=
+st-item last-product-list-item">=20
+                             <td class=3D"product-info" style=3D"font-size:=
+ 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;vertical-align: top; paddi=
+ng: 15px 0 15px 15px;text-align: left">=20
+                              <!--[if (gte mso 9)|(IE)]>
+    =09=09=09<table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" bord=
+er=3D"0">
+    =09=09=09<tr>
+    =09=09=09<td style=3D"width: 135px; padding: 0 15px 0 0; vertical-align=
+: top;">
+    =09=09=09<![endif]-->=20
+                              <div class=3D"col1 inline-div product-image" =
+style=3D"display: inline-block; zoom: 1;vertical-align: top">=20
+                               <a href=3D"https://r.zappos.com/gp/r.html?C=
+=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d=
+0d4b4e80de8c2a6370p0na&R=3D30ZLLEWJCJRG3&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos=
+.com%2Fp%2Fasin%2FB07V2JB8HC%3Futm_medium%3Demailtrx%26utm_campaign%3D20052=
+8_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_em=
+ailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A-itemList-image%26ref=
+_%3Dpe_2178840_145384230&H=3DW9CA5MVPC0KCHIAITAI9FK5A5NGA&ref_=3Dpe_2178840=
+_145384230" class=3D"image-link" title=3D"GEL-Nimbus&reg; 22" style=3D"colo=
+r: rgb(0, 57, 83);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100=
+%;border: none; outline: none;display: block; padding: 0 15px 0 0; text-dec=
+oration: none"> <img src=3D"http://ecx.images-amazon.com/images/I/41GFj67yM=
+gL._XL150_.jpg" class=3D"image" alt=3D"GEL-Nimbus&reg; 22" width=3D"120" st=
+yle=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; =
+max-width: 100%; -ms-interpolation-mode: bicubic" /> </a>=20
+                              </div>=20
+                              <!--[if (gte mso 9)|(IE)]>
+    =09=09=09</td>
+    =09=09=09<td style=3D"width: 260px; vertical-align: top; text-align: le=
+ft;">
+    =09=09=09<![endif]-->=20
+                              <div class=3D"col2 inline-div product-details=
+" style=3D"display: inline-block; zoom: 1;vertical-align: top;max-width: 26=
+0px">=20
+                               <a href=3D"https://r.zappos.com/gp/r.html?C=
+=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d=
+0d4b4e80de8c2a6370p0na&R=3D1MGC939R4XI57&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos=
+.com%2Fp%2Fasin%2FB07V2JB8HC%3Futm_medium%3Demailtrx%26utm_campaign%3D20052=
+8_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_em=
+ailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A-itemList-link%26ref_=
+%3Dpe_2178840_145384230&H=3DPUAO5CTGOKZ5CQSD6GJN47K8FMUA&ref_=3Dpe_2178840_=
+145384230" class=3D"product-details-link" title=3D"GEL-Nimbus&reg; 22" styl=
+e=3D"color: rgb(0, 57, 83);-webkit-text-size-adjust: 100%; -ms-text-size-ad=
+just: 100%;border: none; outline: none;color: rgb(31, 31, 31) !important; t=
+ext-decoration: none"> <span class=3D"product-info-brand">ASICS</span><br /=
+> <span class=3D"product-info-name" style=3D"color: rgb(0, 57, 83) !importa=
+nt; text-decoration: underline;text-decoration: underline">GEL-Nimbus&reg; =
+22</span><br /> <span class=3D"product-info-asin"><strong>ASIN:</strong> B0=
+7V2JB8HC</span><br /> <span class=3D"product-info-color"><strong>Color:</st=
+rong> Tuna Blue/Pure Silver</span><br /> <span class=3D"product-info-size">=
+<strong>Size:</strong> 14 D (M)</span> </a>=20
+                              </div>=20
+                              <!--[if (gte mso 9)|(IE)]>
+    =09=09=09</td>
+    =09=09=09</tr>
+    =09=09=09</table>
+    =09=09=09<![endif]--> </td>=20
+                             <td class=3D"product-price" style=3D"font-size=
+: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;vertical-align: top; padd=
+ing: 15px;text-align: right"> $163.26 </td>=20
+                            </tr>=20
+                           </tbody>=20
+                          </table> </td>=20
+                        </tr>=20
+                        <tr>=20
+                         <td style=3D"font-size: 14px; line-height: 20px; c=
+olor: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust:=
+ 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; =
+mso-table-rspace: 0pt">=20
+                          <table style=3D"width: 100%; max-width: 100%; bor=
+der-color: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust=
+: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt;=
+ mso-table-rspace: 0pt">=20
+                           <tbody>
+                            <tr class=3D"credit-total">=20
+                             <td class=3D"orderSummary-name" style=3D"font-=
+size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adj=
+ust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spa=
+cing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-align: right;fon=
+t-weight: bold"> Credit Total: </td>=20
+                             <td class=3D"orderSummary-value" style=3D"font=
+-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-ad=
+just: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-sp=
+acing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 110px; paddin=
+g: 0 15px 0 0; text-align: right;font-weight: bold"> $163.26 </td>=20
+                            </tr>=20
+                            <tr class=3D"payment-association">=20
+                             <td style=3D"font-size: 14px; line-height: 20p=
+x; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adj=
+ust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0=
+pt; mso-table-rspace: 0pt;padding-bottom: 15px"></td>=20
+                            </tr>=20
+                           </tbody>
+                          </table> </td>=20
+                        </tr>=20
+                        <tr>=20
+                         <td style=3D"font-size: 14px; line-height: 20px; c=
+olor: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust:=
+ 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; =
+mso-table-rspace: 0pt"> <p style=3D"font-size: 14px; line-height: 20px; col=
+or: rgb(31, 31, 31);margin: 0 0 10px"> This return originated from Order Nu=
+mber: 114-2078754-2228246. </p> </td>=20
+                        </tr>=20
+                       </tbody>
+                      </table> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"row">=20
+                 <td class=3D"return-instructions" style=3D"font-size: 14px=
+; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%;=
+ -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; m=
+so-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 20px 30px 0">=20
+                  <table style=3D"width: 100%; max-width: 100%; border-colo=
+r: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"return-instructions-wrapper" style=3D"fon=
+t-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-a=
+djust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-s=
+pacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 20px; =
+border-bottom: 1px solid rgb(221, 221, 221); text-align: left">=20
+                      <table style=3D"width: 100%; max-width: 100%; border-=
+color: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 10=
+0%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso=
+-table-rspace: 0pt">=20
+                       <tbody>
+                        <tr>=20
+                         <td class=3D"return-instructions-title" style=3D"f=
+ont-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size=
+-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border=
+-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <h2 style=3D"fo=
+nt-size: 24px; font-weight: 600; line-height: 30px; margin: 0 0 20px; paddi=
+ng: 0; color: rgb(33, 43, 54)"> Return Instructions </h2> </td>=20
+                        </tr>=20
+                        <tr>=20
+                         <td class=3D"return-instructions-diagram" style=3D=
+"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                          <table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" class=3D"return-instructions-diagram" width=3D"100%" style=3D"width:=
+ 100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                           <tbody>
+                            <tr class=3D"row1">=20
+                             <td class=3D"return-instruction col1" style=3D=
+"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0; bor=
+der: 1px solid rgb(221, 221, 221) !important; vertical-align: top">=20
+                              <table style=3D"max-height: 240px;width: 100%=
+; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%=
+; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; =
+mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                               <tbody>
+                                <tr>=20
+                                 <td class=3D"return-instruction-wrapper" s=
+tyle=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-=
+text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collaps=
+e; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 1=
+82px; height: 210px; padding: 10px; border: 0 !important; vertical-align: t=
+op">=20
+                                  <table style=3D"width: 100%; max-width: 1=
+00%; border-color: transparent;-webkit-text-size-adjust: 100%; -ms-text-siz=
+e-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspa=
+ce: 0pt; mso-table-rspace: 0pt">=20
+                                   <tbody>
+                                    <tr>=20
+                                     <td class=3D"return-instruction-bullet=
+-number" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31=
+);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t;text-align: center; height: 90px;width: 30px; vertical-align: top"> <img =
+alt=3D"1" src=3D"https://m.media-amazon.com/images/G/01/zappos.com/emails/z=
+appos/transactional/ReturnRequestConfirmation/1-v2.png" width=3D"30" style=
+=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; max=
+-width: 100%; -ms-interpolation-mode: bicubic" /> </td>=20
+                                     <td class=3D"return-instruction-icon" =
+style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit=
+-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collap=
+se; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-al=
+ign: center; height: 90px;vertical-align: middle"> <img alt=3D"icon" src=3D=
+"https://m.media-amazon.com/images/G/01/zappos.com/emails/zappos/transactio=
+nal/ReturnRequestConfirmation/Zappos_Return_Icon_2point0.png" width=3D"80" =
+style=3D"border: 0; line-height: 100%; outline: none; text-decoration: none=
+; max-width: 100%; -ms-interpolation-mode: bicubic;margin: 0 auto 10px" /> =
+</td>=20
+                                     <td class=3D"return-instruction-spacer=
+" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webk=
+it-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: coll=
+apse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-=
+align: center; height: 90px;width: 30px"> </td>=20
+                                    </tr>=20
+                                   </tbody>
+                                  </table> <p style=3D"font-size: 14px; lin=
+e-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px;text-align: left">P=
+lace item(s) you=E2=80=99re returning back in their original packaging and =
+put them in any cardboard box or a Zappos shipping box/bag.</p> </td>=20
+                                </tr>=20
+                               </tbody>
+                              </table> </td>=20
+                             <td class=3D"return-instruction-col-spacer" st=
+yle=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-t=
+ext-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse=
+; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 10=
+px"></td>=20
+                             <td class=3D"return-instruction col2" style=3D=
+"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 5px =
+5px; border: 1px solid rgb(221, 221, 221) !important; vertical-align: top">=
+=20
+                              <table style=3D"max-height: 240px;width: 100%=
+; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%=
+; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; =
+mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                               <tbody>
+                                <tr>=20
+                                 <td class=3D"return-instruction-wrapper" s=
+tyle=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-=
+text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collaps=
+e; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 1=
+82px; height: 210px; padding: 10px; border: 0 !important; vertical-align: t=
+op">=20
+                                  <table style=3D"width: 100%; max-width: 1=
+00%; border-color: transparent;-webkit-text-size-adjust: 100%; -ms-text-siz=
+e-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspa=
+ce: 0pt; mso-table-rspace: 0pt">=20
+                                   <tbody>
+                                    <tr>=20
+                                     <td class=3D"return-instruction-bullet=
+-number" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31=
+);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t;text-align: center; height: 90px;width: 30px; vertical-align: top"> <img =
+alt=3D"2" src=3D"https://m.media-amazon.com/images/G/01/zappos.com/emails/z=
+appos/transactional/ReturnRequestConfirmation/2-v2.png" width=3D"30" style=
+=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; max=
+-width: 100%; -ms-interpolation-mode: bicubic" /> </td>=20
+                                     <td class=3D"return-instruction-icon" =
+style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit=
+-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collap=
+se; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-al=
+ign: center; height: 90px;vertical-align: middle"> <img alt=3D"icon" src=3D=
+"https://m.media-amazon.com/images/G/01/zappos.com/emails/zappos/transactio=
+nal/ReturnRequestConfirmation/Zappos_Return_Icon_1.png" width=3D"80" style=
+=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; max=
+-width: 100%; -ms-interpolation-mode: bicubic;margin: 0 auto 10px" /> </td>=
+=20
+                                     <td class=3D"return-instruction-spacer=
+" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webk=
+it-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: coll=
+apse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-=
+align: center; height: 90px;width: 30px"> </td>=20
+                                    </tr>=20
+                                   </tbody>
+                                  </table> <p style=3D"font-size: 14px; lin=
+e-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px;text-align: left">R=
+emove any pre-existing labels or markings from the package and seal it with=
+ clear packing tape.</p> </td>=20
+                                </tr>=20
+                               </tbody>
+                              </table> </td>=20
+                             <td class=3D"return-instruction-col-spacer" st=
+yle=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-t=
+ext-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse=
+; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 10=
+px"></td>=20
+                             <td class=3D"return-instruction col3" style=3D=
+"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 5p=
+x 5px; border: 1px solid rgb(221, 221, 221) !important; vertical-align: top=
+">=20
+                              <table style=3D"max-height: 240px;width: 100%=
+; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%=
+; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; =
+mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                               <tbody>
+                                <tr>=20
+                                 <td class=3D"return-instruction-wrapper" s=
+tyle=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-=
+text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collaps=
+e; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 1=
+82px; height: 210px; padding: 10px; border: 0 !important; vertical-align: t=
+op">=20
+                                  <table style=3D"width: 100%; max-width: 1=
+00%; border-color: transparent;-webkit-text-size-adjust: 100%; -ms-text-siz=
+e-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspa=
+ce: 0pt; mso-table-rspace: 0pt">=20
+                                   <tbody>
+                                    <tr>=20
+                                     <td class=3D"return-instruction-bullet=
+-number" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31=
+);-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t;text-align: center; height: 90px;width: 30px; vertical-align: top"> <img =
+alt=3D"3" src=3D"https://m.media-amazon.com/images/G/01/zappos.com/emails/z=
+appos/transactional/ReturnRequestConfirmation/3-v2.png" width=3D"30" style=
+=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; max=
+-width: 100%; -ms-interpolation-mode: bicubic" /> </td>=20
+                                     <td class=3D"return-instruction-icon" =
+style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit=
+-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collap=
+se; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-al=
+ign: center; height: 90px;vertical-align: middle"> <img alt=3D"icon" src=3D=
+"https://m.media-amazon.com/images/G/01/zappos.com/emails/zappos/transactio=
+nal/ReturnRequestConfirmation/Zappos_Return_Icon_3.png" width=3D"80" style=
+=3D"border: 0; line-height: 100%; outline: none; text-decoration: none; max=
+-width: 100%; -ms-interpolation-mode: bicubic;margin: 0 auto 10px" /> </td>=
+=20
+                                     <td class=3D"return-instruction-spacer=
+" style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webk=
+it-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: coll=
+apse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;text-=
+align: center; height: 90px;width: 30px"> </td>=20
+                                    </tr>=20
+                                   </tbody>
+                                  </table> <p style=3D"font-size: 14px; lin=
+e-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px;text-align: left">S=
+eal box/bag, attach return label, and take to an authorized UPS location. S=
+ee more about UPS below!</p> </td>=20
+                                </tr>=20
+                               </tbody>
+                              </table> </td>=20
+                            </tr>=20
+                           </tbody>
+                          </table> </td>=20
+                        </tr>=20
+                        <tr>
+                         <td style=3D"font-size: 14px; line-height: 20px; c=
+olor: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms-text-size-adjust:=
+ 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; =
+mso-table-rspace: 0pt"> </td>=20
+                        </tr>=20
+                        <tr>=20
+                         <td class=3D"return-instructions-details" style=3D=
+"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <p style=3D"f=
+ont-size: 14px; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"=
+>&nbsp;</p> <p style=3D"font-size: 14px; line-height: 20px; color: rgb(31, =
+31, 31);margin: 0 0 10px"> <strong> What's the timeline for my refund? </st=
+rong> </p> <p style=3D"margin-bottom: 16px !important;font-size: 14px; line=
+-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> <strong> =E2=9C=94=
+ 5-10 Business Days </strong> for us to get your package at the fulfillment=
+ center, inspect your return, process it into inventory, and complete your =
+refund. <br /> <strong> =E2=9C=94 2-10 Business Days </strong> for your fin=
+ancial institution to credit your account. </p>=20
+                          <!--<table>-->=20
+                          <!--    <tr>-->=20
+                          <!--        <td style=3D"padding: 0 0 16px 16px;"=
+>                                            -->=20
+                          <!--            <strong>VIP Members=E2=80=94PERK =
+ALERT!</strong> Enrolled Zappos VIP members now have the option to get refu=
+nds faster. If you chose to receive a =E2=80=9CRapid Refund," we=E2=80=99ll=
+ issue your refund in approximately 24 hours of first scan by UPS at drop-o=
+ff or pick-up. If we don=E2=80=99t receive the item(s) listed above, we may=
+ charge your credit card for those items. If you didn=E2=80=99t opt in for =
+a =E2=80=9CRapid Refund,=E2=80=9D you can ignore this message.-->=20
+                          <!--        </td>-->=20
+                          <!--    </tr>-->=20
+                          <!--</table>--> <p style=3D"font-size: 14px; line=
+-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> <strong> What if I=
+ don't have a printer or access to UPS? </strong> </p> <p style=3D"margin-b=
+ottom: 20px !important;font-size: 14px; line-height: 20px; color: rgb(31, 3=
+1, 31);margin: 0 0 10px"> Our Customer Loyalty Team would love to help! Ple=
+ase call 1-877-513-7428 and ask us to mail you a USPS return label. </p> <p=
+ style=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);margin=
+: 0 0 10px"> <strong> Which UPS location do I use? </strong> </p> <p style=
+=3D"font-size: 14px; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0 =
+10px"> Take your package to The UPS Store, UPS Customer Center, UPS Allianc=
+es, or Authorized Shipping Outlet near you. <a href=3D"https://r.zappos.com=
+/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:202005280101=
+05b2f978287d0d4b4e80de8c2a6370p0na&R=3D31S83T4CBTFYA&T=3DC&U=3Dhttps%3A%2F%=
+2Fwww.ups.com%2Fdropoff&H=3DAJMYKTACOUPHQY549YNU6XRIBOGA" target=3D"_blank"=
+ style=3D"color: rgb(0, 57, 83);-webkit-text-size-adjust: 100%; -ms-text-si=
+ze-adjust: 100%;border: none; outline: none">Find your closest UPS location=
+</a> and select Drop Off. Daily collection customers: have your shipment(s)=
+ ready for the driver as usual. </p>=20
+                          <!-- <p>
+                                            *Refunds issued within 24 hours=
+ of first scan by UPS at drop-off or pick-up. For 24-hour refunds, if we do=
+n=E2=80=99t receive the item(s) listed above in the return shipping box/bag=
+, we may charge your credit card.
+                                        </p> --> <p style=3D"font-size: 14p=
+x; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> <a href=3D"=
+https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:=
+rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D349NF5OY5DP50&T=
+=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fshipping-and-returns%3Fref_%3Dpe_21=
+78840_145384230&H=3DPSPUGVIBIPMDPNYDM1FCE9WE0DCA&ref_=3Dpe_2178840_14538423=
+0" target=3D"_blank" style=3D"color: rgb(0, 57, 83);-webkit-text-size-adjus=
+t: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Learn more=
+ about our return policy</a>. </p> </td>=20
+                        </tr>=20
+                       </tbody>
+                      </table> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"row">=20
+                 <td class=3D"closing-remarks" style=3D"font-size: 14px; li=
+ne-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjust: 100%; -ms=
+-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-t=
+able-lspace: 0pt; mso-table-rspace: 0pt;padding: 20px 30px 0">=20
+                  <table style=3D"width: 100%; max-width: 100%; border-colo=
+r: transparent;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"closing-remarks-wrapper" style=3D"font-si=
+ze: 14px; line-height: 20px; color: rgb(31, 31, 31);-webkit-text-size-adjus=
+t: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spaci=
+ng: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;padding: 0 0 20px; text=
+-align: left"> <p style=3D"font-size: 14px; line-height: 20px; color: rgb(3=
+1, 31, 31);margin: 0 0 10px"> Please give us a call if you have any questio=
+ns: 1-877-513-7428. We=E2=80=99re on standby 24/7! </p> <p style=3D"font-si=
+ze: 14px; line-height: 20px; color: rgb(31, 31, 31);margin: 0 0 10px"> Sinc=
+erely, <br /> Your Friends at <a href=3D"https://r.zappos.com/gp/r.html?C=
+=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d=
+0d4b4e80de8c2a6370p0na&R=3D1MK9ZOWF2TSTC&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos=
+.com%3Fref_%3Dpe_2178840_145384230&H=3DA4FMSYAJMYIJMEOICBUALBYR3O0A&ref_=3D=
+pe_2178840_145384230" style=3D"color: rgb(0, 57, 83);-webkit-text-size-adju=
+st: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Zappos.co=
+m</a> <br /> </p> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr class=3D"footer-wrapper">=20
+         <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-ls=
+pace: 0pt; mso-table-rspace: 0pt">=20
+          <table id=3D"ze-footer" style=3D"text-align: left; font-size: 14p=
+x;width: 100%; max-width: 100%; border-color: transparent;-webkit-text-size=
+-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border=
+-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 648px; bor=
+der-color: transparent">=20
+           <tbody>
+            <tr class=3D"desktop-footer hide-on-mobile">=20
+             <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-te=
+xt-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-tabl=
+e-lspace: 0pt; mso-table-rspace: 0pt">=20
+              <table style=3D"text-align: left; font-size: 14px;width: 100%=
+; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%=
+; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; =
+mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" width=3D"100%">=20
+               <tbody>
+                <tr class=3D"zappos-values" style=3D"background-color: #003=
+953;">=20
+                 <td class=3D"zappos-values-wrapper" style=3D"padding: 30px=
+ 30px 0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-c=
+ollapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspa=
+ce: 0pt">=20
+                  <table style=3D"text-align: left; font-size: 14px;width: =
+100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                   <tbody>
+                    <tr class=3D"zappos-values-text">=20
+                     <td colspan=3D"2" style=3D"color: #fff; padding: 0 0 3=
+0px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-colla=
+pse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: =
+0pt"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O=
+2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=
+=3D14ZJPDB2N6BEZ&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fabout%2Fwhat-we-l=
+ive-by%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirm=
+ation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528=
+_ReturnRequestConfirmation_all_A-core_value%26ref_%3Dpe_2178840_145384230&H=
+=3DEXDINBGBWQTBSNKMTUBHSZZC7LUA&ref_=3Dpe_2178840_145384230" style=3D"font-=
+size: 16px; line-height: 1; text-align: left; color: #ffffff; text-decorati=
+on: none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border:=
+ none; outline: none"><p class=3D"core-values-header" style=3D"font-size: 1=
+6px; margin: 0 0 15px;">Zappos Family Core Value</p> <p class=3D"core-value=
+s-subheader" style=3D"font-size: 21px; font-weight: 600; margin: 0;">7. Bui=
+ld a Positive Team and Family Spirit</p></a> </td>=20
+                    </tr>=20
+                    <tr class=3D"zappos-values-divider">=20
+                     <td class=3D"zappos-values-divider-line" style=3D"-web=
+kit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: col=
+lapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=20
+                      <hr color=3D"#255EA9" size=3D"2" style=3D"margin:0px;=
+" /> </td>=20
+                     <td class=3D"zappos-values-wiggle-divider" style=3D"wi=
+dth: 116px !important; padding: 0 0 0 15px;-webkit-text-size-adjust: 100%; =
+-ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; ms=
+o-table-lspace: 0pt; mso-table-rspace: 0pt"> <img src=3D"https://m.media-am=
+azon.com/images/G/01/zappos.com/emails/zappos/shared/wiggle.png" width=3D"1=
+16" height=3D"9" style=3D"border: 0; line-height: 100%; outline: none; text=
+-decoration: none; max-width: 100%; -ms-interpolation-mode: bicubic" /> </t=
+d>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"link-farm" style=3D"background-color: #003953;=
+">=20
+                 <td class=3D"link-farm-wrapper" style=3D"padding: 30px;-we=
+bkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: co=
+llapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=
+=20
+                  <table style=3D"text-align: left; font-size: 14px;width: =
+100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                   <tbody>
+                    <tr>=20
+                     <td class=3D"col-1" style=3D"width: 28%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DA=
+TSJA5UC62E3&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Faccount%3Futm_medium%3=
+Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dal=
+l_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirm=
+ation_all_A-footer_link_farm_link_1%26ref_%3Dpe_2178840_145384230&H=3DFPOJS=
+BPJDIASYTTKAJCJW4WZWU0A&ref_=3Dpe_2178840_145384230" class=3D"link-farm-lin=
+k" title=3D"My Account" style=3D"font-size: 16px; line-height: 1; text-alig=
+n: left; color: #ffffff; text-decoration: none;-webkit-text-size-adjust: 10=
+0%; -ms-text-size-adjust: 100%;border: none; outline: none">My Account</a> =
+</td>=20
+                     <td class=3D"col-2" style=3D"width: 33%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DT=
+0WROO7FROBW&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fcontact-us%3Futm_mediu=
+m%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3=
+Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConf=
+irmation_all_A-footer_link_farm_link_5%26ref_%3Dpe_2178840_145384230&H=3DW3=
+GZNXZNDMTIAG1SLYDNCBYFPNAA&ref_=3Dpe_2178840_145384230" class=3D"link-farm-=
+link" title=3D"Contact Info" style=3D"font-size: 16px; line-height: 1; text=
+-align: left; color: #ffffff; text-decoration: none;-webkit-text-size-adjus=
+t: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Contact In=
+fo</a> </td>=20
+                     <td class=3D"col-3" style=3D"padding: 8px 0;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <a href=
+=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3D=
+urn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1ZYZZSMKQ3A4=
+Z&T=3DC&U=3Dhttps%3A%2F%2Fwww.facebook.com%2Fzappos%3Futm_medium%3Demailtrx=
+%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm=
+_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all=
+_A-footer_link_farm_link_9&H=3DSUKN4CZB4F2DSRJPNHCQTOOK3NYA" class=3D"link-=
+farm-link" title=3D"Facebook" style=3D"font-size: 16px; line-height: 1; tex=
+t-align: left; color: #ffffff; text-decoration: none;-webkit-text-size-adju=
+st: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Facebook<=
+/a> </td>=20
+                    </tr>=20
+                    <tr>=20
+                     <td class=3D"col-1" style=3D"width: 28%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DR=
+43OO1WDA42G&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Faccount%2Ffavorites%3F=
+utm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26u=
+tm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRe=
+questConfirmation_all_A-footer_link_farm_link_2%26ref_%3Dpe_2178840_1453842=
+30&H=3DZCTJFX2LNAJKQBAB9DJMRBU8NHYA&ref_=3Dpe_2178840_145384230" class=3D"l=
+ink-farm-link" title=3D"My Favorites" style=3D"font-size: 16px; line-height=
+: 1; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-s=
+ize-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">M=
+y Favorites</a> </td>=20
+                     <td class=3D"col-2" style=3D"width: 33%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2=
+8R19EMHXF6AF&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fprotecting-your-perso=
+nal-information%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnReque=
+stConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailt=
+rx_200528_ReturnRequestConfirmation_all_A-footer_link_farm_link_6%26ref_%3D=
+pe_2178840_145384230&H=3DNKXYFFRE7CMAYSEJFEG5FI4I2VGA&ref_=3Dpe_2178840_145=
+384230" class=3D"link-farm-link" title=3D"Secure Shopping" style=3D"font-si=
+ze: 16px; line-height: 1; text-align: left; color: #ffffff; text-decoration=
+: none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: n=
+one; outline: none">Secure Shopping</a> </td>=20
+                     <td class=3D"col-3" style=3D"padding: 8px 0;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <a href=
+=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3D=
+urn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2YKDG0NEUUI6=
+1&T=3DC&U=3Dhttps%3A%2F%2Ftwitter.com%2FZappos%3Futm_medium%3Demailtrx%26ut=
+m_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_cont=
+ent%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A-fo=
+oter_link_farm_link_10&H=3DW61MZG7WIIDHENLA7TCILDQYZWMA" class=3D"link-farm=
+-link" title=3D"Follow Us On Twitter" style=3D"font-size: 16px; line-height=
+: 1; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-s=
+ize-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">F=
+ollow Us On Twitter</a> </td>=20
+                    </tr>=20
+                    <tr>=20
+                     <td class=3D"col-1" style=3D"width: 28%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DO=
+3XDUSR9U0HH&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fc%2Fabout-zappos%3Futm=
+_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_=
+term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnReque=
+stConfirmation_all_A-footer_link_farm_link_3%26ref_%3Dpe_2178840_145384230&=
+H=3DOU89OCW4BUVWYER2LKNYGRUY5SGA&ref_=3Dpe_2178840_145384230" class=3D"link=
+-farm-link" title=3D"About Us" style=3D"font-size: 16px; line-height: 1; te=
+xt-align: left; color: #ffffff; text-decoration: none;-webkit-text-size-adj=
+ust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">About Us=
+</a> </td>=20
+                     <td class=3D"col-2" style=3D"width: 33%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2=
+T2UFQ0KWVKCB&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fsurvey%2Ftake%2Fzappo=
+s-voc%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirma=
+tion%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_=
+ReturnRequestConfirmation_all_A-footer_link_farm_link_7%26ref_%3Dpe_2178840=
+_145384230&H=3DN50Z0ZGRD48MKTO32YRUEIBGUJGA&ref_=3Dpe_2178840_145384230" cl=
+ass=3D"link-farm-link" title=3D"Website Feedback" style=3D"font-size: 16px;=
+ line-height: 1; text-align: left; color: #ffffff; text-decoration: none;-w=
+ebkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outl=
+ine: none">Website Feedback</a> </td>=20
+                     <td class=3D"col-3" style=3D"padding: 8px 0;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <a href=
+=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3D=
+urn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D1XDESV7I0AXP=
+A&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fprivacy-policy%3Futm_medium%3Dem=
+ailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A=
+%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmati=
+on_all_A-footer_link_farm_link_11%26ref_%3Dpe_2178840_145384230&H=3DKZH2BLD=
+XLRSATDYOVAS8KKOPWPIA&ref_=3Dpe_2178840_145384230" class=3D"link-farm-link"=
+ title=3D"Privacy Policy" style=3D"font-size: 16px; line-height: 1; text-al=
+ign: left; color: #ffffff; text-decoration: none;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border: none; outline: none">Privacy Polic=
+y</a> </td>=20
+                    </tr>=20
+                    <tr>=20
+                     <td class=3D"col-1" style=3D"width: 28%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2=
+Y1JFALK6W3E&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fcustomer-service-cente=
+r%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation=
+%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_Retu=
+rnRequestConfirmation_all_A-footer_link_farm_link_4%26ref_%3Dpe_2178840_145=
+384230&H=3DA72DYO6QJCCRN8WDNPUJ3DI5FP4A&ref_=3Dpe_2178840_145384230" class=
+=3D"link-farm-link" title=3D"Help" style=3D"font-size: 16px; line-height: 1=
+; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-size=
+-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Help=
+</a> </td>=20
+                     <td class=3D"col-2" style=3D"width: 33%; padding: 8px =
+0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collaps=
+e: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0p=
+t"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2K=
+CCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2=
+MD6JPQY2SA5A&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fzappos-gift-cards%3Fu=
+tm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26ut=
+m_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnReq=
+uestConfirmation_all_A-footer_link_farm_link_8%26ref_%3Dpe_2178840_14538423=
+0&H=3DZAYGAHGU5I4NNSZZG27SBB68TTMA&ref_=3Dpe_2178840_145384230" class=3D"li=
+nk-farm-link" title=3D"Gift Cards" style=3D"font-size: 16px; line-height: 1=
+; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-size=
+-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Gift=
+ Cards</a> </td>=20
+                     <td class=3D"col-3" style=3D"padding: 8px 0;-webkit-te=
+xt-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse;=
+ border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt"> <a href=
+=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3D=
+urn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2R2SCPG8AE5K=
+N&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fsubscriptions%3Futm_medium%3Dema=
+iltrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%=
+26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmatio=
+n_all_A-mobile_footer_link_farm_link_8%26ref_%3Dpe_2178840_145384230&H=3DAW=
+OWKKLMI3M4MU1UA0E7RNAICAYA&ref_=3Dpe_2178840_145384230" class=3D"link-farm-=
+link" style=3D"font-size: 16px; line-height: 1; text-align: left; color: #f=
+fffff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms-text-size-=
+adjust: 100%;border: none; outline: none">Manage Your Subscription</a> </td=
+>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"footer-nav" style=3D"background-color: #014362=
+;">=20
+                 <td class=3D"footer-nav-wrapper" style=3D"padding: 15px 30=
+px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collap=
+se: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0=
+pt">=20
+                  <table style=3D"text-align: left; font-size: 14px;width: =
+100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                   <tbody>
+                    <tr>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3D1YH5VRN2YVRUS&T=3DC&U=3Dhttp%3A%2F%2Fluxury.=
+zappos.com%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestCon=
+firmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_20=
+0528_ReturnRequestConfirmation_all_A-footer_nav_link_1%26ref_%3Dpe_2178840_=
+145384230&H=3DMKVJAH9TVVNSVA4NRP3XMYFIKWCA&ref_=3Dpe_2178840_145384230" cla=
+ss=3D"footer-nav-link" title=3D"Luxury" style=3D"font-size: 16px; line-heig=
+ht: 1.88; text-align: left; color: #ffffff; text-decoration: none;-webkit-t=
+ext-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: no=
+ne">Luxury</a> </td>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3D37UOTLKTHKE6H&T=3DC&U=3Dhttps%3A%2F%2Fwww.za=
+ppos.com%2Foutdoor%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRe=
+questConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_ema=
+iltrx_200528_ReturnRequestConfirmation_all_A-footer_nav_link_2%26ref_%3Dpe_=
+2178840_145384230&H=3DUILN8OWVUZFJA2UTMVIQ4OTICYSA&ref_=3Dpe_2178840_145384=
+230" class=3D"footer-nav-link" title=3D"Outdoor" style=3D"font-size: 16px; =
+line-height: 1.88; text-align: left; color: #ffffff; text-decoration: none;=
+-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; ou=
+tline: none">Outdoor</a> </td>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3D114QVAT1GFPGR&T=3DC&U=3Dhttps%3A%2F%2Fwww.za=
+ppos.com%2Frideshop%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnR=
+equestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_em=
+ailtrx_200528_ReturnRequestConfirmation_all_A-footer_nav_link_3%26ref_%3Dpe=
+_2178840_145384230&H=3DGFNGCBDUSCWIX6HZ7B9OIHWQWESA&ref_=3Dpe_2178840_14538=
+4230" class=3D"footer-nav-link" title=3D"Rideshop" style=3D"font-size: 16px=
+; line-height: 1.88; text-align: left; color: #ffffff; text-decoration: non=
+e;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; =
+outline: none">Rideshop</a> </td>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3D1N4EPVDGYJJ9H&T=3DC&U=3Dhttps%3A%2F%2Fwww.za=
+ppos.com%2Frunning%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRe=
+questConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_ema=
+iltrx_200528_ReturnRequestConfirmation_all_A-footer_nav_link_4%26ref_%3Dpe_=
+2178840_145384230&H=3DAY03QYCASRWP89LELGXZKFIR9LCA&ref_=3Dpe_2178840_145384=
+230" class=3D"footer-nav-link" title=3D"Running" style=3D"font-size: 16px; =
+line-height: 1.88; text-align: left; color: #ffffff; text-decoration: none;=
+-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; ou=
+tline: none">Running</a> </td>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3D305M4K05RKIL3&T=3DC&U=3Dhttps%3A%2F%2Fwww.za=
+ppos.com%2Fboutiques%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_Return=
+RequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_e=
+mailtrx_200528_ReturnRequestConfirmation_all_A-footer_nav_link_5%26ref_%3Dp=
+e_2178840_145384230&H=3DX3A6AXXIVADSTJAKJVBCW9VH56MA&ref_=3Dpe_2178840_1453=
+84230" class=3D"footer-nav-link" title=3D"Boutiques" style=3D"font-size: 16=
+px; line-height: 1.88; text-align: left; color: #ffffff; text-decoration: n=
+one;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none=
+; outline: none">Boutiques</a> </td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"divider" style=3D"background-color: #014362;">=
+=20
+                 <td class=3D"divider-wrapper" style=3D"padding: 0 30px;-we=
+bkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: co=
+llapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt">=
+=20
+                  <table style=3D"text-align: left; font-size: 14px;width: =
+100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                   <tbody>
+                    <tr>=20
+                     <td style=3D"width: 100%; height: 0; border-top: 1.5px=
+ solid #003953;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-tab=
+le-rspace: 0pt"></td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+                <tr class=3D"footer-cta" style=3D"background-color: #014362=
+;">=20
+                 <td class=3D"footer-cta-wrapper" style=3D"padding: 15px 30=
+px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collap=
+se: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0=
+pt">=20
+                  <table style=3D"text-align: left; font-size: 14px;width: =
+100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: =
+100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing:=
+ 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                   <tbody>
+                    <tr>=20
+                     <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-l=
+space: 0pt; mso-table-rspace: 0pt"> <a href=3D"https://r.zappos.com/gp/r.ht=
+ml?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978=
+287d0d4b4e80de8c2a6370p0na&R=3DGIBUG5U1259L&T=3DC&U=3Dhttps%3A%2F%2Fwww.zap=
+pos.com%2Fbeyondthebox%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_Retu=
+rnRequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx=
+_emailtrx_200528_ReturnRequestConfirmation_all_A-footer_blog_link1%26ref_%3=
+Dpe_2178840_145384230&H=3DZH5EKSPCZY7DVGEAGZAPJNFZQVIA&ref_=3Dpe_2178840_14=
+5384230" class=3D"footer-cta-link" title=3D"Check out our blog! =E2=86=92" =
+style=3D"font-size: 16px; line-height: 1.88; text-align: left; color: #ffff=
+ff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms-text-size-adj=
+ust: 100%;border: none; outline: none">Check out our blog! =E2=86=92</a> </=
+td>=20
+                    </tr>=20
+                   </tbody>
+                  </table> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+            </tr>=20
+            <!--[if !mso 9]><!-->=20
+            <tr class=3D"mobile-footer hide-on-desktop" style=3D"display: n=
+one; mso-hide: all">=20
+             <td style=3D"padding: 0;-webkit-text-size-adjust: 100%; -ms-te=
+xt-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-tabl=
+e-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none">=20
+              <div class=3D"hide-on-desktop" style=3D"width: 0; height: 0; =
+max-width: 0px; max-height: 0px; padding: 0px; overflow: hidden">=20
+               <table style=3D"text-align: left; font-size: 14px;width: 100=
+%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100=
+%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0;=
+ mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=3D"=
+0" cellspacing=3D"0" width=3D"100%">=20
+                <tbody>
+                 <tr class=3D"footer-nav" style=3D"background-color: #00395=
+3;">=20
+                  <td class=3D"footer-nav-wrapper" style=3D"-webkit-text-si=
+ze-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; bord=
+er-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; heigh=
+t: 0; border: none">=20
+                   <table style=3D"text-align: left; font-size: 14px;width:=
+ 100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                    <tbody>
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px; border-right: 2px solid #004869;-webkit-text-size-adjust: 100%; -=
+ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso=
+-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none=
+"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KC=
+CR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DN9=
+O1K14DJ6EF&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fshoes%3Fref_%3Dpe_21788=
+40_145384230&H=3DGVKOFACKCCPAY3SDW30JVFADVPOA&ref_=3Dpe_2178840_145384230" =
+class=3D"footer-nav-link" title=3D"Shoes" style=3D"line-height: 2.86; color=
+: #ffffff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border: none; outline: none">Shoes</a> </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-=
+collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt;width: 0; height: 0; border: none"> <a href=3D"https://r.zappos.co=
+m/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010=
+105b2f978287d0d4b4e80de8c2a6370p0na&R=3DD8R45DGOPFO9&T=3DC&U=3Dhttps%3A%2F%=
+2Fwww.zappos.com%2Fclothing%3Fref_%3Dpe_2178840_145384230&H=3DMFRB6APXSAM8Y=
+PXF96HORAAOK0EA&ref_=3Dpe_2178840_145384230" class=3D"footer-nav-link" titl=
+e=3D"Clothing" style=3D"line-height: 2.86; color: #ffffff; text-decoration:=
+ none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: no=
+ne; outline: none">Clothing</a> </td>=20
+                     </tr>=20
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px; border-right: 2px solid #004869;-webkit-text-size-adjust: 100%; -=
+ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso=
+-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none=
+"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KC=
+CR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D37=
+GJX9X7HA6MV&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fbrands%3Fref_%3Dpe_217=
+8840_145384230&H=3D16QTMRNF8A21A963WOBUIW5CSWYA&ref_=3Dpe_2178840_145384230=
+" class=3D"footer-nav-link" title=3D"Brands" style=3D"line-height: 2.86; co=
+lor: #ffffff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border: none; outline: none">Brands</a> </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-=
+collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt;width: 0; height: 0; border: none"> <a href=3D"https://r.zappos.co=
+m/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010=
+105b2f978287d0d4b4e80de8c2a6370p0na&R=3D210E544ZO5FJZ&T=3DC&U=3Dhttps%3A%2F=
+%2Fwww.zappos.com%2Fnew-arrivals%3Fref_%3Dpe_2178840_145384230&H=3D4D4S5SLE=
+TNTQEL8VNN6YIUXUAHCA&ref_=3Dpe_2178840_145384230" class=3D"footer-nav-link"=
+ title=3D"New Arrivals" style=3D"line-height: 2.86; color: #ffffff; text-de=
+coration: none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;b=
+order: none; outline: none">New Arrivals</a> </td>=20
+                     </tr>=20
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px; border-right: 2px solid #004869;-webkit-text-size-adjust: 100%; -=
+ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso=
+-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none=
+"> <a href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KC=
+CR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DJZ=
+HPSKDQN7Z2&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fclearance%3Fref_%3Dpe_2=
+178840_145384230&H=3D0664MCCACOE0XZCJAKAEKTMJBMWA&ref_=3Dpe_2178840_1453842=
+30" class=3D"footer-nav-link" title=3D"Clearance" style=3D"line-height: 2.8=
+6; color: #ffffff; text-decoration: none;-webkit-text-size-adjust: 100%; -m=
+s-text-size-adjust: 100%;border: none; outline: none">Clearance</a> </td>=
+=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 0 5%; text-align: center; border-bottom: 2px solid #004869; font-si=
+ze: 20px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-=
+collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt;width: 0; height: 0; border: none"> <a href=3D"https://r.zappos.co=
+m/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010=
+105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2L0P0V1XD7I1I&T=3DC&U=3Dhttps%3A%2F=
+%2Fwww.zappos.com%2Fbags%3Fref_%3Dpe_2178840_145384230&H=3DBT9HBXNLMMSDS2BK=
+MAYNER0NVIKA&ref_=3Dpe_2178840_145384230" class=3D"footer-nav-link" title=
+=3D"Bags" style=3D"line-height: 2.86; color: #ffffff; text-decoration: none=
+;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: none; o=
+utline: none">Bags</a> </td>=20
+                     </tr>=20
+                    </tbody>
+                   </table> </td>=20
+                 </tr>=20
+                 <tr class=3D"zappos-values" style=3D"background-color: #00=
+4869;">=20
+                  <td class=3D"zappos-values-wrapper" style=3D"padding: 15p=
+x 15px 0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-=
+collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rsp=
+ace: 0pt;width: 0; height: 0; border: none">=20
+                   <table style=3D"text-align: left; font-size: 14px;width:=
+ 100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                    <tbody>
+                     <tr class=3D"zappos-values-text">=20
+                      <td colspan=3D"2" style=3D"color: #fff; padding: 0 0 =
+15px;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-coll=
+apse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace:=
+ 0pt;width: 0; height: 0; border: none"> <a href=3D"https://r.zappos.com/gp=
+/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b=
+2f978287d0d4b4e80de8c2a6370p0na&R=3DO4B18659IQW&T=3DC&U=3Dhttps%3A%2F%2Fwww=
+.zappos.com%2Fabout%2Fwhat-we-live-by%3Futm_medium%3Demailtrx%26utm_campaig=
+n%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26utm_content%3Dzap=
+poscom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_all_A-core_value%=
+26ref_%3Dpe_2178840_145384230&H=3DNJ8IVC0WDN8ZNAWFGECACAY0DAEA&ref_=3Dpe_21=
+78840_145384230" style=3D"font-size: 16px; line-height: 1; text-align: left=
+; color: #ffffff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms=
+-text-size-adjust: 100%;border: none; outline: none"><p class=3D"core-value=
+s-header" style=3D"font-size: 16px; margin: 0 0 15px;">Zappos Family Core V=
+alue</p> <p class=3D"core-values-subheader" style=3D"font-size: 21px; font-=
+weight: 600; margin: 0;">7. Build a Positive Team and Family Spirit</p></a>=
+ </td>=20
+                     </tr>=20
+                     <tr class=3D"zappos-values-divider">=20
+                      <td class=3D"zappos-values-divider-line" style=3D"-we=
+bkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: co=
+llapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;wid=
+th: 0; height: 0; border: none">=20
+                       <hr color=3D"#255EA9" size=3D"2" style=3D"margin:0px=
+;" /> </td>=20
+                      <td class=3D"zappos-values-wiggle-divider" style=3D"w=
+idth: 116px !important; padding: 0 0 0 15px;-webkit-text-size-adjust: 100%;=
+ -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; m=
+so-table-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: no=
+ne"> <img src=3D"https://m.media-amazon.com/images/G/01/zappos.com/emails/z=
+appos/shared/wiggle.png" width=3D"116" height=3D"9" style=3D"border: 0; lin=
+e-height: 100%; outline: none; text-decoration: none; max-width: 100%; -ms-=
+interpolation-mode: bicubic" /> </td>=20
+                     </tr>=20
+                    </tbody>
+                   </table> </td>=20
+                 </tr>=20
+                 <tr class=3D"link-farm" style=3D"background-color: #004869=
+;">=20
+                  <td class=3D"link-farm-wrapper" style=3D"padding: 15px;-w=
+ebkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border-collapse: c=
+ollapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt;wi=
+dth: 0; height: 0; border: none">=20
+                   <table style=3D"text-align: left; font-size: 14px;width:=
+ 100%; max-width: 100%; border-color: transparent;-webkit-text-size-adjust:=
+ 100%; -ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing=
+: 0; mso-table-lspace: 0pt; mso-table-rspace: 0pt" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%">=20
+                    <tbody>
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2H4TNSTA=
+DXB3V&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Faccount%3Futm_medium%3Demail=
+trx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A%26=
+utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmation_=
+all_A-mobile_footer_link_farm_link_1%26ref_%3Dpe_2178840_145384230&H=3DQOJA=
+RBF8XHXLP6F2FXCW4EC4T4SA&ref_=3Dpe_2178840_145384230" class=3D"link-farm-li=
+nk" title=3D"My Account" style=3D"font-size: 16px; line-height: 1; text-ali=
+gn: left; color: #ffffff; text-decoration: none;-webkit-text-size-adjust: 1=
+00%; -ms-text-size-adjust: 100%;border: none; outline: none">My Account</a>=
+ </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D3631NZL7=
+VDL8K&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fcontact-us%3Futm_medium%3Dem=
+ailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dall_A=
+%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirmati=
+on_all_A-mobile_footer_link_farm_link_5%26ref_%3Dpe_2178840_145384230&H=3DJ=
+PXLTXKDGCDHVLQXKVAAP7VJKREA&ref_=3Dpe_2178840_145384230" class=3D"link-farm=
+-link" title=3D"Contact Info" style=3D"font-size: 16px; line-height: 1; tex=
+t-align: left; color: #ffffff; text-decoration: none;-webkit-text-size-adju=
+st: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Contact I=
+nfo</a> </td>=20
+                     </tr>=20
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DG9TET8BZ=
+3AX5&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Faccount%2Ffavorites%3Futm_med=
+ium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term=
+%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestCo=
+nfirmation_all_A-mobile_footer_link_farm_link_2%26ref_%3Dpe_2178840_1453842=
+30&H=3D2DS7BS3QVROI7PUTF6TIUTQPEDQA&ref_=3Dpe_2178840_145384230" class=3D"l=
+ink-farm-link" title=3D"My Favorites" style=3D"font-size: 16px; line-height=
+: 1; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-s=
+ize-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">M=
+y Favorites</a> </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DNOZ1HTCH=
+H1RO&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fprotecting-your-personal-info=
+rmation%3Futm_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfir=
+mation%26utm_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_20052=
+8_ReturnRequestConfirmation_all_A-mobile_footer_link_farm_link_6%26ref_%3Dp=
+e_2178840_145384230&H=3D12AJPJFTJRW241XAF2V6PXAANCUA&ref_=3Dpe_2178840_1453=
+84230" class=3D"link-farm-link" title=3D"Secure Shopping" style=3D"font-siz=
+e: 16px; line-height: 1; text-align: left; color: #ffffff; text-decoration:=
+ none;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;border: no=
+ne; outline: none">Secure Shopping</a> </td>=20
+                     </tr>=20
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3DK4C303D6=
+SNUI&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fc%2Fabout-zappos%3Futm_medium=
+%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3D=
+all_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfi=
+rmation_all_A-mobile_footer_link_farm_link_3%26ref_%3Dpe_2178840_145384230&=
+H=3DXQRRD4D9XEPOAO0TFGCXWQF03LYA&ref_=3Dpe_2178840_145384230" class=3D"link=
+-farm-link" title=3D"About Us" style=3D"font-size: 16px; line-height: 1; te=
+xt-align: left; color: #ffffff; text-decoration: none;-webkit-text-size-adj=
+ust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">About Us=
+</a> </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D26TLM6X9=
+IU8UZ&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fprivacy-policy%3Futm_medium%=
+3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Da=
+ll_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfir=
+mation_all_A-mobile_footer_link_farm_link_7%26ref_%3Dpe_2178840_145384230&H=
+=3DSGRMSVMGZEOODMSAF2CVAOQ7CFOA&ref_=3Dpe_2178840_145384230" class=3D"link-=
+farm-link" title=3D"Privacy Policy" style=3D"font-size: 16px; line-height: =
+1; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-siz=
+e-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Pri=
+vacy Policy</a> </td>=20
+                     </tr>=20
+                     <tr>=20
+                      <td class=3D"col-1" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2KX5JS8K=
+5UWP6&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fcustomer-service-center%3Fut=
+m_medium%3Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm=
+_term%3Dall_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequ=
+estConfirmation_all_A-mobile_footer_link_farm_link_4%26ref_%3Dpe_2178840_14=
+5384230&H=3DA41AFAC1NUJAIO8SZDFETZ2ANXQA&ref_=3Dpe_2178840_145384230" class=
+=3D"link-farm-link" title=3D"Help" style=3D"font-size: 16px; line-height: 1=
+; text-align: left; color: #ffffff; text-decoration: none;-webkit-text-size=
+-adjust: 100%; -ms-text-size-adjust: 100%;border: none; outline: none">Help=
+</a> </td>=20
+                      <td class=3D"col-2" style=3D"width: 50% !important; p=
+adding: 15px 0; vertical-align: top;-webkit-text-size-adjust: 100%; -ms-tex=
+t-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table=
+-lspace: 0pt; mso-table-rspace: 0pt;width: 0; height: 0; border: none"> <a =
+href=3D"https://r.zappos.com/gp/r.html?C=3D1BJZFE834GECU&K=3D1Z61O2KCCR97U&=
+M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4e80de8c2a6370p0na&R=3D2E80VDPO=
+LA34H&T=3DC&U=3Dhttps%3A%2F%2Fwww.zappos.com%2Fsubscriptions%3Futm_medium%3=
+Demailtrx%26utm_campaign%3D200528_ReturnRequestConfirmation%26utm_term%3Dal=
+l_A%26utm_content%3Dzapposcom_emailtrx_emailtrx_200528_ReturnRequestConfirm=
+ation_all_A-mobile_footer_link_farm_link_8%26ref_%3Dpe_2178840_145384230&H=
+=3DOJZ0RTAVUU3QMY0VAOBKFRGIXYEA&ref_=3Dpe_2178840_145384230" class=3D"link-=
+farm-link" style=3D"font-size: 16px; line-height: 1; text-align: left; colo=
+r: #ffffff; text-decoration: none;-webkit-text-size-adjust: 100%; -ms-text-=
+size-adjust: 100%;border: none; outline: none">Manage Your Subscription</a>=
+ </td>=20
+                     </tr>=20
+                    </tbody>
+                   </table> </td>=20
+                 </tr>=20
+                </tbody>
+               </table>=20
+              </div> </td>=20
+            </tr>=20
+            <!--<![endif]-->=20
+            <tr class=3D"footer-legal-content">=20
+             <td class=3D"footer-legal-content-wrapper" style=3D"padding: 1=
+6px 0 16px 0;-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%;bor=
+der-collapse: collapse; border-spacing: 0; mso-table-lspace: 0pt; mso-table=
+-rspace: 0pt">=20
+              <table class=3D"footer-legal-content" style=3D"width: 100%; m=
+ax-width: 100%; border-color: transparent;-webkit-text-size-adjust: 100%; -=
+ms-text-size-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso=
+-table-lspace: 0pt; mso-table-rspace: 0pt;text-align: left">=20
+               <tbody>
+                <tr>=20
+                 <td style=3D"-webkit-text-size-adjust: 100%; -ms-text-size=
+-adjust: 100%;border-collapse: collapse; border-spacing: 0; mso-table-lspac=
+e: 0pt; mso-table-rspace: 0pt"> <p class=3D"footer-legal-copy" style=3D"fon=
+t-size: 10px; color: rgb(88, 90, 93); text-decoration: none; margin: 0px"> =
+You=E2=80=99re receiving this email because you=E2=80=99ve made changes to =
+your Zappos account or because we need to notify you regarding an order. Pl=
+ease add <a href=3D"mailto:cs@zappos.com" class=3D"footer-legal-copy-link" =
+title=3D"cs@zappos.com" style=3D"-webkit-text-size-adjust: 100%; -ms-text-s=
+ize-adjust: 100%;border: none; outline: none;font-size: 10px; color: rgb(44=
+, 89, 135); text-decoration: underline">cs@zappos.com</a> to your address b=
+ook to ensure our emails reach your inbox! </p> <p class=3D"footer-legal-co=
+py" style=3D"font-size: 10px; color: rgb(88, 90, 93); text-decoration: none=
+; margin: 0px"> &copy; 1998 - 2020 Zappos.com LLC or its affiliates. 400 E =
+Stewart Ave, Las Vegas, Nevada 89101 </p> <p class=3D"footer-legal-copy" st=
+yle=3D"font-size: 10px; color: rgb(88, 90, 93); text-decoration: none; marg=
+in: 0px"> This email was sent to josh@josh.is. </p> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+            </tr>  =20
+           </tbody>
+          </table>=20
+          <!--[if (gte mso 9)|(IE)]>
+            </td>
+            </tr>
+            </table>
+            <![endif]--> </td>=20
+        </tr>=20
+       </tbody>
+      </table>   </td>
+    </tr>
+   </tbody>
+  </table>
+ <img width=3D"1" height=3D"1" src=3D"https://r.zappos.com/gp/r.html?C=3D1B=
+JZFE834GECU&K=3D1Z61O2KCCR97U&M=3Durn:rtn:msg:20200528010105b2f978287d0d4b4=
+e80de8c2a6370p0na&R=3DRQEU8ATBUMX5&T=3DE&U=3Dhttps%3A%2F%2Fimages-na.ssl-im=
+ages-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3DBZ29ETCY0PEAAAKNDO=
+DRWC93TSAA&ref_=3Dpe_2178840_145384230_open" /></body>
+</html>
+
+------=_Part_61016437_1693358520.1590627666201--

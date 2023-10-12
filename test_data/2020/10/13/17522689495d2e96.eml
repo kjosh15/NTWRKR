@@ -1,0 +1,496 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1041:0:0:0:0 with SMTP id x1csp1235011ljm;
+        Tue, 13 Oct 2020 07:41:20 -0700 (PDT)
+X-Received: by 2002:a9d:1b06:: with SMTP id l6mr21441233otl.313.1602600080745;
+        Tue, 13 Oct 2020 07:41:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1602600080; cv=none;
+        d=google.com; s=arc-20160816;
+        b=eEAVeHnfVdmZnXsmjrQUap5ii845TkQNXMVhYUblvVYyDaCHTU9N/MLGJAwtJyyhRp
+         tnSu2U2+U8BCk2taZF/Xh38gHkC/+jdES0w51wVixF1LzMs3pQQkQXyfNXLQ0tbNIhrP
+         Al5jTNwEVOxNpLd/k960eQTLL9nbMggpkSaf+lwAzr/H02L7CqBWv5d6dR31P12nTFC8
+         7TyTs/WKdb91XWGCBTabc+d/vTauHngNITyRIUM/7pWIkHytBAcqcmb/b0AJIi1CgqvE
+         jiquOcEomFjweArRIkcD7UmJ6bMZRtuRlE36srAFciJRa7lPSBbTJR9+hMqUw8VypDjd
+         1Xnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=c7KdkWN5spPvRUxR6PBOXPzcgFRE4e4VMrA9vlu5h7k=;
+        b=XqVtCCbeWKHIanWjy04zOThFufUFkTCYe0wsJY4HQ4znhdOrgiNRvDobew1HC7EDCD
+         OY+QOktJOHY/Ftqbr+2E6XH4i1OSruvb/Vf9zj+PWkJv7wrWXwLkmty2zArmGylDP5FC
+         xbnL3xZ9C0SJYKyViETuvZx3xecYY5GANwlJxDZp41HgizAEjxZ2jAq6q3GShWjNERsm
+         YV2vIub4dksCzUUBWtHcCU+qCZKLR9FucB04tz4TwlXrd5J204wW6GDuhiFt1un+2BaL
+         9kICgoPEznws8gMOTZnx3hyCFGQBE3hoLQRe5pzOm6p12HGC5d+YHPJODoeZzvSsHClD
+         ERUQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=byKtHWWA;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+Return-Path: <gperez@ideo.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id f2sor3972311oti.89.2020.10.13.07.41.20
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 13 Oct 2020 07:41:20 -0700 (PDT)
+Received-SPF: pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=byKtHWWA;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ideo.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=c7KdkWN5spPvRUxR6PBOXPzcgFRE4e4VMrA9vlu5h7k=;
+        b=byKtHWWAr0ef7+NUvJhsUi+AOXSa/k9yfTygjFTrgcC5Wb1CWd9mMaX3NsNPuj5JVe
+         q857buvMi3457LQA3sm8pENK9BDQrfgcYKA+Z4WkCeoUKYyw9bmYrBM2MNq8g/OQ8vgv
+         hKWmYdCaJiJxwEGJDLzFExA4tV4y6zbRGOZMA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=c7KdkWN5spPvRUxR6PBOXPzcgFRE4e4VMrA9vlu5h7k=;
+        b=swLb0vldU4a4Fz/wXyuLgD7uc/OY7mS6x4k85o9frUZHDLXcEOwnm/aQmlIl7homDL
+         yLS7JJVscv6ig7HCYEssLjJH/1FzHYiY/LcQiqxofIh6FNBARqoPkiD0HcPVfY4XgVFy
+         gynsoZ2BgYpT0h790adPpbJpMFTcAEBCdmIf6KuzVqFI/ySBCyln6nN+SX/hkM0itSr8
+         7jI6H8irIxX2iVui4BmUHWcaAlYQkg0dYBVtGEWxmX9wTWsEnLjzVBKwwvpS2DlcRCCr
+         ztNDKSl3Jj902UVtUSP7/x7XIqGZkrjBy3yz4o74neA8enE0RRduI5mlU+yDehvs1aTw
+         VW+Q==
+X-Gm-Message-State: AOAM530c1Mm6q5PDkBKqRLemxWrJadbVMb4ylR7BCaeGu5htnIh427pj
+	uedpeKel4HXocTiV6jFst6TPL50ln6TsreC6Ekua/LG6IZzl1Q==
+X-Google-Smtp-Source: ABdhPJx+EP0lmNzFzoxQY5am3CWjNwCNkAovX2aSmv1oGQFwvWEIYgMtG8eoiOCI8Q+RwJta6GdM1+zs74r8l/bpZCY=
+X-Received: by 2002:a9d:65d7:: with SMTP id z23mr23165289oth.131.1602600074959;
+ Tue, 13 Oct 2020 07:41:14 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACNgykP4bDt8GGezJigUHvisR=jn1NsekmsDEF0bmvFshq2jNQ@mail.gmail.com>
+ <CAN_AqyqyP=gar3KVd5NFaZWLeP5V1Pm9LH=J337yK=5Eb7bPZQ@mail.gmail.com>
+ <CACNgykOBEXqbPTPw40y+P_F24A23GFK0WmB9HGLfVOweShxH7g@mail.gmail.com>
+ <CAN_AqypaaL3BbqnJ_1tk03azeOqajOcTn2Dss5Twypmt5bjTQA@mail.gmail.com>
+ <CACNgykNvCMPy=MH9QSDpS9GtW1YpFHW3Gz2yDR7Zy5WL+fqNpg@mail.gmail.com>
+ <CAN_Aqyq-OR0xfSEOO5DSFrvWUaLqVT+ETo=AaakiDUXBrSVGeg@mail.gmail.com>
+ <CACNgykPb6OcHJhCRvMDdmjnRZx2U_+n4s_ZAnZ9N_c1m2wpg6Q@mail.gmail.com>
+ <CACNgykNSgZS7MTVJy2gFNmnmZ+L5scMLfrjqqA-CG6YC_QMJSA@mail.gmail.com>
+ <CAN_AqyrA+j8CU6Sd=m9mTZKZyqoDxX2LN_rzHN+OPjHL2bCExA@mail.gmail.com> <CACNgykPv3b2LH1U2f981nFFz2WC3koKKP1N_5+bwzRsQ+y5f0Q@mail.gmail.com>
+In-Reply-To: <CACNgykPv3b2LH1U2f981nFFz2WC3koKKP1N_5+bwzRsQ+y5f0Q@mail.gmail.com>
+From: Gregory Perez <gperez@ideo.com>
+Date: Tue, 13 Oct 2020 10:40:28 -0400
+Message-ID: <CAN_AqyqCDY4YEx6xwbfcAp8zANpzJ654Lc7JChnk5e_p-iVTKg@mail.gmail.com>
+Subject: Re: Ping!
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="0000000000002f6a2805b18e689b"
+
+--0000000000002f6a2805b18e689b
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+Sure you can use my name and IDEO NY as interested potential partners.
+Engagement will depend on the proposal of course, happy to hear more as you
+develop it. =3D g.
+
+
+*Gregory A. Perez*
+Managing Director // IDEO <https://www.ideo.com/location/new-york> //
+gperez@ideo.com // +1 (347) 281-3649
+
+
+On Mon, Oct 12, 2020 at 11:53 AM Josh Klein <josh@josh.is> wrote:
+
+> Greg,
+>
+> Getting ready to bring my pitch to a number of contacts - are you ok if w=
+e
+> use your name and the IDEO NY office as interested potential partners?
+> Obviously no commitment here, but I'd rather have your team circled in
+> advance of discussion of the project.
+>
+> All best,
+> Josh
+>
+> =E1=90=A7
+>
+> On Mon, Jul 20, 2020 at 4:56 PM Gregory Perez <gperez@ideo.com> wrote:
+>
+>> Here you go, two examples of the most recent work we've done with
+>> Ascensia. We've been working with them for over 10 years now I believe
+>> since we designed the first USB-connected BGM in 2009. The initiative we=
+'ve
+>> recently designed is very similar in spirit to the initiative we talked
+>> about:
+>>
+>>
+>> https://www.ideo.com/case-study/designing-the-connected-future-of-diabet=
+es-management
+>>
+>> https://www.ideo.com/case-study/a-holistic-human-centered-approach-to-ma=
+naging-diabetes-care
+>>
+>>
+>>
+>>
+>> *Gregory A. Perez*
+>> Managing Director // IDEO <https://www.ideo.com/location/new-york> //
+>> gperez@ideo.com // +1 (347) 281-3649
+>>
+>>
+>> On Mon, Jul 20, 2020 at 10:02 AM Josh Klein <josh@josh.is> wrote:
+>>
+>>> Just following up; would love to see the info on the CGM project you di=
+d!
+>>>
+>>> All best,
+>>> Josh
+>>> =E1=90=A7
+>>>
+>>> On Fri, Jul 10, 2020 at 1:53 PM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> Not yet! We're setting up a meet-and-greet for the community over here
+>>>> in the next couple weeks.
+>>>>
+>>>> Sent you an invite - looking forward to catching up!
+>>>>
+>>>> best,
+>>>> Josh
+>>>> =E1=90=A7
+>>>>
+>>>> On Fri, Jul 10, 2020 at 1:39 PM Gregory Perez <gperez@ideo.com> wrote:
+>>>>
+>>>>> I can do 10a for 30.
+>>>>> Glad you made it out there! Have you seen Paul and his awesome-lookin=
+g
+>>>>> house?
+>>>>>
+>>>>>
+>>>>> *Gregory A. Perez*
+>>>>> Managing Director // IDEO <https://www.ideo.com/location/new-york> //
+>>>>> gperez@ideo.com // +1 (347) 281-3649
+>>>>>
+>>>>>
+>>>>> On Fri, Jul 10, 2020 at 8:25 AM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> Escape velocity was achieved; trail running is now replacing the
+>>>>>> bridge to Manhattan... Still very schizophrenic, though Paul (Bennet=
+t)
+>>>>>> being here now has certainly helped!
+>>>>>>
+>>>>>> Tuesday is good but is an hour before or later possible? (I'm talkin=
+g
+>>>>>> to Carl Haney of Estee at 9am EST - happy to see where he stands on =
+IDEO
+>>>>>> given the new climate!)
+>>>>>>
+>>>>>> All best,
+>>>>>> Josh
+>>>>>>
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Fri, Jul 10, 2020 at 1:52 AM Gregory Perez <gperez@ideo.com>
+>>>>>> wrote:
+>>>>>>
+>>>>>>> Did you escape to Iceland???
+>>>>>>>
+>>>>>>> I have time next Tuesday at 9am EST / 1p GMT If that works for you?
+>>>>>>>
+>>>>>>> On Thu, Jul 9, 2020 at 6:37 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> Sounds good! I=E2=80=99m GMT atm; do you have any time in the morn=
+ing EST?
+>>>>>>>>
+>>>>>>>> - J
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On Thu, Jul 9, 2020 at 9:17 PM Gregory Perez <gperez@ideo.com>
+>>>>>>>> wrote:
+>>>>>>>>
+>>>>>>>>> Crazy man, I was going to text you this week. YES let's have a
+>>>>>>>>> convo soon. I have been thinking about you. Wanna try next week?
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> *Gregory A. Perez*
+>>>>>>>>> Managing Director // IDEO <https://www.ideo.com/location/new-york=
+>
+>>>>>>>>>  // gperez@ideo.com // +1 (347) 281-3649
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On Thu, Jul 9, 2020 at 2:05 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>
+>>>>>>>>>> How are you doing out there? Let me know if you're game for a
+>>>>>>>>>> catch-up call - I'm seeing more interest from my executive clien=
+ts in
+>>>>>>>>>> connecting with innovation solutions and would love to hear wher=
+e IDEO NY
+>>>>>>>>>> is now, where it's heading, and what its prime targets are these=
+ days.
+>>>>>>>>>>
+>>>>>>>>>> All best wishes,
+>>>>>>>>>> Josh
+>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>
+>>>>>>>>> --
+>>>>>>> Sent on the go
+>>>>>>>
+>>>>>>
+
+--0000000000002f6a2805b18e689b
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:arial,he=
+lvetica,sans-serif;font-size:small">Hi Josh,=C2=A0</div><div class=3D"gmail=
+_default" style=3D"font-family:arial,helvetica,sans-serif;font-size:small">=
+<br></div><div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small">Sure you can use my name and IDEO NY as intere=
+sted potential partners. Engagement will depend on the proposal of course, =
+happy to hear more as you develop it. =3D g.</div><div class=3D"gmail_defau=
+lt" style=3D"font-family:arial,helvetica,sans-serif;font-size:small"><br></=
+div><div><div dir=3D"ltr" class=3D"gmail_signature" data-smartmail=3D"gmail=
+_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><d=
+iv><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D=
+"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><font fa=
+ce=3D"arial, helvetica, sans-serif" size=3D"2"><b><img src=3D"https://docs.=
+google.com/uc?export=3Ddownload&amp;id=3D1sB2fJ4aIQ1UCF5MVEN0CpfwsmM41yuSY&=
+amp;revid=3D0B_lFXVLSvaktUDBFMlBmYnJrY2dVVEpsS2R6ZFIzb0d4eDVvPQ" width=3D"9=
+6" height=3D"51"><br></b></font></div><div dir=3D"ltr"><font face=3D"arial,=
+ helvetica, sans-serif" size=3D"2"><b>Gregory A. Perez</b></font></div><div=
+ dir=3D"ltr"><div dir=3D"ltr"><font face=3D"arial, helvetica, sans-serif"><=
+font size=3D"1"><font color=3D"#999999">Managing Director</font><font color=
+=3D"#666666"> </font><font color=3D"#cccccc">//</font><font color=3D"#eeeee=
+e">=C2=A0</font></font></font><font size=3D"1"><span style=3D"color:rgb(153=
+,153,153);font-family:arial,helvetica,sans-serif"><a href=3D"https://www.id=
+eo.com/location/new-york" target=3D"_blank"><font color=3D"#999999">IDEO</f=
+ont></a>=C2=A0</span><span style=3D"font-family:arial,helvetica,sans-serif"=
+><font color=3D"#cccccc">//</font></span><span style=3D"color:rgb(153,153,1=
+53);font-family:arial,helvetica,sans-serif">=C2=A0</span><font face=3D"aria=
+l, helvetica, sans-serif"><a href=3D"mailto:gperez@ideo.com" style=3D"color=
+:rgb(153,153,153)" target=3D"_blank"><font color=3D"#999999">gperez@ideo.co=
+m</font></a><font color=3D"#999999">=C2=A0</font><font color=3D"#cccccc">//=
+</font><font color=3D"#999999">=C2=A0</font></font><span style=3D"color:rgb=
+(153,153,153);font-family:arial,helvetica,sans-serif">+1 (347) 281-3649</sp=
+an></font></div></div></div></div></div></div></div></div></div></div></div=
+></div></div></div></div></div></div></div></div></div></div></div></div><b=
+r></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr=
+">On Mon, Oct 12, 2020 at 11:53 AM Josh Klein &lt;<a href=3D"mailto:josh@jo=
+sh.is">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex"><div dir=3D"ltr">Greg,<div><br></div><div>Getting ready =
+to bring my pitch to a number of contacts - are you ok if we use your name =
+and the IDEO NY office as interested potential partners? Obviously no commi=
+tment here, but I&#39;d rather have your team circled in advance of discuss=
+ion of the project.</div><div><br></div><div>All best,</div><div>Josh</div>=
+<div><br></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px=
+"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" sr=
+c=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=
+=3Dzerocontent&amp;guid=3D8f76e367-67a9-4ca8-8b79-35479f894407"><font color=
+=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jul 20, 2020 at 4:56 PM Gre=
+gory Perez &lt;<a href=3D"mailto:gperez@ideo.com" target=3D"_blank">gperez@=
+ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex"><div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-family:=
+arial,helvetica,sans-serif;font-size:small">Here you go, two examples of th=
+e most recent work we&#39;ve done with Ascensia. We&#39;ve been working wit=
+h them for over 10 years now I believe since we designed the first USB-conn=
+ected BGM in 2009. The initiative we&#39;ve recently designed is very=C2=A0=
+similar in spirit to the initiative=C2=A0we talked about:</div><div class=
+=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;font-siz=
+e:small"><div class=3D"gmail_default"><br></div><div class=3D"gmail_default=
+"><a href=3D"https://www.ideo.com/case-study/designing-the-connected-future=
+-of-diabetes-management" target=3D"_blank">https://www.ideo.com/case-study/=
+designing-the-connected-future-of-diabetes-management</a><br></div><div cla=
+ss=3D"gmail_default"></div></div><div class=3D"gmail_default" style=3D"font=
+-family:arial,helvetica,sans-serif;font-size:small"><a href=3D"https://www.=
+ideo.com/case-study/a-holistic-human-centered-approach-to-managing-diabetes=
+-care" target=3D"_blank">https://www.ideo.com/case-study/a-holistic-human-c=
+entered-approach-to-managing-diabetes-care</a><br></div><div class=3D"gmail=
+_default" style=3D"font-family:arial,helvetica,sans-serif;font-size:small">=
+<br></div><div class=3D"gmail_default" style=3D"font-family:arial,helvetica=
+,sans-serif;font-size:small"><br></div><div class=3D"gmail_default" style=
+=3D"font-family:arial,helvetica,sans-serif;font-size:small"><br></div><div>=
+<div dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"lt=
+r"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div d=
+ir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"l=
+tr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><fo=
+nt face=3D"arial, helvetica, sans-serif" size=3D"2"><b><img src=3D"https://=
+docs.google.com/uc?export=3Ddownload&amp;id=3D1sB2fJ4aIQ1UCF5MVEN0CpfwsmM41=
+yuSY&amp;revid=3D0B_lFXVLSvaktUDBFMlBmYnJrY2dVVEpsS2R6ZFIzb0d4eDVvPQ" width=
+=3D"96" height=3D"51"><br></b></font></div><div dir=3D"ltr"><font face=3D"a=
+rial, helvetica, sans-serif" size=3D"2"><b>Gregory A. Perez</b></font></div=
+><div dir=3D"ltr"><div dir=3D"ltr"><font face=3D"arial, helvetica, sans-ser=
+if"><font size=3D"1"><font color=3D"#999999">Managing Director</font><font =
+color=3D"#666666"> </font><font color=3D"#cccccc">//</font><font color=3D"#=
+eeeeee">=C2=A0</font></font></font><font size=3D"1"><span style=3D"color:rg=
+b(153,153,153);font-family:arial,helvetica,sans-serif"><a href=3D"https://w=
+ww.ideo.com/location/new-york" target=3D"_blank"><font color=3D"#999999">ID=
+EO</font></a>=C2=A0</span><span style=3D"font-family:arial,helvetica,sans-s=
+erif"><font color=3D"#cccccc">//</font></span><span style=3D"color:rgb(153,=
+153,153);font-family:arial,helvetica,sans-serif">=C2=A0</span><font face=3D=
+"arial, helvetica, sans-serif"><a href=3D"mailto:gperez@ideo.com" style=3D"=
+color:rgb(153,153,153)" target=3D"_blank"><font color=3D"#999999">gperez@id=
+eo.com</font></a><font color=3D"#999999">=C2=A0</font><font color=3D"#ccccc=
+c">//</font><font color=3D"#999999">=C2=A0</font></font><span style=3D"colo=
+r:rgb(153,153,153);font-family:arial,helvetica,sans-serif">+1 (347) 281-364=
+9</span></font></div></div></div></div></div></div></div></div></div></div>=
+</div></div></div></div></div></div></div></div></div></div></div></div></d=
+iv><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail=
+_attr">On Mon, Jul 20, 2020 at 10:02 AM Josh Klein &lt;<a href=3D"mailto:jo=
+sh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
+ solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Just following u=
+p; would love to see the info on the CGM project you did!<div><br></div><di=
+v>All best,<br>Josh</div></div><div hspace=3D"streak-pt-mark" style=3D"max-=
+height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: h=
+idden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&=
+amp;type=3Dzerocontent&amp;guid=3D6ff97d20-394a-4c1f-bb5d-d9b1d221229d"><fo=
+nt color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gma=
+il_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jul 10, 2020 at 1:5=
+3 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@=
+josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-lef=
+t:1ex"><div dir=3D"ltr">Not yet! We&#39;re setting up a meet-and-greet for =
+the community over here in the next couple=C2=A0weeks.=C2=A0<br><div><br></=
+div><div>Sent you an invite - looking forward to catching up!</div><div><br=
+></div><div>best,</div><div>Josh</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px=
+; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9z=
+aEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D6c01ff3e-6a1e-4b76-8a64-f4f5=
+c2d5ef4d"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div=
+ class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jul 10=
+, 2020 at 1:39 PM Gregory Perez &lt;<a href=3D"mailto:gperez@ideo.com" targ=
+et=3D"_blank">gperez@ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"=
+gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
+4,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_default" =
+style=3D"font-family:arial,helvetica,sans-serif;font-size:small">I can do 1=
+0a for 30.</div><div class=3D"gmail_default" style=3D"font-family:arial,hel=
+vetica,sans-serif;font-size:small">Glad you made it out there! Have you see=
+n Paul and his awesome-looking house?</div><div class=3D"gmail_default" sty=
+le=3D"font-family:arial,helvetica,sans-serif;font-size:small"><br></div><di=
+v><div dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"=
+ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div=
+ dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D=
+"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+font face=3D"arial, helvetica, sans-serif" size=3D"2"><b><img src=3D"https:=
+//docs.google.com/uc?export=3Ddownload&amp;id=3D1sB2fJ4aIQ1UCF5MVEN0CpfwsmM=
+41yuSY&amp;revid=3D0B_lFXVLSvaktUDBFMlBmYnJrY2dVVEpsS2R6ZFIzb0d4eDVvPQ" wid=
+th=3D"96" height=3D"51"><br></b></font></div><div dir=3D"ltr"><font face=3D=
+"arial, helvetica, sans-serif" size=3D"2"><b>Gregory A. Perez</b></font></d=
+iv><div dir=3D"ltr"><div dir=3D"ltr"><font face=3D"arial, helvetica, sans-s=
+erif"><font size=3D"1"><font color=3D"#999999">Managing Director</font><fon=
+t color=3D"#666666"> </font><font color=3D"#cccccc">//</font><font color=3D=
+"#eeeeee">=C2=A0</font></font></font><font size=3D"1"><span style=3D"color:=
+rgb(153,153,153);font-family:arial,helvetica,sans-serif"><a href=3D"https:/=
+/www.ideo.com/location/new-york" target=3D"_blank"><font color=3D"#999999">=
+IDEO</font></a>=C2=A0</span><span style=3D"font-family:arial,helvetica,sans=
+-serif"><font color=3D"#cccccc">//</font></span><span style=3D"color:rgb(15=
+3,153,153);font-family:arial,helvetica,sans-serif">=C2=A0</span><font face=
+=3D"arial, helvetica, sans-serif"><a href=3D"mailto:gperez@ideo.com" style=
+=3D"color:rgb(153,153,153)" target=3D"_blank"><font color=3D"#999999">gpere=
+z@ideo.com</font></a><font color=3D"#999999">=C2=A0</font><font color=3D"#c=
+ccccc">//</font><font color=3D"#999999">=C2=A0</font></font><span style=3D"=
+color:rgb(153,153,153);font-family:arial,helvetica,sans-serif">+1 (347) 281=
+-3649</span></font></div></div></div></div></div></div></div></div></div></=
+div></div></div></div></div></div></div></div></div></div></div></div></div=
+></div><br></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"g=
+mail_attr">On Fri, Jul 10, 2020 at 8:25 AM Josh Klein &lt;<a href=3D"mailto=
+:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Escape veloci=
+ty was achieved; trail running is now replacing the bridge to Manhattan... =
+Still very schizophrenic, though Paul (Bennett) being here now has certainl=
+y helped!<div><br></div><div>Tuesday is good but is an hour before or later=
+ possible? (I&#39;m talking to Carl Haney of Estee at 9am EST - happy to se=
+e where he stands on IDEO given the new climate!)</div><div><br></div><div>=
+All best,</div><div>Josh</div><div><br></div></div><div hspace=3D"streak-pt=
+-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-heig=
+ht: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D1e77b594-b48f-46b6-8=
+b0a-5b6524f4275e"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri=
+, Jul 10, 2020 at 1:52 AM Gregory Perez &lt;<a href=3D"mailto:gperez@ideo.c=
+om" target=3D"_blank">gperez@ideo.com</a>&gt; wrote:<br></div><blockquote c=
+lass=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px soli=
+d rgb(204,204,204);padding-left:1ex"><div><div dir=3D"auto">Did you escape =
+to Iceland???</div><div dir=3D"auto"><br></div><div dir=3D"auto">I have tim=
+e next Tuesday at 9am EST / 1p GMT If that=C2=A0works for you?</div></div><=
+div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On=
+ Thu, Jul 9, 2020 at 6:37 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is"=
+ target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><div><div dir=3D"auto">Sounds good! I=E2=
+=80=99m GMT atm; do you have any time in the morning EST?</div></div><div><=
+div dir=3D"auto"><br></div><div dir=3D"auto">- J</div><div dir=3D"auto"><br=
+></div></div><div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"=
+gmail_attr">On Thu, Jul 9, 2020 at 9:17 PM Gregory Perez &lt;<a href=3D"mai=
+lto:gperez@ideo.com" target=3D"_blank">gperez@ideo.com</a>&gt; wrote:<br></=
+div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bor=
+der-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div=
+ class=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-serif;fo=
+nt-size:small">Crazy man, I was going to text you this week. YES let&#39;s =
+have a convo soon. I have been thinking about you. Wanna try next week?</di=
+v><div class=3D"gmail_default" style=3D"font-family:arial,helvetica,sans-se=
+rif;font-size:small"><br></div><div><div dir=3D"ltr"><div dir=3D"ltr"><div>=
+<div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=
+=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr"><font face=3D"arial, helvetica, sans-se=
+rif" size=3D"2" style=3D"font-family:arial,helvetica,sans-serif;color:rgb(0=
+,0,0)"><b style=3D"font-family:arial,helvetica,sans-serif"><img src=3D"http=
+s://docs.google.com/uc?export=3Ddownload&amp;id=3D1sB2fJ4aIQ1UCF5MVEN0Cpfws=
+mM41yuSY&amp;revid=3D0B_lFXVLSvaktUDBFMlBmYnJrY2dVVEpsS2R6ZFIzb0d4eDVvPQ" w=
+idth=3D"96" height=3D"51" style=3D"font-family: arial, helvetica, sans-seri=
+f;"><br></b></font></div><div dir=3D"ltr"><font face=3D"arial, helvetica, s=
+ans-serif" size=3D"2" style=3D"font-family:arial,helvetica,sans-serif;color=
+:rgb(0,0,0)"><b style=3D"font-family:arial,helvetica,sans-serif">Gregory A.=
+ Perez</b></font></div><div dir=3D"ltr"><div dir=3D"ltr"><font face=3D"aria=
+l, helvetica, sans-serif" style=3D"font-family:arial,helvetica,sans-serif;c=
+olor:rgb(0,0,0)"><font size=3D"1" style=3D"font-family:arial,helvetica,sans=
+-serif;color:rgb(0,0,0)"><font style=3D"font-family:arial,helvetica,sans-se=
+rif;color:rgb(153,153,153)">Managing Director</font><font style=3D"font-fam=
+ily:arial,helvetica,sans-serif;color:rgb(102,102,102)"> </font><font style=
+=3D"font-family:arial,helvetica,sans-serif;color:rgb(204,204,204)">//</font=
+><font style=3D"font-family:arial,helvetica,sans-serif;color:rgb(238,238,23=
+8)">=C2=A0</font></font></font><font size=3D"1" style=3D"color:rgb(0,0,0)">=
+<span style=3D"font-family:arial,helvetica,sans-serif;color:rgb(153,153,153=
+)"><a href=3D"https://www.ideo.com/location/new-york" style=3D"font-family:=
+arial,helvetica,sans-serif" target=3D"_blank"><font style=3D"font-family:ar=
+ial,helvetica,sans-serif;color:rgb(153,153,153)">IDEO</font></a>=C2=A0</spa=
+n><span style=3D"font-family:arial,helvetica,sans-serif"><font style=3D"fon=
+t-family:arial,helvetica,sans-serif;color:rgb(204,204,204)">//</font></span=
+><span style=3D"font-family:arial,helvetica,sans-serif;color:rgb(153,153,15=
+3)">=C2=A0</span><font face=3D"arial, helvetica, sans-serif" style=3D"font-=
+family:arial,helvetica,sans-serif;color:rgb(0,0,0)"><a href=3D"mailto:gpere=
+z@ideo.com" style=3D"font-family:arial,helvetica,sans-serif;color:rgb(153,1=
+53,153)" target=3D"_blank"><font style=3D"font-family:arial,helvetica,sans-=
+serif;color:rgb(153,153,153)">gperez@ideo.com</font></a><font style=3D"font=
+-family:arial,helvetica,sans-serif;color:rgb(153,153,153)">=C2=A0</font><fo=
+nt style=3D"font-family:arial,helvetica,sans-serif;color:rgb(204,204,204)">=
+//</font><font style=3D"font-family:arial,helvetica,sans-serif;color:rgb(15=
+3,153,153)">=C2=A0</font></font><span style=3D"font-family:arial,helvetica,=
+sans-serif;color:rgb(153,153,153)">+1 (347) 281-3649</span></font></div></d=
+iv></div></div></div></div></div></div></div></div></div></div></div></div>=
+</div></div></div></div></div></div></div></div></div><br></div><br><div cl=
+ass=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Jul 9, 20=
+20 at 2:05 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_bla=
+nk">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex"><div dir=3D"ltr">How are you doing out there? Let me know i=
+f you&#39;re game for a catch-up call - I&#39;m seeing more interest from m=
+y executive clients in connecting with innovation solutions and would love =
+to hear where IDEO NY is now, where it&#39;s heading, and what its prime ta=
+rgets are these days.<div><br></div><div>All best wishes,<br>Josh</div></di=
+v><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" sty=
+le=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfo=
+ogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;gu=
+id=3Dcc485296-d781-41f0-b95f-0650fe352731"><font size=3D"1" style=3D"color:=
+rgb(255,255,255)">=E1=90=A7</font></div>
+</blockquote></div>
+</blockquote></div></div>
+</blockquote></div></div>-- <br><div dir=3D"ltr">Sent on the go</div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+
+--0000000000002f6a2805b18e689b--

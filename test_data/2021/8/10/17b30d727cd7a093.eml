@@ -1,0 +1,826 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1614:0:0:0:0 with SMTP id f20csp3820585ljq;
+        Tue, 10 Aug 2021 09:13:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8yMhCplz/NKI0pN5n7wYJEZ6GTDRinyGg6RI8LsMLzsfCPNBE1oB9t1PjXm5Q4/LJ1ElW
+X-Received: by 2002:a1f:d943:: with SMTP id q64mr19151489vkg.23.1628612011667;
+        Tue, 10 Aug 2021 09:13:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1628612011; cv=none;
+        d=google.com; s=arc-20160816;
+        b=uwimKrFV460yWef5vDPO05CoYmYqb/ZXvu6LzTlc32klyChgtZQmNuUk1esb1iOBti
+         4nafFVNQvGhKLgfGuNH3znRgFYkwHB02ztPWAzG766l+bMKvvBUFH/jc7uBymfhxD2pp
+         P/aL1kaYI3lwsLrauA6BIq6o6yeQaO2PeU1MSMaOfMJ3ZDv+Exgvro7MkVDsxuRFADGV
+         yHG9a9vw83QFCQsIwy0TrAsByUcoF+LtvobWAYfgSFs14d0xohLJB2qlLQWmIqAVpE4V
+         wYNF5X9rjtf/8Xv2pO0UE4VfwRLldBqWpeZY+eoy4XqsgtnVBb84zBypxE8l/QTw1KmY
+         +mOw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:message-id:to:reply-to:from:date
+         :dkim-signature:dkim-signature;
+        bh=z6fBG83O6ZBNXHPgaPsqzHqaex6g8Mma8Iq9m6I4I4g=;
+        b=egBXWvpxwaSEXegJnZZRviAtIc8waFPn9VTyL7dRWgrQUz57MYYFkXy3N+bYGmc1Od
+         LK1vQwJZuOi96avTvZM3hA5LyV/nHJoiqScmKLM7nohWTIgEEM9DUofjzNY349NxZvBL
+         tGViqHI9mbWa9AtwfKiLwV1rqtuL1HnV9fsx3OE+nHIg9/gu80DMaT3mzL0PZUafGD+b
+         hw3o3XgRSwm9QW4nkCQZ+68j0dJws8klOJYebjW3oLnjT/E1TwG/tlxVZjpdqK0zk/T4
+         Dux+2n7369bWLWfSeiOz0TglqPDembRvW6+uSmW10MwMYILyNQpsLgh0/54rvh8imFes
+         +Azw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@focus.sxsw.com header.s=hs2 header.b=Xh7kfa49;
+       dkim=pass header.i=@sxsw.com header.s=hs2 header.b=TfDRfnO8;
+       spf=pass (google.com: domain of 1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com designates 54.174.52.101 as permitted sender) smtp.mailfrom="1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=sxsw.com
+Return-Path: <1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com>
+Received: from pgg137.focus.sxsw.com (pgg137.focus.sxsw.com. [54.174.52.101])
+        by mx.google.com with ESMTPS id n1si9435117vsq.126.2021.08.10.09.13.31
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 10 Aug 2021 09:13:31 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com designates 54.174.52.101 as permitted sender) client-ip=54.174.52.101;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@focus.sxsw.com header.s=hs2 header.b=Xh7kfa49;
+       dkim=pass header.i=@sxsw.com header.s=hs2 header.b=TfDRfnO8;
+       spf=pass (google.com: domain of 1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com designates 54.174.52.101 as permitted sender) smtp.mailfrom="1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=sxsw.com
+Received: by 172.16.195.31 with SMTP id axgrxyqepup3h5d94pok3z7fl2fq240kdptsqq;
+        Tue, 10 Aug 2021 16:13:29 GMT
+DKIM-Signature: v=1; s=hs2; d=focus.sxsw.com; i=@focus.sxsw.com; 
+        h=sender:from:reply-to:to:subject:mime-version:content-type:list-unsubscribe:form-sub:feedback-id; 
+        a=rsa-sha256; c=relaxed/relaxed; 
+        bh=z6fBG83O6ZBNXHPgaPsqzHqaex6g8Mma8Iq9m6I4I4g=; 
+        b=Xh7kfa49ML3IXuWOdCj2jyBlkb/YPUWJlDVqUE3ldsRWLctFA7fPa6J4N3/edp
+         9svhNJgLvb5zhqyfudiZq7QZ1p38bNB/n9YCv+Dv9EcodRdQyL4GVRrNA9AYM2I
+         i930RPtgY8cGMFaZFWJNG4Kc23TTbgY2JN2KtuCI8VyQRi/uA/DxYDk3HukuPu2
+         NduHkmlVphWnto/dlbynpDxnHNL2tBjpRTeu5ipx8kG8l03UDwNeABLmJAoGK7z
+         k5OeMtmI27FeTvbGqGogy5J2KjqhjRWidUHoj4+wLLd2dp4t0JATtuFNPdGZuOT
+         eXtMpz5UPlbyGmD7FVPn4g2Ot6bw==; q=dns/txt; t=1628612009;
+DKIM-Signature: v=1; s=hs2; d=sxsw.com; i=@sxsw.com; 
+        h=sender:from:reply-to:to:subject:mime-version:content-type:list-unsubscribe:form-sub:feedback-id; 
+        a=rsa-sha256; c=relaxed/relaxed; 
+        bh=z6fBG83O6ZBNXHPgaPsqzHqaex6g8Mma8Iq9m6I4I4g=; 
+        b=TfDRfnO8LJAsogY5U5C9A5RtrtfuPbciaCOgOjeLsBqdr+FYTq6kIM6/3jjdd0
+         mpf24PFfK7drnfY+q9qeZhfrEIIgf/Mg/pjx0E9nrCygEyabG9QQ42Znspy+WaL
+         y7gSrTIguZftpv7fNoHrJ3RmR3k1SEf5JCWjaAcE/iAAh2ae4Z3QGVCUpd3WwmD
+         /UB2Z0vfhQrhyab6yGLm2FGktsHv7Dx7rCgLmQvjawjAzg9fQbwfNbGR+NW5JfT
+         nMrQLmTMP1Sv841c2fMnjRr0lS4MshuHAzQuUS/wU/K5VnwgxWXY27BRWkoP+Gt
+         rmaMGHcH7GYIqyG4sLXuJouSxCGQ==; q=dns/txt; t=1628612009;
+Return-Path: <1axcf4md4wd3ry89p60w9qcva3l1ofche1puce-josh=josh.is@focus.sxsw.com>
+X-HS-Cid: 1axfoe0nwf54hbomlhqn1c45wax11sk29c0f56
+Date: Tue, 10 Aug 2021 11:13:29 -0500
+From: SXSW Conference <sessions@sxsw.com>
+Reply-To: sessions@sxsw.com
+To: josh@josh.is
+Message-ID: <1628611975149.e1d55c28-abbb-43c5-85e5-ff70493d6989@focus.sxsw.com>
+Subject: SXSW 2022 / PanelPicker Community Voting Now Open / Josh Klein
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_7636115_629558564.1628612008742"
+X-Report-Abuse-To: abuse@hubspot.com (see
+ https://www.hubspot.com/abuse-complaints)
+
+------=_Part_7636115_629558564.1628612008742
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+PLEASE read this letter in its entirety as it contains important informatio=
+n about current and next steps.
+
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=
+=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=
+=8C =E2=80=8C =E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=
+=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=
+=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C  =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=
+=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=
+=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=
+=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=
+=8C =E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C
+
+View email in browser. (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm=
+8TwB2CW7cMc7753k5yWW8cZnYt6q-zpff1KTlgd03 )
+
+SXSW | Austin, TX (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2=
+CW7cMc7753k5yWW8cZnYt6q-zpff1KTlgd13 )
+
+PLEASE read this letter in its entirety as it contains important informatio=
+n about current and next steps.
+
+Hi Josh,
+
+Thank you for entering your PanelPicker=C2=AE proposal, "Data-led Corporate=
+ Culture", for the 2022 South by Southwest=C2=AE Conference. Please read th=
+is letter in its entirety as it contains important information about curren=
+t and next steps.
+
+PANELPICKER VOTING LAUNCH
+
+PanelPicker voting is now live! This gives the online community an opportun=
+ity to vote (and comment) on the ideas they believe are the most creative, =
+innovative, and relevant for the 2022 event.
+
+Starting today, your PanelPicker proposal can be found here: https://explor=
+e.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753k5yWW8cZnYt6q-zpff1KTlg=
+d23
+
+CHANGES TO YOUR PROPOSAL AND COMMUNITY ENGAGEMENT
+
+At this point, no changes or edits can be made to your proposal. Please use=
+ the "Comments" section to add or clarify any points. This includes new dev=
+elopments on your topic, additional information, or any speaker changes to =
+your idea. The comments section can be a great opportunity to start a meani=
+ngful dialogue with others regarding your topic.
+
+PROMOTING YOUR PANELPICKER PROPOSAL
+
+Click here to download PanelPicker promotional materials (https://explore.s=
+xsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753k5yWW8cZnYt6q-zpff1KTlgd33=
+ ) , which include social media images and the SXSW logo. If you intend to =
+use the SXSW logo, please take a moment to review the SXSW Marks license an=
+d usage guidelines included in the download.
+
+PANELPICKER VOTING CLOSE
+
+PanelPicker voting will close on Thursday, August 26 (11:59 PM PT). After v=
+oting closes, we need several weeks to review these results along with Staf=
+f and Advisory Board grades.
+
+FIRST PROGRAMMING ANNOUNCEMENT
+
+In mid-October, we will announce the majority of our accepted programming f=
+or the 2022 Conference on the SXSW website. You will be notified of the sta=
+tus of your proposal during this week.
+
+QUESTIONS
+
+We strongly encourage you to visit the PanelPicker FAQ (https://explore.sxs=
+w.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753k5yWW8cZnYt6q-zpff1KTlgd43 )=
+ . Most PanelPicker-related questions are answered there.
+
+Still have questions? Please feel free to email us at sessions@sxsw.com (ma=
+ilto:sessions@sxsw.com) .
+
+Thanks and good luck!
+
+Twitter (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753=
+k5yWW8cZnYt6q-zpff1KTlgd53 )
+
+Facebook (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc775=
+3k5yWW8cZnYt6q-zpff1KTlgd63 )
+
+Instagram (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc77=
+53k5yWW8cZnYt6q-zpff1KTlgd73 )
+
+Linkedin (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc775=
+3k5yWW8cZnYt6q-zpff1KTlgd83 )
+
+Youtube (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753=
+k5yWW8cZnYt6q-zpff1KTlgd93 )
+
+Spotify (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753=
+k5yWW8cZnYt6q-zpff1KTlgdb3 )
+
+SXSW (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc7753k5y=
+WW8cZnYt6q-zpff1KTlgdc3 )
+
+SXSW EDU (https://explore.sxsw.com/e2t/sc2/Mm-nFbjSLGBW7mD7Rm8TwB2CW7cMc775=
+3k5yWW8cZnYt6q-zpff1KTlgdd3 )
+
+South by Southwest=C2=AE, SXSW=C2=AE, South by=C2=AE, SXSW EDU=C2=AE, Daily=
+ Chord=C2=AE, and PanelPicker=C2=AE are trademarks owned by SXSW, LLC. | So=
+uth by Southwest | PO Box 685289, Austin, TX, 78768 | 512-467-7979.
+------=_Part_7636115_629558564.1628612008742
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org=
+/TR/xhtml1/DTD/xhtml1-strict.dtd"><html lang=3D"en" xmlns=3D"http://www.w3.=
+org/1999/xhtml" xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:sc=
+hemas-microsoft-com:office:office"><head>
+    <title>SXSW 2022 / PanelPicker Community Voting Now Open / Josh Klein</=
+title>
+    <meta property=3D"og:title" content=3D"SXSW 2022 / PanelPicker Communit=
+y Voting Now Open / Josh Klein">
+    <meta name=3D"twitter:title" content=3D"SXSW 2022 / PanelPicker Communi=
+ty Voting Now Open / Josh Klein">
+    <!--iosreformatting--><meta name=3D"x-apple-disable-message-reformattin=
+g">
+    <!--viewport--><meta name=3D"viewport" content=3D"width=3Ddevice-width,=
+initial-scale=3D1">
+    <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8=
+">
+   =20
+    <!--Outlook fix -->
+    <!--[if gte mso 9]><xml>
+    <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+    </xml><![endif]-->
+    <style type=3D"text/css" id=3D"hs-inline-css">  =20
+      table {
+        border-collapse: collapse;
+      }      =20
+      a:link, a:visited, /* Yahoo! Mail Override */ #headerTable a .yshortc=
+uts /* Yahoo! Mail Override */{
+        text-decoration:underline;   =20
+      }     =20
+      /* List Margin Fix */
+      ul li {
+        margin-bottom: 15px;
+        margin-left: 15px;
+      }
+      ol li {
+        margin-bottom: 15px;
+        margin-left: 15px;
+      }         =20
+      /* Makes image expand to take 100% of width*/
+      img {
+        width: 100% !important;
+        height: auto !important;
+        display: block;         /*test */
+      }
+      /* Force HM to display normal line spacing */
+      body, table, td, p, a, li, blockquote{
+        -webkit-text-size-adjust:100%;
+        -ms-text-size-adjust:100%;
+      }=20
+      /* Prevent WebKit and Windows mobile changing default text sizes */
+      table, td {
+        mso-table-lspace:0pt;
+        mso-table-rspace:0pt;
+      }=20
+      /* Remove spacing between tables in Outlook 2007 and up */
+      img {
+        vertical-align: bottom;
+        -ms-interpolation-mode:bicubic;
+      }          =20
+      /* Underline color fix  - change the hex code, or remove to make all =
+black*/
+        a {
+        text-decoration: none !important;
+        color: #000000;
+        border-bottom: 1px solid #6B7AFF !important;
+      }
+     =20
+      a:hover {
+        text-decoration: none !important;
+        color: #000000;
+        background-color: #B1EEFF !important;
+      }
+      .black {
+        text-decoration: none !important;
+        color: #000000;
+        border-bottom: 1.3px solid #000000 !important;
+      }
+      a ~ img {
+        border-bottom: none !important;
+      }         =20
+      /* Mobile Styling */
+      @media screen and (max-width: 580x) {
+        table#backgroundTable {
+          width: 95% !important;
+        }
+        table#templateTable {
+          max-width:612px !important;
+          width:100% !important;
+        }
+        table#contentTableInner {
+          max-width:612px !important;
+          width:100% !important;
+        }
+      } /*smaller screens */
+      @media only screen and (max-width: 480px) {
+        body, table, td, p, a, li, blockquote{
+          -webkit-text-size-adjust:none !important; }
+        .mobile {
+          font-size: 22px;
+          line-height:170%
+        }
+         #follow-us {
+          width: 100% !important;
+        }
+        #sxsw-events{
+          width: 100% !important;
+        }
+        #sxswlogo {
+          width: 100% !important;
+        }
+        #edulogo {
+          width: 100% !important;
+        }
+        }=20
+    </style>
+  <meta name=3D"generator" content=3D"HubSpot"><meta property=3D"og:url" co=
+ntent=3D"https://explore.sxsw.com/sxsw-2022-/-panelpicker-community-voting-=
+now-open-/-personalization_tokencontact.firstname-contact.lastname-1"><meta=
+ name=3D"robots" content=3D"noindex,follow"></head>
+ =20
+  <body style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; =
+padding:0; margin:0; min-width:100%; background-color:#ffffff" leftmargin=
+=3D"0" marginwidth=3D"0" topmargin=3D"0" marginheight=3D"0" offset=3D"0" bg=
+color=3D"#ffffff">       =20
+    <!-- Preview text-->
+    <div id=3D"preview_text" style=3D"display:none;font-size:1px;color:#fff=
+fff;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;=
+">
+      PLEASE read this letter in its entirety as it contains important info=
+rmation about current and next steps.
+    </div>
+    <!--clean preview -->
+    <table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" width=3D"100%" =
+style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -ms-text-=
+size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt">
+      <tbody><tr>
+        <td valign=3D"top" width=3D"100%" style=3D"-webkit-text-size-adjust=
+:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0p=
+t; width:100%; padding:0">
+          <div class=3D"widget-span widget-type-custom_widget" data-widget-=
+type=3D"custom_widget">
+            <div id=3D"hs_cos_wrapper_module_153504721016280" class=3D"hs_c=
+os_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module widget-type-ric=
+h_text" style=3D"color: inherit; font-size: inherit; line-height: inherit;"=
+ data-hs-cos-general-type=3D"widget" data-hs-cos-type=3D"module"><div id=3D=
+"hs_cos_wrapper_module_153504721016280_" class=3D"hs_cos_wrapper hs_cos_wra=
+pper_widget hs_cos_wrapper_type_rich_text" style=3D"color: inherit; font-si=
+ze: inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" dat=
+a-hs-cos-type=3D"rich_text"><div style=3D"display:none;max-height:0px;overf=
+low:hidden;">&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=
+=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=
+=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;&nbsp;=E2=80=8C&nb=
+sp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nb=
+sp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nb=
+sp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=
+=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=
+=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=
+=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=
+=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=
+=80=8C&nbsp;&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nb=
+sp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nb=
+sp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;</div></div>=
+</div>
+          </div>
+        </td>
+      </tr>
+    </tbody></table>
+    <!-- wrapper-->
+    <table class=3D"mobile" width=3D"600" border=3D"0" cellpadding=3D"0" ce=
+llspacing=3D"0" style=3D"border-collapse:collapse; -webkit-text-size-adjust=
+:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0p=
+t; width:600px; min-width:100%; color:#000000; font-family:Helvetica,Arial,=
+sans-serif; font-size:18px; line-height:150%; text-align:left" role=3D"pres=
+entation" align=3D"left">
+      <tbody><tr>
+        <td align=3D"center" style=3D"-webkit-text-size-adjust:100%; -ms-te=
+xt-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt">
+          <!--view in browser -->
+          <table style=3D"border-collapse:collapse; -webkit-text-size-adjus=
+t:100%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0=
+pt; width:600px; margin-left:auto; margin-right:auto" border=3D"0" cellspac=
+ing=3D"0" cellpadding=3D"0" width=3D"600">
+            <tbody>
+              <tr>
+                <td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-a=
+djust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center" =
+align=3D"center"><a target=3D"_blank" href=3D"https://explore.sxsw.com/e2t/=
+tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p4w3xykN8GDX6S5nxHDV3Zsc37CgRxwW7YJXl88yS=
+hGwN39kzQ3Kq7hSW54Jmj27knGhlW45PYn_80fgL3VLTPHF2GDvRKW8nD2Ll5yxLFyW3Nvy3D8V=
+dygcW5V06m-7qbwd2N82FVVjBZ7W4W23lXm-6d8frXW7Nv9wX6yJMLxW6Q0k_P6jNG8zW4M5gPX=
+3y6FJ6W9ctZ9R1ZCB6QW8Sb5LL1pYyYvW6x_Yqh8-gKK8W8X75s-3JpZZVN7LGCM-KGwkLN69H3=
+8g9TSHGW3qWJm62L9c8NW8lnqKt4bH_NlW2p-hn83BPkFzW3cg3YD2YqHMzW88Bdr22-C0qJVST=
+-bx31fwlFW13Kp4C971zKPW6ZWkyw6pl9s-W4HYK8X1ppb_8W7MPVGH8pGdghW8yNT_l2nSx4YW=
+1GMGYy9g-7wdW368P0v1dDqctW27KQdS41KJ7MW45F3CW26Ny5sW921W8g2JtHBPN2bbLSl8H8h=
+ZN4VSmrVrtwF0W2_phMs63gVdTW6Gy3jY1WD3g7W3qr3Yx5HC8HDW7hnp9g6w9wJJN538CWM3j5=
+vc3gf_1" style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%;=
+ text-decoration:none; border-bottom:none !important; whitespace:nowrap; co=
+lor:#ccc; font-size:10px; font-family:'Work Sans', 'Helvetica Neue', Helvet=
+ica, Arial, sans-serif; vertical-align:bottom" data-viewaswebpage=3D"true" =
+rel=3D"noopener" data-hs-link-id=3D"0">View email in browser.</a></td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- content -->
+          <div id=3D"hs_cos_wrapper_module_153253860124856" class=3D"hs_cos=
+_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_rich_text" style=3D"colo=
+r: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-general-=
+type=3D"widget" data-hs-cos-type=3D"rich_text"><center>
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; width:=
+600px; margin-left:auto; margin-right:auto; border-width:0px" cellspacing=
+=3D"0" width=3D"600">
+<tbody>
+<tr style=3D"height: 96px;">
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; text-align:center; vertical-align:m=
+iddle; width:600px; border-width:0px; padding:0px" align=3D"center" width=
+=3D"600"><center><a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7c=
+LmvB45yHqSW50jS-p4w3xykN8GDX5G3p_8fV1-WJV7CgZXBW5w7gMH4lxmFvW5QjZ-G7dHn1_W8=
+KmMn68hD4qpW1xQ_T22TqMF3W8MwkQy53Cb1sW4tSnFf7-VyfxW6xYxhF3lp2n9W4LY6bC7KqHX=
+dW90VXP-6ZFW7ZW60VmHW8cRKWgMPxftXSBJHbW2-WVq32YFqt1N2pXwt4TNCVMVf2dP6738Bmh=
+W1pSGB25xnVD3W5ZBFQx2Qh2DcW6bj8jZ36Wn6mN1K2QwfhR1YP3dvX1" target=3D"_blank"=
+ data-mce-target=3D"_blank" rel=3D"noopener" style=3D"-webkit-text-size-adj=
+ust:100%; -ms-text-size-adjust:100%; text-decoration:none !important; color=
+:#000000; border-bottom:1px solid #6b7aff !important" data-hs-link-id=3D"0"=
+><img src=3D"https://explore.sxsw.com/hs-fs/hubfs/Platinum_Email/Templates/=
+SXSW-evergreen-email-header.png?noresize&amp;width=3D1200&amp;upscale=3Dtru=
+e&amp;name=3DSXSW-evergreen-email-header.png" alt=3D"SXSW | Austin, TX" wid=
+th=3D"600" style=3D"height:auto !important; display:block; vertical-align:b=
+ottom; -ms-interpolation-mode:bicubic; width:600px; max-width:600px; margin=
+-bottom:20px; margin-top:20px" height=3D"auto"></a></center></td>
+</tr>
+</tbody>
+</table>
+</center><center>
+<table width=3D"600" cellspacing=3D"0" align=3D"center" style=3D"border-col=
+lapse:collapse; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; m=
+so-table-lspace:0pt; mso-table-rspace:0pt; width:600px; max-width:600px; fo=
+nt-family:helvetica, arial, sans-serif; font-size:18px">
+<tbody>
+<tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:600px; text-align:left; verti=
+cal-align:top" width=3D"600" align=3D"left">
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%; font-size:18px; font-weight:bold"><span style=3D"font-family=
+: helvetica;">PLEASE read this letter in its entirety as it contains import=
+ant information about current and next steps.</span></p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%; font-size:18px"><span style=3D"font-family: helvetica;">Hi J=
+osh,</span></p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%">Thank you for entering your PanelPicker=C2=AE proposal, <spa=
+n style=3D"font-weight: bold;">"Data-led Corporate Culture"</span>, for the=
+ 2022 South by Southwest=C2=AE Conference. Please read this letter <span st=
+yle=3D"font-weight: normal;">in its entirety </span>as it contains importan=
+t information about current and next steps.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>PANELPICKER VOTING LAUNCH</strong><br>PanelPicker vo=
+ting is now live! This gives the online community an opportunity to vote (a=
+nd comment) on the ideas they believe are the most creative, innovative, an=
+d relevant for the 2022 event.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%">Starting today, your PanelPicker proposal can be found here:=
+ http://panelpicker.sxsw.com/vote/118923</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>CHANGES TO YOUR PROPOSAL AND COMMUNITY ENGAGEMENT</s=
+trong><br>At this point, no changes or edits can be made to your proposal. =
+Please use the "Comments" section to add or clarify any points. This includ=
+es new developments on your topic, additional information, or any speaker c=
+hanges to your idea. The comments section can be a great opportunity to sta=
+rt a meaningful dialogue with others regarding your topic.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>PROMOTING YOUR PANELPICKER PROPOSAL</strong><br><a h=
+ref=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p4w3x=
+ykN8GDX6S3p_9rV1-WJV7CgBvXW53VP2g8ycMBmW7zsZT33pdwTZN2tB7qdPrJwrW3Klb3b2pTr=
+c7W80Y0pF2QS0tNVC6ZFH6FRlbkW1Syhty15xHycN3_xrNHVZlztW95qbX-2wwsWsW2gppyJ1dp=
+0HtW7qWF265Y-4dmW6WY_KT5PLzhrW4-Hry28yTMRDN8tznv-fYm54W786qBq4v4JQyW7tl3vr5=
+ZX6WyW5gSSpx7tqvCVW1-rb-P8zsxSJN3qYbbZFmVwkVnt_606Hs3nbW1P7zvM1Y2vTWW277rxc=
+78zkbZVMxdR53Jdx-1W478bsb6jcbC-W6pZ5WK68r5tKW617Yg042Ry1r31TY1" rel=3D"noop=
+ener" target=3D"_blank" style=3D"-webkit-text-size-adjust:100%; -ms-text-si=
+ze-adjust:100%; text-decoration:none !important; color:#000000; border-bott=
+om:1px solid #6b7aff !important" data-hs-link-id=3D"0"><strong>Click here t=
+o download PanelPicker promotional materials</strong></a><span style=3D"fon=
+t-weight: normal;">, which include social media images and the SXSW logo. I=
+f you intend to use the SXSW logo, please take a moment to review the SXSW =
+Marks license and usage guidelines included in the download.</span></p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>PANELPICKER VOTING CLOSE</strong><br>PanelPicker vot=
+ing will close on Thursday, August 26 (11:59 PM PT). After voting closes, w=
+e need several weeks to review these results along with Staff and Advisory =
+Board grades.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>FIRST PROGRAMMING ANNOUNCEMENT</strong><br>In mid-Oc=
+tober, we will announce the majority of our accepted programming for the 20=
+22 Conference on the SXSW website. You will be notified of the status of yo=
+ur proposal during this week.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%"><strong>QUESTIONS</strong><br>We strongly encourage you to v=
+isit the <a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yH=
+qSW50jS-p4w3xykN8GDX6y3p_97V1-WJV7CgNgFW19JTQ35GWz7hN3cZ1XDsD052W2_Fj3114Q5=
+qXW40fgf43-421cW6JMTq-4wKfH7W8nnx2L7xnFH-MvJhpZ4mpYJW8p13xN3gPx5RW6xwd545sq=
+p0fW4hXqnh6SQs95W3D1D_05mdZDQW6NYy-k3gPT8kW22HvZs2wpJ9vW4MbyHB5HtSccW4FkrG8=
+1NwwWdW7gZt957kXT25W66RkBy3t9mXRW7fFkVz2l9SX4VH2Tkj8dr3GjW1fPt9y8GS1KRW1vfN=
+_x8H5Y9vN23cM1fBZmXTW4hZ3wq39SVbzW7qGFjD6z-yrn37tx1" style=3D"-webkit-text-=
+size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none !importan=
+t; color:#000000; border-bottom:1px solid #6b7aff !important" data-hs-link-=
+id=3D"0" target=3D"_blank">PanelPicker FAQ</a>. Most PanelPicker-related qu=
+estions are answered there.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%">Still have questions? Please feel free to email us at <a hre=
+f=3D"mailto:sessions@sxsw.com" rel=3D" noopener" style=3D"-webkit-text-size=
+-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none !important; c=
+olor:#000000; border-bottom:1px solid #6b7aff !important" data-hs-link-id=
+=3D"0" target=3D"_blank">sessions@sxsw.com</a>.</p>
+<p style=3D"margin-bottom: 1em; -webkit-text-size-adjust:100%; -ms-text-siz=
+e-adjust:100%">Thanks and good luck!</p>
+</td>
+</tr>
+</tbody>
+</table>
+</center></div>
+          <!-- footer space -->
+          <table width=3D"600px" cellspacing=3D"0" cellpadding=3D"0" align=
+=3D"center" style=3D"border-collapse:collapse; -webkit-text-size-adjust:100=
+%; -ms-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; m=
+ax-width:600px">
+            <tbody>
+              <tr>
+                <td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-a=
+djust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:left; ve=
+rtical-align:top; height:20px" align=3D"left" height=3D"20">
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <!-- footer -->
+          <div id=3D"hs_cos_wrapper_module_161653340851832" class=3D"hs_cos=
+_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=3D"color: =
+inherit; font-size: inherit; line-height: inherit;" data-hs-cos-general-typ=
+e=3D"widget" data-hs-cos-type=3D"module"><table id=3D"footer" style=3D"bord=
+er-collapse:collapse; -webkit-text-size-adjust:100%; -ms-text-size-adjust:1=
+00%; mso-table-lspace:0pt; mso-table-rspace:0pt; width:608px; background-co=
+lor:#1a1a1a; margin-left:auto; margin-right:auto; margin:0; padding:0; marg=
+in-bottom:10px" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"6=
+08" bgcolor=3D"#1a1a1a">
+<tbody><tr style=3D"border: 4px solid #ffffff;">
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt">
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt">
+<tbody><tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:10px" height=3D"10">&nbsp;</=
+td>
+</tr>
+<tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:225px" width=3D"225">&nbsp;</=
+td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:150px" width=3D"150">
+<img id=3D"follow-us" src=3D"https://cdn2.hubspot.net/hub/558236/hubfs/Foot=
+er-DarkMode/21_SXSW-email-footer_follow-us-darkmode.png?noresize&amp;width=
+=3D174&amp;upscale=3Dtrue&amp;name=3D21_SXSW-email-footer_follow-us-darkmod=
+e.png" alt=3D"Follow Us" width=3D"87" style=3D"height:auto !important; disp=
+lay:block; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:87p=
+x; max-width:87px; margin-top:10px; margin-bottom:5px; margin-right:auto; m=
+argin-left:auto; color:#ffffff; font-size:12px; font-family:Helvetica, Aria=
+l, sans-serif; text-align:center" align=3D"center" height=3D"auto"></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:225px" width=3D"225">&nbsp;</=
+td>
+</tr>
+</tbody></table>
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; height=
+:35px; font-size:8px; font-style:bold; font-family:Helvetica, serif; text-t=
+ransform:uppercase; line-height:1; margin-top:5px; margin-bottom:15px" heig=
+ht=3D"35">
+<tbody><tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:110px" width=3D"110">&nbsp;</=
+td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:56px; vertical-align:middle" =
+width=3D"56">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5G3p_8fV1-WJV7CgZwHW6nxVQH8T5kH1W5f2HVL47Bwm-W6Yv3Pb8CqRjjW3gJdD=
+c7LwL7GW70d1s02CBtzsW76yfY18qlQGFW8r7P-P7YHQ-5VZJGvg1wP__BV4r1G88c7brFW8_8Z=
+lY8vCzkWW7KPvgf6tZR-fW1XVGrW8M4wXCW8V3LfD1hZ7KKW5dWnVG1llyb0W2YKjT77cvmS8VJ=
+ncXW2hPKN2N5RDP-tFq9vgW9ghp8n1kRQlz37Dy1" rel=3D"noopener" style=3D"-webkit=
+-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none !im=
+portant; color:#000000; border-bottom:1px solid #6b7aff !important" data-hs=
+-link-id=3D"0" target=3D"_blank"><img src=3D"https://explore.sxsw.com/hubfs=
+/Footer-DarkMode/21_SXSW-email-footer_twitter-darkmode.png?noresize" alt=3D=
+"Twitter" style=3D"height:auto !important; display:block; vertical-align:bo=
+ttom; -ms-interpolation-mode:bicubic; width:35px; max-width:35px; margin-ri=
+ght:auto; margin-left:auto; color:#ffffff" height=3D"auto" width=3D"35"></a=
+></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:3px" width=3D"3">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:56px; vertical-align:middle" =
+width=3D"56">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5Z3p_8yV1-WJV7CgYtMW3kCS9f1NjK8FW5qY3l29jY9TZW2RQnbW8CSHCjW5FM4G=
+983s5ryW1q0YMn8hl2F0W6K5LF94HTYMvW3hbPtD6KVYVGW1njgPJ63NqsVVGD5267Pv97sW6xC=
+11-7CghV1W2BZbH41SB0RcN3zdK2dFNDyXW4Sc1QZ7cGdY3W5kvS2Q8dF_yJVyfJ4m2ZbVGNW6V=
+jTpk7S_lbvW6pVqzq5_GgHSW4Dv9FH1R_6KwW4Gy2py3x-HxbVhgXWc2lnTzb3hYn1" rel=3D"=
+noopener" style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%=
+; text-decoration:none !important; color:#000000; border-bottom:1px solid #=
+6b7aff !important" data-hs-link-id=3D"0" target=3D"_blank"><img src=3D"http=
+s://explore.sxsw.com/hubfs/Footer-DarkMode/21_SXSW-email-footer_facebook-da=
+rkmode.png?noresize" alt=3D"Facebook" style=3D"height:auto !important; disp=
+lay:block; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:35p=
+x; max-width:35px; margin-right:auto; margin-left:auto; color:#ffffff" heig=
+ht=3D"auto" width=3D"35"></a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:3px" width=3D"3">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:56px; vertical-align:middle" =
+width=3D"56">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5Z3p_8yV1-WJV7CgHcrVqjZ6B9g-LHjW6BN52B8YfPv0W2y0-_H3SJH9_W3s1_8p=
+1dnZw-W8-TWWT6ZRwZcN8BYVZ-P25YCW7Hs4m-6jSZpjW8yDfHg6FmqVfW8kP2ZY24kZshW2l_T=
+tq5fy3VPVY1dhD5CWNqvW3sQF1F6NqDHBN6kKV5pKcbCdN3DR8wQG_tfKW6wv_B323CGMkW49B_=
+J642GBCzW6Xqf-w54xWj1N2WB7hTYym0cW2YsqTV27df0GW8KF8cY31yJZ03bP31" rel=3D"no=
+opener" style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; =
+text-decoration:none !important; color:#000000; border-bottom:1px solid #6b=
+7aff !important" data-hs-link-id=3D"0" target=3D"_blank"><img src=3D"https:=
+//explore.sxsw.com/hubfs/Footer-DarkMode/21_SXSW-email-footer_instagram-dar=
+kmode.png?noresize" alt=3D"Instagram" style=3D"height:auto !important; disp=
+lay:block; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:35p=
+x; max-width:35px; margin-right:auto; margin-left:auto; color:#ffffff" heig=
+ht=3D"auto" width=3D"35"></a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:4px" width=3D"4">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:57px; vertical-align:middle" =
+width=3D"57">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5Z3p_8yV1-WJV7CgSHCW2p11gq52-94fN89-nTkjNh4kN2Pprb0_TWB3N7v5R34j=
+14NFW7x50hb2TXqHqN5JwtR4f7gq1W6MXhLd8qjF_4W7TR-N-2JjV8zW7MlWvy6xT74bW56gR4Q=
+3D-MbBW6mRbMk8dLy2_Vh2dMJ4_lVZsW32-Qy06cmLkGW2G_tts7n1D13W84mwZr1bPkMHW4sJy=
+PS82mZ0mN2g0P2L9R5tLW2q4Pj52jc03wW3QsjZJ8KV9g2W8QqqPh47BwFw34Dc1" rel=3D"no=
+opener" style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; =
+text-decoration:none !important; color:#000000; border-bottom:1px solid #6b=
+7aff !important" data-hs-link-id=3D"0" target=3D"_blank"><img src=3D"https:=
+//explore.sxsw.com/hubfs/Footer-DarkMode/21_SXSW-email-footer_linkedin-dark=
+mode.png?noresize" alt=3D"Linkedin" style=3D"height:auto !important; displa=
+y:block; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:35px;=
+ max-width:35px; margin-right:auto; margin-left:auto; color:#ffffff" height=
+=3D"auto" width=3D"35"></a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:4px" width=3D"4">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:57px; vertical-align:middle" =
+width=3D"57">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5G3p_8fV1-WJV7CgD6VW2GRSTl7VjcK8N4vYtxc8bYJPW2dw8fW31h0L_W4D1cW_=
+2-LcYzW2K8X6R7Fb3bCN7SqKBPWng7NW45Z8k41nKg9WW861tnc6jDJkfW8gjvcM3rWp-hW1lGl=
+vY1SQMDVW1nz75B5Sr8FlW79F9gv7xMPwXW66pwC23BVlhYW5WWY6k8_-ww9N6-1kRdxr_fpW85=
+04yZ1cc0_QW26QVdW4PjQnlW1mpKQn5xmbxR3pN-1" rel=3D"noopener" style=3D"-webki=
+t-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none !i=
+mportant; color:#000000; border-bottom:1px solid #6b7aff !important" data-h=
+s-link-id=3D"0" target=3D"_blank"><img src=3D"https://explore.sxsw.com/hubf=
+s/Footer-DarkMode/21_SXSW-email-footer_youtube-darkmode.png?noresize" alt=
+=3D"Youtube" style=3D"height:auto !important; display:block; vertical-align=
+:bottom; -ms-interpolation-mode:bicubic; width:35px; max-width:35px; margin=
+-right:auto; margin-left:auto; color:#ffffff" height=3D"auto" width=3D"35">=
+</a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:4px" width=3D"4">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:57px; vertical-align:middle" =
+width=3D"57">
+<a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS-p=
+4w3xykN8GDX5Z3p_8yV1-WJV7CgQlfT4HGy5N8_x8W20j9k36Nfy4BW85-T_z6xp7NWW3ql8D88=
+ySFXmW2kBYYK93ZxD3N4trBwqjHJBHN6xtNTcWqKspW2bdXG-16BTxvW1pq2Nf1w-NcSW94f38R=
+3VD4-KW6CdpjC2dWCJ1W8Vcp914hvldnW253ggL65y2_GW8SLqkt4g9S6BW1cYGJ71LZbRdW2wB=
+Lj_96n7WKW580kS030cZVbW8Ss6Jy31TvP5W4V8Vwg4CCRznW6p_LXk1yP12X359G1" rel=3D"=
+noopener" style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%=
+; text-decoration:none !important; color:#000000; border-bottom:1px solid #=
+6b7aff !important" data-hs-link-id=3D"0" target=3D"_blank"><img src=3D"http=
+s://explore.sxsw.com/hubfs/Footer-DarkMode/21_SXSW-email-footer_spotify-dar=
+kmode.png?noresize" alt=3D"Spotify" style=3D"height:auto !important; displa=
+y:block; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:35px;=
+ max-width:35px; margin-right:auto; margin-left:auto; color:#ffffff" height=
+=3D"auto" width=3D"35"></a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:108px" width=3D"108">&nbsp;</=
+td>
+</tr>
+</tbody></table>
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; paddin=
+g-top:20px">
+<tbody><tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:200px" width=3D"200">&nbsp;</=
+td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:200px" width=3D"200"><img id=
+=3D"sxsw-events" src=3D"https://explore.sxsw.com/hubfs/Footer-DarkMode/21_S=
+XSW-email-footer_family-of-events-darkmode.png?noresize" alt=3D"SXSW events=
+" style=3D"height:auto !important; display:block; vertical-align:bottom; -m=
+s-interpolation-mode:bicubic; width:120px; max-width:120px; color:#ffffff; =
+font-size:12px; font-family:Helvetica, Arial, sans-serif; text-align:center=
+; margin-right:auto; margin-left:auto" align=3D"center" height=3D"auto" wid=
+th=3D"120"></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:200px" width=3D"200">&nbsp;</=
+td>
+</tr>
+</tbody></table>
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt">
+<tbody><tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:41px; width:71px" height=3D"=
+41" width=3D"71">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:41px; width:200px" height=3D=
+"41" width=3D"200">
+  <a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS=
+-p4w3xykN8GDX5G3p_8fV1-WJV7CgBLgW6ZMt805LzDHpW1lpCMW1vc6fGW6LKmPj8BqxJ3W69G=
+yfg4khkStV_PbLS2HJrqBW3fz6df5K_VfRN7X3YTDMQVmZW2xLXPF6Fzt_gW3NhDw48DK3n6W3v=
+Zb4F33lg9QW7gRqHj7wwjQRW5D8r543KDXTgW4k325q7PYCxLW2kxK9F7nw_bnN2ZsvCT8mbbYW=
+3RQvtX6_k1lHW2ypX2B8_0r_-W6Yb8GG45C94V3l0t1" rel=3D"noopener" style=3D"-web=
+kit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none =
+!important; color:#000000; border-bottom:1px solid #6b7aff !important" data=
+-hs-link-id=3D"0" target=3D"_blank">
+<img id=3D"sxswlogo" src=3D"https://cdn2.hubspot.net/hub/558236/hubfs/Foote=
+r-DarkMode/21_SXSW-email-footer_SXSW-logo-darkmode.png?noresize&amp;width=
+=3D204&amp;upscale=3Dtrue&amp;name=3D21_SXSW-email-footer_SXSW-logo-darkmod=
+e.png" alt=3D"SXSW" style=3D"height:auto !important; display:block; margin-=
+left:auto; vertical-align:bottom; -ms-interpolation-mode:bicubic; width:102=
+px; color:#ffffff; text-decoration:none; max-width:102px" align=3D"center" =
+width=3D"102" height=3D"auto">
+  </a>
+  </td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:41px; width:8px" height=3D"4=
+1" width=3D"8">&nbsp;</td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:41px; width:270px" height=3D=
+"41" width=3D"270">
+  <a href=3D"https://explore.sxsw.com/e2t/tc/VX55CC1vfkLSW7cLmvB45yHqSW50jS=
+-p4w3xykN8GDX5G3p_8fV1-WJV7CgHJtW5s8rZJ6QtVZtW190bLC6tQwckN4JHJnc_1ZJZW79GM=
+-Y68rKpJW1YncP47_691lW3Ynp353c65CMW7PMK1l3l51ySW8H24R626xDl5W8pd35t5ZY45kW3=
+ph7mP29kp_dW3KsXC32NcYjdW5xLWys2W25gqW5psF1J5LWrYBTD_4f67RSBLW3d52nh1zstyHW=
+1nFdgg2tPqZfW8Q_xd37YgV2mW6696wJ1HKs493dZS1" rel=3D"noopener" style=3D"-web=
+kit-text-size-adjust:100%; -ms-text-size-adjust:100%; text-decoration:none =
+!important; color:#000000; border-bottom:1px solid #6b7aff !important" data=
+-hs-link-id=3D"0" target=3D"_blank">
+<img id=3D"edulogo" src=3D"https://cdn2.hubspot.net/hub/558236/hubfs/Footer=
+-DarkMode/21_SXSW-email-footer-SXSWEDU-logo-darkmode.png?noresize&amp;width=
+=3D312&amp;upscale=3Dtrue&amp;name=3D21_SXSW-email-footer-SXSWEDU-logo-dark=
+mode.png" alt=3D"SXSW EDU" style=3D"height:auto !important; display:block; =
+margin-right:auto; vertical-align:bottom; -ms-interpolation-mode:bicubic; w=
+idth:156px; color:#ffffff; text-decoration:none; max-width:156px" width=3D"=
+156" height=3D"auto">  </a></td>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; height:41px; width:51px" height=3D"=
+41" width=3D"51">&nbsp;</td>
+</tr>
+</tbody></table>
+<table style=3D"border-collapse:collapse; -webkit-text-size-adjust:100%; -m=
+s-text-size-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt">
+<tbody><tr>
+<td style=3D"-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-=
+table-lspace:0pt; mso-table-rspace:0pt; width:600px; height:10px" width=3D"=
+600" height=3D"10">&nbsp;</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table></div>
+          <!-- footer and office info -->
+          <center>
+            <table align=3D"center" valign=3D"top" style=3D"border-collapse=
+:collapse; -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; mso-ta=
+ble-lspace:0pt; mso-table-rspace:0pt; width:600px; margin-left:auto; margin=
+-right:auto; font-family:'Work Sans',Helvetica,Arial,sans-serif; font-size:=
+10px; line-height:140%; color:#000000" border=3D"0" cellspacing=3D"0" cellp=
+adding=3D"0" width=3D"600">
+              <tbody>
+                <tr>
+                  <td style=3D"-webkit-text-size-adjust:100%; -ms-text-size=
+-adjust:100%; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align:center=
+" align=3D"center">
+                    <!--office location -->   =20
+                    <div id=3D"hs_cos_wrapper_module_162023281322244" class=
+=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=
+=3D"color: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-=
+general-type=3D"widget" data-hs-cos-type=3D"module"><p style=3D"-webkit-tex=
+t-size-adjust:100%; -ms-text-size-adjust:100%; padding-top:0px; margin-top:=
+0px; padding-bottom:0px; margin-bottom:0px">South by Southwest=C2=AE, SXSW=
+=C2=AE, South by=C2=AE, SXSW EDU=C2=AE, Daily Chord=C2=AE, and PanelPicker=
+=C2=AE are trademarks owned by SXSW, LLC. |&nbsp;South by Southwest&nbsp;|&=
+nbsp;PO Box 685289,&nbsp;Austin,&nbsp;TX,&nbsp;78768&nbsp;|&nbsp;512-467-79=
+79.</p></div>                   =20
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </center>
+          <!-- end wrapper-->
+        </td>
+      </tr>
+    </tbody></table>
+ =20
+<img src=3D"https://explore.sxsw.com/e2t/to/VX55CC1vfkLSW7cLmvB45yHqSW50jS-=
+p4w3xykW8GDWVl1ghLbF103" alt=3D"" width=3D"1" height=3D"1" border=3D"0" sty=
+le=3D"display:none!important;min-height:1px!important;width:1px!important;b=
+order-width:0!important;margin-top:0!important;margin-bottom:0!important;ma=
+rgin-right:0!important;margin-left:0!important;padding-top:0!important;padd=
+ing-bottom:0!important;padding-right:0!important;padding-left:0!important">=
+</body></html>
+------=_Part_7636115_629558564.1628612008742--
+

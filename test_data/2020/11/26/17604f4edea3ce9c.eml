@@ -1,0 +1,1373 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:501c:0:0:0:0:0 with SMTP id e28csp1534831ljb;
+        Thu, 26 Nov 2020 06:28:49 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwCS/p/07TtjGZmttEZK1V+hyUTT22gFaPOw74HkuzTjCXZEWtY8uXmu7Y4810xVgQxLxXp
+X-Received: by 2002:aed:3b23:: with SMTP id p32mr3387757qte.13.1606400928918;
+        Thu, 26 Nov 2020 06:28:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1606400928; cv=none;
+        d=google.com; s=arc-20160816;
+        b=JI2a7456neIs2bKErKyG9XbGEiQmtH/ySle66ED0atPVXqo3y4NUoHANfhmCRjyCJi
+         f7ye1+HMEdn9Wt9XOSn4YyoNJoOipJqCtneLIqKTFQJsRaBbg+fFivHi8tPULgoH6Aky
+         h8W4/YX5rtPtTu3JJseYzNH/y+sub7knmIx8HvfSMXznoR4KLF26IIozCuxJts/Sz/n/
+         JI0Ty6aGkVHPfX7HMx3h/4nZmkqEC6lRrjdvqWsJTPRsQSnK6KVw6/xKyshR+o3R4fue
+         njXZl8ko4Jo6otjx4LfZr1pKuBPkZmnporTwWxUMjZKgJk5AaJzglalaEwTagXIXfKsV
+         0uvg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:cc:to:from;
+        bh=M+Aka8zjBqz8vEGopB3fBYEXua3yDV/XAt/kk9Os3l4=;
+        b=AvUxBGPj1lZOS0rYCDdrBaT0V8Kkupev7JTQCCyalJhfEnSRoh5MwwmxW+rx3D9JS/
+         WXCvEgA0w1FcanQpfms16v5uSk+vb36QjD0A6Cyldvv/QQS8h/nKO+7Ncvw4zbqklo+9
+         32RE3h+I4sOMKqBDsHzKbvo1ZtlvhAdtP8Xb7czoJcxJ9bctG0RdSH6dIUBFjPT9cY74
+         77ZKZKfPjT6InVLKnf/YcPUag/eOo0V3NEMGBua2MbHxoKVWa9ITCNAUsFutDCoM0k1e
+         nlx0FOnshrtPNXxNNgAHlR1XSUBKHuhFWK4XmMinrLRE0iJXUzcrICslCm33hc5JcCzE
+         LYIQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-01.prod.iad2.secureserver.net (a2nlsmtp01-01.prod.iad2.secureserver.net. [198.71.224.24])
+        by mx.google.com with ESMTPS id j36si1411070qte.53.2020.11.26.06.28.48
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 26 Nov 2020 06:28:48 -0800 (PST)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) client-ip=198.71.224.24;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=indigometrics.com
+Received: from mailout02.c01.mtsvc.net ([64.207.129.76])
+	by : HOSTING RELAY : with ESMTP
+	id iIFOkCmLEoF3riIFOkaSVg; Thu, 26 Nov 2020 07:27:47 -0700
+X-CMAE-Analysis: v=2.4 cv=UZGU9IeN c=1 sm=1 tr=0 ts=5fbfbb63
+ a=4F84bBsrrNdyp59tV0sJTA==:117 a=FM0zR5x8FjvqzmxfUW9ThQ==:17
+ a=nNwsprhYR40A:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=_0UJnJD0AAAA:8 a=MGKIFWvDAAAA:8
+ a=vmjfHvoVAAAA:8 a=VAMm1qzQAAAA:8 a=PMcg2yxegkfl_tWCx5gA:9 a=CjuIK1q_8ugA:10
+ a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8 a=0ze8qv563yCvTukr_vAA:9
+ a=Opr5GLIxtbdSKBnf:21 a=gKO2Hq4RSVkA:10 a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10
+ a=frz4AuCg-hUA:10 a=OXmuYNN5xyGRMT0QxWQA:9 a=IKIoO-ieCDEA:10
+ a=7qx8gLC0iM8A:10 a=CyDbrGLRJ-AA:10 a=X1c0k9nRQnjIoBfxGzdG:22
+ a=HKSbAH-448Q-VCTtFNsj:22 a=4D1dU0hVIIbnoyLp9NuI:22 a=hERUkrcLlWn5dv47J648:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl09.gs01.gridserver.com ([64.13.192.18])
+	by mailout02.c01.mtsvc.net with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kiIFL-0003T7-0i; Thu, 26 Nov 2020 06:27:45 -0800
+Received: from [2.221.20.105] (port=57159 helo=DESKTOPVL3QK79)
+	by cl09.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kiIF0-0004Iq-7R; Thu, 26 Nov 2020 06:27:42 -0800
+From: <chris@indigometrics.com>
+To: "'Simon Young'" <simon@retailistic.co.uk>
+Cc: "'Josh Klein'" <josh@josh.is>
+References: <CWXP265MB16716B9AFC595A6687EE1201FDFA0@CWXP265MB1671.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB16716B9AFC595A6687EE1201FDFA0@CWXP265MB1671.GBRP265.PROD.OUTLOOK.COM>
+Subject: RE: Indigometrics Investor video - v1 - Simon's comments 
+Date: Thu, 26 Nov 2020 14:27:19 -0000
+Message-ID: <060b01d6c400$4119c3e0$c34d4ba0$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_060C_01D6C400.411DE290"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQFc1NI6wImivGYSLPdkom8vCCfkP6rOVC1w
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=4.2 tests=ALL_TRUSTED, HTML_FONT_LOW_CONTRAST, HTML_MESSAGE,
+	URIBL_BLOCKED version=3.4.2 cmae=_CMAETAG_"
+X-Spam-Level: ****
+X-Spam_score: 4.2
+X-Spam_score_int: 42
+X-CMAE-Envelope: MS4xfLgiwf3YcGPJ+2SL2BmWvwD/ZyDsZppB6jB0ac1E9RignAJvJ2bRjhT8CFKCJ8qZnw6qnJ8AbVJEk84IgTnulYx3ET+lcNI/cFZwot+xx880IggM6Mp7
+ cIRNrHsnNzHyDimpJPgAT2kd/Twr4gbfGPXhlLaU4y/a9IlI3FSEqVGwSk5v0oNNaWq6SN/qSynvArCf0evbR1Hey3Xp3d8aORG+FfbbKKGfGnH4NrcS+IlZ
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_060C_01D6C400.411DE290
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_060D_01D6C400.411DE290"
+
+
+------=_NextPart_001_060D_01D6C400.411DE290
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Hi Simon,
+
+Our comments on the initial video attached, to summarise:
+
+*	We need to get away from having the script appear on the screen,
+either through more animation or by cutting down the text to a few words to
+summarise the point being verbalised
+We have suggested some animations in the attached but happy to go with any
+better suggestions - these are just ideas (and some of our suggestions
+overlap with yours below)
+*	We would like to drop the cutaway feature that talks about Google
+Analytics from the centre of the video
+We then need to change the ending - to use some of that material about
+Google Analytics that we cut out of the middle (although Josh and I need to
+talk about that a bit more before we give you clear feedback).
+
+Josh is the primary customer for the video as he is our primary investor
+contact so could the 3 of us get on a call to chat it through?
+
+I am free tomorrow (Friday) morning til 11.30 if there is a time then that
+works?
+
+Thanks
+
+Chris
+
+ 
+
+From: Simon Young <simon@retailistic.co.uk> 
+Sent: 25 November 2020 14:39
+To: chris@indigometrics.com
+Subject: Indigometrics Investor video - v1 - Simon's comments 
+
+ 
+
+Hi Chris 
+
+ 
+
+Coming back to you on my thoughts on amends Investor video - v1. 
+
+ 
+
+I am not yet commenting on screen text spell or grammar. 
+
+ 
+
+Happy to chat on a call when you are ready
+
+ 
+
+
+Timecode
+
+Comment 
+
+Reference 
+
+
+General 
+
+Music - We will add a music track once all other aspects are complete
+
+https://www.audionetwork.com/
+
+
+General 
+
+People faces - Looking at them in situ, I have to say I prefer the people
+icons we first had. Question: What are your thoughts. 
+
+ 
+
+
+00:00
+
+We will add an Intro. Either a statement such as "What is Workplace Culture
+Analytics" or the Indigometrics logo
+
+ 
+
+
+00:21
+
+Display large tinted $ (dollar sign) animating 
+
+ 
+
+
+00:31 
+
+Display sad, indifferent and happy face icons as tints 
+
+ 
+
+
+00:37 
+
+Introduce face icons here (loose triangles in this section) 
+
+ 
+
+
+00:43 
+
+Highlight our main character face and dull down the remaining faces 
+
+ 
+
+
+00:59 
+
+Question: Shall we add screen captures/animation of Google Analytics in
+action - are we allowed to? 
+
+ 
+
+
+01:16
+
+Display this graphic on a background that does not "white out" the graphics.
+
+
+ 
+
+
+01:18 
+
+Timing - white space for too long 
+
+ 
+
+
+01:39 
+
+Faces - Question: What are your thoughts? 
+
+ 
+
+
+01:46 
+
+This dark video is not working. Question: Shall we show complete screen
+captures of Indigometrics software or clip small elements to lay on
+background? 
+
+ 
+
+
+02:05 
+
+Question: Is this OK, or should we show a sample question box? 
+
+ 
+
+
+02:12
+
+Question: Are you happy with graphic of a laptop or would you prefer real
+life photo? 
+
+ 
+
+
+02:14 
+
+Suggest we animate adjustments to the persons data chart. Grow Collaboration
+and experimentation but Diverse learning shrinks a little?
+
+ 
+
+
+02:24 
+
+Text disappears before fade to black 
+
+ 
+
+
+02:38
+
+Look to make handshake video be a little clearer? 
+
+ 
+
+
+03:08
+
+Do you want to add your Photos, name and emails? 
+
+ 
+
+
+03:10
+
+Will add close screen with Indigometrics logo and strap line "Workplace
+Culture Analytics. The text on the previous screen will remain but reduce in
+size. 
+
+ 
+
+ 
+
+Many thanks
+
+ 
+
+Simon
+
+ 
+
+Simon Young
+
+Storyteller / CEO / Tech Influencer
+
+Retailistic
+
+ <mailto:simon@retailistic.co.uk> simon@retailistic.co.uk
+
+ <http://www.retailistic.co.uk/> www.retailistic.co.uk
+
++44 (0)7801 651044
+
+ 
+
+ 
+
+From: Simon Young 
+Sent: 25 November 2020 10:45
+To: chris@indigometrics.com <mailto:chris@indigometrics.com> 
+Subject: Indigometrics Investor video - v1
+
+ 
+
+Hi Chris
+
+ 
+
+The first draft of the Investor video is in a Dropbox folder called Video
+Renders
+
+ 
+
+Link here also  -
+https://www.dropbox.com/sh/c92ivndzzgq1jgb/AABfQm5I6D5LuOgSPdmOJDeDa?dl=0
+
+ 
+
+My first time watching this morning. There is quite a bit to do and things I
+want to change - but it gives us a good start - it is looking like it will
+be 3min20sec when intro/outro added 
+
+ 
+
+Top level
+
+*	Needs intro and outro
+*	Animators voice for now
+*	Needs more graphics and a bit less text 
+*	Not convinced on the people graphics selected
+*	Video behind dark screens not working 
+*	Needs to show your software more 
+
+ 
+
+I will provide a full amends list later today
+
+ 
+
+Many thanks
+
+ 
+
+Simon
+
+ 
+
+ 
+
+Simon Young
+
+Storyteller / CEO / Tech Influencer
+
+Retailistic
+
+ <mailto:simon@retailistic.co.uk> simon@retailistic.co.uk
+
+ <http://www.retailistic.co.uk/> www.retailistic.co.uk
+
++44 (0)7801 651044
+
+ 
+
+ 
+
+
+------=_NextPart_001_060D_01D6C400.411DE290
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii"><meta name=3DGenerator content=3D"Microsoft Word 15 =
+(filtered medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-priority:34;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+span.EmailStyle21
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:869875240;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1910746322 134807553 134807555 134807557 =
+134807553 134807555 134807557 134807553 134807555 134807557;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l0:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l0:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l0:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l0:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l1
+	{mso-list-id:1582105637;
+	mso-list-template-ids:1690885508;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:108.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:144.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:180.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:216.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:252.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:288.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l1:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:324.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l2
+	{mso-list-id:1652326146;
+	mso-list-type:hybrid;
+	mso-list-template-ids:1446437310 2128132996 134807555 134807557 =
+134807553 134807555 134807557 134807553 134807555 134807557;}
+@list l2:level1
+	{mso-level-start-at:0;
+	mso-level-number-format:bullet;
+	mso-level-text:-;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-font-family:Calibri;}
+@list l2:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l2:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l2:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l2:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l2:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l2:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l2:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l2:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB =
+link=3D"#0563C1" vlink=3D"#954F72" style=3D'word-wrap:break-word'><div =
+class=3DWordSection1><p class=3DMsoNormal>Hi Simon,<o:p></o:p></p><p =
+class=3DMsoNormal>Our comments on the initial video attached, to =
+summarise:<o:p></o:p></p><ul style=3D'margin-top:0cm' type=3Ddisc><li =
+class=3DMsoListParagraph style=3D'margin-left:0cm;mso-list:l2 level1 =
+lfo4'>We need to get away from having the script appear on the screen, =
+either through more animation or by cutting down the text to a few words =
+to summarise the point being verbalised<br>We have suggested some =
+animations in the attached but happy to go with any better suggestions =
+&#8211; these are just ideas (and some of our suggestions overlap with =
+yours below)<o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l2 level1 lfo4'>We would like to drop =
+the cutaway feature that talks about Google Analytics from the centre of =
+the video<br>We then need to change the ending &#8211; to use some of =
+that material about Google Analytics that we cut out of the middle =
+(although Josh and I need to talk about that a bit more before we give =
+you clear feedback).<o:p></o:p></li></ul><p class=3DMsoNormal>Josh is =
+the primary customer for the video as he is our primary investor contact =
+so could the 3 of us get on a call to chat it through?<o:p></o:p></p><p =
+class=3DMsoNormal>I am free tomorrow (Friday) morning til 11.30 if there =
+is a time then that works?<o:p></o:p></p><p =
+class=3DMsoNormal>Thanks<o:p></o:p></p><p =
+class=3DMsoNormal>Chris<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'>From:</span></b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'> Simon Young =
+&lt;simon@retailistic.co.uk&gt; <br><b>Sent:</b> 25 November 2020 =
+14:39<br><b>To:</b> chris@indigometrics.com<br><b>Subject:</b> =
+Indigometrics Investor video - v1 - Simon's comments =
+<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Hi Chris =
+<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>Coming back to you on my thoughts on amends <span =
+lang=3DEN-US style=3D'mso-fareast-language:EN-GB'>Investor video - v1. =
+<o:p></o:p></span></p><p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'>I am not yet commenting on screen =
+text spell or grammar. <o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'>Happy to chat on a call when you =
+are ready<o:p></o:p></span></p><p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'><o:p>&nbsp;</o:p></span></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+style=3D'border-collapse:collapse'><tr><td width=3D74 valign=3Dtop =
+style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;background:black;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><b>Timec<span =
+style=3D'color:white'>ode</span><o:p></o:p></b></p></td><td width=3D530 =
+valign=3Dtop style=3D'width:397.8pt;border:solid windowtext =
+1.0pt;border-left:none;background:black;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><b><span style=3D'color:white'>Comment =
+</span><o:p></o:p></b></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border:solid windowtext =
+1.0pt;border-left:none;background:black;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><b><span style=3D'color:white'>Reference =
+</span><o:p></o:p></b></p></td></tr><tr style=3D'height:8.15pt'><td =
+width=3D74 valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:8.15pt'><p =
+class=3DMsoNormal>General <o:p></o:p></p></td><td width=3D530 =
+valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt;height:8.15pt'><p class=3DMsoNormal>Music &#8211; We =
+will add a music track once all other aspects are =
+complete<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt;height:8.15pt'><p class=3DMsoNormal><a =
+href=3D"https://www.audionetwork.com/">https://www.audionetwork.com/</a><=
+o:p></o:p></p></td></tr><tr><td width=3D74 valign=3Dtop =
+style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>General <o:p></o:p></p></td><td width=3D530 =
+valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>People faces &#8211; Looking at =
+them in situ, I have to say I prefer the people icons we first had. =
+<span style=3D'color:red'>Question: </span>What are your thoughts. =
+<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:00<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>We will add an Intro. Either a =
+statement such as &#8220;What is Workplace Culture Analytics&#8221; or =
+the Indigometrics logo<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:21<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Display large tinted $ (dollar =
+sign) animating <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:31 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Display sad, indifferent and happy =
+face icons as tints <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:37 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Introduce face icons here (loose =
+triangles in this section) <o:p></o:p></p></td><td width=3D331 =
+valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:43 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Highlight our main character face =
+and dull down the remaining faces <o:p></o:p></p></td><td width=3D331 =
+valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>00:59 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal><span =
+style=3D'color:red'>Question: </span>Shall we add screen =
+captures/animation of Google Analytics in action &#8211; are we allowed =
+to? <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>01:16<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Display this graphic on a =
+background that does not &#8220;white out&#8221; the graphics. =
+<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>01:18 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Timing &#8211; white space for too =
+long <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>01:39 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Faces - <span =
+style=3D'color:red'>Question: </span>What are your thoughts? =
+<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>01:46 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>This dark video is not working. =
+<span style=3D'color:red'>Question: </span>Shall we show complete screen =
+captures of Indigometrics software or clip small elements to lay on =
+background? <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>02:05 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal><span =
+style=3D'color:red'>Question: </span>Is this OK, or should we show a =
+sample question box? <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>02:12<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal><span =
+style=3D'color:red'>Question: </span>Are you happy with graphic of a =
+laptop or would you prefer real life photo? <o:p></o:p></p></td><td =
+width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>02:14 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Suggest we animate adjustments to =
+the persons data chart. Grow Collaboration and experimentation but =
+Diverse learning shrinks a little?<o:p></o:p></p></td><td width=3D331 =
+valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>02:24 <o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Text disappears before fade to =
+black <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>02:38<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Look to make handshake video be a =
+little clearer? <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>03:08<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Do you want to add your Photos, =
+name and emails? <o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr><tr><td width=3D74 =
+valign=3Dtop style=3D'width:55.4pt;border:solid windowtext =
+1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal>03:10<o:p></o:p></p></td><td width=3D530 valign=3Dtop =
+style=3D'width:397.8pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p class=3DMsoNormal>Will add close screen with =
+Indigometrics logo and strap line &#8220;Workplace Culture Analytics. =
+The text on the previous screen will remain but reduce in size. =
+<o:p></o:p></p></td><td width=3D331 valign=3Dtop =
+style=3D'width:248.1pt;border-top:none;border-left:none;border-bottom:sol=
+id windowtext 1.0pt;border-right:solid windowtext 1.0pt;padding:0cm =
+5.4pt 0cm 5.4pt'><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></td></tr></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Many =
+thanks<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>Simon<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p =
+class=3DMsoNormal><b><span =
+style=3D'color:#E16900;mso-fareast-language:EN-GB'>Simon =
+Young<o:p></o:p></span></b></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-GB'>Storyteller / CEO / Tech =
+</span>Influencer<span =
+style=3D'mso-fareast-language:EN-GB'><o:p></o:p></span></p><p =
+class=3DMsoNormal><b><span =
+style=3D'mso-fareast-language:EN-GB'>Retailistic</span></b><span =
+style=3D'mso-fareast-language:EN-GB'><o:p></o:p></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'><a =
+href=3D"mailto:simon@retailistic.co.uk"><span =
+style=3D'color:#ED7D31'>simon@retailistic.co.uk</span></a><span =
+style=3D'color:#ED7D31'><o:p></o:p></span></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'><a =
+href=3D"http://www.retailistic.co.uk/"><span =
+style=3D'color:#7F7F7F'>www.retailistic.co.uk</span></a><span =
+style=3D'color:#7F7F7F'><o:p></o:p></span></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'>+44 (0)7801 =
+651044<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-GB'><o:p>&nbsp;</o:p></span></p></div><p=
+ class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'>From:</span></b><span lang=3DEN-US =
+style=3D'mso-fareast-language:EN-GB'> Simon Young <br><b>Sent:</b> 25 =
+November 2020 10:45<br><b>To:</b> <a =
+href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a><br><b=
+>Subject:</b> Indigometrics Investor video - =
+v1<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Hi =
+Chris<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>The first draft of the Investor video is in a Dropbox =
+folder called Video Renders<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Link here =
+also &nbsp;- <a =
+href=3D"https://www.dropbox.com/sh/c92ivndzzgq1jgb/AABfQm5I6D5LuOgSPdmOJD=
+eDa?dl=3D0">https://www.dropbox.com/sh/c92ivndzzgq1jgb/AABfQm5I6D5LuOgSPd=
+mOJDeDa?dl=3D0</a><o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>My first =
+time watching this morning. There is <u>quite a bit to do and things I =
+want to change</u> &#8211; but it gives us a good start &#8211; it is =
+looking like it will be 3min20sec when intro/outro added =
+<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>Top level<o:p></o:p></p><ul style=3D'margin-top:0cm' =
+type=3Ddisc><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Needs intro and =
+outro<o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Animators voice for =
+now<o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Needs more graphics =
+and a bit less text <o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Not convinced on the =
+people graphics selected<o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Video behind dark =
+screens not working <o:p></o:p></li><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo3'>Needs to show your =
+software more <o:p></o:p></li></ul><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>I will =
+provide a full amends list later today<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal>Many =
+thanks<o:p></o:p></p><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal>Simon<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal><b><span =
+style=3D'color:#E16900;mso-fareast-language:EN-GB'>Simon =
+Young<o:p></o:p></span></b></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-GB'>Storyteller / CEO / Tech =
+</span>Influencer<span =
+style=3D'mso-fareast-language:EN-GB'><o:p></o:p></span></p><p =
+class=3DMsoNormal><b><span =
+style=3D'mso-fareast-language:EN-GB'>Retailistic</span></b><span =
+style=3D'mso-fareast-language:EN-GB'><o:p></o:p></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'><a =
+href=3D"mailto:simon@retailistic.co.uk"><span =
+style=3D'color:#ED7D31'>simon@retailistic.co.uk</span></a><span =
+style=3D'color:#ED7D31'><o:p></o:p></span></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'><a =
+href=3D"http://www.retailistic.co.uk/"><span =
+style=3D'color:#7F7F7F'>www.retailistic.co.uk</span></a><span =
+style=3D'color:#7F7F7F'><o:p></o:p></span></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-GB'>+44 (0)7801 =
+651044<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-GB'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div></body></html>
+------=_NextPart_001_060D_01D6C400.411DE290--
+
+------=_NextPart_000_060C_01D6C400.411DE290
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+	name="Investor Video.docx"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="Investor Video.docx"
+
+UEsDBBQABgAIAAAAIQAykW9XZgEAAKUFAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAC0
+lMtqwzAQRfeF/oPRtthKuiilxMmij2UbaPoBijRORPVCo7z+vuM4MaUkMTTJxiDP3HvPCDGD0dqa
+bAkRtXcl6xc9loGTXmk3K9nX5C1/ZBkm4ZQw3kHJNoBsNLy9GUw2ATAjtcOSzVMKT5yjnIMVWPgA
+jiqVj1YkOsYZD0J+ixnw+17vgUvvEriUp9qDDQcvUImFSdnrmn43JBEMsuy5aayzSiZCMFqKRHW+
+dOpPSr5LKEi57cG5DnhHDYwfTKgrxwN2ug+6mqgVZGMR07uw1MVXPiquvFxYUhanbQ5w+qrSElp9
+7Rail4BId25N0Vas0G7Pf5TDLewUIikvD9Jad0Jg2hjAyxM0vt3xkBIJrgGwc+5EWMH082oUv8w7
+QSrKnYipgctjtNadEInWADTf/tkcW5tTkdQ5jj4grZX4j7H3e6NW5zRwgJj06VfXJpL12fNBvZIU
+qAPZfLtkhz8AAAD//wMAUEsDBBQABgAIAAAAIQAekRq37wAAAE4CAAALAAgCX3JlbHMvLnJlbHMg
+ogQCKKAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAArJLBasMwDEDvg/2D0b1R2sEYo04vY9DbGNkHCFtJTBPb2GrX/v082NgCXelhR8vS05PQ
+enOcRnXglF3wGpZVDYq9Cdb5XsNb+7x4AJWFvKUxeNZw4gyb5vZm/cojSSnKg4tZFYrPGgaR+IiY
+zcAT5SpE9uWnC2kiKc/UYySzo55xVdf3mH4zoJkx1dZqSFt7B6o9Rb6GHbrOGX4KZj+xlzMtkI/C
+3rJdxFTqk7gyjWop9SwabDAvJZyRYqwKGvC80ep6o7+nxYmFLAmhCYkv+3xmXBJa/ueK5hk/Nu8h
+WbRf4W8bnF1B8wEAAP//AwBQSwMEFAAGAAgAAAAhAKOj5P0+EgAA2FsAABEAAAB3b3JkL2RvY3Vt
+ZW50LnhtbOxcW3PbyJV+36r8hy49ZCdVtoU7QCaSCwBJW7say2vZcaZSqVQTaJIYAmgMLqKZp/kP
+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
+AA==
+
+------=_NextPart_000_060C_01D6C400.411DE290--
+

@@ -1,0 +1,567 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:740d:0:0:0:0:0 with SMTP id p13csp2902343ljc;
+        Mon, 16 Mar 2020 07:26:24 -0700 (PDT)
+X-Received: by 2002:a2e:5844:: with SMTP id x4mr16282802ljd.40.1584368783975;
+        Mon, 16 Mar 2020 07:26:23 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1584368783; cv=none;
+        d=google.com; s=arc-20160816;
+        b=02FZNx6xS/+W9vqkTY5/HaJ6GhZY9Dmoew0EVRUdixattKyFFoZGKnd2ZBcAfeJDyI
+         Sj6qmIus+lfsuVKmAUtJDqRNUK3k+ebflboUMLrfmxUFy81MBLvsSeNsbjy8XGiNDS5i
+         p1pN1KHA6+XUT4gB2mjGcdosueUfKTzwKG9m6VRptfUZHoTFDvn5FS6X8GMbEiCkUTXz
+         fRym/pUy3aE+9Gr8G/+s5ddvcT0sM29bcmdQzThnZw2Rger1EN6+NAMT6OFdK1v+3jeF
+         dbjshbTAEkMriMwMlyUX88/zgS9WcWFhLhpdWNOiUm2Zf99Rr8SgM/Df/N3un48zDXFt
+         0rzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:references:in-reply-to:message-id:to:from:date
+         :dkim-signature;
+        bh=/d3d9hR+x0WjHoRoajrRmrc4GMSUvgl0v9LhafLP0Tw=;
+        b=F3fdFGh/l4DNdi1Ej1HS2FrmzpAQ/CMdmfQVKhDdLsWByAR/IjAYALPqaad9wUPh+u
+         46S06ghl+4AKMmB2GjoMPFqHU2rI6eb+vYXX40DsbdiQKFDz0PmXl9sLgkotn961elVv
+         iX9XWUcdyk8RdRJhWYzd76oQ/3XwJM2BCjTCQRK2NG8sb/1VbHcPLdx69vEy3luc0Hed
+         cV2VkBU0Xl0bj3nyOEj7n+YJQ08rs+gBAISyexCwJ6XxcAo+xblv4tuN53TTa2IvFLJz
+         Anps/CZDsfcAVFDdtKjMgYp3WorpnBxBV2cyQ8ga0/w9migJNo3MHMxgKtvd0Gt7luZv
+         Vpfg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@polidea.com header.s=google header.b=k6N6c4xL;
+       spf=pass (google.com: domain of piotr.herstowski@polidea.com designates 209.85.220.65 as permitted sender) smtp.mailfrom=piotr.herstowski@polidea.com
+Return-Path: <piotr.herstowski@polidea.com>
+Received: from mail-sor-f65.google.com (mail-sor-f65.google.com. [209.85.220.65])
+        by mx.google.com with SMTPS id x144sor3118803lff.24.2020.03.16.07.26.23
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 16 Mar 2020 07:26:23 -0700 (PDT)
+Received-SPF: pass (google.com: domain of piotr.herstowski@polidea.com designates 209.85.220.65 as permitted sender) client-ip=209.85.220.65;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@polidea.com header.s=google header.b=k6N6c4xL;
+       spf=pass (google.com: domain of piotr.herstowski@polidea.com designates 209.85.220.65 as permitted sender) smtp.mailfrom=piotr.herstowski@polidea.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=polidea.com; s=google;
+        h=date:from:to:message-id:in-reply-to:references:subject:mime-version;
+        bh=/d3d9hR+x0WjHoRoajrRmrc4GMSUvgl0v9LhafLP0Tw=;
+        b=k6N6c4xL/+V6WYtbLek8Gk/c3gHB7jLcH7XFYVBUy+WKhRkz2l5//Sxfylg5edgIZl
+         FdlpfmnDTY1zzcS1cO+2TxoNxTzG5vwqMzH3OxuUoeZ0mYl9KMPxEoePFpT1CPCY/FOU
+         UELr3vck2SFBHpG/wJpR95zBokgypDorInEUE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:message-id:in-reply-to:references
+         :subject:mime-version;
+        bh=/d3d9hR+x0WjHoRoajrRmrc4GMSUvgl0v9LhafLP0Tw=;
+        b=PTGutaROPO+m0NcW2ihqlKj2dvzbKTXV/CuUXM4lYlZ7qO0Xo0fGy87h2Ohx2DdEJR
+         HYlz7ESJ0wXtvQWe0oMxAcgbn8Sk+NAw8utOmtqOs0yaWpKbmQ1N7HegsPpjvm/f0YnG
+         yW3o18MS2m3kgLBqJ4oYSW0XGSk+9E8088nIRnPxvnkCkeb9QLi1BDgm24wCOUMevbQA
+         0WleCaU1GiX6I5YPA2f/ZWwS1sojSE2TAT6P7N4DBnYKVmPIbeZ8pApEqsBdxcfHKOnT
+         TECOa3KDJtj/mmuVbRFQUgReiD4XijEGY7PN/fPCyi9UyflEupX6G8BsBk7m3aistQTy
+         7RMw==
+X-Gm-Message-State: ANhLgQ0c5PpNDKeupMn3Wi+SDzIG4tOLEtmH8xNxRO1mO2THJsmw56Vv
+	ytNrjV6yOGGPDq6RgLdLFjHgJtIDSjc=
+X-Google-Smtp-Source: ADFU+vswq1kjbWTStB8VyxNNV9PyEXjXn0LUmTrcZm6g9ib0dqaHGeqyNq7cTDYFW9EcsLqjF0J+iQ==
+X-Received: by 2002:ac2:5508:: with SMTP id j8mr17308868lfk.31.1584368782609;
+        Mon, 16 Mar 2020 07:26:22 -0700 (PDT)
+Return-Path: <piotr.herstowski@polidea.com>
+Received: from b1.sedeliverynetwork.com (b1.sedeliverynetwork.com. [51.91.171.68])
+        by smtp.gmail.com with ESMTPSA id l13sm6643lfk.84.2020.03.16.07.26.21
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 16 Mar 2020 07:26:22 -0700 (PDT)
+Date: Mon, 16 Mar 2020 15:26:20 +0100 (CET)
+From: Piotr Herstowski <piotr.herstowski@polidea.com>
+To: Josh <josh@josh.is>
+Message-ID: <1077711375.20032.1584368782005@6b18cbb3e8f5>
+In-Reply-To: <445107369.97532.1583764164526@149c8f6025ba>
+References: <445107369.97532.1583764164526@149c8f6025ba>
+Subject: Re: Josh, coffee during SXSW?
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_20031_1546664069.1584368780867"
+
+------=_Part_20031_1546664069.1584368780867
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi, Josh, It seems like you have busy days before the conference.=C2=A0 Any=
+ chance to have a call? It would be great to hear from you! =E2=80=8B Best,=
+ Piotr=20
+     Piotr Herstowski
+Polidea=C2=A0| Business Development Specialist    =20
+ E:=C2=A0piotr.herstowski@polidea.com    =20
+    =20
+ Check out=C2=A0our projects!    =20
+    =20
+       =20
+       =20
+       =20
+       =20
+       =20
+       =20
+=20
+=20
+ If you'd like me to stop sending you emails, please=C2=A0unsubscribe GDPR =
+NOTE: We chose to contact you because we have strong reasons to assume that=
+ you can benefit from working with us. The source of your data is your Link=
+edIn profile or your corporate website. Your data is shared only with autho=
+rized employees of Polidea. We are processing your name, surname and email =
+address only because we wanted to send you this message. Polidea, sp. z o.o=
+, located in Przeskok 2 Street, Warsaw, Poland is the Data Administrator. I=
+f you want us to change the data we used to contact you, or remove your dat=
+a from the list, hit reply and let us know.=20
+=20
+ From: Piotr Herstowski <piotr.herstowski@polidea.com>
+Date: Mon Mar 09 09:29:24 CET 2020
+To: "Josh" <josh@josh.is>
+Subject: Re: Josh, coffee during SXSW?
+
+ Hi, Josh, =C2=A0 Unfortunately, due to the cancelation of SXSW, I need to =
+change my travel plans and postpone my trip to the US. Despite all the inco=
+nvenience, I'm looking forward to meeting you.=20
+ We can set up a call instead of a meeting, what do you think? =E2=80=8B Be=
+st, Piotr=20
+     Piotr Herstowski
+Polidea=C2=A0| Business Development Specialist    =20
+ E:=C2=A0piotr.herstowski@polidea.com    =20
+    =20
+ Check out=C2=A0our projects!    =20
+    =20
+       =20
+       =20
+       =20
+       =20
+       =20
+       =20
+=20
+=20
+ If you'd like me to stop sending you emails, please=C2=A0unsubscribe GDPR =
+NOTE: We chose to contact you because we have strong reasons to assume that=
+ you can benefit from working with us. The source of your data is your Link=
+edIn profile or your corporate website. Your data is shared only with autho=
+rized employees of Polidea. We are processing your name, surname and email =
+address only because we wanted to send you this message. Polidea, sp. z o.o=
+, located in Przeskok 2 Street, Warsaw, Poland is the Data Administrator. I=
+f you want us to change the data we used to contact you, or remove your dat=
+a from the list, hit reply and let us know.=20
+=20
+ From: Piotr Herstowski <piotr.herstowski@polidea.com>
+Date: Mon Mar 02 18:08:19 CET 2020
+To: "Josh" <josh@josh.is>
+Subject: Josh, coffee during SXSW?
+
+ Hi, Josh,=E2=80=8B We haven=E2=80=99t met, but I=E2=80=99m reaching out to=
+ you as I saw you are a speaker on SXSW. Considering your professional expe=
+rience, I am trying to catch your attention for a short while as our work i=
+nvolves areas that might be of interest to IndigoMetrics. We are a software=
+ development studio based in Poland experienced in IoT & BLE and Cloud Comp=
+uting Services=E2=80=94Polidea. We would love to learn what you are up to t=
+hose days and share some experiences=E2=80=94interested in grabbing a coffe=
+e? =E2=80=8BBest, Piotr=20
+     Piotr Herstowski
+Polidea=C2=A0| Business Development Specialist    =20
+ E:=C2=A0piotr.herstowski@polidea.com    =20
+    =20
+ Check out=C2=A0our projects!    =20
+    =20
+       =20
+       =20
+       =20
+       =20
+       =20
+       =20
+=20
+=20
+ If you'd like me to stop sending you emails, please=C2=A0unsubscribe GDPR =
+NOTE: We chose to contact you because we have strong reasons to assume that=
+ you can benefit from working with us. The source of your data is your Link=
+edIn profile or your corporate website. Your data is shared only with autho=
+rized employees of Polidea. We are processing your name, surname and email =
+address only because we wanted to send you this message. Polidea, sp. z o.o=
+, located in Przeskok 2 Street, Warsaw, Poland is the Data Administrator. I=
+f you want us to change the data we used to contact you, or remove your dat=
+a from the list, hit reply and let us know.=20
+
+------=_Part_20031_1546664069.1584368780867
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<div>
+<div>Hi, Josh,</div>
+<div>
+<div>
+<p>It seems like you have busy days before the conference.&nbsp;</p>
+<p>Any chance to have a call?</p>
+<p>It would be great to hear from you!</p>
+<p>=E2=80=8B</p>
+<p>Best,</p>
+<p>Piotr</p>
+</div>
+</div>
+</div>
+
+<div>
+<div>
+<table class=3D"person">
+<tbody>
+<tr>
+<td class=3D"person-avatar"><img src=3D"https://s3.eu-central-1.amazonaws.c=
+om/corgi-mail/23-05-2019/piotr.herstowski/pioher.jpg" width=3D"53" height=
+=3D"53" /></td>
+<td>
+<p><span class=3D"name">Piotr Herstowski</span><br /><span class=3D"positio=
+n"><a href=3D"https://www.polidea.com/">Polidea</a>&nbsp;| Business Develop=
+ment Specialist</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"contact">
+<tbody>
+<tr>
+<td>
+<p>E:&nbsp;<a class=3D"contact-link" href=3D"mailto:piotr.herstowski@polide=
+a.com">piotr.herstowski@polidea.com</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"logo">
+<tbody>
+<tr>
+<td><a href=3D"https://www.polidea.com/"><img src=3D"https://s3.eu-central-=
+1.amazonaws.com/corgi-mail/23-05-2019/piotr.herstowski/logo-slogan.png" alt=
+=3D"Polidea" width=3D"146" height=3D"85" /></a></td>
+</tr>
+</tbody>
+</table>
+<table class=3D"promo">
+<tbody>
+<tr>
+<td>
+<p><span class=3D"check-out">Check out&nbsp;<a href=3D"https://www.polidea.=
+com/our-work">our projects!</a></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"social">
+<tbody>
+<tr>
+<td><a class=3D"social-link" href=3D"https://github.com/Polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-github.png" alt=3D"Github" width=3D"28" height=3D"28" /></a></=
+td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.facebook.com/Polidea.Softw=
+are"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-201=
+9/piotr.herstowski/social-facebook.png" alt=3D"Facebook" width=3D"28" heigh=
+t=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://twitter.com/polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-twitter.png" alt=3D"Twitter" width=3D"28" height=3D"28" /></a>=
+</td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.linkedin.com/company/polid=
+ea"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019=
+/piotr.herstowski/social-linkedin.png" alt=3D"Linkedin" width=3D"28" height=
+=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://instagram.com/polidea"><img sr=
+c=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.hers=
+towski/social-instagram.png" alt=3D"Instagram" width=3D"28" height=3D"28" /=
+></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.behance.net/polidea"><img =
+src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.he=
+rstowski/social-behance.png" alt=3D"Behance" width=3D"28" height=3D"28" /><=
+/a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://dribbble.com/polideadesign"><i=
+mg src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr=
+.herstowski/social-dribbble.png" alt=3D"dribbble" width=3D"28" height=3D"28=
+" /></a></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<div><br /></div>
+<div class=3D"gmail_signature" dir=3D"ltr" data-smartmail=3D"gmail_signatur=
+e">
+<div dir=3D"ltr">
+<div><br /></div>
+<div>
+<div><font size=3D"2" face=3D"helvetica neue, helvetica, arial, sans-serif"=
+>If you'd like me to stop sending you emails, please&nbsp;<a style=3D"color=
+: #e7e6e6;" href=3D"https://a1.wpcrs.net/u?id=3DSXSZMW&csid=3D26DTQDX">unsu=
+bscribe</a></font></div>
+</div>
+<div><font size=3D"1">GDPR NOTE: We chose to contact you because we have st=
+rong reasons to assume that you can benefit from working with us. The sourc=
+e of your data is your LinkedIn profile or your corporate website. Your dat=
+a is shared only with authorized employees of Polidea. We are processing yo=
+ur name, surname and email address only because we wanted to send you this =
+message. Polidea, sp. z o.o, located in Przeskok 2 Street, Warsaw, Poland i=
+s the Data Administrator. If you want us to change the data we used to cont=
+act you, or remove your data from the list, hit reply and let us know.</fon=
+t></div>
+</div>
+</div>
+</div><br/><img src=3D'http://b1.sedeliverynetwork.com/signature/new_signat=
+ure_mail/2R7ZMI7.png' alt=3D'-- ' height=3D'1'/><div><br/><blockquote type=
+=3D"cite"  style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-le=
+ft:1ex"><div><b>From:</b> Piotr Herstowski &lt;<a href=3D"mailto:piotr.hers=
+towski@polidea.com">piotr.herstowski@polidea.com</a>&gt;<br><b>Date:</b> Mo=
+n Mar 09 09:29:24 CET 2020<br><b>To:</b> "Josh" &lt;<a href=3D"mailto:josh@=
+josh.is">josh@josh.is</a>&gt;<br><b>Subject:</b> <b> Re: Josh, coffee durin=
+g SXSW?</b><br><br></div></blockquote><blockquote type=3D"cite" style=3D"ma=
+rgin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div>Hi, Josh,=
+</div>
+<div>&nbsp;</div>
+<div>
+<div>Unfortunately, due to the cancelation of SXSW, I need to change my tra=
+vel plans and postpone my trip to the US.</div>
+<div>Despite all the inconvenience, I'm looking forward to meeting you.</di=
+v>
+<div><br /></div>
+<div>We can set up a call instead of a meeting, what do you think?</div>
+=E2=80=8B</div>
+<div>Best,</div>
+<div>Piotr</div>
+
+<div>
+<div>
+<table class=3D"person">
+<tbody>
+<tr>
+<td class=3D"person-avatar"><img src=3D"https://s3.eu-central-1.amazonaws.c=
+om/corgi-mail/23-05-2019/piotr.herstowski/pioher.jpg" width=3D"53" height=
+=3D"53" /></td>
+<td>
+<p><span class=3D"name">Piotr Herstowski</span><br /><span class=3D"positio=
+n"><a href=3D"https://www.polidea.com/">Polidea</a>&nbsp;| Business Develop=
+ment Specialist</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"contact">
+<tbody>
+<tr>
+<td>
+<p>E:&nbsp;<a class=3D"contact-link" href=3D"mailto:piotr.herstowski@polide=
+a.com">piotr.herstowski@polidea.com</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"logo">
+<tbody>
+<tr>
+<td><a href=3D"https://www.polidea.com/"><img src=3D"https://s3.eu-central-=
+1.amazonaws.com/corgi-mail/23-05-2019/piotr.herstowski/logo-slogan.png" alt=
+=3D"Polidea" width=3D"146" height=3D"85" /></a></td>
+</tr>
+</tbody>
+</table>
+<table class=3D"promo">
+<tbody>
+<tr>
+<td>
+<p><span class=3D"check-out">Check out&nbsp;<a href=3D"https://www.polidea.=
+com/our-work">our projects!</a></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"social">
+<tbody>
+<tr>
+<td><a class=3D"social-link" href=3D"https://github.com/Polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-github.png" alt=3D"Github" width=3D"28" height=3D"28" /></a></=
+td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.facebook.com/Polidea.Softw=
+are"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-201=
+9/piotr.herstowski/social-facebook.png" alt=3D"Facebook" width=3D"28" heigh=
+t=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://twitter.com/polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-twitter.png" alt=3D"Twitter" width=3D"28" height=3D"28" /></a>=
+</td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.linkedin.com/company/polid=
+ea"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019=
+/piotr.herstowski/social-linkedin.png" alt=3D"Linkedin" width=3D"28" height=
+=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://instagram.com/polidea"><img sr=
+c=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.hers=
+towski/social-instagram.png" alt=3D"Instagram" width=3D"28" height=3D"28" /=
+></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.behance.net/polidea"><img =
+src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.he=
+rstowski/social-behance.png" alt=3D"Behance" width=3D"28" height=3D"28" /><=
+/a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://dribbble.com/polideadesign"><i=
+mg src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr=
+.herstowski/social-dribbble.png" alt=3D"dribbble" width=3D"28" height=3D"28=
+" /></a></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<div><br /></div>
+<div class=3D"gmail_signature" dir=3D"ltr" data-smartmail=3D"gmail_signatur=
+e">
+<div dir=3D"ltr">
+<div><br /></div>
+<div>
+<div><font size=3D"2" face=3D"helvetica neue, helvetica, arial, sans-serif"=
+>If you'd like me to stop sending you emails, please&nbsp;<a style=3D"color=
+: #e7e6e6;" href=3D"https://a1.wpedn.com/u?id=3DSXSZMW&csid=3D26QEJJA">unsu=
+bscribe</a></font></div>
+</div>
+<div><font size=3D"1">GDPR NOTE: We chose to contact you because we have st=
+rong reasons to assume that you can benefit from working with us. The sourc=
+e of your data is your LinkedIn profile or your corporate website. Your dat=
+a is shared only with authorized employees of Polidea. We are processing yo=
+ur name, surname and email address only because we wanted to send you this =
+message. Polidea, sp. z o.o, located in Przeskok 2 Street, Warsaw, Poland i=
+s the Data Administrator. If you want us to change the data we used to cont=
+act you, or remove your data from the list, hit reply and let us know.</fon=
+t></div>
+</div>
+</div>
+</div><br/><img src=3D'http://b1.sedeliverynetwork.com/signature/old_signat=
+ure_mail/2ELSSL5.png' alt=3D'-- ' height=3D'1'/><div><br/><blockquote type=
+=3D"cite"  style=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-le=
+ft:1ex"><div><b>From:</b> Piotr Herstowski &lt;<a href=3D"mailto:piotr.hers=
+towski@polidea.com">piotr.herstowski@polidea.com</a>&gt;<br><b>Date:</b> Mo=
+n Mar 02 18:08:19 CET 2020<br><b>To:</b> "Josh" &lt;<a href=3D"mailto:josh@=
+josh.is">josh@josh.is</a>&gt;<br><b>Subject:</b> <b> Josh, coffee during SX=
+SW?</b><br><br></div></blockquote><blockquote type=3D"cite" style=3D"margin=
+:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div>Hi, Josh,=E2=
+=80=8B
+<p>We haven&rsquo;t met, but I&rsquo;m reaching out to you as I saw you are=
+ a speaker on SXSW.</p>
+<p>Considering your professional experience, I am trying to catch your atte=
+ntion for a short while as our work involves areas that might be of interes=
+t to IndigoMetrics. We are a software development studio based in Poland ex=
+perienced in IoT &amp; BLE and Cloud Computing Services&mdash;Polidea.</p>
+<p>We would love to learn what you are up to those days and share some expe=
+riences&mdash;interested in grabbing a coffee?</p>
+=E2=80=8BBest,</div>
+<div>Piotr</div>
+
+<div>
+<div>
+<table class=3D"person">
+<tbody>
+<tr>
+<td class=3D"person-avatar"><img src=3D"https://s3.eu-central-1.amazonaws.c=
+om/corgi-mail/23-05-2019/piotr.herstowski/pioher.jpg" width=3D"53" height=
+=3D"53" /></td>
+<td>
+<p><span class=3D"name">Piotr Herstowski</span><br /><span class=3D"positio=
+n"><a href=3D"https://www.polidea.com/">Polidea</a>&nbsp;| Business Develop=
+ment Specialist</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"contact">
+<tbody>
+<tr>
+<td>
+<p>E:&nbsp;<a class=3D"contact-link" href=3D"mailto:piotr.herstowski@polide=
+a.com">piotr.herstowski@polidea.com</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"logo">
+<tbody>
+<tr>
+<td><a href=3D"https://www.polidea.com/"><img src=3D"https://s3.eu-central-=
+1.amazonaws.com/corgi-mail/23-05-2019/piotr.herstowski/logo-slogan.png" alt=
+=3D"Polidea" width=3D"146" height=3D"85" /></a></td>
+</tr>
+</tbody>
+</table>
+<table class=3D"promo">
+<tbody>
+<tr>
+<td>
+<p><span class=3D"check-out">Check out&nbsp;<a href=3D"https://www.polidea.=
+com/our-work">our projects!</a></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<table class=3D"social">
+<tbody>
+<tr>
+<td><a class=3D"social-link" href=3D"https://github.com/Polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-github.png" alt=3D"Github" width=3D"28" height=3D"28" /></a></=
+td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.facebook.com/Polidea.Softw=
+are"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-201=
+9/piotr.herstowski/social-facebook.png" alt=3D"Facebook" width=3D"28" heigh=
+t=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://twitter.com/polidea"><img src=
+=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.herst=
+owski/social-twitter.png" alt=3D"Twitter" width=3D"28" height=3D"28" /></a>=
+</td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.linkedin.com/company/polid=
+ea"><img src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019=
+/piotr.herstowski/social-linkedin.png" alt=3D"Linkedin" width=3D"28" height=
+=3D"28" /></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://instagram.com/polidea"><img sr=
+c=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.hers=
+towski/social-instagram.png" alt=3D"Instagram" width=3D"28" height=3D"28" /=
+></a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://www.behance.net/polidea"><img =
+src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr.he=
+rstowski/social-behance.png" alt=3D"Behance" width=3D"28" height=3D"28" /><=
+/a></td>
+<td width=3D"16"><br /></td>
+<td><a class=3D"social-link" href=3D"https://dribbble.com/polideadesign"><i=
+mg src=3D"https://s3.eu-central-1.amazonaws.com/corgi-mail/23-05-2019/piotr=
+.herstowski/social-dribbble.png" alt=3D"dribbble" width=3D"28" height=3D"28=
+" /></a></td>
+</tr>
+</tbody>
+</table>
+<br /></div>
+<div><br /></div>
+<div class=3D"gmail_signature" dir=3D"ltr" data-smartmail=3D"gmail_signatur=
+e">
+<div dir=3D"ltr">
+<div><br /></div>
+<div>
+<div><font size=3D"2" face=3D"helvetica neue, helvetica, arial, sans-serif"=
+>If you'd like me to stop sending you emails, please&nbsp;<a style=3D"color=
+: #e7e6e6;" href=3D"https://a1.wpedn.com/u?id=3DSXSZMW&csid=3D25MTLY4">unsu=
+bscribe</a></font></div>
+</div>
+<div><font size=3D"1">GDPR NOTE: We chose to contact you because we have st=
+rong reasons to assume that you can benefit from working with us. The sourc=
+e of your data is your LinkedIn profile or your corporate website. Your dat=
+a is shared only with authorized employees of Polidea. We are processing yo=
+ur name, surname and email address only because we wanted to send you this =
+message. Polidea, sp. z o.o, located in Przeskok 2 Street, Warsaw, Poland i=
+s the Data Administrator. If you want us to change the data we used to cont=
+act you, or remove your data from the list, hit reply and let us know.</fon=
+t></div>
+</div>
+</div>
+</div><br/><img src=3D'http://b1.sedeliverynetwork.com/signature/old_signat=
+ure_mail/2EYG1XB.png' alt=3D'-- ' height=3D'1'/></blockquote></div></blockq=
+uote></div>
+------=_Part_20031_1546664069.1584368780867--

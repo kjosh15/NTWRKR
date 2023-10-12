@@ -1,0 +1,785 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:28a:0:0:0:0 with SMTP id b10csp5792009ljo;
+        Wed, 7 Jul 2021 01:44:02 -0700 (PDT)
+X-Received: by 2002:a25:ac46:: with SMTP id r6mr32474451ybd.267.1625647442196;
+        Wed, 07 Jul 2021 01:44:02 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1625647442; cv=none;
+        d=google.com; s=arc-20160816;
+        b=ptNaMR41G/DRPLF0o52WBp4kDNxAb6xHXDDxplqnmKop5GuRjxrAGmhNGdQ6aaJBHV
+         1n1r2M+mhQ7fOGssG+J3pG0mWWPL29qJf5Jd0CpFnrPGogq4Y9ploFOCCz2ZSy8e2YzN
+         hKydRKQo66xsQcRb1rLE1qaCpwCiqGBfguVcST6pOyYR0osUEP57tOC5JIhnqOCjJ+8s
+         FADX/pcc/FrbABXDBNoDY6CUZO4fuHEqH54AX7SANUIFTicV+Clog7miJUxyTR8jHYpS
+         No+ac8QsbvEfJakiD5CQj/AuM14B4BMb1GnLAUqaQbxy8L5u7V6wnc39mjswW4pEJt14
+         qnkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:message-id:date:mime-version:dkim-signature;
+        bh=tcs5y6bhiTkt8WvcfYEDCJiJDUNclDcpgWK+nLD582I=;
+        b=mQi1142fkPuv6hyGiS1r9fFgA0EKO1+3xEDnbAxHqTpUizydQACB7iyQxhxdd+g5Xx
+         aY9hTj8QiH18WntGqdjPmmGB/Sq/eT04bxCqemogWWZyiOTmq9vKLm0MNImOHwNjGr4v
+         beeBW6++lE6RnF+VF88SyaaJohQEbF5N8VoaYnRGpOMbiH9dcDR9lBzS2B69AYrzCBEI
+         Vf5BGx/l1UKrmBkO1/5mOmFoOfGLQRiD+0hLDiqyx9VYyRNNVY5dsXC438Q19aHe4Mrn
+         43tL//V9vEyTHT32EoKLyTujI7q4gGFANNbF9xXpRPu9hb6G/T8hqXusvU5bAhKCMMS0
+         riAg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@youtube.com header.s=20161025 header.b=yKmlJ4C4;
+       spf=pass (google.com: domain of 3uwnlybslbmy1m3qz5-7q3uruom5u0z-z03q1xaa0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3UWnlYBsLBMY1m3qz5-7q3uruom5u0z-z03q1xAA0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=youtube.com
+Return-Path: <3UWnlYBsLBMY1m3qz5-7q3uruom5u0z-z03q1xAA0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com>
+Received: from mail-sor-f69.google.com (mail-sor-f69.google.com. [209.85.220.69])
+        by mx.google.com with SMTPS id h130sor680479ybh.144.2021.07.07.01.44.02
+        for <josh@josh.is>
+        (Google Transport Security);
+        Wed, 07 Jul 2021 01:44:02 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 3uwnlybslbmy1m3qz5-7q3uruom5u0z-z03q1xaa0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com designates 209.85.220.69 as permitted sender) client-ip=209.85.220.69;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@youtube.com header.s=20161025 header.b=yKmlJ4C4;
+       spf=pass (google.com: domain of 3uwnlybslbmy1m3qz5-7q3uruom5u0z-z03q1xaa0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=3UWnlYBsLBMY1m3qz5-7q3uruom5u0z-z03q1xAA0656nq.o0yv04tv04t.u4@youtube-subscriptions.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=youtube.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=youtube.com; s=20161025;
+        h=mime-version:date:message-id:subject:from:to;
+        bh=tcs5y6bhiTkt8WvcfYEDCJiJDUNclDcpgWK+nLD582I=;
+        b=yKmlJ4C4A568WeIn6D1efGVLE82UiyDGSPsOeX8HOYFbs3a7qNHbELdmMnwiQKwPkq
+         o14K9p/I2NQOX4M9t3PnLB6mffmYbMo2HAl5hiNEhWg/3p8DsFRIDWRwKbZ4e1oRORkF
+         n1TpTNnLko9gDTNKRnlY4kHG8h+l201auie6zFGoCNrnflZ833Qt6WIM86IRgO3wrcZ8
+         REp7eaUlucZsh210oYDnjgLM7SpMOx7Q2G9SW8ZxPlq2PP0WAdMr5e76FkU388nVG44H
+         x5/15+fyWmskWxFbHidvO4ADsmVbxjWA4JN7nQX4ZFurKXKVxp1dqX5may7TzyGKt7++
+         n20g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tcs5y6bhiTkt8WvcfYEDCJiJDUNclDcpgWK+nLD582I=;
+        b=s45lqMbqqPQV8LQfzEz/zkOjYbEYk/PfYMtK5Yw2Fm9AW7lpvYIZTvm/Iai4J7b24T
+         MES5V9YvnYTmmDNNaQ0AOasKFwSsbVfeRTeuJQAqlLjyF90lmuYQ/5Y6enzmvA6p0TMx
+         lg97u9D600TPAQRThC92AfIiE4eT4ZZnsMbFWPouFVsmWdv5jbCFc0h0nau4axtBoBkQ
+         arUc+OpIRltU2BUYoWTUFVVvs9qeNyfD4YXyS0Jp/bis5TFbKSc310NKtYhG7QEMtVbw
+         Jh+WFLQbyW0MMKhPszqbnP2vwHoFgYuNnnmH+sI4oZ5iYHSvXGLB9cJXqf4E1Kv+z7gB
+         pRUQ==
+X-Gm-Message-State: AOAM533FfjBwB2D6Cqafdfwm4hfAzntuN7CAF9nQjYsAG0upjwX8zqke
+	NiSfFYtqon7X3MaOM1bJ/ly61725kpw=
+X-Google-Smtp-Source: ABdhPJzei8u7QtytlPxLryAh28K98NyeA2tZHnww9wi9ZWD6BwmOgTpJ6yLuw+SNr3dGRY+8pDCUtBjHxIhk5WnC7M9fNw4=
+MIME-Version: 1.0
+X-Received: by 2002:a25:ab50:: with SMTP id u74mr20752814ybi.394.1625647441788;
+ Wed, 07 Jul 2021 01:44:01 -0700 (PDT)
+Date: Wed, 07 Jul 2021 01:44:01 -0700
+X-No-Auto-Attachment: 1
+Message-ID: <0000000000004c3fb605c6848a7d@google.com>
+Subject: Parental Consent for YouTube Kids - Follow Up
+From: YouTube Kids <parent-verification-noreply@youtube.com>
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="0000000000004c3f9505c6848a7a"
+
+--0000000000004c3f9505c6848a7a
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+
+RGVhciBQYXJlbnQgb3IgR3VhcmRpYW4sDQpUaGFuayB5b3UgZm9yIHByb3ZpZGluZyB5b3VyIGNv
+bnNlbnQgZm9yIHRoZSBjb2xsZWN0aW9uIGFuZCB1c2Ugb2YgIA0KaW5mb3JtYXRpb24gZnJvbSB5
+b3VyIGNoaWxkJ3MgdXNlIG9mIHRoZSBZb3VUdWJlIEtpZHMgYXBwLiBIZXJlIGlzIGEgIA0KcmVt
+aW5kZXIgb2YgdGhlIFlvdVR1YmUgS2lkcyBwcml2YWN5IHByYWN0aWNlcy4NCllvdVR1YmUgS2lk
+cyBQcml2YWN5IE5vdGljZQ0KVGhpcyBZb3VUdWJlIEtpZHMgUHJpdmFjeSBOb3RpY2UgaXMgaW50
+ZW5kZWQgdG8gaGVscCBwYXJlbnRzIHVuZGVyc3RhbmQgIA0Kd2hhdCBkYXRhIGlzIGNvbGxlY3Rl
+ZCBieSB0aGUgYXBwLCB3aHkgd2UgY29sbGVjdCBpdCwgd2hhdCB3ZSBkbyB3aXRoIGl0LCAgDQph
+bmQgb3VyIHByaXZhY3kgY29udHJvbHMuIFRoaXMgTm90aWNlIHByb3ZpZGVzIGluZm9ybWF0aW9u
+IGFib3V0IG91ciAgDQpwcml2YWN5IHByYWN0aWNlcyB0aGF0IGFyZSBzcGVjaWZpYyB0byBZb3VU
+dWJlIEtpZHMgYW5kIHN1bW1hcml6ZXMgdGhlIG1vc3QgIA0KcmVsZXZhbnQgcG9ydGlvbnMgb2Yg
+dGhlIEdvb2dsZSBQcml2YWN5IFBvbGljeSwgd2hpY2ggZ2VuZXJhbGx5IGRlc2NyaWJlcyAgDQpo
+b3cgd2UgdHJlYXQgdXNlciBpbmZvcm1hdGlvbiBpbiBHb29nbGUncyBwcm9kdWN0cyBhbmQgc2Vy
+dmljZXMuDQpJbmZvcm1hdGlvbiB3ZSBjb2xsZWN0DQpJbmZvcm1hdGlvbiBhYm91dCB0aGUgZGV2
+aWNlIGFuZCBhcHAgdXNlZCB0byBhY2Nlc3MgdGhlIHNlcnZpY2UuIFRoaXMgIA0KaW5mb3JtYXRp
+b24gaW5jbHVkZXM6DQpZb3VUdWJlIEtpZHMgY29sbGVjdHMgaW5mb3JtYXRpb24gYmFzZWQgb24g
+eW91ciBjaGlsZCdzIHVzZSBvZiB0aGUgYXBwLCAgDQpsaWtlIHdoZW4gdGhleSB3YXRjaCBhIHZp
+ZGVvLiBUaGlzIGluZm9ybWF0aW9uIGluY2x1ZGVzOg0KZGV2aWNlIHR5cGUgYW5kIHNldHRpbmdz
+LCBzdWNoIGFzIGhhcmR3YXJlIG1vZGVsIGFuZCBvcGVyYXRpbmcgc3lzdGVtICANCnZlcnNpb247
+DQpsb2cgaW5mb3JtYXRpb24sIGluY2x1ZGluZyBkZXRhaWxzIG9mIGhvdyBvdXIgc2VydmljZSBp
+cyB1c2VkLCBkZXZpY2UgZXZlbnQgIA0KaW5mb3JtYXRpb24sIGFuZCB0aGUgZGV2aWNlJ3MgSW50
+ZXJuZXQgcHJvdG9jb2wgKElQKSBhZGRyZXNzOw0KdW5pcXVlIGFwcGxpY2F0aW9uIG51bWJlcnMs
+IHN1Y2ggYXMgYXBwbGljYXRpb24gdmVyc2lvbiBudW1iZXI7IGFuZA0KdW5pcXVlIGlkZW50aWZp
+ZXJzLCB3aGljaCBhcmUgdXNlZCB0byBjb2xsZWN0IGFuZCBzdG9yZSBpbmZvcm1hdGlvbiBhYm91
+dCAgDQphbiBhcHAgb3IgZGV2aWNlLCBzdWNoIGFzIHByZWZlcnJlZCBsYW5ndWFnZSwgYXBwIGFj
+dGl2aXR5LCBhbmQgb3RoZXIgIA0Kc2V0dGluZ3MuDQpZb3VUdWJlIEtpZHMgZG9lc24ndCBjb2xs
+ZWN0IHBlcnNvbmFsIGluZm9ybWF0aW9uIGxpa2UgbmFtZSwgYWRkcmVzcywgb3IgIA0KY29udGFj
+dCBpbmZvcm1hdGlvbiBmcm9tIHlvdXIgY2hpbGQuDQpBcHAgYWN0aXZpdHkuIFRoaXMgaW5mb3Jt
+YXRpb24gaW5jbHVkZXMgdGhlIHZpZGVvcyB5b3VyIGNoaWxkIHdhdGNoZXMsICANCnRoZWlyIHNl
+YXJjaCB0ZXJtcywgYW5kIG90aGVyIGludGVyYWN0aW9ucyB3aXRoIGNvbnRlbnQgYW5kIGFkcyBp
+biB0aGUgYXBwLiAgDQpJZiBhIGNoaWxkIHVzZXMgYXVkaW8gZmVhdHVyZXMgaW4gdGhlIGFwcCBz
+dWNoIGFzIHZvaWNlIHNlYXJjaCwgdGhlIGFwcCAgDQpicmllZmx5IGNvbGxlY3RzIHZvaWNlIGlu
+Zm9ybWF0aW9uLiBUaGlzIGluZm9ybWF0aW9uIGlzIHByb2Nlc3NlZCB0byBhbGxvdyAgDQpmb3Ig
+dXNlIG9mIHRoZSBhdWRpbyBmZWF0dXJlIGFuZCBpbW1lZGlhdGVseSBkZWxldGVkLg0KSG93IHdl
+IHVzZSB0aGUgaW5mb3JtYXRpb24gd2UgY29sbGVjdA0KV2UgdXNlIHRoZSBpbmZvcm1hdGlvbiB3
+ZSBjb2xsZWN0IGZvciBpbnRlcm5hbCBvcGVyYXRpb25hbCBwdXJwb3NlcyBzdWNoIGFzICANCmZv
+ciBzcGFtIGFuZCBhYnVzZSBwcmV2ZW50aW9uIGFuZCBlbmZvcmNpbmcgb3VyIGNvbnRlbnQgbGlj
+ZW5zZSAgDQpyZXN0cmljdGlvbnMsIGRldGVybWluaW5nIHByZWZlcnJlZCBsYW5ndWFnZSBhbmQg
+cHJvdmlkaW5nIGFuZCBpbXByb3ZpbmcgIA0KdGhlIHNlcnZpY2UuDQpXZSBhbHNvIHVzZSB0aGlz
+IGluZm9ybWF0aW9uIHRvIG9mZmVyIHVzZXJzIHBlcnNvbmFsaXplZCBjb250ZW50LiBXZSAgDQph
+c3NvY2lhdGUgYW4gaWRlbnRpZmllciB0aGF0J3MgdW5pcXVlIHRvIHRoZSBhcHAgd2l0aCB0aGUg
+dmlkZW9zIHlvdXIgY2hpbGQgIA0KaGFzIHdhdGNoZWQgYW5kIHRlcm1zIHRoZXkndmUgc2VhcmNo
+ZWQgZm9yIHRvIHJlY29tbWVuZCBjb250ZW50IGxpa2VseSB0byAgDQpiZSBvZiBpbnRlcmVzdCB0
+byB0aGVtLCBzdWJqZWN0IHRvIHRoZSBjb250cm9scyBkZXNjcmliZWQgYmVsb3cuDQpXZSB1c2Ug
+dW5pcXVlIGlkZW50aWZpZXJzIHRvIHByb3ZpZGUgY29udGV4dHVhbCBhZHZlcnRpc2luZywgaW5j
+bHVkaW5nIGFkICANCmZyZXF1ZW5jeSBjYXBwaW5nLlRoZSBhcHAgZG9lcyBub3QgYWxsb3cgaW50
+ZXJlc3QtYmFzZWQgYWR2ZXJ0aXNpbmcgb3IgIA0KcmVtYXJrZXRpbmcuDQpZb3VUdWJlIEtpZHMg
+ZG9lcyBub3QgYWxsb3cgeW91ciBjaGlsZCB0byBzaGFyZSBwZXJzb25hbCBpbmZvcm1hdGlvbiB3
+aXRoICANCnRoaXJkIHBhcnRpZXMgb3IgbWFrZSBpdCBwdWJsaWNseSBhdmFpbGFibGUuDQpTaWdu
+aW5nIGluIHRvIFlvdVR1YmUgS2lkcyB3aXRoIHlvdXIgR29vZ2xlIEFjY291bnQ6IEFkZGl0aW9u
+YWwgSW5mb3JtYXRpb24gIA0KV2UgQ29sbGVjdCBhbmQgSG93IFdlIFVzZSBJdA0KSW4gc29tZSBj
+b3VudHJpZXMgd2UgcHJvbXB0IHBhcmVudHMgdG8gc2lnbiBpbiB0byBZb3VUdWJlIEtpZHMgd2l0
+aCB0aGVpciAgDQpHb29nbGUgQWNjb3VudCB0byBjcmVhdGUgYSBwcm9maWxlIGZvciB0aGVpciBj
+aGlsZCwgZW5hYmxlIGFkZGl0aW9uYWwgIA0KcGFyZW50YWwgY29udHJvbHMsIGN1c3RvbWl6YXRp
+b24gcHJlZmVyZW5jZXMgZm9yIHRoZWlyIGNoaWxkIGFuZCB1c2UgdGhlaXIgIA0KWW91VHViZSBQ
+cmVtaXVtIG1lbWJlcnNoaXAgaW4gdGhlIGFwcC4gSWYgYSBwYXJlbnQgY2hvb3NlcyBub3QgdG8g
+c2lnbiBpbiAgDQp3aXRoIHRoZWlyIEdvb2dsZSBBY2NvdW50LCB0aGUgYXBwIGNhbiBiZSB1c2Vk
+IGluIGEgc2lnbmVkIG91dCBzdGF0ZSwgYXMgIA0KZGVzY3JpYmVkIGFib3ZlLg0KSWYgeW91IHNp
+Z24gaW4gdG8gWW91VHViZSBLaWRzIHdpdGggeW91ciBHb29nbGUgQWNjb3VudCwgdGhlIGFwcCB3
+aWxsICANCmNvbGxlY3QgeW91ciBHb29nbGUgQWNjb3VudCBpbmZvcm1hdGlvbiwgc3VjaCBhcyBl
+bWFpbCBhZGRyZXNzIGFuZCAgDQpwYXNzd29yZCwgYW5kLCBhcyBhcHBsaWNhYmxlLCB3aWxsIGNv
+bGxlY3QgcHJvZmlsZSBpbmZvcm1hdGlvbiBmb3IgYW55ICANCnByb2ZpbGVzIHlvdSBjcmVhdGUg
+Zm9yIHlvdXIgY2hpbGQgYXMgd2VsbCBhcyB5b3VyIHBhcmVudGFsIGNvbnRyb2xzICANCmFuZCDC
+oGN1c3RvbWl6YXRpb24gcHJlZmVyZW5jZXMuIFRoZSBwcm9maWxlIGluZm9ybWF0aW9uIHdpbGwg
+aW5jbHVkZSB5b3VyICANCmNoaWxk4oCZcyBuYW1lIG9yIG5pY2tuYW1lLCB0aGVpciBhZ2UsIGFu
+ZCB0aGVpciBtb250aCBvZiBiaXJ0aCBpZiB5b3UgY2hvb3NlICANCnRvIHByb3ZpZGUgaXQuIFRo
+ZSBhcHAgd2lsbCBjb2xsZWN0IGN1c3RvbWl6YXRpb24gcHJlZmVyZW5jZXMgc3VjaCBhcyAgDQp2
+aWRlb3MgYmxvY2tlZCBmcm9tIHRoZSBhcHAsIHZpZGVvcyB5b3UgbWF5IGFsbG93IGluIHRoZSBh
+cHAsIGFuZCBjaGFubmVscyAgDQp0byB3aGljaCB0aGV5IG1heSBzdWJzY3JpYmUuIFRoZSBhcHAg
+YWxzbyBjb2xsZWN0cyB0aGUgY2hpbGTigJlzIGFwcCBhY3Rpdml0eSAgDQpkYXRhIGluY2x1ZGlu
+ZyB3YXRjaCBhbmQgc2VhcmNoIGhpc3Rvcnkgc3BlY2lmaWMgdG8gZWFjaCBjaGlsZCwgYXMgIA0K
+ZGVzY3JpYmVkIGFib3ZlLg0KV2Ugd2lsbCB1c2UgdGhpcyBpbmZvcm1hdGlvbiB0byBwcm92aWRl
+IHRoZSBmb2xsb3dpbmcgZmVhdHVyZXM6DQpJZiBhcHBsaWNhYmxlLCBlbmFibGluZyBZb3VUdWJl
+IFByZW1pdW0gYmVuZWZpdHMsIHN1Y2ggYXMgb2ZmbGluZSBhY2Nlc3MgdG8gIA0KY29udGVudCwg
+YmFja2dyb3VuZCBwbGF5IGFuZCBubyBwYWlkIGFkcywgaW4gdGhlIFlvdVR1YmUgS2lkcyBhcHAg
+b24gYWxsICANCnlvdXIgZGV2aWNlcy4NCkVuYWJsZSB5b3UgdG8gY3JlYXRlIGxpbWl0ZWQgcHJv
+ZmlsZXMgZm9yIHlvdXIgY2hpbGQsIGFuZA0KRW5hYmxlIGFkZGl0aW9uYWwgcGFyZW50YWwgY29u
+dHJvbHMgYW5kIGN1c3RvbWl6YXRpb24gcHJlZmVyZW5jZXMgIA0KYXNzb2NpYXRlZCB3aXRoIGVh
+Y2ggb2YgdGhlIHByb2ZpbGVzIGluIHRoZSBhcHAgb24gYWxsIHlvdXIgZGV2aWNlcy4gVGhlc2Ug
+IA0KbWF5IGluY2x1ZGUgYWxsb3dpbmcgb3IgYmxvY2tpbmcgY2VydGFpbiB2aWRlb3MgZnJvbSB0
+aGUgYXBwIGFuZCBhbGxvd2luZyAgDQplYWNoIHByb2ZpbGUgdG8gc3Vic2NyaWJlIHRvIGNoYW5u
+ZWxzIGluIHRoZSBhcHAuDQpXaGVuIHlvdSBzaWduIGluIHdpdGggeW91ciBHb29nbGUgYWNjb3Vu
+dCwgd2UgdXNlIHRoZSB3YXRjaCBhbmQgc2VhcmNoICANCmhpc3RvcnkgdGllZCB0byBlYWNoIHNw
+ZWNpZmljIGluc3RhbGxhdGlvbiBvZiB0aGUgYXBwIHRvIHJlY29tbWVuZCBjb250ZW50ICANCm9u
+IFlvdVR1YmUgS2lkcywgYXMgZGVzY3JpYmVkIGFib3ZlLCBhbmQgd2Ugd2lsbCBjb250aW51ZSB0
+byB1c2UgdGhhdCB3YXRjaCAgDQphbmQgc2VhcmNoIGhpc3RvcnkgZm9yIHJlY29tbWVuZGF0aW9u
+cyBldmVuIGlmIHlvdSBzaWduIG91dCBvZiB0aGUgYXBwLCAgDQp1bmxlc3MgdGhleSBhcmUgY2xl
+YXJlZCBhbmQgcGF1c2VkIGluIHRoZSBzZXR0aW5ncyBzZWN0aW9uIGFzIGRlc2NyaWJlZCAgDQpi
+ZWxvdy4NCldoZW4geW91IGNyZWF0ZSBhIHByb2ZpbGUgZm9yIHlvdXIgY2hpbGQgYXNzb2NpYXRl
+ZCB3aXRoIHlvdXIgR29vZ2xlICANCmFjY291bnQsIHdlIHdpbGwgdXNlIHRoZSBpbmZvcm1hdGlv
+biB0aWVkIHRvIGVhY2ggcHJvZmlsZSB0byBvZmZlciB0aGUgIA0KY2hpbGQgcGVyc29uYWxpemVk
+IGNvbnRlbnQgbGlrZWx5IHRvIGJlIG9mIGludGVyZXN0IHRvIHRoZW0sIHN1YmplY3QgdG8gdGhl
+ICANCmNvbnRyb2xzIGRlc2NyaWJlZCBiZWxvdy4NCkluZm9ybWF0aW9uIHdlIHNoYXJlDQpXZSB3
+aWxsIG5vdCBkaXNjbG9zZSBpbmRpdmlkdWFsIHVzZXIgaW5mb3JtYXRpb24gb3V0c2lkZSBvZiBH
+b29nbGUgdW5sZXNzICANCm9uZSBvZiB0aGUgZm9sbG93aW5nIGNpcmN1bXN0YW5jZXMgYXBwbGll
+czoNCldpdGggY29uc2VudA0KV2UgbWF5IHNoYXJlIGluZGl2aWR1YWwgdXNlciBpbmZvcm1hdGlv
+biB3aXRoIGNvbXBhbmllcywgb3JnYW5pemF0aW9ucyBvciAgDQppbmRpdmlkdWFscyBvdXRzaWRl
+IG9mIEdvb2dsZSB3aGVuIHdlIGhhdmUgcGFyZW50YWwgY29uc2VudC4NCkZvciBsZWdhbCByZWFz
+b25zDQpXZSB3aWxsIHNoYXJlIGluZGl2aWR1YWwgdXNlciBpbmZvcm1hdGlvbiB3aXRoIGNvbXBh
+bmllcywgb3JnYW5pemF0aW9ucyBvciAgDQppbmRpdmlkdWFscyBvdXRzaWRlIG9mIEdvb2dsZSBp
+ZiB3ZSBoYXZlIGEgZ29vZC1mYWl0aCBiZWxpZWYgdGhhdCBhY2Nlc3MsICANCnVzZSwgcHJlc2Vy
+dmF0aW9uIG9yIGRpc2Nsb3N1cmUgb2YgdGhlIGluZm9ybWF0aW9uIGlzIHJlYXNvbmFibHkgbmVj
+ZXNzYXJ5ICANCnRvOg0KbWVldCBhbnkgYXBwbGljYWJsZSBsYXcsIHJlZ3VsYXRpb24sIGxlZ2Fs
+IHByb2Nlc3Mgb3IgZW5mb3JjZWFibGUgIA0KZ292ZXJubWVudGFsIHJlcXVlc3QuDQplbmZvcmNl
+IGFwcGxpY2FibGUgVGVybXMgb2YgU2VydmljZSwgaW5jbHVkaW5nIGludmVzdGlnYXRpb24gb2Yg
+cG90ZW50aWFsICANCnZpb2xhdGlvbnMuDQpkZXRlY3QsIHByZXZlbnQsIG9yIG90aGVyd2lzZSBh
+ZGRyZXNzIGZyYXVkLCBzZWN1cml0eSBvciB0ZWNobmljYWwgaXNzdWVzLg0KcHJvdGVjdCBhZ2Fp
+bnN0IGhhcm0gdG8gdGhlIHJpZ2h0cywgcHJvcGVydHkgb3Igc2FmZXR5IG9mIEdvb2dsZSwgb3Vy
+IHVzZXJzICANCm9yIHRoZSBwdWJsaWMgYXMgcmVxdWlyZWQgb3IgcGVybWl0dGVkIGJ5IGxhdy4N
+CkZvciBleHRlcm5hbCBwcm9jZXNzaW5nDQpXZSBtYXkgcHJvdmlkZSBpbmRpdmlkdWFsIHVzZXIg
+aW5mb3JtYXRpb24gdG8gb3VyIGFmZmlsaWF0ZXMgb3Igb3RoZXIgIA0KdHJ1c3RlZCBidXNpbmVz
+c2VzIG9yIHBlcnNvbnMgdG8gcHJvY2VzcyBpdCBmb3IgdXMsIGJhc2VkIG9uIG91ciAgDQppbnN0
+cnVjdGlvbnMgYW5kIGluIGNvbXBsaWFuY2Ugd2l0aCBvdXIgUHJpdmFjeSBQb2xpY3kgYW5kIGFu
+eSBvdGhlciAgDQphcHByb3ByaWF0ZSBjb25maWRlbnRpYWxpdHkgYW5kIHNlY3VyaXR5IG1lYXN1
+cmVzLg0KV2UgbWF5IHNoYXJlIGFnZ3JlZ2F0ZSBpbmZvcm1hdGlvbiBhYm91dCB0aGUgdXNlIG9m
+IHRoZSBhcHAgd2l0aCB0aGlyZCAgDQpwYXJ0aWVzIHRvLCBmb3IgZXhhbXBsZSwgc2hvdyB0cmVu
+ZHMgYWJvdXQgdGhlIHVzZSBvZiB0aGUgYXBwIG9yIG1lZXQgb3VyICANCnJlcG9ydGluZyBvYmxp
+Z2F0aW9ucyB3aXRoIHBhcnRuZXJzLg0KUGFyZW50YWwgQWNjZXNzIGFuZCBDb250cm9scw0KWW91
+IGNhbiBhY2Nlc3MgdGhlIHZpZGVvcyB5b3VyIGNoaWxkIGhhcyByZWNlbnRseSB3YXRjaGVkIGlu
+IHRoZSBXYXRjaCBpdCAgDQphZ2FpbiBzZWN0aW9uIG9mIHRoZSBhcHAuIFlvdSBjYW4gcGF1c2Ug
+dGhlIGNvbGxlY3Rpb24gb2Ygd2F0Y2ggYW5kIHNlYXJjaCAgDQpoaXN0b3J5IG9yIGNsZWFyIHRo
+ZSB3YXRjaCBhbmQgc2VhcmNoIGhpc3RvcnkgaW4gdGhlIHBhcmVudGFsIHNldHRpbmdzICANCnNl
+Y3Rpb24gb2YgdGhlIGFwcC4gV2hlbiB5b3UgY3JlYXRlIGEgcHJvZmlsZSBmb3IgeW91ciBjaGls
+ZCwgeW91IGNhbiBwYXVzZSAgDQphbmQgY2xlYXIgd2F0Y2ggYW5kIHNlYXJjaCBoaXN0b3J5IGZv
+ciBlYWNoIGNoaWxkIHByb2ZpbGUuIFdoaWxlIGhpc3RvcnkgaXMgIA0KcGF1c2VkLCB0aGUgYXBw
+IHdpbGwgbm90IHVzZSBuZXcgdmlkZW8gdmlld3Mgb3Igc2VhcmNoIHRlcm1zIHRvIHJlY29tbWVu
+ZCAgDQpjb250ZW50LiDCoFdoZW4gd2F0Y2ggYW5kIHNlYXJjaCBoaXN0b3J5IGFyZSBjbGVhcmVk
+LCB0aGUgYXBwIHJlc2V0cyAgDQpSZWNvbW1lbmRlZCBhbmQgV2F0Y2ggaXQgYWdhaW4gdmlkZW9z
+LiBGaW5hbGx5LCB5b3UgY2FuIGFsd2F5cyB1bmluc3RhbGwgIA0KYW5kIHJlaW5zdGFsbCB0aGUg
+YXBwIG9uIGEgZGV2aWNlIHRvIHJlc2V0IHRoZSBhcHAtc3BlY2lmaWMgaWRlbnRpZmllcnMgIA0K
+dXNlZCB0byBjb2xsZWN0IHdhdGNoIGFuZCBzZWFyY2ggaGlzdG9yeSwgYnV0IGlmIHlvdSBoYXZl
+IGVuYWJsZWQgcHJvZmlsZXMsICANCndhdGNoIGFuZCBzZWFyY2ggaGlzdG9yeSB3aWxsIHJlbWFp
+biBsaW5rZWQgdG8gZWFjaCBwcm9maWxlIHVudGlsIHlvdSAgDQpzcGVjaWZpY2FsbHkgZGVsZXRl
+IHRoZSBoaXN0b3J5Lg0KWW91IGNhbiB1bmxpbmsgeW91ciBHb29nbGUgQWNjb3VudCBmcm9tIGEg
+c3BlY2lmaWMgaW5zdGFsbGF0aW9uIG9mIHRoZSAgDQpZb3VUdWJlIEtpZHMgYXBwIGJ5IGZvbGxv
+d2luZyB0aGUgcHJvbXB0cyBpbiB0aGUgcGFyZW50YWwgc2V0dGluZ3Mgc2VjdGlvbiAgDQpvZiB0
+aGUgYXBwLiBZb3UgY2FuIGFsc28gY2hhbmdlIG9yIGRlbGV0ZSB0aGUgcGFyZW50YWwgY29udHJv
+bHMgYW5kICANCmN1c3RvbWl6YXRpb24gcHJlZmVyZW5jZXMgdGhhdCBhcmUgYXNzb2NpYXRlZCB3
+aXRoIHlvdXIgR29vZ2xlIEFjY291bnQgYXQgIA0KYW55IHRpbWUgYnkgdXNpbmcgdGhlIGluLXBy
+b2R1Y3QgdG9vbHMgd2UgcHJvdmlkZS4NCkludGVycHJldGF0aW9uIG9mIGNvbmZsaWN0aW5nIHRl
+cm1zLg0KVGhpcyBQcml2YWN5IE5vdGljZSBpcyBnZW5lcmFsbHkgY29uc2lzdGVudCB3aXRoIHRo
+ZSBHb29nbGUgUHJpdmFjeSBQb2xpY3kuICANCldoZXJlIHRoZXJlIGFyZSB0ZXJtcyB0aGF0IGRp
+ZmZlciwgdGhpcyBQcml2YWN5IE5vdGljZSBvdmVycnVsZXMgdGhlIEdvb2dsZSAgDQpQcml2YWN5
+IFBvbGljeS4NClNlcnZpY2UgUHJvdmlkZXINClRoZSBZb3VUdWJlIEtpZHMgc2VydmljZSBpcyBw
+cm92aWRlZCBieToNCkdvb2dsZSBMTEMNCjE2MDAgQW1waGl0aGVhdHJlIFBhcmt3YXksIE1vdW50
+YWluIFZpZXcsIENBIDk0MDQzIFVTQQ0KUGhvbmU6ICsxIDY1MC0yNTMtMDAwMA0KSW4gdGhlIEVF
+QSBhbmQgU3dpdHplcmxhbmQ6DQpHb29nbGUgSXJlbGFuZCBMaW1pdGVkDQpHb3Jkb24gSG91c2Us
+IEJhcnJvdyBTdHJlZXQsIER1YmxpbiA0DQpSZXB1YmxpYyBvZiBJcmVsYW5kDQpDb250YWN0IFVz
+DQpQYXJlbnRzIG1heSBjb250YWN0IHVzIGRpcmVjdGx5IHdpdGggYW55IHF1ZXN0aW9ucyBvciBj
+b25jZXJucyBhdDoNCnlvdXR1YmVraWRzLXByaXZhY3lAZ29vZ2xlLmNvbQ0KU2lnbmluZyBpbiB0
+byBZb3VUdWJlIEtpZHMgd2l0aCB5b3VyIGNoaWxk4oCZcyBHb29nbGUgQWNjb3VudA0KSW4gc29t
+ZSBjb3VudHJpZXMsIHdlIG9mZmVyIEdvb2dsZSBhY2NvdW50cyBmb3IgY2hpbGRyZW4gdW5kZXIg
+dGhlIGFnZSBvZiAgDQoxMyBhbmQgYWxsb3cgdGhlc2UgY2hpbGRyZW4gdG8gc2lnbiBpbiB0byBZ
+b3VUdWJlIEtpZHMgd2l0aCB0aGVpciBHb29nbGUgIA0KYWNjb3VudC4gVGhlIFByaXZhY3kgTm90
+aWNlIGZvciBHb29nbGUgQWNjb3VudHMgQ3JlYXRlZCB3aXRoIEZhbWlseSAgDQpMaW5rwqBkZXNj
+cmliZXMgb3VyIHByaXZhY3kgcHJhY3RpY2VzIHdoZW4geW91ciBjaGlsZCB1c2VzIFlvdVR1YmUg
+S2lkcyB3aXRoICANCnRoZWlyIEdvb2dsZSBBY2NvdW50LiBXaGVuIHlvdXIgY2hpbGQgdXNlcyBZ
+b3VUdWJlIEtpZHMgd2l0aG91dCBzaWduaW5nIGluICANCnRvIHRoZWlyIEdvb2dsZSBhY2NvdW50
+LCB0aGUgWW91VHViZSBLaWRzIFByaXZhY3kgTm90aWNlwqBhcHBsaWVzLiBSZW1lbWJlciAgDQp0
+aGF0IHdoZW4geW91ciBjaGlsZCBpcyBzaWduZWQgaW4gdG8gWW91VHViZSBLaWRzIHdpdGggdGhl
+aXIgR29vZ2xlICANCmFjY291bnQsIHRoZSBpbmZvcm1hdGlvbiB3ZSBjb2xsZWN0LCBpbmNsdWRp
+bmcgeW91ciBjaGlsZCdzIHNlYXJjaCBhbmQgIA0Kd2F0Y2ggaGlzdG9yeSBhbmQgcmVjb3JkaW5n
+cyBvZiB0aGVpciB2b2ljZSBzZWFyY2hlcywgbWF5IGJlIHN0b3JlZCB3aXRoICANCnRoZWlyIEdv
+b2dsZSBhY2NvdW50IGFuZCB1c2VkIHRvIGltcHJvdmUgeW91ciBjaGlsZCdzIEdvb2dsZSBleHBl
+cmllbmNlLiBUbyAgDQpsZWFybiBtb3JlIGFib3V0IG91ciBwcml2YWN5IHByYWN0aWNlcyBmb3Ig
+eW91ciBjaGlsZCdzIEdvb2dsZSBBY2NvdW50LCAgDQpwbGVhc2Ugc2VlIHRoZSBQcml2YWN5IE5v
+dGljZSBmb3IgR29vZ2xlIEFjY291bnRzIENyZWF0ZWQgd2l0aCBGYW1pbHkgIA0KTGlua8KgYW5k
+IHRoZSBHb29nbGUgUHJpdmFjeSBQb2xpY3kuDQpIYXZlIGEgZ3JlYXQgZGF5IQ0KVGhlIFlvdVR1
+YmUgS2lkcyBUZWFtDQpZb3VUdWJlIEtpZHMgUHJpdmFjeSBOb3RpY2U6IGh0dHBzOi8va2lkcy55
+b3V0dWJlLmNvbS9wcml2YWN5bm90aWNlDQpZb3VUdWJlIFRlcm1zIG9mIFNlcnZpY2U6IGh0dHBz
+Oi8vd3d3LnlvdXR1YmUuY29tL3QvdGVybXMNCllvdVR1YmUgS2lkcyBQYXJlbnQgR3VpZGU6ICAN
+Cmh0dHBzOi8vc3VwcG9ydC5nb29nbGUuY29tL3lvdXR1YmVraWRzLyN0b3BpYz02MTMwNTA0DQo=
+--0000000000004c3f9505c6848a7a
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+
+<html>
+<body>
+<table style=3D"background-image:url('https://www.gstatic.com/youtube/img/e=
+mail/kids/ytr_ytk_email_bg_3.jpg')">
+<tr>
+<td border=3D"0">
+<img src=3D"https://www.gstatic.com/youtube/img/email/kids/ytk_logo_2.png" =
+border=3D"0" style=3D"display:block;margin:40px auto;">
+</td>
+</tr>
+<tr>
+<table border=3D"0" bgcolor=3D#FFFFFF align=3D"center" style=3D"width:90%;p=
+adding-top:50px;padding-left:5%;padding-right:5%;padding-bottom:80px;border=
+-radius:10px;">
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Dear Parent or Guardian,
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Thank you for providing your consent for the collection and use of informat=
+ion from your child's use of the YouTube Kids app. Here is a reminder of th=
+e YouTube Kids privacy practices.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h1><b>YouTube Kids Privacy Notice</b></h1>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+This YouTube Kids Privacy Notice is intended to help parents understand wha=
+t data is collected by the app, why we collect it, what we do with it, and =
+our privacy controls. This Notice provides information about our privacy pr=
+actices that are specific to YouTube Kids and summarizes the most relevant =
+portions of the <a href=3D"https://www.google.com/policies/privacy/">Google=
+ Privacy Policy</a>, which generally describes how we treat user informatio=
+n in Google's products and services.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Information we collect</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>Information about the device and app used to access the service.</b> Thi=
+s information includes:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+YouTube Kids collects information based on your child's use of the app, lik=
+e when they watch a video. This information includes:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<ul style=3D"Margin:0 0 15px 0;">
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+device type and settings, such as hardware model and operating system versi=
+on;
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+log information, including details of how our service is used, device event=
+ information, and the device's Internet protocol (IP) address;
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+unique application numbers, such as application version number; and
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+unique identifiers, which are used to collect and store information about a=
+n app or device, such as preferred language, app activity, and other settin=
+gs.
+</font>
+</li>
+</ul>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+YouTube Kids doesn't collect personal information like name, address, or co=
+ntact information from your child.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>App activity.</b> This information includes the videos your child watche=
+s, their search terms, and other interactions with content and ads in the a=
+pp. If a child uses audio features in the app such as voice search, the app=
+ briefly collects voice information. This information is processed to allow=
+ for use of the audio feature and immediately deleted.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>How we use the information we collect</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We use the information we collect for internal operational purposes such as=
+ for spam and abuse prevention and enforcing our content license restrictio=
+ns, determining preferred language and providing and improving the service.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We also use this information to offer users personalized content. We associ=
+ate an identifier that's unique to the app with the videos your child has w=
+atched and terms they've searched for to recommend content likely to be of =
+interest to them, subject to the controls described below.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We use unique identifiers to provide contextual advertising, including ad f=
+requency capping.The app does not allow interest-based advertising or remar=
+keting.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+YouTube Kids does not allow your child to share personal information with t=
+hird parties or make it publicly available.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Signing in to YouTube Kids with your Google Account: Additional Info=
+rmation We Collect and How We Use It</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+In some countries we prompt parents to sign in to YouTube Kids with their G=
+oogle Account to create a profile for their child, enable additional parent=
+al controls, customization preferences for their child and use their YouTub=
+e Premium membership in the app. If a parent chooses not to sign in with th=
+eir Google Account, the app can be used in a signed out state, as described=
+ above.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+If you sign in to YouTube Kids with your Google Account, the app will colle=
+ct your Google Account information, such as email address and password, and=
+, as applicable, will collect profile information for any profiles you crea=
+te for your child as well as your parental controls and =C2=A0customization=
+ preferences. The profile information will include your child=E2=80=99s nam=
+e or nickname, their age, and their month of birth if you choose to provide=
+ it. The app will collect customization preferences such as videos blocked =
+from the app, videos you may allow in the app, and channels to which they m=
+ay subscribe. The app also collects the child=E2=80=99s app activity data i=
+ncluding watch and search history specific to each child, as described abov=
+e.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We will use this information to provide the following features:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<ol style=3D"Margin:0 0 15px 0;">
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+If applicable, enabling YouTube Premium benefits, such as offline access to=
+ content, background play and no paid ads, in the YouTube Kids app on all y=
+our devices.
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Enable you to create limited profiles for your child, and
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Enable additional parental controls and customization preferences associate=
+d with each of the profiles in the app on all your devices. These may inclu=
+de allowing or blocking certain videos from the app and allowing each profi=
+le to subscribe to channels in the app.
+</font>
+</li>
+</ol>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+When you sign in with your Google account, we use the watch and search hist=
+ory tied to each specific installation of the app to recommend content on Y=
+ouTube Kids, as described above, and we will continue to use that watch and=
+ search history for recommendations even if you sign out of the app, unless=
+ they are cleared and paused in the settings section as described below.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+When you create a profile for your child associated with your Google accoun=
+t, we will use the information tied to each profile to offer the child pers=
+onalized content likely to be of interest to them, subject to the controls =
+described below.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Information we share</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We will not disclose individual user information outside of Google unless o=
+ne of the following circumstances applies:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<ul style=3D"Margin:0 0 15px 0;">
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>With consent</b>
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We may share individual user information with companies, organizations or i=
+ndividuals outside of Google when we have parental consent.
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>For legal reasons</b>
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We will share individual user information with companies, organizations or =
+individuals outside of Google if we have a good-faith belief that access, u=
+se, preservation or disclosure of the information is reasonably necessary t=
+o:
+</font>
+</li>
+<ul style=3D"Margin:0 0 15px 0;">
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+meet any applicable law, regulation, legal process or enforceable governmen=
+tal request.
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+enforce applicable Terms of Service, including investigation of potential v=
+iolations.
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+detect, prevent, or otherwise address fraud, security or technical issues.
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+protect against harm to the rights, property or safety of Google, our users=
+ or the public as required or permitted by law.
+</font>
+</li>
+</ul>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>For external processing</b>
+</font>
+</li>
+<li style=3D"Margin:0 0 15px 0;text-indent:-1em">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We may provide individual user information to our affiliates or other trust=
+ed businesses or persons to process it for us, based on our instructions an=
+d in compliance with our Privacy Policy and any other appropriate confident=
+iality and security measures.
+</font>
+</li>
+</ul>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+We may share aggregate information about the use of the app with third part=
+ies to, for example, show trends about the use of the app or meet our repor=
+ting obligations with partners.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Parental Access and Controls</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+You can access the videos your child has recently watched in the Watch it a=
+gain section of the app. You can pause the collection of watch and search h=
+istory or clear the watch and search history in the parental settings secti=
+on of the app. When you create a profile for your child, you can pause and =
+clear watch and search history for each child profile. While history is pau=
+sed, the app will not use new video views or search terms to recommend cont=
+ent. =C2=A0When watch and search history are cleared, the app resets Recomm=
+ended and Watch it again videos. Finally, you can always uninstall and rein=
+stall the app on a device to reset the app-specific identifiers used to col=
+lect watch and search history, but if you have enabled profiles, watch and =
+search history will remain linked to each profile until you specifically de=
+lete the history.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+You can unlink your Google Account from a specific installation of the YouT=
+ube Kids app by following the prompts in the parental settings section of t=
+he app. You can also change or delete the parental controls and customizati=
+on preferences that are associated with your Google Account at any time by =
+using the in-product tools we provide.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Interpretation of conflicting terms.</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+This Privacy Notice is generally consistent with the Google Privacy Policy.=
+ Where there are terms that differ, this Privacy Notice overrules the <a hr=
+ef=3D"https://www.google.com/policies/privacy/">Google Privacy Policy</a>.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Service Provider</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+The YouTube Kids service is provided by:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Google LLC
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+1600 Amphitheatre Parkway, Mountain View, CA 94043 USA
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Phone: +1 650-253-0000
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+In the EEA and Switzerland:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Google Ireland Limited
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Gordon House, Barrow Street, Dublin 4
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Republic of Ireland
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<h3><b>Contact Us</b></h3>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Parents may contact us directly with any questions or concerns at:
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<a href=3D"mailto:youtubekids-privacy@google.com">youtubekids-privacy@googl=
+e.com</a>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+<b>Signing in to YouTube Kids with your child=E2=80=99s Google Account</b>
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+In some countries, we offer Google accounts for children under the age of 1=
+3 and allow these children to sign in to YouTube Kids with their Google acc=
+ount. The <a href=3D"https://families.google.com/familylink/privacy/child-p=
+olicy/">Privacy Notice for Google Accounts Created with Family Link</a>=C2=
+=A0describes our privacy practices when your child uses YouTube Kids with t=
+heir Google Account. When your child uses YouTube Kids without signing in t=
+o their Google account, the <a href=3D"https://kids.youtube.com/privacynoti=
+ce">YouTube Kids Privacy Notice</a>=C2=A0applies. Remember that when your c=
+hild is signed in to YouTube Kids with their Google account, the informatio=
+n we collect, including your child's search and watch history and recording=
+s of their voice searches, may be stored with their Google account and used=
+ to improve your child's Google experience. To learn more about our privacy=
+ practices for your child's Google Account, please see the <a href=3D"https=
+://families.google.com/familylink/privacy/child-policy/">Privacy Notice for=
+ Google Accounts Created with Family Link</a>=C2=A0and the <a href=3D"https=
+://www.google.com/policies/privacy/">Google Privacy Policy</a>.
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+Have a great day!
+</font>
+</td></tr>
+<tr><td border=3D"0" style=3D"width:100%;padding-bottom:1-px">
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em">
+The YouTube Kids Team
+</font>
+</td></tr>
+<tr>
+<td border=3D"0" style=3D"width:100%;text-align:center">
+<table align=3D"center">
+<colgroup>
+<col style=3D"width:33%">
+<col style=3D"width:33%">
+<col style=3D"width:33%">
+</colgroup>
+<tr>
+<td>
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em"><a href=3Dhttps://kids.youtube.com/privacynotice>YouTube Kids Priv=
+acy Notice</a></font>
+</td>
+<td>
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em"><a href=3Dhttps://www.youtube.com/t/terms>YouTube Terms of Service=
+</a></font>
+</td>
+<td>
+<font style=3D"font-family:arial,Arial,sans-serif;font-size:14px;line-heigh=
+t:1.5em"><a href=3Dhttps://support.google.com/youtubekids/#topic=3D6130504>=
+YouTube Kids Parent Guide</a></font>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</tr>
+</table>
+</body>
+</html>
+<img class=3D"open_tracking_img" src=3D"https://www.youtube.com/attribution=
+_link?a=3DJKYbw3z8CBicQpSk&amp;u=3D/gen_204%3Fa%3Dem-kids-red-consent-follo=
+w-up" width=3D"1" height=3D"1" style=3D"display:none !important; visibility=
+: hidden; width: 0; height: 0; opacity: 0; color: transparent;">
+
+--0000000000004c3f9505c6848a7a--

@@ -1,0 +1,580 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Wed, 18 May 2022 04:19:32 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1614:0:0:0:0 with SMTP id f20csp4724213ljq;
+        Tue, 27 Jul 2021 11:59:39 -0700 (PDT)
+X-Received: by 2002:adf:ffc3:: with SMTP id x3mr21748824wrs.136.1627412378341;
+        Tue, 27 Jul 2021 11:59:38 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1627412378; cv=none;
+        d=google.com; s=arc-20160816;
+        b=zTWG+Mx9QSwU1F83P8nm8/FUkOeFPdejzkISg2uhagAvenO7C3E+HXR8qbTsFf/jQu
+         76zDYl17/JIlSTNXmG44gEodk5SstWlXRD/ZoFa+Ceg/RSj+/uRRrKWu+eCsPU0Km1ss
+         3skY5c3/SLZ4yroPJhF3wxWj8Q34cFSnkg8b5nmPd7qOliAaEsYTPheaN3GjxPIlpGxj
+         puN4DkOu4J+O40DUTOGHv42lIxzhBhYXDLRrsrv7W1HcRbKdG9P/kklR/kccY9lvTpd0
+         v/TtYkDp7UWB+B+7aMQZXqKS0Ty1JsCAcwBWNaj2NZn5gXMFfkmDuCbLsfqSSOBo63Gs
+         MlbQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:cc:to:from:dkim-signature;
+        bh=kC4MqFLoa/CmDXN2BmZvIFsxxHoDGAYf6jgMGS0dtpE=;
+        b=xtI5ZTherexUn+QQXEqs8MMzA8fYr82tuhbZ1oLxlLOBORFfhes63KeTREwIatLboP
+         j1cC5TahJASMhjkUfyueqa47lJI+hLQTLW+PEe6Ir2TnazsiFJ09IHaBRLHwIe9SvYUe
+         ksi2vK6eI1ydaDrGhxKpn8+v8aB1H1e+Z6tZlegwujoiSBRk3TYuACj4NDiMmlqNoq7g
+         xmhJCkVIADK/8aUVegnEDRduY3cFrNIFpQoU+7h5QNqBkZFr0Mp38KZk0bcGoXXNcspd
+         QdyHXdFybAExsuNsafGgaVB6gPgEe71u13YzCAkuBKVrIcQ69Q35nAE+qJk14Tb3N7qn
+         az+w==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@indigometrics.com header.s=google header.b=bfGobPLM;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id v2sor2110622wmh.17.2021.07.27.11.59.38
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 27 Jul 2021 11:59:38 -0700 (PDT)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@indigometrics.com header.s=google header.b=bfGobPLM;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=indigometrics.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=indigometrics.com; s=google;
+        h=from:to:cc:references:in-reply-to:subject:date:message-id
+         :mime-version:thread-index:content-language;
+        bh=kC4MqFLoa/CmDXN2BmZvIFsxxHoDGAYf6jgMGS0dtpE=;
+        b=bfGobPLMNm11EF0HSZQsZDCnxqTkK9NfLkCWK3iX9ipWwwLbfLNaC1/g1e9HDi7n8N
+         KT+/bnT6P6TtkzTvS5uDSr43/XTG/i2VBTsU9Rwfwj4TToPq1iZEF2jX3cHQb6V06DIo
+         duePCkYERs1PlGN1tVGtdRD/pkGSENMLiXIc7nh6PAb4k3cY0QXI2ALnL/fhBY+GMdty
+         tBocW9WwVQsygDPhJKEXgL4Trn0P5YLUOkNTUAaOfoU21c5gb+cPKuN8YN6U+deml33T
+         TubflYSHkssYuP30m07MQDjrFF2ugFEk+6kDAw0oKaknqV+abuOgY4C9DcQz8axuIvEc
+         9eqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:references:in-reply-to:subject:date
+         :message-id:mime-version:thread-index:content-language;
+        bh=kC4MqFLoa/CmDXN2BmZvIFsxxHoDGAYf6jgMGS0dtpE=;
+        b=Dg9PQYWX49RUb6h3JcSRhITmsldH5NiIDZZ2/i8naWKZNJybKv/3xQYfIQD8N8nIUy
+         RyoTT7/UPk7jWmOFOg17GiA758Uxqu53JvrhrlmZVQdLlUqsceTMVGecCxSkr478fa/l
+         Dz+dOd6BVT/E9k4zHis53RiyBp1j2mIeiYHbbxXaYKhPz/O+JV3uOzDDYrwKS3TASULx
+         HJI4aoxxB5XWI6smGpvcTbdfK36Ad00EYz0Bsgfdxf3eI1Xy28am3xdIUqktCJhwwZYP
+         yCUOd5HoDq/tBwkHFtHEU+pNWPzEgDk8PbiJS96rklL3jBrG18jj+AaQ8Llb26a9G9Kt
+         XI9A==
+X-Gm-Message-State: AOAM5304eSJ+19GwiEiBrAWcc2p/Nh+giJ9s4yk3TtQhgDBTwuf2oPiM
+	dzSupf2cL0HvxiI/p1zyKNtk8w==
+X-Google-Smtp-Source: ABdhPJxe7Q6+npMC0xxlk2tBXXPhfbFO2UzqXBbYWCgNIPHddyLgbG6PtJZqAFY60SrgEeAZ9SWGzg==
+X-Received: by 2002:a05:600c:cc:: with SMTP id u12mr7520282wmm.63.1627412377352;
+        Tue, 27 Jul 2021 11:59:37 -0700 (PDT)
+Return-Path: <chris@indigometrics.com>
+Received: from DESKTOPVL3QK79 ([2a02:c7f:60a8:ed00:c95f:9373:9f1d:ba34])
+        by smtp.gmail.com with ESMTPSA id h16sm4076243wre.52.2021.07.27.11.59.28
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 27 Jul 2021 11:59:34 -0700 (PDT)
+From: <chris@indigometrics.com>
+To: "'Mingo, Alexander V.'" <alexander.v.mingo@accenture.com>,
+	"'Josh Klein'" <josh@josh.is>
+Cc: "'Loyola, Albert'" <albert.loyola@accenture.com>,
+	"'Wu, Wesley'" <wes.wu@accenture.com>,
+	"'Cohen, Wendy K.'" <wendy.k.cohen@accenture.com>
+References: <BL0P114MB0947FC3FA7585273862E0F72B1149@BL0P114MB0947.NAMP114.PROD.OUTLOOK.COM> <094601d778ca$e4d43b80$ae7cb280$@indigometrics.com> <BL0P114MB09473111F15109885749D436B1E19@BL0P114MB0947.NAMP114.PROD.OUTLOOK.COM>
+In-Reply-To: <BL0P114MB09473111F15109885749D436B1E19@BL0P114MB0947.NAMP114.PROD.OUTLOOK.COM>
+Subject: RE: [External] RE: Indigometrics Post Demo Follow-up
+Date: Tue, 27 Jul 2021 19:59:28 +0100
+Message-ID: <1433684385.273.1652872771719@localhost>
+MIME-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_003F_01D78321.E8C3BB60"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQHSrD4/Jl7B5gZFRBjn7K7rLYmGfAFTHkZJAxB9LBurPb1UkA==
+Content-Language: en-gb
+
+This is a multipart message in MIME format.
+------=_NextPart_000_003F_01D78321.E8C3BB60
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_0040_01D78321.E8C3BB60"
+
+------=_NextPart_001_0040_01D78321.E8C3BB60
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Hi Alex, apologies for the delay! Please see ppt attached, Chris
+
+ 
+
+ 
+
+ 
+
+From: Mingo, Alexander V. <alexander.v.mingo@accenture.com> 
+Sent: 20 July 2021 00:03
+To: chris@indigometrics.com; 'Josh Klein' <josh@josh.is>
+Cc: Loyola, Albert <albert.loyola@accenture.com>; Wu, Wesley
+<wes.wu@accenture.com>; Cohen, Wendy K. <wendy.k.cohen@accenture.com>
+Subject: RE: [External] RE: Indigometrics Post Demo Follow-up
+
+ 
+
+Hey Chris and Josh, 
+
+ 
+
+Just a quick follow up on this, would you be able to send this back as a
+ppt? In case we need to make any cosmetic changes or add into a separate
+deck.
+
+ 
+
+Thanks,
+
+Alex 
+
+ 
+
+From: chris@indigometrics.com <mailto:chris@indigometrics.com>
+<chris@indigometrics.com <mailto:chris@indigometrics.com> > 
+Sent: Wednesday, July 14, 2021 12:11 PM
+To: Mingo, Alexander V. <alexander.v.mingo@accenture.com
+<mailto:alexander.v.mingo@accenture.com> >; 'Josh Klein' <josh@josh.is
+<mailto:josh@josh.is> >
+Cc: Loyola, Albert <albert.loyola@accenture.com
+<mailto:albert.loyola@accenture.com> >; Wu, Wesley <wes.wu@accenture.com
+<mailto:wes.wu@accenture.com> >; Cohen, Wendy K.
+<wendy.k.cohen@accenture.com <mailto:wendy.k.cohen@accenture.com> >
+Subject: [External] RE: Indigometrics Post Demo Follow-up
+
+ 
+
+This message is from an EXTERNAL SENDER - be CAUTIOUS, particularly with
+links and attachments.
+
+  _____  
+
+ 
+
+Hi Alex,
+
+Please see attached,
+
+Chris
+
+ 
+
+From: Mingo, Alexander V. <alexander.v.mingo@accenture.com
+<mailto:alexander.v.mingo@accenture.com> > 
+Sent: 13 July 2021 18:38
+To: Josh Klein <josh@josh.is <mailto:josh@josh.is> >;
+chris@indigometrics.com <mailto:chris@indigometrics.com> 
+Cc: Loyola, Albert <albert.loyola@accenture.com
+<mailto:albert.loyola@accenture.com> >; Wu, Wesley <wes.wu@accenture.com
+<mailto:wes.wu@accenture.com> >; Cohen, Wendy K.
+<wendy.k.cohen@accenture.com <mailto:wendy.k.cohen@accenture.com> >
+Subject: Indigometrics Post Demo Follow-up
+
+ 
+
+Hello Josh and Chris,
+
+ 
+
+Thank you for taking the time to speak with us today about Indigometrics'
+capabilities and to show us your platform. As Wes mentioned, we can see the
+great value in your platform and how it will continue to scale moving
+forward!
+
+ 
+
+We would like to ensure we have the most accurate information about
+Indigometrics for our practitioners. Would you please help us ensure we do
+by filling out the attached PowerPoint template (instructions are imbedded
+within the template)? 
+
+ 
+
+If you could please return the completed template to us no later than next
+Wednesday, July 21, along with any other marketing materials that would help
+our practitioners gain greater insight into your platform's capabilities, we
+would greatly appreciate it. As part of our research process, the template
+and additional marketing materials helps us ensure that we've captured all
+the right features (even those we may not have had opportunity to discuss on
+the call today).
+
+ 
+
+If you have any questions, please reach back out to Albert and myself! We
+look forward to continuing to stay connected with Indigometrics and thank
+you in advance. 
+
+ 
+
+Thanks,
+
+Alex 
+
+ 
+
+Alexander Mingo
+
+AccentureStrategy | Talent & Organization
+
+800 N Glebe Road, Suite 300 | Arlington, VA 22203
+
+*571-245-1949 (M) | * alexander.v.mingo <mailto:alexander.v.mingo> 
+
+ 
+
+ 
+
+  _____  
+
+
+This message is for the designated recipient only and may contain
+privileged, proprietary, or otherwise confidential information. If you have
+received it in error, please notify the sender immediately and delete the
+original. Any other use of the e-mail by you is prohibited. Where allowed by
+local law, electronic communications with Accenture and its affiliates,
+including e-mail and instant messaging (including content), may be scanned
+by our systems for the purposes of information security and assessment of
+internal compliance with Accenture policy. Your privacy is important to us.
+Accenture uses your personal data only in compliance with data protection
+laws. For further information on how Accenture processes your personal data,
+please see our privacy statement at
+https://www.accenture.com/us-en/privacy-policy. 
+____________________________________________________________________________
+__________
+
+www.accenture.com <http://www.accenture.com> 
+
+
+
+
+=========================================
+Previous attachments:
+ - Indigometrics One Pager - Accenture 20210727.pptx (filename: 17ae956333665b96-0-Indigometrics_One_Pager_-_Accenture_20210727.pptx)
+
+Information about the change:
+ - Made with:                 Unattach 2.3.0
+ - Date and time:             2022-05-18T11:19:31.641706Z
+ - Download target hostname:  MacBook-Air.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+------=_NextPart_001_0040_01D78321.E8C3BB60
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+ <head>
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-asci=
+i">
+  <meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+  <!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+  <style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:Wingdings;
+=09panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+=09{font-family:Tahoma;
+=09panose-1:2 11 6 4 3 5 4 4 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0cm;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+=09{mso-style-priority:99;
+=09color:#0563C1;
+=09text-decoration:underline;}
+span.EmailStyle19
+=09{mso-style-type:personal-reply;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-size:10.0pt;}
+@page WordSection1
+=09{size:612.0pt 792.0pt;
+=09margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+=09{page:WordSection1;}
+--></style>
+  <!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]-->
+  <!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+ </head>
+ <body lang=3D"EN-GB" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap=
+:break-word">
+  <div class=3D"WordSection1">
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">Hi Ale=
+x, apologies for the delay! Please see ppt attached, Chris
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <div>
+    <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt =
+0cm 0cm 0cm">
+     <p class=3D"MsoNormal"><b><span lang=3D"EN-US">From:</span></b><span l=
+ang=3D"EN-US"> Mingo, Alexander V. &lt;alexander.v.mingo@accenture.com&gt; =
+<br><b>Sent:</b> 20 July 2021 00:03<br><b>To:</b> chris@indigometrics.com; =
+'Josh Klein' &lt;josh@josh.is&gt;<br><b>Cc:</b> Loyola, Albert &lt;albert.l=
+oyola@accenture.com&gt;; Wu, Wesley &lt;wes.wu@accenture.com&gt;; Cohen, We=
+ndy K. &lt;wendy.k.cohen@accenture.com&gt;<br><b>Subject:</b> RE: [External=
+] RE: Indigometrics Post Demo Follow-up
+       <o:p></o:p></span></p>
+    </div>
+   </div>
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">Hey Chris and Josh,=20
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">Just a quick follow up on th=
+is, would you be able to send this back as a ppt? In case we need to make a=
+ny cosmetic changes or add into a separate deck.
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">Thanks,
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">Alex=20
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <div>
+    <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt =
+0cm 0cm 0cm">
+     <p class=3D"MsoNormal"><b><span lang=3D"EN-US">From:</span></b><span l=
+ang=3D"EN-US"> <a href=3D"mailto:chris@indigometrics.com">chris@indigometri=
+cs.com</a> &lt;<a href=3D"mailto:chris@indigometrics.com">chris@indigometri=
+cs.com</a>&gt; <br><b>Sent:</b> Wednesday, July 14, 2021 12:11 PM<br><b>To:=
+</b> Mingo, Alexander V. &lt;<a href=3D"mailto:alexander.v.mingo@accenture.=
+com">alexander.v.mingo@accenture.com</a>&gt;; 'Josh Klein' &lt;<a href=3D"m=
+ailto:josh@josh.is">josh@josh.is</a>&gt;<br><b>Cc:</b> Loyola, Albert &lt;<=
+a href=3D"mailto:albert.loyola@accenture.com">albert.loyola@accenture.com</=
+a>&gt;; Wu, Wesley &lt;<a href=3D"mailto:wes.wu@accenture.com">wes.wu@accen=
+ture.com</a>&gt;; Cohen, Wendy K. &lt;<a href=3D"mailto:wendy.k.cohen@accen=
+ture.com">wendy.k.cohen@accenture.com</a>&gt;<br><b>Subject:</b> [External]=
+ RE: Indigometrics Post Demo Follow-up
+       <o:p></o:p></span></p>
+    </div>
+   </div>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <div>
+    <p class=3D"MsoNormal" align=3D"center" style=3D"text-align:center"><sp=
+an style=3D"color:#EE0701">This message is from an EXTERNAL SENDER - be CAU=
+TIOUS, particularly with links and attachments.</span>
+     <o:p></o:p></p>
+    <div class=3D"MsoNormal" align=3D"center" style=3D"text-align:center">
+     <hr size=3D"2" width=3D"100%" noshade style=3D"color:#EE0701" align=3D=
+"center">
+    </div>
+    <p class=3D"MsoNormal">
+     <o:p>
+      &nbsp;
+     </o:p></p>
+   </div>
+   <p class=3D"MsoNormal">Hi Alex,
+    <o:p></o:p></p>
+   <p class=3D"MsoNormal">Please see attached,
+    <o:p></o:p></p>
+   <p class=3D"MsoNormal">Chris
+    <o:p></o:p></p>
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>
+   <div>
+    <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt =
+0cm 0cm 0cm">
+     <p class=3D"MsoNormal"><b><span lang=3D"EN-US">From:</span></b><span l=
+ang=3D"EN-US"> Mingo, Alexander V. &lt;<a href=3D"mailto:alexander.v.mingo@=
+accenture.com">alexander.v.mingo@accenture.com</a>&gt; <br><b>Sent:</b> 13 =
+July 2021 18:38<br><b>To:</b> Josh Klein &lt;<a href=3D"mailto:josh@josh.is=
+">josh@josh.is</a>&gt;; <a href=3D"mailto:chris@indigometrics.com">chris@in=
+digometrics.com</a><br><b>Cc:</b> Loyola, Albert &lt;<a href=3D"mailto:albe=
+rt.loyola@accenture.com">albert.loyola@accenture.com</a>&gt;; Wu, Wesley &l=
+t;<a href=3D"mailto:wes.wu@accenture.com">wes.wu@accenture.com</a>&gt;; Coh=
+en, Wendy K. &lt;<a href=3D"mailto:wendy.k.cohen@accenture.com">wendy.k.coh=
+en@accenture.com</a>&gt;<br><b>Subject:</b> Indigometrics Post Demo Follow-=
+up
+       <o:p></o:p></span></p>
+    </div>
+   </div>
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">Hello =
+Josh and Chris,
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">&nbsp;
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">Thank =
+you for taking the time to speak with us today about&nbsp;Indigometrics=E2=
+=80=99 capabilities and to show us your platform. As Wes&nbsp;mentioned, we=
+ can see the great value in your platform and how it will continue to scale=
+ moving forward!
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:9.0pt;col=
+or:black">&nbsp;
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">We wou=
+ld like to ensure we have the most accurate information about Indigometrics=
+&nbsp;for our practitioners. Would you please help us ensure we do by filli=
+ng out the attached PowerPoint template (instructions are imbedded within t=
+he template)?&nbsp;
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">&nbsp;
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">If you=
+ could please return the completed template to us no later than next Wednes=
+day, <b>July 21</b>, <span style=3D"background:white">along with any other =
+marketing materials that would help our practitioners gain greater insight =
+into your platform=E2=80=99s capabilities, we would greatly appreciate it.<=
+/span>&nbsp;As part of our research process, the template and additional ma=
+rketing materials helps us ensure that we=E2=80=99ve captured all the right=
+ features (even those we may not have had opportunity to discuss on the cal=
+l today).
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">&nbsp;
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">If you=
+ have any questions, please reach back out to Albert and myself! We look fo=
+rward to continuing to stay connected with Indigometrics and thank you in a=
+dvance.=20
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">Thanks=
+,
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"color:black">Alex <=
+/span><span lang=3D"EN-US" style=3D"font-size:9.0pt">
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt;font-family:&q=
+uot;Arial&quot;,sans-serif;color:black">Alexander Mingo
+      <o:p></o:p></span></b></p>
+   <p class=3D"MsoNormal"><b><span lang=3D"EN-US" style=3D"font-size:10.5pt=
+;color:black">Accenture</span></b><b><span lang=3D"EN-US" style=3D"font-siz=
+e:10.5pt;color:red">Strategy </span></b><b><span lang=3D"EN-US" style=3D"fo=
+nt-size:10.5pt;color:black">|</span></b><b><span lang=3D"EN-US" style=3D"fo=
+nt-size:10.5pt;color:red"> </span></b><b><span lang=3D"EN-US" style=3D"font=
+-size:10.5pt;color:black">Talent &amp; Organization</span></b><span lang=3D=
+"EN-US">
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span style=3D"font-size:9.0pt;font-family:&quot;=
+Arial&quot;,sans-serif;color:black">800 N Glebe Road, Suite 300 | Arlington=
+, VA 22203
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:9.0pt;fon=
+t-family:Wingdings">(</span><span lang=3D"EN-US" style=3D"font-size:8.0pt;f=
+ont-family:&quot;Tahoma&quot;,sans-serif">571-245-1949&nbsp;(M) </span><spa=
+n lang=3D"EN-US" style=3D"font-size:9.0pt">| </span><span lang=3D"EN-US" st=
+yle=3D"font-size:9.0pt;font-family:Wingdings">*</span><span lang=3D"EN-US" =
+style=3D"font-size:9.0pt"> <a href=3D"mailto:alexander.v.mingo">alexander.v=
+.mingo</a>
+     <o:p></o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>
+   <div class=3D"MsoNormal" align=3D"center" style=3D"text-align:center">
+    <span lang=3D"EN-US">
+     <hr size=3D"1" width=3D"100%" align=3D"center"></span>
+   </div>
+   <p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"font-size:7.5pt;fon=
+t-family:&quot;Arial&quot;,sans-serif;color:gray"><br>This message is for t=
+he designated recipient only and may contain privileged, proprietary, or ot=
+herwise confidential information. If you have received it in error, please =
+notify the sender immediately and delete the original. Any other use of the=
+ e-mail by you is prohibited. Where allowed by local law, electronic commun=
+ications with Accenture and its affiliates, including e-mail and instant me=
+ssaging (including content), may be scanned by our systems for the purposes=
+ of information security and assessment of internal compliance with Accentu=
+re policy. Your privacy is important to us. Accenture uses your personal da=
+ta only in compliance with data protection laws. For further information on=
+ how Accenture processes your personal data, please see our privacy stateme=
+nt at <a href=3D"https://www.accenture.com/us-en/privacy-policy">https://ww=
+w.accenture.com/us-en/privacy-policy</a>. <br>_____________________________=
+_________________________________________________________<br><br><a href=3D=
+"http://www.accenture.com">www.accenture.com</a></span><span lang=3D"EN-US"=
+>
+     <o:p></o:p></span></p>
+  </div>
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>Indigometrics One Pager - Accenture 20210727.pptx (filename: /Users/=
+josh/Desktop/ATTACHMENTS/17ae956333665b96-0-Indigometrics_One_Pager_-_Accen=
+ture_20210727.pptx, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/17ae=
+956333665b96-0-Indigometrics_One_Pager_-_Accenture_20210727.pptx">local lin=
+k</a>)</li>=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.3.0</li>=
+=20
+   <li>Date and time: 2022-05-18T11:19:31.641706Z</li>=20
+   <li>Download target host name: MacBook-Air.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+------=_NextPart_001_0040_01D78321.E8C3BB60--
+
+------=_NextPart_000_003F_01D78321.E8C3BB60--

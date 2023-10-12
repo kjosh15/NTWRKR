@@ -1,0 +1,430 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:ba51:0:b0:20e:7da0:d862 with SMTP id p17csp1409095vqh;
+        Thu, 16 Sep 2021 19:02:20 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwNVJL3jXvgOKiJiQQuWpIiUVvCAuLoisYsoTiKEZPNgt769DUMzouazlqH33/AUeOkkEkX
+X-Received: by 2002:a17:906:144b:: with SMTP id q11mr9802042ejc.78.1631844140528;
+        Thu, 16 Sep 2021 19:02:20 -0700 (PDT)
+Return-Path: <Luis.F.Rojas@takeda.com>
+Received: from mx07-00297f01.pphosted.com (mx07-00297f01.pphosted.com. [185.132.180.23])
+        by mx.google.com with ESMTPS id t4si538466edi.154.2021.09.16.19.02.20
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Sep 2021 19:02:20 -0700 (PDT)
+Received-SPF: pass (google.com: domain of luis.f.rojas@takeda.com designates 185.132.180.23 as permitted sender) client-ip=185.132.180.23;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@takeda.com header.s=pp27022019 header.b=yy21vWwI;
+       arc=fail (body hash mismatch);
+       spf=pass (google.com: domain of luis.f.rojas@takeda.com designates 185.132.180.23 as permitted sender) smtp.mailfrom=Luis.F.Rojas@takeda.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=takeda.com
+Received: from pps.filterd (m0115058.ppops.net [127.0.0.1])
+	by mx07-00297f01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18H1vQOR023264
+	for <josh@josh.is>; Fri, 17 Sep 2021 04:02:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=takeda.com; h=from : to : subject :
+ date : message-id : content-type : mime-version; s=pp27022019;
+ bh=m57LXCe8gOZw863xLAE8Nw5YELeSoDtTdwx+PjhdusE=;
+ b=yy21vWwIGa1XzFCbrum8Ya6so9XRvGRDi+O2LbDNkcvhcrQYG9VSgUgGkvxMX5gWV7TU
+ letaczfsvIXyfFXBf1Rv90SzMNZEOwEXK8Mndp07oVsfdk8XcImLQvLElJM1wFwqH3bD
+ abZJz0ei3zDLrfUg5moAfwSIpmLO+bWNLeVaPAicdboyLmH8YeZo2nO9CisUUT5JNi3Y
+ Xt62DmlTV1MhtivjVauPou7nN+ko08UgESDAoHIXO2hADt843G/uek2L1BRBnoYdz/ww
+ VS+OMKjrndLBbAYPV3tn1GDvWdlY4gYfEnE8/XAn82zxQfuyjftmAFjuCFxkbDkrPJcC yw== 
+Received: from eur05-am6-obe.outbound.protection.outlook.com (mail-am6eur05lp2112.outbound.protection.outlook.com [104.47.18.112])
+	by mx07-00297f01.pphosted.com with ESMTP id 3b4htdr0b7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Fri, 17 Sep 2021 04:02:19 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hDwgSQVgD8HM9FezX+S0dpoYmRh7EBNLCUPQXoTJ9749Y0AU2uiELHMNH2Uu9HAomiWtl3FYhKLZc76dQuFZ0tJIUcXZZusiGBhZzHYQydlmx6HX+Wk825NVe9n5DgN4lYnQmuyUv/F0buQjnlrZvAhC01Br9T8a1A8fcKXpeOZGP9BvpZLekzp0J/DEMqFxIa3+yqNg+H67FWikxJOkWxUAKa3XEXmg4Cg/08PE9L8hX/xuZCLO4cnvbF7EPA/SvG+NoUw7GQHmUNtXo0vr5gIt/vSnBhQJr6x5l4j0pWPYeQVjhB+KwIH27O3FdrnrmH+wMZJLLTpXQwHa2qjzXA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=/W4FiRGAJMnHwxCIsx4S05FVOi5tgDws/Fq3fOJTXeA=;
+ b=kOZ+wjm558X5adwHXUPZJoM+1UNNvNjNfIyBQgabHSgABlauDZR3xeOlvfHkpG/dH7RnF+tre1sd8lBVuAsDlv0kmVokJspfQhewcuO7TYv9IPlM3pCIQi8d7zHQzOmo29tJrSUgf66ydLCdWGWlUqUl5mQMBNRSpwW38nYtOtVQLTIuPwDsDITR+pAa+b6oQ616WqVhXBEwfw4aqBSR4DuvGIg7f0tIEwKcciANlti0dQeYFKv07yOvDUTFmg0jzt7uvYJ4TkUXAFoz6QERAijbdM1qV3DIpKWqHQZV/g8xUtW0d/mwbf9NY0GiqgerUlGx9Bre9OeixO+ao4Gzrw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=takeda.com; dmarc=pass action=none header.from=takeda.com;
+ dkim=pass header.d=takeda.com; arc=none
+Received: from DB9PR08MB7147.eurprd08.prod.outlook.com (2603:10a6:10:2cb::13)
+ by DU2PR08MB7255.eurprd08.prod.outlook.com (2603:10a6:10:2d2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 02:02:18 +0000
+Received: from DB9PR08MB7147.eurprd08.prod.outlook.com
+ ([fe80::e17a:45cc:605d:1159]) by DB9PR08MB7147.eurprd08.prod.outlook.com
+ ([fe80::e17a:45cc:605d:1159%9]) with mapi id 15.20.4500.019; Fri, 17 Sep 2021
+ 02:02:18 +0000
+From: "Rojas, Luis" <Luis.F.Rojas@takeda.com>
+To: Josh Klein <josh@josh.is>
+Subject: Canceled: RE: Material Impacts of ESG Event Follow-up (Introductory
+ Session) with Josh Klein
+Thread-Topic: RE: Material Impacts of ESG Event Follow-up (Introductory
+ Session) with Josh Klein
+Thread-Index: AdepW7AQtxhvZ6OlT6i+/qLOsS2DGQCDFmZA
+Importance: high
+X-Priority: 1
+Date: Fri, 17 Sep 2021 02:02:18 +0000
+Message-ID: 
+ <DB9PR08MB7147AD494E192AA46554D186ABDD9@DB9PR08MB7147.eurprd08.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+authentication-results: josh.is; dkim=none (message not signed)
+ header.d=none;josh.is; dmarc=none action=none header.from=takeda.com;
+x-ms-exchange-calendar-series-instance-id: 
+ BAAAAIIA4AB0xbcQGoLgCAAAAACQ8BgdOqnXAQAAAAAAAAAAEAAAACCbGBWz+HFEijOAmNV4q40=
+x-ms-office365-filtering-correlation-id: b177c3dd-d77b-44b0-4158-08d9797f2d96
+x-ms-traffictypediagnostic: DU2PR08MB7255:MeetingMessage
+x-microsoft-antispam-prvs: 
+ <DU2PR08MB72551F9253F438565F8EDB43ABDD9@DU2PR08MB7255.eurprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2331;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ J6vaKWwLQt7rC331FEmbrCdj1CoUACoZMZcKiDJtNLTzCKl09gQVpWIKWhcyXBMB1uLIVmJKuAFOk3ob6OAPuyjHc69csTfJ2ioss7iMAIJoBXgo+cXoxx1xdH2RTh/vtdVjUzurSgTu92SACntx/cql7lkyk/O9QMmZJYShpWU3fT4bkl/RWgZBjAjNmyUoAZLb8IpSzBbk3p3AZ2kHYd+ehVburpNtqm2xGX8HRcJ3KTUEtU5swF0LsE0//82GFsgWTtB2DX/ZAENCS1In3ZRi8QI+TKmppOSSarnDuq52Ba/OoM08InpI7uEtStuj7MbV+94ptZ34pvOedPHs91rRONuqt1uuZ/+ygWuePFpTkMxV7eM365Ji5y0jVokeBxwYCiyOImrppuO45NMW0XcHTtYLzXcHp6GfWvEKra6isp6+jHw7GfPhYHBRTV1PyCCHyVMT6bFSZLLKud7t/ELkdY8m9w3VCHnuu+ctjfqdnm9VVsXa9F8f+qdsZwPrq1TIgLhZWx5t4Vp6MlwgAY2aiZvSDsHhjJ8rd6GNtyvoV+GSQ/CWJ0uxKC8iBIdLO9KFKl4m0KmYtb0SUbTNUNPoW8RupMST/BRDlD/dfkogFqbqaNa1JFXQVUQsWYrmllwTi9yiNUQKbr/CsfgYbHskraDDXsHSCXADwLY7UfZROwjWpxF1AMvrX3ZWA09VKefXRMVAb4wOa5UNwYodOVAvjbyCf/AQ4BYXwgB43Bha8xdn7+SaFZWiV4123bU6rm+uDblZpPN6XryksSNSH1+XCc3gUmD/Rjpf39N88Y/eClLWHxzPLE281O5aCdKDo8VgPsuBW2RW0NRObw86Hw==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7147.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(39860400002)(376002)(478600001)(45080400002)(4744005)(55016002)(33656002)(71200400001)(26005)(5660300002)(9686003)(76116006)(66946007)(186003)(66476007)(64756008)(66556008)(66446008)(40140700001)(2906002)(86362001)(122000001)(38100700002)(316002)(6916009)(38070700005)(8936002)(8676002)(166002)(7696005)(83380400001)(52536014)(6506007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?iso-8859-1?Q?JVd0Y/Y7bD6BqJvYRh8Xwz5j4pClP18Gtf7wZm05i6ciVLsTlX0sJSDQbn?=
+ =?iso-8859-1?Q?tmB3oeTgnwLix3zxs4DrRTeZlCxiZ6vFtehHnGZlrBoVbDxErmQCm15muX?=
+ =?iso-8859-1?Q?OLqAtQzR4I3ihss+kM0oYLnSGNsbXb9Og89igcTgqPEAfzg3zTA5OFKbkX?=
+ =?iso-8859-1?Q?lA1f/XtYFe6You6d11m9ZpYfLK45ivUJZrNhD1QhBmNCTFvxeyGPvIiTto?=
+ =?iso-8859-1?Q?hnLSTyj0mbk9Wk4PVIBhGutZGxVnjlORH0Z/qbrj5O7TecInxKOOM/tfWl?=
+ =?iso-8859-1?Q?h16G/w8/8wdaVAR4xjTGhlsV0k2xtYPDF39PQSgrFnWU3tBz2R5p8NOY45?=
+ =?iso-8859-1?Q?wkNrxk53woQiQYuKXdPuBW0WwRJ+xUWy9a0yilF8vqcWXmGxfOFdkByg0F?=
+ =?iso-8859-1?Q?JOTij70g52OW+UEaZGYAMeJ8AHYOEJ3q+F+tJwXGctNbUe26q0JWNX7eQH?=
+ =?iso-8859-1?Q?1T5KAQAbEGzmDAnaAowUUnanQSB9SfAjAs/z29X7EXZCAA4H/5C8GTA9Mq?=
+ =?iso-8859-1?Q?pNYLzrCEXjM8QdwAcM/4Mc8gzgD1O5lqUPanlQti3yHfAExDW+eJ3kZw5j?=
+ =?iso-8859-1?Q?fbdCtP+kw9DLqcfw+oh9XqLg+9+9Fj8Gjdn3ShYst+dhHWL9Ev1opL2a+W?=
+ =?iso-8859-1?Q?RN7tghyJSUkbW4mA/xTL8VhC+MLlMzS2D/RIF2IS9/oS6/X3xNognBY08A?=
+ =?iso-8859-1?Q?6auvsVeZCmhHzpcXd/eZhQALzqosZPl9kwdVf3PRU6zcWaxpByp1M61Sg/?=
+ =?iso-8859-1?Q?usieK7Y0S0II7n4qPUmxxNk6cQqS1hASrg3zOwyuuLzhaLdUyz4zWzQ7sT?=
+ =?iso-8859-1?Q?4VBEo7Hr581iTYattZ1UcE2AnbCcah8pCrCYCSSFaGQfnlaWgTA7Txk2X6?=
+ =?iso-8859-1?Q?tMy9yJzuds/fi839ou/4Hm6Mh2rUnY1cBsaVlpF4cWAJQ6nuRZTzh2lpQG?=
+ =?iso-8859-1?Q?2163S0fdTnBGSUquEz9XSxsBeky3F2NPUuUwcqUAIBTcj/LkxliN7pr0RD?=
+ =?iso-8859-1?Q?4RbTtiZzezTd8F4u7jk+netJicBrgoEQ3KjfGP4JqpPGSOgWtpxjLA+uQT?=
+ =?iso-8859-1?Q?w9ZbFlDyp8OGaKnVT9iLkDg/0hDfx9kntmzCS6HRlOiXQP2vG0MJWMkX1i?=
+ =?iso-8859-1?Q?Y4gc79naDRomVFl4FOcBeUn8mbkFaw0uxezuCJ/u3EziBYLT8hudG5hgto?=
+ =?iso-8859-1?Q?2Tc0EDslaIqStR4pnvaU5Ke7aUE2RDNP6dddXOxLCzoytkSXbeknzthLa0?=
+ =?iso-8859-1?Q?V+YVwsilheioBoyhrc2dw0S4cWo4Abv2KJvpYIH64KlKiJ/Rge4UaX2kvd?=
+ =?iso-8859-1?Q?r7yOkzKGSU5ObI+gDALfhe5N4tq/TkkYAenP6t2e6Qc+EhfLa3+RaMVVBF?=
+ =?iso-8859-1?Q?nBaT2VE2Wi?=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+	boundary="_000_DB9PR08MB7147AD494E192AA46554D186ABDD9DB9PR08MB7147eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: takeda.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR08MB7147.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b177c3dd-d77b-44b0-4158-08d9797f2d96
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 02:02:18.1866
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 57fdf63b-7e22-45a3-83dc-d37003163aae
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: k7oZ96qUjdAUvmdiB25bZfOTcI4idvMhMIX05eLQMgNmFVmKYsVBXVr4QRAtg8PujQBlXULpkyNgKFX2gwU5tg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR08MB7255
+X-Proofpoint-GUID: M73rKS4v7LFaIpISTQA3t540iEGRte2E
+X-Proofpoint-ORIG-GUID: M73rKS4v7LFaIpISTQA3t540iEGRte2E
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-16_07,2021-09-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
+ bulkscore=0 adultscore=0 impostorscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 lowpriorityscore=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2109030001 definitions=main-2109170011
+
+--_000_DB9PR08MB7147AD494E192AA46554D186ABDD9DB9PR08MB7147eurp_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
+
+
+___________________________________________________________________________=
+_____
+Microsoft Teams meeting
+Join on your computer or mobile app
+Click here to join the meeting<https://teams.microsoft.com/l/meetup-join/19=
+%3ameeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh%40thread.v2/0?c=
+ontext=3D%7b%22Tid%22%3a%2257fdf63b-7e22-45a3-83dc-d37003163aae%22%2c%22Oid=
+%22%3a%22244aa894-f5b8-4493-aee9-e767c03b85c8%22%7d>
+Join with a video conferencing device
+takeda@m.webex.com<mailto:takeda@m.webex.com>
+Video Conference ID: 129 121 173 9
+Alternate VTC instructions<https://www.webex.com/msteams?confid=3D129121173=
+9&tenantkey=3Dtakeda&domain=3Dm.webex.com>
+Or call in (audio only)
++1 312-549-8473,,462031735#<tel:+13125498473,,462031735#>   United States, =
+Chicago
+Phone Conference ID: 462 031 735#
+Find a local number<https://dialin.teams.microsoft.com/3b37f231-b6be-494e-a=
+f9a-ccd3fe6544a5?id=3D462031735> | Reset PIN<https://mysettings.lync.com/ps=
+tnconferencing>
+Learn More<https://aka.ms/JoinTeamsMeeting> | Meeting options<https://teams=
+.microsoft.com/meetingOptions/?organizerId=3D244aa894-f5b8-4493-aee9-e767c0=
+3b85c8&tenantId=3D57fdf63b-7e22-45a3-83dc-d37003163aae&threadId=3D19_meetin=
+g_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh@thread.v2&messageId=3D0&=
+language=3Den-US>
+___________________________________________________________________________=
+_____
+
+The content of this email and of any files transmitted may contain confiden=
+tial, proprietary or legally privileged information and is intended solely =
+for the use of the person/s or entity/ies to whom it is addressed. If you h=
+ave received this email in error you have no permission whatsoever to use, =
+copy, disclose or forward all or any of its contents. Please immediately no=
+tify the sender and thereafter delete this email and any attachments.
+
+--_000_DB9PR08MB7147AD494E192AA46554D186ABDD9DB9PR08MB7147eurp_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="iso-8859-1"
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Segoe UI";
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{font-family:"Segoe UI Semibold";
+	panose-1:2 11 7 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-compose;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:#5F5F5F">______________________=
+__________________________________________________________</span>
+<o:p></o:p></p>
+</div>
+<div>
+<div style=3D"margin-top:.25in;margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-size:18.0pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Microsoft Teams meeting</span><span =
+style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#252424">
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:15.0pt">
+<div>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Join on your computer or mobile a=
+pp</span></b><b><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;=
+color:#252424">
+<o:p></o:p></span></b></p>
+</div>
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://teams.microsoft.com/l/meetup-join/=
+19%3ameeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh%40thread.v2/0=
+?context=3D%7b%22Tid%22%3a%2257fdf63b-7e22-45a3-83dc-d37003163aae%22%2c%22O=
+id%22%3a%22244aa894-f5b8-4493-aee9-e767c03b85c8%22%7d" target=3D"_blank"><s=
+pan style=3D"font-size:10.5pt;font-family:&quot;Segoe UI Semibold&quot;,san=
+s-serif;color:#6264A7">Click
+ here to join the meeting</span></a> <o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Join with a video conferencing de=
+vice</span></b><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;c=
+olor:#252424">
+<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424"><a href=3D"mailto:takeda@m.webex.com=
+">takeda@m.webex.com</a>
+<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Video Conference ID:
+</span><span style=3D"font-size:12.0pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">129 121 173 9
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424"><a href=3D"https://www.webex.com/mst=
+eams?confid=3D1291211739&amp;tenantkey=3Dtakeda&amp;domain=3Dm.webex.com"><=
+span style=3D"color:#6264A7">Alternate VTC instructions</span></a>
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Or call in (audio only)</span></b=
+><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#252424">
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"tel:+13125498473,,462031735# "><span style=
+=3D"font-size:10.5pt;color:#6264A7">+1 312-549-8473,,462031735#</span></a>
+</span><span style=3D"font-size:10.5pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">&nbsp; United States, Chicago
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Phone Conference ID:
+</span><span style=3D"font-size:12.0pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">462 031 735#
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+<div style=3D"margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://dialin.teams.microsoft.com/3b37f23=
+1-b6be-494e-af9a-ccd3fe6544a5?id=3D462031735" target=3D"_blank"><span style=
+=3D"font-size:10.5pt;color:#6264A7">Find a local number</span></a>
+ | <a href=3D"https://mysettings.lync.com/pstnconferencing" target=3D"_blan=
+k"><span style=3D"font-size:10.5pt;color:#6264A7">Reset PIN</span></a>
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-top:15.0pt;margin-bottom:.25in">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://aka.ms/JoinTeamsMeeting" target=3D=
+"_blank"><span style=3D"font-size:10.5pt;color:#6264A7">Learn More</span></=
+a> |
+<a href=3D"https://teams.microsoft.com/meetingOptions/?organizerId=3D244aa8=
+94-f5b8-4493-aee9-e767c03b85c8&amp;tenantId=3D57fdf63b-7e22-45a3-83dc-d3700=
+3163aae&amp;threadId=3D19_meeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3Z=
+GM1MzFh@thread.v2&amp;messageId=3D0&amp;language=3Den-US" target=3D"_blank">
+<span style=3D"font-size:10.5pt;color:#6264A7">Meeting options</span></a> <=
+o:p></o:p></span></p>
+</div>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:#5F5F5F">______________________=
+__________________________________________________________</span>
+<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+
+<DIV>
+The content of this email and of any files transmitted may contain confiden=
+tial, proprietary or legally privileged information and is intended solely =
+for the use of the person/s or entity/ies to whom it is addressed. If you h=
+ave received this email in error you have no permission whatsoever to use, =
+copy, disclose or forward all or any of its contents. Please immediately no=
+tify the sender and thereafter delete this email and any attachments.<BR>
+</DIV></body>
+</html>
+
+--_000_DB9PR08MB7147AD494E192AA46554D186ABDD9DB9PR08MB7147eurp_
+Content-Type: text/calendar; charset="utf-8"; method=CANCEL
+Content-Transfer-Encoding: base64
+
+QkVHSU46VkNBTEVOREFSDQpNRVRIT0Q6Q0FOQ0VMDQpQUk9ESUQ6TWljcm9zb2Z0IEV4Y2hhbmdl
+IFNlcnZlciAyMDEwDQpWRVJTSU9OOjIuMA0KQkVHSU46VlRJTUVaT05FDQpUWklEOkVhc3Rlcm4g
+U3RhbmRhcmQgVGltZQ0KQkVHSU46U1RBTkRBUkQNCkRUU1RBUlQ6MTYwMTAxMDFUMDIwMDAwDQpU
+Wk9GRlNFVEZST006LTA0MDANClRaT0ZGU0VUVE86LTA1MDANClJSVUxFOkZSRVE9WUVBUkxZO0lO
+VEVSVkFMPTE7QllEQVk9MVNVO0JZTU9OVEg9MTENCkVORDpTVEFOREFSRA0KQkVHSU46REFZTElH
+SFQNCkRUU1RBUlQ6MTYwMTAxMDFUMDIwMDAwDQpUWk9GRlNFVEZST006LTA1MDANClRaT0ZGU0VU
+VE86LTA0MDANClJSVUxFOkZSRVE9WUVBUkxZO0lOVEVSVkFMPTE7QllEQVk9MlNVO0JZTU9OVEg9
+Mw0KRU5EOkRBWUxJR0hUDQpFTkQ6VlRJTUVaT05FDQpCRUdJTjpWRVZFTlQNCk9SR0FOSVpFUjtD
+Tj0iUm9qYXMsIEx1aXMiOm1haWx0bzpMdWlzLkYuUm9qYXNAdGFrZWRhLmNvbQ0KQVRURU5ERUU7
+Uk9MRT1SRVEtUEFSVElDSVBBTlQ7UEFSVFNUQVQ9TkVFRFMtQUNUSU9OO1JTVlA9VFJVRTtDTj1K
+b3NoIEtsZWluDQogOm1haWx0bzpqb3NoQGpvc2guaXMNCkRFU0NSSVBUSU9OO0xBTkdVQUdFPWVu
+LVVTOlxuX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KIF9f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19cbk1pY3Jvc29mdCBUZWFtcyBtZWV0aW5n
+XG5Kb2luIG9uIHlvdXIgDQogY29tcHV0ZXIgb3IgbW9iaWxlIGFwcFxuQ2xpY2sgaGVyZSB0byBq
+b2luIHRoZSBtZWV0aW5nPGh0dHBzOi8vdGVhbXMubWljcm8NCiBzb2Z0LmNvbS9sL21lZXR1cC1q
+b2luLzE5JTNhbWVldGluZ19NVE5oTURBMVlURXRZVFE0TXkwME56ZzVMV0V6TlRNdE9UbGlNVw0K
+IFkzWkdNMU16RmglNDB0aHJlYWQudjIvMD9jb250ZXh0PSU3YiUyMlRpZCUyMiUzYSUyMjU3ZmRm
+NjNiLTdlMjItNDVhMy04M2RjDQogLWQzNzAwMzE2M2FhZSUyMiUyYyUyMk9pZCUyMiUzYSUyMjI0
+NGFhODk0LWY1YjgtNDQ5My1hZWU5LWU3NjdjMDNiODVjOCUyMiUNCiA3ZD5cbkpvaW4gd2l0aCBh
+IHZpZGVvIGNvbmZlcmVuY2luZyBkZXZpY2VcbnRha2VkYUBtLndlYmV4LmNvbTxtYWlsdG86dGFr
+ZQ0KIGRhQG0ud2ViZXguY29tPlxuVmlkZW8gQ29uZmVyZW5jZSBJRDogMTI5IDEyMSAxNzMgOVxu
+QWx0ZXJuYXRlIFZUQyBpbnN0cnVjDQogdGlvbnM8aHR0cHM6Ly93d3cud2ViZXguY29tL21zdGVh
+bXM/Y29uZmlkPTEyOTEyMTE3MzkmdGVuYW50a2V5PXRha2VkYSZkb20NCiBhaW49bS53ZWJleC5j
+b20+XG5PciBjYWxsIGluIChhdWRpbyBvbmx5KVxuKzEgMzEyLTU0OS04NDczXCxcLDQ2MjAzMTcz
+NSM8dA0KIGVsOisxMzEyNTQ5ODQ3M1wsXCw0NjIwMzE3MzUjPiAgIFVuaXRlZCBTdGF0ZXNcLCBD
+aGljYWdvXG5QaG9uZSBDb25mZXJlbmNlDQogIElEOiA0NjIgMDMxIDczNSNcbkZpbmQgYSBsb2Nh
+bCBudW1iZXI8aHR0cHM6Ly9kaWFsaW4udGVhbXMubWljcm9zb2Z0LmNvbS8NCiAzYjM3ZjIzMS1i
+NmJlLTQ5NGUtYWY5YS1jY2QzZmU2NTQ0YTU/aWQ9NDYyMDMxNzM1PiB8IFJlc2V0IFBJTjxodHRw
+czovL215cw0KIGV0dGluZ3MubHluYy5jb20vcHN0bmNvbmZlcmVuY2luZz5cbkxlYXJuIE1vcmU8
+aHR0cHM6Ly9ha2EubXMvSm9pblRlYW1zTWVlDQogdGluZz4gfCBNZWV0aW5nIG9wdGlvbnM8aHR0
+cHM6Ly90ZWFtcy5taWNyb3NvZnQuY29tL21lZXRpbmdPcHRpb25zLz9vcmdhbmkNCiB6ZXJJZD0y
+NDRhYTg5NC1mNWI4LTQ0OTMtYWVlOS1lNzY3YzAzYjg1YzgmdGVuYW50SWQ9NTdmZGY2M2ItN2Uy
+Mi00NWEzLTgzZA0KIGMtZDM3MDAzMTYzYWFlJnRocmVhZElkPTE5X21lZXRpbmdfTVROaE1EQTFZ
+VEV0WVRRNE15MDBOemc1TFdFek5UTXRPVGxpTVdZDQogM1pHTTFNekZoQHRocmVhZC52MiZtZXNz
+YWdlSWQ9MCZsYW5ndWFnZT1lbi1VUz5cbl9fX19fX19fX19fX19fX19fX19fX19fX18NCiBfX19f
+X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXG5cbg0K
+VUlEOjA0MDAwMDAwODIwMEUwMDA3NEM1QjcxMDFBODJFMDA4MDAwMDAwMDA5MEYwMTgxRDNBQTlE
+NzAxMDAwMDAwMDAwMDAwMDAwDQogMDEwMDAwMDAwMjA5QjE4MTVCM0Y4NzE0NDhBMzM4MDk4RDU3
+OEFCOEQNClNVTU1BUlk7TEFOR1VBR0U9ZW4tVVM6Q2FuY2VsZWQ6IFJFOiBNYXRlcmlhbCBJbXBh
+Y3RzIG9mIEVTRyBFdmVudCBGb2xsb3ctdQ0KIHAgKEludHJvZHVjdG9yeSBTZXNzaW9uKSB3aXRo
+IEpvc2ggS2xlaW4NCkRUU1RBUlQ7VFpJRD1FYXN0ZXJuIFN0YW5kYXJkIFRpbWU6MjAyMTA5MTdU
+MDgzMDAwDQpEVEVORDtUWklEPUVhc3Rlcm4gU3RhbmRhcmQgVGltZToyMDIxMDkxN1QwOTAwMDAN
+CkNMQVNTOlBVQkxJQw0KUFJJT1JJVFk6MQ0KRFRTVEFNUDoyMDIxMDkxN1QwMjAyMTVaDQpUUkFO
+U1A6VFJBTlNQQVJFTlQNClNUQVRVUzpDQU5DRUxMRUQNClNFUVVFTkNFOjENCkxPQ0FUSU9OO0xB
+TkdVQUdFPWVuLVVTOk1pY3Jvc29mdCBUZWFtcyBNZWV0aW5nDQpYLU1JQ1JPU09GVC1DRE8tQVBQ
+VC1TRVFVRU5DRToxDQpYLU1JQ1JPU09GVC1DRE8tT1dORVJBUFBUSUQ6OTU2Mzg5DQpYLU1JQ1JP
+U09GVC1DRE8tQlVTWVNUQVRVUzpGUkVFDQpYLU1JQ1JPU09GVC1DRE8tSU5URU5ERURTVEFUVVM6
+RlJFRQ0KWC1NSUNST1NPRlQtQ0RPLUFMTERBWUVWRU5UOkZBTFNFDQpYLU1JQ1JPU09GVC1DRE8t
+SU1QT1JUQU5DRToyDQpYLU1JQ1JPU09GVC1DRE8tSU5TVFRZUEU6MA0KWC1NSUNST1NPRlQtT05M
+SU5FTUVFVElOR0lORk9STUFUSU9OOnsiT25saW5lTWVldGluZ0NoYW5uZWxJZCI6bnVsbFwsIk9u
+bGluDQogZU1lZXRpbmdQcm92aWRlciI6M30NClgtTUlDUk9TT0ZULVNLWVBFVEVBTVNNRUVUSU5H
+VVJMOmh0dHBzOi8vdGVhbXMubWljcm9zb2Z0LmNvbS9sL21lZXR1cC1qb2luLw0KIDE5JTNhbWVl
+dGluZ19NVE5oTURBMVlURXRZVFE0TXkwME56ZzVMV0V6TlRNdE9UbGlNV1kzWkdNMU16RmglNDB0
+aHJlYWQudjIvDQogMD9jb250ZXh0PSU3YiUyMlRpZCUyMiUzYSUyMjU3ZmRmNjNiLTdlMjItNDVh
+My04M2RjLWQzNzAwMzE2M2FhZSUyMiUyYyUyMk8NCiBpZCUyMiUzYSUyMjI0NGFhODk0LWY1Yjgt
+NDQ5My1hZWU5LWU3NjdjMDNiODVjOCUyMiU3ZA0KWC1NSUNST1NPRlQtU0NIRURVTElOR1NFUlZJ
+Q0VVUERBVEVVUkw6aHR0cHM6Ly9hcGkuc2NoZWR1bGVyLnRlYW1zLm1pY3Jvc29mDQogdC5jb20v
+dGVhbXMvNTdmZGY2M2ItN2UyMi00NWEzLTgzZGMtZDM3MDAzMTYzYWFlLzI0NGFhODk0LWY1Yjgt
+NDQ5My1hZWU5LWUNCiA3NjdjMDNiODVjOC8xOV9tZWV0aW5nX01UTmhNREExWVRFdFlUUTRNeTAw
+TnpnNUxXRXpOVE10T1RsaU1XWTNaR00xTXpGaEB0aA0KIHJlYWQudjIvMA0KWC1NSUNST1NPRlQt
+U0tZUEVURUFNU1BST1BFUlRJRVM6eyJjaWQiOiIxOTptZWV0aW5nX01UTmhNREExWVRFdFlUUTRN
+eTAwTnpnDQogNUxXRXpOVE10T1RsaU1XWTNaR00xTXpGaEB0aHJlYWQudjIiXCwicHJpdmF0ZSI6
+dHJ1ZVwsInR5cGUiOjBcLCJtaWQiOjBcLCINCiByaWQiOjBcLCJ1aWQiOm51bGx9DQpYLU1JQ1JP
+U09GVC1PTkxJTkVNRUVUSU5HQ09ORkxJTks6Y29uZjpzaXA6THVpcy5GLlJvamFzQHRha2VkYS5j
+b21cO2dydXVcO28NCiBwYXF1ZT1hcHA6Y29uZjpmb2N1czppZDp0ZWFtczoyOjAhMTk6bWVldGlu
+Z19NVE5oTURBMVlURXRZVFE0TXkwME56ZzVMV0V6Tg0KIFRNdE9UbGlNV1kzWkdNMU16RmgtdGhy
+ZWFkLnYyITI0NGFhODk0ZjViODQ0OTNhZWU5ZTc2N2MwM2I4NWM4ITU3ZmRmNjNiN2UyDQogMjQ1
+YTM4M2RjZDM3MDAzMTYzYWFlDQpYLU1JQ1JPU09GVC1ET05PVEZPUldBUkRNRUVUSU5HOkZBTFNF
+DQpYLU1JQ1JPU09GVC1ESVNBTExPVy1DT1VOVEVSOkZBTFNFDQpFTkQ6VkVWRU5UDQpFTkQ6VkNB
+TEVOREFSDQo=
+
+--_000_DB9PR08MB7147AD494E192AA46554D186ABDD9DB9PR08MB7147eurp_--

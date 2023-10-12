@@ -1,0 +1,927 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp513093ljm;
+        Thu, 11 Mar 2021 09:15:35 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxljcAF5poxNtdvcnhVDDwgOQO4f+j6QOI2saVxJsPG6H/JYil4XBuoD9GLufwwegB3AxbZ
+X-Received: by 2002:a05:620a:2158:: with SMTP id m24mr8485161qkm.306.1615482935550;
+        Thu, 11 Mar 2021 09:15:35 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1615482935; cv=none;
+        d=google.com; s=arc-20160816;
+        b=tIyO9EUIvnF+MCxAcd7zVHZDPcOHQAIBAa0aT3IlSJlq2X0SlbfBxANg2zCBwYd83E
+         46hngyrzRD/nxb3xHrZ4+ys8ZIcsJ8luVAhos9M0VbPsIl/CXBFDwlKV9iivPU5OxtUe
+         eEFk6+oEBZ+x6XC4a0yx7a/ERayo4DI2mrqWP3jMrhelQg26T1FcugK1WeZU/aHyEFQG
+         WTsEzrtMUhnMsP8CqT/K2UE21pYDcwAIySofgmdMshV8aTOtgxn/veIGR1u4FXBp1J5f
+         sRDfycAVDIfnwV1ftFicCtmJ7Nd7iT69a5GwffAf/csCMVFuU0Qos8sTZIz34Tq4dbfw
+         /Ubw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:cc:to:from;
+        bh=o/I0T/siVGCVqgI8AZzy1aNr2kh3BpgIxho2wkWh4K0=;
+        b=bqy2YcaLmqqYSCpdJai6Dm5UXwkM6G605Z9//4owQBdQZQyurZvcvKzSinAJ7D9ylr
+         nIVBTICZtoM5TZAFGoAwJZI3KlbUjVtxLvEo/YBziyeU7Ud5dK5ct051STPHLBLfS4U8
+         dnfA4JG/DRZOoVjY0NKQt8+bdRWJMW9kc6ExgEWBvVtD5lBLRYBgkhOihHQfq48qzd1p
+         ZZgNGOwt+A5/a5GHiB7wzXaBTWPqVZ1AS2ia2MVEsAYjT/57vuSbnShXexwT89PEeYaH
+         n7p5N903L+a65AtWlXmdr3es/t0SyA3o3ENnGQqV99VD4Bt1xo96p9Z697krt2vJ8bLM
+         VtMA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-01.prod.iad2.secureserver.net (a2nlsmtp01-01.prod.iad2.secureserver.net. [198.71.224.24])
+        by mx.google.com with ESMTPS id l18si1615484qvo.185.2021.03.11.09.15.35
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 11 Mar 2021 09:15:35 -0800 (PST)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) client-ip=198.71.224.24;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=indigometrics.com
+Received: from mailout01.c01 ([64.207.129.78])
+	by : HOSTING RELAY : with ESMTP
+	id KOtNl0mRghJg4KOtNl8UNe; Thu, 11 Mar 2021 10:14:34 -0700
+X-CMAE-Analysis: v=2.4 cv=N5fsq0xB c=1 sm=1 tr=0 ts=604a4ffa
+ a=rHVhcZ7MkiYw9pwnR3G25w==:117 a=wEOr92zfVAYr/SVmHhaHNw==:17
+ a=dESyimp9J3IA:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=mwzwrvARAAAA:8 a=MGKIFWvDAAAA:8
+ a=UqCG9HQmAAAA:8 a=MVb0qxMeAAAA:8 a=RlilVkMrM4myOLWiYSoA:9 a=CjuIK1q_8ugA:10
+ a=pU9_wD52wioA:10 a=VFHzQ04EkL0A:10 a=E2x0oJdPFsUA:10 a=yMhMjlubAAAA:8
+ a=SSmOFEACAAAA:8 a=6srhIHJcMOg89ggdgjQA:9 a=tqR37JqF6hksWkWr:21
+ a=gKO2Hq4RSVkA:10 a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=4jM5ej7749QczulxNXsA:9 a=rDP5TqB3Zp2UV5Pv:18 a=KQqxNPgzF0kA:10
+ a=VEiTNn8F7TgA:10 a=jQ80F9blSxlJgznFqPQA:9 a=dCmbSpbaSS7aP6--:18
+ a=HXjIzolwW10A:10 a=T6a71-JsGAwA:10 a=SSxnLmVK4AXe-P3ELvCQ:22
+ a=4D1dU0hVIIbnoyLp9NuI:22 a=WDIP_bUc7mkX8VL4c0tm:22 a=BPzZvq435JnGatEyYwdK:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl09.gs01.gridserver.com ([64.13.192.18])
+	by mailout01.c01 with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1lKOtL-0000Fw-8s; Thu, 11 Mar 2021 09:14:33 -0800
+Received: from [90.214.100.168] (port=63237 helo=DESKTOPVL3QK79)
+	by cl09.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1lKOt8-0004vB-4n; Thu, 11 Mar 2021 09:14:31 -0800
+From: <chris@indigometrics.com>
+To: "'Wilson, David J'" <djwilson@Bechtel.com>
+Cc: "'josh'" <josh@josh.is>,
+	"'Nikulin, Misha'" <mnikulin@bechtel.com>
+References: <010f0178220dbf82-83cf20b7-2c6a-4d66-9e6f-4df29a138d0b-000000@us-east-2.amazonses.com> <MN2PR20MB33368C2658DF2A8F9412B675D3909@MN2PR20MB3336.namprd20.prod.outlook.com> <DM6PR20MB36148B5E9D247020728DDDD3CA909@DM6PR20MB3614.namprd20.prod.outlook.com> <039301d71697$8ec5a7f0$ac50f7d0$@indigometrics.com> <DM6PR20MB3614C82F89830136A4FF3F3DCA909@DM6PR20MB3614.namprd20.prod.outlook.com>
+In-Reply-To: <DM6PR20MB3614C82F89830136A4FF3F3DCA909@DM6PR20MB3614.namprd20.prod.outlook.com>
+Subject: RE: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to peer feedback
+Date: Thu, 11 Mar 2021 17:14:17 -0000
+Message-ID: <03da01d71699$f8eda450$eac8ecf0$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/related;
+	boundary="----=_NextPart_000_03DB_01D71699.F8F01550"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQMSbWlzvFzRpstT4mK1PyD5xYyNegD66q9lAsHHQc4BxGZr6QGdF5u7p89mMXA=
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=0.0 tests=ALL_TRUSTED, HTML_MESSAGE, URIBL_BLOCKED version=3.4.2
+	cmae=_CMAETAG_"
+X-Spam-Level: *
+X-Spam_score: 0.0
+X-Spam_score_int: 0
+X-CMAE-Envelope: MS4xfGebENDhkxSpJpXvq6qGPZXalfBZlJPJsQqaPqC42eHdj4MFB80R1yxULmDNINUa4a1H5RoqpeMCMlonVmeLFlpOXqWnkMoTttJ30Mu2f0H1CDuELGY3
+ AmeOWz5xj/MD9uBZrbges4SuFdBS9vXtXMvy9TfFtABXmyninb8XXIW+nc5n/vHg0OOXaHsUGmsZOdchHR3h0ilvV7AmLBI64MC2YcrVVLyDOLO5/MYz7KvW
+ WWuMKWsYVmtEcIrnoX7VyA==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_03DB_01D71699.F8F01550
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_001_03DC_01D71699.F8F01550"
+
+
+------=_NextPart_001_03DC_01D71699.F8F01550
+Content-Type: text/plain;
+	charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+
+Thanks David, we are awaiting a reply from mjfernan but I am thinking that
+he didn't have an internet connection - if it was a problem with your SSO he
+would be seeing the login screen or the Microsoft error screen.
+
+MS Graph was a good add - but we are still getting a slightly high % of "I
+do not interact" at around 40% (usually around 30% in week 1) - we'll be
+able to solve some of that with the SAP download and hopefully reflect your
+org structure better. In the interim we will increase the MSGraph weighting
+in the pair algorithm to try and get us a better result from next week and
+to tide us over until SAP arrives.
+
+We'll give it a few hours and then send you a summary of the support emails
+we are getting - only 4 so far.
+
+Chris
+
+ 
+
+From: Wilson, David J <djwilson@Bechtel.com> 
+Sent: 11 March 2021 17:08
+To: chris@indigometrics.com
+Cc: josh <josh@josh.is>; Nikulin, Misha <mnikulin@bechtel.com>
+Subject: RE: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to
+peer feedback
+
+ 
+
+Just sent a note to encourage them to do so. 
+
+ 
+
+Think it may be an issue with password updates and our SSO.
+
+ 
+
+On a positive note, looks like the MS graph integration is working - per
+Misha's review list 
+
+ 
+
+Cheers,
+
+David 
+
+ 
+
+ 
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+From: chris@indigometrics.com <mailto:chris@indigometrics.com>
+<chris@indigometrics.com <mailto:chris@indigometrics.com> > 
+Sent: Thursday, March 11, 2021 11:57 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> >
+Cc: josh <josh@josh.is <mailto:josh@josh.is> >; Nikulin, Misha
+<mnikulin@bechtel.com <mailto:mnikulin@bechtel.com> >
+Subject: RE: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to
+peer feedback
+
+ 
+
+David, I think the link must be fine - we have had 60 reviews completed
+already. We'll reach out to that email address via our
+contact@indigometrics.com <mailto:contact@indigometrics.com>  support line
+and see if we can figure out what is up.
+
+Chris
+
+ 
+
+From: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> > 
+Sent: 11 March 2021 16:55
+To: chris@indigometrics.com <mailto:chris@indigometrics.com> 
+Cc: josh <josh@josh.is <mailto:josh@josh.is> >; Nikulin, Misha
+<mnikulin@bechtel.com <mailto:mnikulin@bechtel.com> >
+Subject: FW: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to
+peer feedback
+
+ 
+
+Something not working with the link? 
+
+ 
+
+Cheers,
+
+David 
+
+ 
+
+ 
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+From: Fernandes, Mark <mjfernan@bechtel.com <mailto:mjfernan@bechtel.com> > 
+Sent: Thursday, March 11, 2021 11:51 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> >
+Cc: Bradford, Jim <jebradfo@Bechtel.com <mailto:jebradfo@Bechtel.com> >
+Subject: FW: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to
+peer feedback
+
+ 
+
+Hi David, 
+
+Got the below email but the link for Indigo metrics did not work.
+
+ 
+
+
+
+ 
+
+Regards, 
+
+Mark
+
+ 
+
+
+
+
+Mark Fernandes, PE | Startup Automation Manager
+
+Bechtel | 12011 Sunset Hills Road, Suite 110, Reston, VA 20190 | 10-B040
+
+T: +1 571 392 6697 | M: +1 832 258 3356 | E:  <mailto:mjfernan@bechtel.com>
+mjfernan@bechtel.com
+
+ 
+
+ 
+
+From: contact@indigometrics.com <mailto:contact@indigometrics.com>
+<contact@indigometrics.com <mailto:contact@indigometrics.com> > 
+Sent: Thursday, March 11, 2021 11:10 AM
+To: Fernandes, Mark <mjfernan@bechtel.com <mailto:mjfernan@bechtel.com> >
+Subject: [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to peer
+feedback
+
+ 
+
+Dear Mark James,
+
+As you may know, Bechtel is currently assessing the potential value of a
+corporate culture management platform called Indigometrics.
+The Indigometrics platform measures the quality of workplace behaviors that
+individuals have demonstrated by consolidating peer-to-peer feedback to
+produce a "Workplace Culture Score" for each participant. 
+
+You have been nominated by Kevin Edwards to participate in the Indigometrics
+pilot. 
+
+You will be asked about how well your colleagues exhibit specific actions
+associated with each dimension of the Bechtel Workplace Culture definition,
+as enumerated below:
+
+  1. Accountable
+  We are answerable for our actions, deliverables, and performance. We are
+dedicated.
+
+  2. Collaborate
+  We contribute to a positive culture that encourages collaboration,
+inclusion of people, and diversity of thought.
+
+  3. Communicate 
+  We engage openly and effectively with our customers, colleagues, partners,
+and communities to create long-term partnerships.
+
+  4. Customer Focus 
+  We bring our resources and expertise to help our internal and external
+customers achieve their project and performance goals. 
+
+  5. Problem Solve 
+  We effectively combine expertise, tools, and technology to deliver timely,
+thought-out solutions.
+
+  6. Role Model 
+  We contribute to Bechtel's success by supporting our colleagues, acting
+ethically, and striving for personal excellence, committing to and living
+our VV&Cs.
+
+https://bechtel.indigometrics.com/
+<https://nam10.safelinks.protection.outlook.com/?url=https%3A%2F%2Fbechtel.i
+ndigometrics.com%2F&data=04%7C01%7Cdjwilson%40bechtel.com%7C761f1946977440f6
+8d1d08d8e4aee011%7C22d635a339304779a82d155e2d13b75e%7C0%7C0%7C63751078702454
+1685%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1
+haWwiLCJXVCI6Mn0%3D%7C1000&sdata=QzQggXpD5euFVdOzXMA9RELZy3C10JQ9uQEw8ocjK98
+%3D&reserved=0> 
+
+If you have any questions, or you would prefer not to participate, please do
+not hesitate to contact contact@indigometrics.com
+<mailto:contact@indigometrics.com> .
+
+Thank you
+Indigometrics for Kevin Edwards
+
+ 
+
+ 
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+
+------=_NextPart_001_03DC_01D71699.F8F01550
+Content-Type: text/html;
+	charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; =
+charset=3Dus-ascii"><meta name=3DGenerator content=3D"Microsoft Word 15 =
+(filtered medium)"><!--[if !mso]><style>v\:* =
+{behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Trebuchet MS";
+	panose-1:2 11 6 3 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#3D7A96;
+	text-decoration:none none;}
+p.msipfooter69083fef, li.msipfooter69083fef, div.msipfooter69083fef
+	{mso-style-name:msipfooter69083fef;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle22
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB =
+link=3D"#3D7A96" vlink=3D"#7D9AB4" style=3D'word-wrap:break-word'><div =
+class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Thanks David, we are awaiting a =
+reply from mjfernan but I am thinking that he didn&#8217;t have an =
+internet connection &#8211; if it was a problem with your SSO he would =
+be seeing the login screen or the Microsoft error =
+screen.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>MS Graph was a good add &#8211; but =
+we are still getting a slightly high % of &#8220;I do not =
+interact&#8221; at around 40% (usually around 30% in week 1) - =
+we&#8217;ll be able to solve some of that with the SAP download and =
+hopefully reflect your org structure better. In the interim we will =
+increase the MSGraph weighting in the pair algorithm to try and get us a =
+better result from next week and to tide us over until SAP =
+arrives.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>We&#8217;ll give it a few hours and =
+then send you a summary of the support emails we are getting &#8211; =
+only 4 so far.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Chris<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><div><di=
+v style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Wilson, David J =
+&lt;djwilson@Bechtel.com&gt; <br><b>Sent:</b> 11 March 2021 =
+17:08<br><b>To:</b> chris@indigometrics.com<br><b>Cc:</b> josh =
+&lt;josh@josh.is&gt;; Nikulin, Misha =
+&lt;mnikulin@bechtel.com&gt;<br><b>Subject:</b> RE: [*EXTERNAL*] Bechtel =
+Workplace Culture - introducing peer to peer =
+feedback<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal><span =
+lang=3DEN-US>Just sent a note to encourage them to do so. =
+<o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US>Think it may be an issue with password updates and our =
+SSO.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US>On a positive note, looks like the MS graph integration is =
+working &#8211; per Misha&#8217;s review list <o:p></o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US><o:p>&nbsp;</o:p></span></p><div><p =
+class=3DMsoNormal><span lang=3DEN-US>Cheers,<o:p></o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US>David =
+<o:p></o:p></span></p></div><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3Dmsipfooter69083fef =
+align=3Dcenter style=3D'margin:0cm;text-align:center'><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> <a =
+href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a> =
+&lt;<a =
+href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a>&gt; =
+<br><b>Sent:</b> Thursday, March 11, 2021 11:57 AM<br><b>To:</b> Wilson, =
+David J &lt;<a =
+href=3D"mailto:djwilson@Bechtel.com">djwilson@Bechtel.com</a>&gt;<br><b>C=
+c:</b> josh &lt;<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;; =
+Nikulin, Misha &lt;<a =
+href=3D"mailto:mnikulin@bechtel.com">mnikulin@bechtel.com</a>&gt;<br><b>S=
+ubject:</b> RE: [*EXTERNAL*] Bechtel Workplace Culture - introducing =
+peer to peer feedback<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><span lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal>David, I think the link must be fine &#8211; we have =
+had 60 reviews completed already. We&#8217;ll reach out to that email =
+address via our <a =
+href=3D"mailto:contact@indigometrics.com">contact@indigometrics.com</a> =
+support line and see if we can figure out what is up.<o:p></o:p></p><p =
+class=3DMsoNormal>Chris<o:p></o:p></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@Bechtel.com">djwilson@Bechtel.com</a>&gt; =
+<br><b>Sent:</b> 11 March 2021 16:55<br><b>To:</b> <a =
+href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a><br><b=
+>Cc:</b> josh &lt;<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;; =
+Nikulin, Misha &lt;<a =
+href=3D"mailto:mnikulin@bechtel.com">mnikulin@bechtel.com</a>&gt;<br><b>S=
+ubject:</b> FW: [*EXTERNAL*] Bechtel Workplace Culture - introducing =
+peer to peer feedback<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><p class=3DMsoNormal><span =
+lang=3DEN-US>Something not working with the link? =
+<o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><div><p class=3DMsoNormal><span =
+lang=3DEN-US>Cheers,<o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US>David <o:p></o:p></span></p></div><p =
+class=3DMsoNormal><span lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p =
+class=3Dmsipfooter69083fef align=3Dcenter =
+style=3D'margin:0cm;text-align:center'><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><div><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Fernandes, Mark &lt;<a =
+href=3D"mailto:mjfernan@bechtel.com">mjfernan@bechtel.com</a>&gt; =
+<br><b>Sent:</b> Thursday, March 11, 2021 11:51 AM<br><b>To:</b> Wilson, =
+David J &lt;<a =
+href=3D"mailto:djwilson@Bechtel.com">djwilson@Bechtel.com</a>&gt;<br><b>C=
+c:</b> Bradford, Jim &lt;<a =
+href=3D"mailto:jebradfo@Bechtel.com">jebradfo@Bechtel.com</a>&gt;<br><b>S=
+ubject:</b> FW: [*EXTERNAL*] Bechtel Workplace Culture - introducing =
+peer to peer feedback<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal><span lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'>Hi David, =
+<o:p></o:p></span></p><p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'>Got the below email but the =
+link for Indigo metrics did not work.<o:p></o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US><img border=3D0 width=3D702 =
+height=3D370 style=3D'width:7.3125in;height:3.8541in' =
+id=3D"Picture_x0020_2" =
+src=3D"cid:image001.jpg@01D71699.B9F900F0"></span><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p></o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'>Regards, =
+<o:p></o:p></span></p><p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'>Mark<o:p></o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p>&nbsp;</o:p></span></p><tab=
+le class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+style=3D'border-collapse:collapse'><tr style=3D'height:41.25pt'><td =
+width=3D68 valign=3Dtop style=3D'width:50.7pt;padding:0cm 5.4pt 0cm =
+5.4pt;height:41.25pt'><p class=3DMsoNormal =
+style=3D'line-height:105%'><span =
+style=3D'font-family:"Arial",sans-serif;color:olive'><img border=3D0 =
+width=3D53 height=3D44 style=3D'width:.552in;height:.4583in' =
+id=3D"Picture_x0020_1" src=3D"cid:image002.png@01D71699.B9F900F0" =
+alt=3DBechtel></span><span lang=3DEN-AU =
+style=3D'font-size:12.0pt;line-height:105%;font-family:"Arial",sans-serif=
+;color:olive;mso-fareast-language:EN-AU'><o:p></o:p></span></p></td><td =
+width=3D501 valign=3Dtop style=3D'width:375.4pt;padding:0cm 5.4pt 0cm =
+5.4pt;height:41.25pt'><p class=3DMsoNormal =
+style=3D'line-height:105%'><b><span =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:navy'>Mark Fernandes, PE | Startup Automation =
+Manager</span></b><b><span lang=3DEN-AU =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:navy;mso-fareast-language:EN-AU'><o:p></o:p></span><=
+/b></p><p class=3DMsoNormal style=3D'line-height:105%'><b><span =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:gray'>Bechtel </span></b><span =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:gray'>| 12011 Sunset Hills Road, Suite 110, Reston, =
+VA 20190 | 10-B040<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'line-height:105%'><span =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:gray'>T: +1 571 392 6697 | M: +1 832 258 3356 | =
+E:</span><span =
+style=3D'font-size:8.0pt;line-height:105%;font-family:"Trebuchet =
+MS",sans-serif;color:olive'> <a =
+href=3D"mailto:mjfernan@bechtel.com"><u><span =
+style=3D'color:blue'>mjfernan@bechtel.com</span></u></a><o:p></o:p></span=
+></p></td></tr></table><p class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif'><o:p>&nbsp;</o:p></span></p><div=
+ style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> <a =
+href=3D"mailto:contact@indigometrics.com">contact@indigometrics.com</a> =
+&lt;<a =
+href=3D"mailto:contact@indigometrics.com">contact@indigometrics.com</a>&g=
+t; <br><b>Sent:</b> Thursday, March 11, 2021 11:10 AM<br><b>To:</b> =
+Fernandes, Mark &lt;<a =
+href=3D"mailto:mjfernan@bechtel.com">mjfernan@bechtel.com</a>&gt;<br><b>S=
+ubject:</b> [*EXTERNAL*] Bechtel Workplace Culture - introducing peer to =
+peer feedback<o:p></o:p></span></p></div><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p><span lang=3DEN-US>Dear Mark =
+James,<br><br>As you may know, Bechtel is currently assessing the =
+potential value of a corporate culture management platform called =
+Indigometrics.<br>The Indigometrics platform measures the quality of =
+workplace behaviors that individuals have demonstrated by consolidating =
+peer-to-peer feedback to produce a &#8220;Workplace Culture Score&#8221; =
+for each participant. <br><br>You have been nominated by Kevin Edwards =
+to participate in the Indigometrics pilot. <br><br>You will be asked =
+about how well your colleagues exhibit specific actions associated with =
+each dimension of the Bechtel Workplace Culture definition, as =
+enumerated below:<br><br><b>&nbsp; 1. Accountable</b><br>&nbsp; We are =
+answerable for our actions, deliverables, and performance. We are =
+dedicated.<br><br><b>&nbsp; 2. Collaborate</b><br>&nbsp; We contribute =
+to a positive culture that encourages collaboration, inclusion of =
+people, and diversity of thought.<br><br><b>&nbsp; 3. Communicate</b> =
+<br>&nbsp; We engage openly and effectively with our customers, =
+colleagues, partners, and communities to create long-term =
+partnerships.<br><br><b>&nbsp; 4. Customer Focus</b> <br>&nbsp; We bring =
+our resources and expertise to help our internal and external customers =
+achieve their project and performance goals. <br><br><b>&nbsp; 5. =
+Problem Solve</b> <br>&nbsp; We effectively combine expertise, tools, =
+and technology to deliver timely, thought-out =
+solutions.<br><br><b>&nbsp; 6. Role Model</b> <br>&nbsp; We contribute =
+to Bechtel&#8217;s success by supporting our colleagues, acting =
+ethically, and striving for personal excellence, committing to and =
+living our VV&amp;Cs.<br><br><a =
+href=3D"https://nam10.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F=
+%2Fbechtel.indigometrics.com%2F&amp;data=3D04%7C01%7Cdjwilson%40bechtel.c=
+om%7C761f1946977440f68d1d08d8e4aee011%7C22d635a339304779a82d155e2d13b75e%=
+7C0%7C0%7C637510787024541685%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAi=
+LCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DQzQggXp=
+D5euFVdOzXMA9RELZy3C10JQ9uQEw8ocjK98%3D&amp;reserved=3D0">https://bechtel=
+.indigometrics.com/</a><br><br>If you have any questions, or you would =
+prefer not to participate, please do not hesitate to contact <a =
+href=3D"mailto:contact@indigometrics.com">contact@indigometrics.com</a>.<=
+br><br>Thank you<br>Indigometrics for Kevin =
+Edwards<o:p></o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3DMsoNormal><span =
+lang=3DEN-US><o:p>&nbsp;</o:p></span></p><p class=3Dmsipfooter69083fef =
+align=3Dcenter style=3D'margin:0cm;text-align:center'><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p></div></body></html>
+------=_NextPart_001_03DC_01D71699.F8F01550--
+
+------=_NextPart_000_03DB_01D71699.F8F01550
+Content-Type: image/jpeg;
+	name="image001.jpg"
+Content-Transfer-Encoding: base64
+Content-ID: <image001.jpg@01D71699.B9F900F0>
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAoHBwgHBgoICAgLCgoLDhgQDg0NDh0VFhEYIx8lJCIf
+IiEmKzcvJik0KSEiMEExNDk7Pj4+JS5ESUM8SDc9Pjv/2wBDAQoLCw4NDhwQEBw7KCIoOzs7Ozs7
+Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozv/wAARCAFyAr4DASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwDvqw18
+URy/amt7OSaO1meGRlJyGT7wxtx+vcVufnWBbeEre0uLyaKfLXc0spaSAM0fmY3BTnpxxxQBus37
+ssPTIrbvbn7FYvOqodm0AM21RkgZJ7AZyaxGXEe0A9MCrvibQR4j0V9ONwbcl0kDlN6kqc4ZT95T
+3FAEmmas17cS2s8Hkzx5ZShLJImcBlYgZ7fmKsSanZw3EsE1xHE8UYkfewXCnPP6Gs7w74efQLS3
+tTdi4jtoWijOwqTufcc8kAA8ADoKvXWj2V7K8txGXZ1CkbzjjODjpkZPPvQASaxp8UyxPdRhmzj5
+hjgA4z64IpYdXsLgxCC4SUygFQhzgFSwJHbIB60g0iy7xswBJClzgZIJwO2SoNMj0PT4m3JEwbIO
+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
+UUANKswwSCPQrTREM9E/74qSigDG0/U/Jslhhh8zE0sZkzhFkLttU/U4HHTIp+nwXM0q3zSWwiuE
+3SRJCwJb15Y4I5B9a0Z7aO4t3gcEI/XZwR3yPfPP1otraO1hEUe4jJJLNkkk5JJ9ySaAHCPacrtB
+9kpcP/eH/fNOooAbh/7w/wC+aMP/AHh/3zTqKAG4f+8P++aMP/eH/fNOooAbh/7w/wC+aMP/AHh/
+3zTqKAG4f+8P++aMP/eH/fNOooAbh/7w/wC+aMP/AHh/3zTqKAG4f+8P++aMP/eH/fNOooAbh/7w
+/wC+aMP/AHh/3zTqKAG4f+8P++aMP/eH/fNOooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAoorF8WeIl8M6G98IDcXDusNtAD/rZW+6Pp3/CgDZd1jRnkYIiglmY4AA6kmuOn
++KOgrO6WVtqepRxnDz2dqXjH48ZqrL4K8UeIbNl8R+LJIkuMefYWcIEYXOdmc5P1/nXbWNnbabZx
+WdlCtvbwqFSNBgAUAZmkeMPD+uW6zWWq25LHb5UriORT6FTzWzWBqngXwvrM0s99otvJPN9+VQUc
+n1yCOaxNEa98GeLYPC9zeS3mk6jGz6bLMdzwuvLRE9xjp+FAHdUUUUAFFFFABRRRQAUUUUAFFFFA
+BRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAF
+FFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUU
+UUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABXJfEXT7250W01HT4WuJ9JvY7zyAMmRV+8AP
+Xv8Aga62mvIkSNJI4REBZmY4CgdSaAMTSPG3hzXI4TZ6tbiWYgC3lkCShj/DtPOfpW7XASx+AfiD
+LdWemyQR6mv7xbuCAxygg/fU4G4ZxmrEUnxM0tBaG10nWVQYS7eUxMR2LDjmgDtwCfWuF1S4j8Rf
+E/R7GxYSpoQkubyVTlUZhhUz6+3+FOXwb4l1rfP4j8V3VsZTzZ6U3lxIvpk8n6102heHtL8N2P2P
+S7UQxk7nYnLyN6s3c0AaVFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
+RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFF
+ABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUA
+FFFFABRRRQAVyHiPxfpKa8ngu8gujJqcXktNGBtTzAVHufr2rr6gksbOW7jvJLSF7mIERzNGC6A+
+h6igDkPDHgG80XWLW/1HWEvV063a2so47cR7UPdj3PNdtRRQAUUUUAFFFFABRRRQAUUUUAFFFFAB
+RRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFF
+FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUU
+UAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQ
+AUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFAB
+RRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFF
+FFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABWXPrsNv4ns9BaFzJd27zrLuA
+VQpxgitSuX13whD4g8WafqGoQQXOnW1rJFJDITuLk5Ugen40AW9J8Xabqem/bppEsFNxLbotxMoL
+mM8kflmtCDWdLunZLfUrWZkiEzLHOrFUIyGOD0x3rjLH4e3lvaaPazGyeHT9UmupI8llMb52qARy
+Rx1pmhfDu/0k6ezPZBoNPuredoycyPKxKn7vIAIBz6UAdkPEWhlN/wDbNht+Xn7SmPm+7374OKln
+1fTLa5+zXGo2sU+VHlvMqt833eCe/avPf+FXXw077OP7O80aJ9hDYP8Ar/M3F87em3jPWreu/Dy/
+1V9SdWsi9zYWttC0mSUaNlLnOOAQMcdaAO8s76z1CIzWV1DcxBipeGQOAR1GR3qeuW0jw9qmhXOs
+S2A09Vv76OaKNgwVIgAGGFAw2M47Vrv/AG7577P7P8n7Uu3O/d9nx82e3mZ6dsUAWb7UrDS4RPqF
+7b2cROA88oQE/U1GNa0o3yWA1O0N24DJB5672BGQQuc8jmsTxP4d1DUNb07WNPWwuXs45IjaaiD5
+RD/xggH5uMdOlY974E1q88UW2pvd2LQW99b3KKAyMkaD5kCgY7DBOT05HcA6/wDt/S33x219bXVw
+Edkt4Z1Z5NucgDOc5GKo2fjPSrrVrXR5Wa11G4tVnNvMQDGWAIiPP+swc7cdBmuf0z4f3djcaRct
+9i86z1We7mkTO543ztUHHJHoeK2rrw9ef8J9b+IbZLKSA2n2a4WYESJ827emBy3bnHFAG1catptp
+eR2dxf20NzLjZDJKqu2TgYBOTk8Uxdc0hjchdUs2NoM3AFwp8kerc8fjWReeF5L3xs2tSmH7P/Zh
+tIzjMkUu8neuRgYB65zXK2Hw11qysZoI7uyiuYbZoLW7V2bflw2HjK4AIB5+YgnPagD0FNc0mSwb
+UE1SzazQ4a4E6+WD6Fs4zWW3jPTl8RJprTWy2kliLtL43CiNsybAo7HJ75rl7f4c6vaRvLHLp0ki
+akl7Fays7QyAJtKuSCcjkg81b1vwLqWtSz3Dx6XFJLo32NI4wdkUxk3ZX5eFwSM9fagDqvEHiTTf
+DNnHdalNsSWQRxqCMsT9T0HUnsKqaf4wsL7X7/S2kt4ktjALec3AxdGRN42jvx6ZzUPifwzca34V
+tdOha3F3aNDIhmBKMUxlc4yAcdaw7/wDqeoXt/euunRTXU9jKgQnEQiH7xQduQCQMeuOcUAdVF4l
+sUhuptSubKwjgu3tleS8Qh9vcn+E/wCyeRWjPfWdrbpcXF1DDC5ULJI4VWLfdAJ9e1cBf/D7WJhd
+PbnT/tEup3N3BcPK4aBZNoHG0huhypGOnNXfiLazx+A7K1kaKedLu1jZvLwjsDgnaOi57elAHVNr
++jpZG+fVrJbXzPL883C7N/8Ad3Zxn2pZ9c0m2ggnn1O0iiuf9Q7zqFl/3TnmuK/4QHWvsc2LrT4J
+LvUvtVzaRKywKm3btVgNwPc4xnpkVgX2gf8ACHWliupX2lSTjTJ7U21xFJIGDSMwaEBeW+YDBx9a
+APU5Nd0iKO3kk1WyRLr/AFDNcKBL/u881fryaz+HerX+kaXcEQMs2lx209rdSPE0IB3cFQeuckcc
+16tDEsEEcK5KxoFGTk4AxQA+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiig
+AooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKAC
+iiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKrvqFnFci2e5jWYjIjLYY/hQBYoowfQ0
+uD6GgBKKXB9DSMdvJ4Gcc0AFFA+YArkgjINLg+hoASilwfQ0YPoaAEooY7QCeMnAz60UAFFFFABR
+RRQAUUUUAFHXqM0UUAFH4Zx04oooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoooo
+AKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigA
+ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKpX+mrfsN8hCbNhXHUb1b1/
+2cfjV2igDKstEez1GS6F47o8XlrHz8gzwBzjAHSqh8MzSMjSXyAiMozRxsrMcMCc7u+7J9wK6Cig
+DEn8NiRJ1jvHhMgZY2UH90p3/KOenzj/AL5H4NPh2RokjkuIpVTyynmRsShVgcA7vunH4Gt2igDB
+h8MlZt0135qcbhtYGTg/fO7Bx246VNeaA140DHUJ4zHEsb7Sf3hGQW68Eqzj/gQP8IrYooAybPRZ
+ra9FxJdiQCZ5NuzAAZQMAZwORnPvUT+HCbpZ1u2A2ShkJYBi5JzkH3A/4CPStuigDBXw04kkke7W
+Xc0LKskZ2qY9vG0HGPlOPTJrdXcFG45bHJAwCaWigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACua1+51Ow1Q3NrdXLwRWE9ybRY1KO8ezapO0sN249Dnjiuloz9aAOZPiHVId
+ZOl3NraI6263LzqXaNUJ249c7+Bx05rpvzqKK1t4J5riKGNJpyDLIqgM+BgZPfAqWgAooooAKKKK
+ACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooA
+KKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAo
+oooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqBblmvntfs0wV
+YhJ55A8tiSRtBzncMZ6dDU9FAFHVLxrRIAJooBNLsM0wyqfKTzyOSRgZPes+bxI9lETc2hlJlaON
+omADgNtzg/d7fX2reIBBBGQexFBAIIIBB6gigDDk8Qqbl0SMGNUl5DAsGQgHcP4T1wOp4pJ/E628
+XmPZMMltu6ZVDAb8nJ6H92cD3FbmBycDJ68daiurSC9gMFxGJI26qSQD+VAGfe6vc2+ow2sNtHIJ
+EV/ml2sc788Y7bRz7+9JaeIoLuG+n+zyxxWa7mZiMsMZ6dv8mtbA44GR04pcAEnAyepxQBhr4lD3
+ZtY7RZJMqq+XcqwJJT24X94Oe+DSS+KUitmuDYSlOAnzjknZnPoB5g59jW4FUdFA+gpSARggEHti
+gDDuPEQXaYoU2iQo+6YCRCELfd9eOOeetJF4nWYvtsmYIGZisynaoxnOOjc/d7VubVznaM/SlwPT
+qc9KADpRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQA
+UUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABR
+RRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFQLcs189r9mmCrEJPPI
+HlsSSNoOc7hjPToanooAqX9ybdYgJEhEr7TLIMqnBPt1xjrVKTXGtYyZrYyfvCqNGcBwGxnnpWpN
+CZlC+dJHjrsxz9cg1EbNiMG9uiPcr/8AE1Sa6kNS6FJ9ZBmZVQFAsnIbkMp7+nfA70S68IY9z2rA
+c7cyAZA3fkfkOB7irv2Juf8ATbrnryv/AMTUdxpa3UJhmu7p0PVdyjP/AI7RoK0iK61KaG9jhjgR
+w6q3zPgnO7PH/ARzSQ63HNBdzLbyBbVdx3EDdxn8KtfYm/5/br81/wDiaa+n+YjI93clWGGBK8/+
+O0aWC0im2vqImk+zfKp2ljOoXOWH3vT5Tz7gU6LXopXCi2lyzhBg5yx6fhjPPYqw7Vc+xtjH225x
+6ZT/AOJpjaaGkWQ3l0XXO07l4z/wGj3Q98in1dYr1rNIGkkGP4sDpnnj/Gm2urm8uZEiiAVIi4BY
+biRjGR261a+xt1+23Wfqv/xNH2Nv+f26/Nf/AImjQPeM1fELx2huJ7QENjZ5cmQchM8/V+vtU93q
+ktvMreQWiMIfGRuJO449B939atfYmxj7Zc49Mr/8TS/Y2/5/br/vpf8A4mjQLSKD+IRG8ytYykxS
+eWcMPvf5B/yaSbX8gLDDh9of5+eCCRn36fnWh9jbOftt1n1yv/xNH2Jjz9tus/Vf/iad4h75ZPBo
+ooqDQKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACi
+iigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK
+KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAqBblmvntfs0wVYhJ55A8tiSRtBzncMZ6dDU9
+FAGfrF3PaQRtbqCzMckpuwApOSMjjjk+lRnXYydsUJlZQxbbIPlA3Z/9AP5itCaIygATSRY7xkc/
+mDUX2Nh/y+3X5r/8TVK1iGnfQpvrJyALV8s2EG8fMMsv4crUkGrrcXi2ohKMcgkuCQQCTx1xx1qx
+9jf/AJ/br/vpf/iaibSka4W4N1dGVFKq25eAevbFGgveKC61eFyr24UqcMcHkqP3mOemcAfjUs+v
+GOIEW2x3Xcu+QYwen1PtV/7I/wDz/XX/AH0v/wATR9jb/n9uvzX/AOJp3QWkZ58SRqCxtJCobG5H
+DYHU59CFDEj296nbUp5bKaSGERTxlFCSNnliOuPrVkWbDpe3Q/4Ev/xNH2Nv+f26/Nf/AImloFpG
+aPEBLyxC1YuquwycbSq5wfxyPyp3/CRAZU2b7lHJ8wbff5vTlDn0cehrQ+xMf+X26/NP/iaPsbYx
+9tusemV/+Jp6BaZSTWmmaErbERvJsLFwRnbng+nTmlu9Rmt7qVVkjZYmA8nb85GzcWBz2+mOKufY
+2/5/br81/wDiaPsTZz9tus+uV/8AiaWgWkUpPEEMcjxiEsUbBJcKDx2z39qH14RiPdasu/DAGUD5
+T/Nv9mrE+lJcoEmurl1DBsFl5Pv8vNS/Y2P/AC+3X5r/APE0/dFaZSk1rbIuYgIzu3YfLAhgOB36
+9qtWeoLdylAqjCBwVkDgg/Sn/YmGP9NueOnKf/E06G2MLFvtEz5HRyuP0ApaFLmuT0UUVJYUUUUA
+FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
+RQAUUUUAFFFFABRRRQAUUUUAFJkDqQPxpao3elpd3HnNKV4UbdueRnH8+lAF3IxnIx65pcj1/WqE
+emeVEIVlUxht43x5JOMHPODTW0aJsHzWVx0ZVA9Bz6nHBPfNAGjkev60gZTyGBHsazf7EjDKRcSb
+V6KRnH/1s9vepTpcZ5DKrFg52RgAkDGCPT2oAvUm5f7w/OqMWli3mWa3lKsv8LL8p4x0Hpzj61Gu
+iRp92c4xjlM98560AaQZScBgT7GlqpZafHZEsG3sV27ioBxkn+tW6ACiiigAooooAKKKKACiiigA
+ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACi
+iigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKK
+KACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoooo
+AKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigA
+ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACi
+iigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKjmhWdNrZBByrKcFT6igCSoIL21uZpIYL
+mOWWP76IwJXnHT6ginwQJbptXcSTlmY5LHuTWPdeHpru3aJ71U2lvKZIyCA0gchjnn7oHGKANssA
+Gbsv3j6UI6yIHRgykkZByOODWHL4dlZm8q9EIaTzGZUJdjsVTls5PQ/nV3T9LaxnkkMwkDrtxt5+
+8W9ffoPrQBoUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
+RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFF
+ABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUA
+FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
+RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFF
+ABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUA
+FFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAU
+UUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRR
+RQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQAUUUUAFFFFABRRRQB//9k=
+
+------=_NextPart_000_03DB_01D71699.F8F01550
+Content-Type: image/png;
+	name="image002.png"
+Content-Transfer-Encoding: base64
+Content-ID: <image002.png@01D71699.B9F900F0>
+
+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
+DjwAAAAASUVORK5CYII=
+
+------=_NextPart_000_03DB_01D71699.F8F01550--
+

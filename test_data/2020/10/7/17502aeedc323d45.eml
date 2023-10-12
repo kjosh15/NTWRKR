@@ -1,0 +1,550 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:7f02:0:0:0:0:0 with SMTP id a2csp423783ljd;
+        Wed, 7 Oct 2020 03:50:20 -0700 (PDT)
+X-Received: by 2002:aa7:d382:: with SMTP id x2mr2898925edq.108.1602067819912;
+        Wed, 07 Oct 2020 03:50:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1602067819; cv=none;
+        d=google.com; s=arc-20160816;
+        b=wXGdlprRWETEwwLmfWN1WxGtG12FMYi3JcbaKNFUAog8hZ2SrGU+75sUEK7MDcI5rP
+         XeWjt9GucuceZYMhJauOMftR9WOlvRxtGT6HsKtX/1oxEAtSIKRCARDWfcYYFVOyyb2z
+         JRfZH39lhNSyvKFPgjBSK0UNNB23xZzarGj2qygdgM+nDAgpjBi+lO7Qs/ajvu40Ar9o
+         m8y4LsDKuLFoVa+sevtnZ4hhb6jol0j6r9DAaMAC/354B2LXpdaQCKib1dhTbgevZZdd
+         nKqY3AxY2+DRspcy6UcEhX4sCBNmujhawPhYD7zmiowsehYZIzB40hZfxD6gzTQMTgen
+         8EuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:dkim-signature;
+        bh=9iM+eo73KIT14V2kD1VvW0bFS6M7jscptRf3g62QqMk=;
+        b=iyq0Ts6npioFu30beFL3+WRjtRijgwOIoJ3lEP0gKQOMOXSDV8WXexOiHV5nfKp8De
+         RiL578ynz1GGSwRegC03bacIpgNWQFBqR/0eHcuq84QRkqkkfRZWt6/CFd7/RI/B6i/L
+         z6fL6RIyGfB/tRCV0JfrzE1adPa/yj76eOtDXsPBISa81CZIsV1tcgpmPcmaItvey8dI
+         ypitpPxUoqYnPWsTpKpqbgWkGG3f/5R6G5k297bEi2WqDLLy1d5ynK5+6mEz7WlQ58ok
+         V3zp+b/7Gp3UnrhNOpjFu0B+laamGJHo15lw9xHCS8qgH23dg4LXn+nOfxUiKHTD2xr1
+         IIgw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@normative.com header.s=google header.b=HyEjKYB6;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of jon@normative.com) smtp.mailfrom=jon@normative.com
+Return-Path: <jon@normative.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id bw9sor912286ejb.91.2020.10.07.03.50.19
+        for <josh@josh.is>
+        (Google Transport Security);
+        Wed, 07 Oct 2020 03:50:19 -0700 (PDT)
+Received-SPF: neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of jon@normative.com) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@normative.com header.s=google header.b=HyEjKYB6;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of jon@normative.com) smtp.mailfrom=jon@normative.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=normative.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9iM+eo73KIT14V2kD1VvW0bFS6M7jscptRf3g62QqMk=;
+        b=HyEjKYB64RpL2yeKKU1dFx8dTvpfTSvIhdxrDkXASPMvm1zDPSNLDnkrOz022Jol0x
+         73EIyT1Ol6W5jlgtBBBa/HMO0/C6fC9X0YrFAPghhLegvN5Cice59Zcy1FiEnt32b8ss
+         6H8D8gCEXf1oDBWdhXQU645yVKbwTM+jQc6rA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9iM+eo73KIT14V2kD1VvW0bFS6M7jscptRf3g62QqMk=;
+        b=sm4nES0GrmyVd4K0bHOD0zP3TirOOTiPfaiX3YaVqqRG4kEykQCDaBjX8wMyu/rLkJ
+         eVCBcWlcE7MXZCN4h8jvA5xIMe7lFMUYapDPfflZrgnk/7u3/UPElaHpHUUFoOuvGTuD
+         AMv9b8Fi6rl+Xjcm6llmdtQwcOSw4bE671ttN4IxIlIuVNWGjuTTK+qbNVmPoCALe/ky
+         9Ya8Mrhkdg0lQfXQHwUVRPX9YgF4PJCSKGziL4CaGnxh7SV/ed/xZXL4cHXIIX/b5fi4
+         AAiSZPQhe0P28vQDd2F08IUkyJZni/YXysgelDNfFeKwJe5lBuwrY0wdlBN3sqyM3ztd
+         isqQ==
+X-Gm-Message-State: AOAM532ibflvlcPDWQEzyyRX99Q6YvMvcoABhutvhTqsDD5TVXhlwjhl
+	Bp/a8EiMVp5jOLIwEmYsAmXjntPPDiUx7ymGdNbcgQqF1eljLQ==
+X-Google-Smtp-Source: ABdhPJwB4xl5qiEz2S+F80npKoMHgD/3z5CdNpny8N4J7tn03BMT9r7ABG4qGjW5TW8EjLYaXtivWN2C4pORgljtnhA=
+X-Received: by 2002:a17:907:42a6:: with SMTP id nf6mr2742871ejb.69.1602067818704;
+ Wed, 07 Oct 2020 03:50:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <CACNgykP7V0fe5mMH1No-NxJ1D+X5G9adyb12GfRdKSff+2RPkQ@mail.gmail.com>
+ <CADb=gQTSqcRCrQt=5BSf-FpV6N3=1QPvUbaEge+mepwzgaQ8Cg@mail.gmail.com>
+ <CACNgykPPXzBXRA-xHeC-=ExgN6E3P2csZEk46XBh442_Uyf4FA@mail.gmail.com>
+ <CACNgykPv9r14GxD_u-xYvMugQtrJY3bRv=M0L3aXrrFomEGWTg@mail.gmail.com>
+ <CACNgykPAUEH=kTTxZt_PccGwGA1kyP3+vf+9=aEbr8SCrOYwNg@mail.gmail.com>
+ <kbqmuhkm.9e0fd7ad-0f72-4fbc-be95-5177e3a39fa4@we.are.superhuman.com>
+ <CACNgykMWKGag5FnrJ3KAiyTMS3pvro9P1OxJ=oSuNAMOt6MF3A@mail.gmail.com>
+ <CACNgykOXPV0ED_zyXAYQM4tmuJJDsw3DDZoLue=a0tHvmwwUjA@mail.gmail.com>
+ <CACNgykMyC45GGvJtE_YYcbhubL2EWo2cpbBG8q622cZ_GDQu9Q@mail.gmail.com>
+ <CACNgykOkYPusi_hTb5eFLMPUZpcCaovkbKwDtS+YwEhKrtG2Gw@mail.gmail.com>
+ <CADb=gQTsbmV8i=tTa6Dyh5D2PaEz9zvP5yj-bUyBWvZQ0QCe5A@mail.gmail.com>
+ <CACNgykNpZYX4O0ss7fV-kcPjeOsZVTobbYfQMvrtD8_ZVXoJDA@mail.gmail.com>
+ <CADb=gQSMsmoC3TSR+yz2Vgdamh_ux1x+fXST0yc+qWOBhG6VyQ@mail.gmail.com>
+ <CACNgykP7gGxeug+bM==2LaAgAd7_tg30iM1iU9PnM4sPoSM9YA@mail.gmail.com> <CACNgykMhojbqds3++oypoLVxGna5Z8HRuewA90MOC29dqrPMqw@mail.gmail.com>
+In-Reply-To: <CACNgykMhojbqds3++oypoLVxGna5Z8HRuewA90MOC29dqrPMqw@mail.gmail.com>
+From: Jon Tirmandi <jon@normative.com>
+Date: Wed, 7 Oct 2020 06:50:07 -0400
+Message-ID: <CADb=gQR-FxRkpKn7U=YqUQMQ6ibbaY1uJJ6Se6c42QkP5uc1gQ@mail.gmail.com>
+Subject: Re: Updates?
+To: Josh Klein <josh@josh.is>
+Cc: Matthew Milan <matthew@normative.com>
+Content-Type: multipart/alternative; boundary="0000000000003d910505b1127b60"
+
+--0000000000003d910505b1127b60
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hey Josh,
+
+Yes, thanks for the chat.  Matthew/Josh since one of you is in Iceland and
+the other in BC time zones may make finding meeting times a little more
+challenging for us. How does Thurs Oct 15 at 10AM Eastern work for everyone
+to regroup?
+
+Jon
+
+On Tue, Oct 6, 2020 at 11:01 AM Josh Klein <josh@josh.is> wrote:
+
+> Jon,
+>
+> Good talking yesterday - sounds like positive signs all around. Let me
+> know when you and Matt have a moment next week to reconnect and
+> discuss further!
+>
+> All best,
+> Josh
+>
+> =E1=90=A7
+>
+> On Thu, Oct 1, 2020 at 11:54 AM Josh Klein <josh@josh.is> wrote:
+>
+>> Just sent an invite; if we need more time could you do 10am EST?
+>>
+>> best,
+>> Josh
+>> =E1=90=A7
+>>
+>> On Wed, Sep 30, 2020 at 8:36 PM Jon Tirmandi <jon@normative.com> wrote:
+>>
+>>> Hey Josh,
+>>>
+>>> The link is not working for me. I believe you're 4 hours ahead of us.
+>>> How's Monday at 10:30 ET?
+>>>
+>>> Jon
+>>>
+>>>
+>>>
+>>> On Wed, Sep 30, 2020 at 1:20 PM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> Iceland is good so far - been getting my Wim Hoff running on. Next wee=
+k
+>>>> looks good; I've got times listed here <https://josh.is/scheduling>,
+>>>> or suggest something that works for you!
+>>>>
+>>>> best,
+>>>> Josh
+>>>> =E1=90=A7
+>>>>
+>>>> On Wed, Sep 30, 2020 at 4:07 PM Jon Tirmandi <jon@normative.com> wrote=
+:
+>>>>
+>>>>> Hey Josh,
+>>>>>
+>>>>> How's Iceland treating you? Let's get together. There may be
+>>>>> opportunities to collaborate.  How's next week look for you?
+>>>>>
+>>>>> Jon
+>>>>>
+>>>>> On Wed, Sep 23, 2020 at 12:53 PM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> It's been a minute - my family relocated to Iceland for the interim,
+>>>>>> where I'm getting a pretty spectacular view of both the EU and US ma=
+rkets.
+>>>>>>
+>>>>>> Was curious how things are going on your end and if there's any
+>>>>>> potential for collaboration; I've been sitting on my retainer work b=
+ut the
+>>>>>> slowdown in corporate activity is starting to look like it's passing=
+ and
+>>>>>> I'm eager to dig into it. Let me know if it's worth a call to compar=
+e notes!
+>>>>>>
+>>>>>> All best wishes,
+>>>>>> Josh
+>>>>>>
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Wed, Jul 8, 2020 at 1:01 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>
+>>>>>>> Just checking in. Still interested in the program, especially as
+>>>>>>> different borders are adopting new measures!
+>>>>>>>
+>>>>>>> - J
+>>>>>>> =E1=90=A7
+>>>>>>>
+>>>>>>> On Wed, Jul 1, 2020 at 12:28 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> How's that pivot going? Been interesting watching other airports
+>>>>>>>> look to testing - these are interesting times!!
+>>>>>>>>
+>>>>>>>> - J
+>>>>>>>> =E1=90=A7
+>>>>>>>>
+>>>>>>>> On Mon, Jun 22, 2020 at 4:28 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>
+>>>>>>>>> Got it. I've developed a number of other connections that might b=
+e
+>>>>>>>>> useful to bring in, so do keep me posted!
+>>>>>>>>>
+>>>>>>>>> All best,
+>>>>>>>>> Josh
+>>>>>>>>> =E1=90=A7
+>>>>>>>>>
+>>>>>>>>> On Mon, Jun 22, 2020 at 3:08 PM Matthew Milan <
+>>>>>>>>> matthew@normative.com> wrote:
+>>>>>>>>>
+>>>>>>>>>> Hey Josh,
+>>>>>>>>>>
+>>>>>>>>>> Ellipsis is still working on Product-Market Fit - lots of good
+>>>>>>>>>> data, but there's a potential pivot in play which may be resolve=
+d later
+>>>>>>>>>> this week depending on conversations with potential customers. T=
+L;DR -
+>>>>>>>>>> product was slowed down a bit to get the market fit right.
+>>>>>>>>>>
+>>>>>>>>>> Matthew
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> =3D=3D=3D
+>>>>>>>>>> *Matthew Milan*
+>>>>>>>>>> *CEO, Normative *
+>>>>>>>>>> 416 844 0381
+>>>>>>>>>> www.normative.com
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On Mon, Jun 22, 2020 at 8:07 AM, Josh Klein <josh@josh.is> wrote=
+:
+>>>>>>>>>>
+>>>>>>>>>>> At-airport testing is bizarre (almost as bizarre as
+>>>>>>>>>>> international travel right now, period) - and, so far, seems to=
+ be
+>>>>>>>>>>> effective. Where does Ellipsis stand so far?
+>>>>>>>>>>>
+>>>>>>>>>>> All best,
+>>>>>>>>>>> Josh
+>>>>>>>>>>>
+>>>>>>>>>>> On Mon, Jun 8, 2020 at 5:04 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>> Just as an update it looks like we're going to fly to Iceland
+>>>>>>>>>>>> next week (exact date pending on Icelandair - very exciting!) =
+so we can try
+>>>>>>>>>>>> out the in-airport COVID-19 testing. Let me know where Ellipsi=
+s stands and
+>>>>>>>>>>>> if a bit of digging at the airport would be helpful!
+>>>>>>>>>>>>
+>>>>>>>>>>>> All best,
+>>>>>>>>>>>> Josh
+>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>
+>>>>>>>>>>>> On Wed, Jun 3, 2020 at 1:54 PM Josh Klein <josh@josh.is> wrote=
+:
+>>>>>>>>>>>>
+>>>>>>>>>>>>> Makes sense. What's the timeline looking like for Ellipses?
+>>>>>>>>>>>>> Can't imagine it can extend too much longer, no?
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Outside of that my suggestions were all about compromise on
+>>>>>>>>>>>>> cost; if there's no flex then yes let's look to other engagem=
+ents. Right
+>>>>>>>>>>>>> now I'm pushing a couple healthcare providers for a project a=
+round CGMs /
+>>>>>>>>>>>>> personal data, and am still trying to crack the nut on COVID =
+testing at the
+>>>>>>>>>>>>> airport in Iceland. You have any other projects that are a li=
+ttle
+>>>>>>>>>>>>> further out that I might be able to help reel in?
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> - J
+>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> On Tue, Jun 2, 2020 at 12:48 PM Jon Tirmandi <
+>>>>>>>>>>>>> jon@normative.com> wrote:
+>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Hey Josh,
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Thanks for reaching out.  Likewise we're keen to figure
+>>>>>>>>>>>>>> something out.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> That said, the economics of the "Director of Growth" role
+>>>>>>>>>>>>>> doesn't support the comp structure that's on the table.  A r=
+ole on Ellipses
+>>>>>>>>>>>>>> would be great, and we continue to work with our partners to=
+ shape the
+>>>>>>>>>>>>>> opportunity, but it's still too ambiguous to hire into.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> We have no doubt in the value that we could create value
+>>>>>>>>>>>>>> together.   Do you have a relationship that we could nurture=
+ or develop
+>>>>>>>>>>>>>> together? We're open to ideas. Let me know your thoughts.
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Speak soon,
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> Jon
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> On Tue, Jun 2, 2020 at 9:50 AM Josh Klein <josh@josh.is>
+>>>>>>>>>>>>>> wrote:
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> Let me know where you guys stand - I'm still keen to work
+>>>>>>>>>>>>>>> something out and would be curious to hear what you think m=
+ight work!
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>> All best,
+>>>>>>>>>>>>>>> Josh
+>>>>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>> --
+>>>>>>>>>>>>>> Jon Tirmandi
+>>>>>>>>>>>>>> Partner - Normative
+>>>>>>>>>>>>>> 416.898.6732
+>>>>>>>>>>>>>> jon@normative.com <jon@normativedesign.com>
+>>>>>>>>>>>>>>
+>>>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>
+>>>>> --
+>>>>> Jon Tirmandi
+>>>>> Partner - Normative
+>>>>> 416.898.6732
+>>>>> jon@normative.com <jon@normativedesign.com>
+>>>>>
+>>>>
+>>>
+>>> --
+>>> Jon Tirmandi
+>>> Partner - Normative
+>>> 416.898.6732
+>>> jon@normative.com <jon@normativedesign.com>
+>>>
+>>
+
+--=20
+Jon Tirmandi
+Partner - Normative
+416.898.6732
+jon@normative.com <jon@normativedesign.com>
+
+--0000000000003d910505b1127b60
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hey Josh,<div><br></div><div>Yes, thanks for the chat.=C2=
+=A0 Matthew/Josh=C2=A0since one of you is in Iceland and the other in BC ti=
+me zones may make finding meeting times a little more challenging for us. H=
+ow does Thurs Oct 15 at 10AM Eastern work for everyone to regroup?</div><di=
+v><br></div><div>Jon</div></div><br><div class=3D"gmail_quote"><div dir=3D"=
+ltr" class=3D"gmail_attr">On Tue, Oct 6, 2020 at 11:01 AM Josh Klein &lt;<a=
+ href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:<br></div><blockqu=
+ote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px=
+ solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Jon,=C2=A0<div><=
+br></div><div>Good talking yesterday - sounds like positive signs all aroun=
+d. Let me know when you and Matt have a moment next week to reconnect and d=
+iscuss=C2=A0further!</div><div><br></div><div>All best,</div><div>Josh</div=
+><div><br></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1p=
+x"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" s=
+rc=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=
+=3Dzerocontent&amp;guid=3D07d70b8b-0a77-4808-bfa9-dd9e1a4b364f"><font color=
+=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Oct 1, 2020 at 11:54 AM Jos=
+h Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is<=
+/a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div dir=3D"ltr">Just sent an invite; if we need more time could you do 10am=
+ EST?<div><br></div><div>best,</div><div>Josh</div></div><div hspace=3D"str=
+eak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; ma=
+x-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?s=
+ender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D99c015fd-7ce5-4=
+766-a45a-89eb405ddec4"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font><=
+/div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">O=
+n Wed, Sep 30, 2020 at 8:36 PM Jon Tirmandi &lt;<a href=3D"mailto:jon@norma=
+tive.com" target=3D"_blank">jon@normative.com</a>&gt; wrote:<br></div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hey Josh,<div=
+><br></div><div>The link is not working for me. I believe you&#39;re 4 hour=
+s ahead of us.=C2=A0 How&#39;s Monday at 10:30 ET?</div><div><br></div><div=
+>Jon</div><div><br><br></div></div><br><div class=3D"gmail_quote"><div dir=
+=3D"ltr" class=3D"gmail_attr">On Wed, Sep 30, 2020 at 1:20 PM Josh Klein &l=
+t;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wr=
+ote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px=
+ 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D=
+"ltr">Iceland is good so far - been getting my Wim Hoff running on. Next we=
+ek looks good; I&#39;ve got times listed <a href=3D"https://josh.is/schedul=
+ing" target=3D"_blank">here</a>, or suggest something that works for you!<d=
+iv><br></div><div>best,</div><div>Josh</div></div><div hspace=3D"streak-pt-=
+mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-heigh=
+t: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dfe495b82-a3ce-434a-8=
+0da-344b5d7056a2"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed=
+, Sep 30, 2020 at 4:07 PM Jon Tirmandi &lt;<a href=3D"mailto:jon@normative.=
+com" target=3D"_blank">jon@normative.com</a>&gt; wrote:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hey Josh,<div><br>=
+</div><div>How&#39;s Iceland treating you? Let&#39;s get together. There ma=
+y be opportunities to collaborate.=C2=A0 How&#39;s next week look for you?<=
+/div><div><br></div><div>Jon</div><div></div></div><br><div class=3D"gmail_=
+quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Sep 23, 2020 at 12:53 =
+PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@jo=
+sh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:=
+1ex"><div dir=3D"ltr">It&#39;s been a minute - my family relocated to Icela=
+nd for the interim, where I&#39;m getting a pretty spectacular view of both=
+ the EU and US markets.=C2=A0<div><br></div><div>Was curious how things are=
+ going on your end and if there&#39;s any potential for collaboration; I&#3=
+9;ve been sitting on my retainer work but the slowdown in corporate activit=
+y is starting to look like it&#39;s passing and I&#39;m eager to dig into i=
+t. Let me know if it&#39;s worth a call to compare notes!</div><div><br></d=
+iv><div>All best wishes,<br>Josh</div><div><br></div></div><div hspace=3D"s=
+treak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t=
+?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dc98072d9-6f7d=
+-45b0-9ffb-1c11335781d6"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font=
+></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"=
+>On Wed, Jul 8, 2020 at 1:01 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.=
+is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Just checking in. Still =
+interested in the program, especially as different borders are adopting=C2=
+=A0new measures!<div><br></div><div>- J</div></div><div hspace=3D"streak-pt=
+-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-heig=
+ht: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D763aa52b-a055-4e1d-9=
+7c9-5798d01c22ff"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed=
+, Jul 1, 2020 at 12:28 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" ta=
+rget=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"g=
+mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
+,204,204);padding-left:1ex"><div dir=3D"ltr">How&#39;s that pivot going? Be=
+en interesting watching other airports look to testing - these are interest=
+ing times!!<div><br></div><div>- J</div></div><div hspace=3D"streak-pt-mark=
+" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0=
+px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam=
+9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Da9efd082-6e0e-406f-b91c-e4=
+3f0f41e9a7"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><d=
+iv class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun =
+22, 2020 at 4:28 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=
+=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail=
+_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204=
+,204);padding-left:1ex"><div dir=3D"ltr">Got it. I&#39;ve developed a numbe=
+r of other connections that might be useful to bring in, so do keep me post=
+ed!<div><br></div><div>All best,</div><div>Josh</div></div><div hspace=3D"s=
+treak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t=
+?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D837212a1-697c=
+-4b3d-99ca-d3f05ac623d4"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font=
+></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"=
+>On Mon, Jun 22, 2020 at 3:08 PM Matthew Milan &lt;<a href=3D"mailto:matthe=
+w@normative.com" target=3D"_blank">matthew@normative.com</a>&gt; wrote:<br>=
+</div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;b=
+order-left:1px solid rgb(204,204,204);padding-left:1ex"><div><div><div><div=
+ style=3D"display:none;border:0px;width:0px;height:0px;overflow:hidden"><im=
+g src=3D"https://r.superhuman.com/DhPdKHh2xTvVPbg6Q6g-4a0AryvH3CP62A8SQEc-i=
+rhsf1VXaIDEc4VlTWxlsmpJtelPO9m5YDm4McuwUHjIedHo904KT2P6Jd0QHDQSLGgXod0fr6NS=
+Dgrm5ncmwXkeJU4R8dwWCVFX3nkYu5xKT2dqmwH2rocxh3mJXwwHiWM.gif" alt=3D"" width=
+=3D"1" height=3D"0" style=3D"display: none; border: 0px; width: 0px; height=
+: 0px; overflow: hidden;"></div><div><div><div>Hey Josh,<br></div><div><br>=
+</div><div>Ellipsis is still working on Product-Market Fit - lots of good d=
+ata, but there&#39;s a potential pivot in play which may be resolved later =
+this week depending on conversations with potential customers. TL;DR - prod=
+uct was slowed down a bit to get the market fit right.<br></div><div><br>Ma=
+tthew<br><br></div></div><br><div><div><div dir=3D"ltr"><div><div dir=3D"lt=
+r"><div>=3D=3D=3D</div><div><b><font face=3D"arial, sans-serif" size=3D"1">=
+Matthew Milan</font></b></div><div><b><font face=3D"arial, sans-serif" size=
+=3D"1">CEO, Normative=C2=A0</font></b></div><div><font face=3D"arial, sans-=
+serif" size=3D"1">416 844 0381</font></div><div><a href=3D"http://www.norma=
+tive.com/" rel=3D"noopener noreferrer" target=3D"_blank"><font face=3D"aria=
+l, sans-serif" style=3D"background-color:rgb(255,255,255)" size=3D"1">www.n=
+ormative.com</font><br></a></div></div></div></div></div><br></div></div><b=
+r><div><div class=3D"gmail_quote">On Mon, Jun 22, 2020 at 8:07 AM, Josh Kle=
+in <span dir=3D"ltr">&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">=
+josh@josh.is</a>&gt;</span> wrote:<br><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex"><div class=3D"gmail_extra"><div class=3D"gmail_quote" id=3D"gm=
+ail-m_8701048819296860749gmail-m_4151385613258407607gmail-m_-62664105059196=
+60998gmail-m_-8603004319725245226gmail-m_4348917286192931277gmail-m_1987847=
+275378913229gmail-m_7629283527000882432gmail-m_9052320864000728415gmail-m_2=
+618615940307266566gmail-m_1258225932705036574null"><div dir=3D"ltr"><div>At=
+-airport testing is bizarre (almost as bizarre as international travel righ=
+t now, period) - and, so far, seems to be effective. Where does Ellipsis st=
+and so far?</div><div><br></div><div>All best,<br></div><div>Josh<br></div>=
+</div><br><div class=3D"gmail_quote"><div class=3D"gmail_attr" dir=3D"ltr">=
+On Mon, Jun 8, 2020 at 5:04 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.i=
+s" rel=3D"noopener noreferrer" target=3D"_blank">josh@josh.is</a>&gt; wrote=
+:<br></div><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1px so=
+lid rgb(204,204,204);padding-left:1ex" class=3D"gmail_quote"><div dir=3D"lt=
+r">Just as an update it looks like we&#39;re going to fly to Iceland next w=
+eek (exact date pending on Icelandair - very exciting!) so we can try out t=
+he in-airport COVID-19 testing. Let me know where Ellipsis stands and if a =
+bit of digging at the airport would be helpful!<div><br></div><div>All best=
+,<br>Josh</div></div><div style=3D"max-height:1px"><font color=3D"#ffffff" =
+size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div class=
+=3D"gmail_attr" dir=3D"ltr">On Wed, Jun 3, 2020 at 1:54 PM Josh Klein &lt;<=
+a href=3D"mailto:josh@josh.is" rel=3D"noopener noreferrer" target=3D"_blank=
+">josh@josh.is</a>&gt; wrote:<br></div><blockquote style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex" class=3D=
+"gmail_quote"><div dir=3D"ltr">Makes sense. What&#39;s the timeline looking=
+ like for Ellipses? Can&#39;t imagine it can extend too much longer, no?=C2=
+=A0<div><br></div><div>Outside of that my suggestions were all about compro=
+mise on cost; if there&#39;s no flex then yes let&#39;s look to other engag=
+ements. Right now I&#39;m pushing a couple=C2=A0healthcare providers for a =
+project around CGMs / personal data, and am still trying to crack the nut o=
+n COVID testing at the airport in Iceland. You have any other projects that=
+ are a little further=C2=A0out that I might be able to help reel in?</div><=
+div><br></div><div>- J</div></div><div style=3D"max-height:1px"><font color=
+=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote=
+"><div class=3D"gmail_attr" dir=3D"ltr">On Tue, Jun 2, 2020 at 12:48 PM Jon=
+ Tirmandi &lt;<a href=3D"mailto:jon@normative.com" rel=3D"noopener noreferr=
+er" target=3D"_blank">jon@normative.com</a>&gt; wrote:<br></div><blockquote=
+ style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);p=
+adding-left:1ex" class=3D"gmail_quote"><div dir=3D"ltr">Hey Josh,<div><br><=
+/div><div>Thanks for reaching out.=C2=A0 Likewise we&#39;re keen to figure =
+something out. </div><div><br></div><div>That said, the economics of the &q=
+uot;Director of Growth&quot; role doesn&#39;t support the comp structure th=
+at&#39;s on the table.=C2=A0 A role on Ellipses would be great, and we cont=
+inue to work with our partners to shape the opportunity, but it&#39;s still=
+ too ambiguous to hire into.=C2=A0</div><div><br></div><div>We have no doub=
+t in the value that we could create value together. =C2=A0 Do you have a re=
+lationship that we could nurture or develop together? We&#39;re open to ide=
+as. Let me=C2=A0know your thoughts.</div><div><br></div><div>Speak soon,</d=
+iv><div><br></div><div>Jon</div><div><br></div><div><br></div><div>=C2=A0</=
+div></div><br><div class=3D"gmail_quote"><div class=3D"gmail_attr" dir=3D"l=
+tr">On Tue, Jun 2, 2020 at 9:50 AM Josh Klein &lt;<a href=3D"mailto:josh@jo=
+sh.is" rel=3D"noopener noreferrer" target=3D"_blank">josh@josh.is</a>&gt; w=
+rote:<br></div><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex" class=3D"gmail_quote"><div dir=
+=3D"ltr">Let me know where you guys stand - I&#39;m still keen to work some=
+thing out and would be curious to hear what you think might work!=C2=A0<div=
+><br></div><div>All best,</div><div>Josh</div></div><div style=3D"max-heigh=
+t:1px"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+>Jon Tirmandi<div>Partner - Normative<br>416.898.6732<br><a href=3D"mailto:=
+jon@normativedesign.com" rel=3D"noopener noreferrer" target=3D"_blank">jon@=
+normative.com</a></div></div></blockquote></div></blockquote></div></blockq=
+uote></div></div></div></blockquote></div></div><br></div></div></div></blo=
+ckquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+>Jon Tirmandi<div>Partner - Normative<br>416.898.6732<br><a href=3D"mailto:=
+jon@normativedesign.com" target=3D"_blank">jon@normative.com</a></div></div=
+>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+>Jon Tirmandi<div>Partner - Normative<br>416.898.6732<br><a href=3D"mailto:=
+jon@normativedesign.com" target=3D"_blank">jon@normative.com</a></div></div=
+>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature">Jon Tirmandi<div>Partner - Normative<br>416.898.=
+6732<br><a href=3D"mailto:jon@normativedesign.com" target=3D"_blank">jon@no=
+rmative.com</a></div></div>
+
+--0000000000003d910505b1127b60--

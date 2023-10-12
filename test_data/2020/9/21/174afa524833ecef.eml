@@ -1,0 +1,742 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:a173:0:0:0:0:0 with SMTP id u19csp3360307ljl;
+        Mon, 21 Sep 2020 00:51:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzY3e32hvvYeb5+nTmdrFhWjqnuFo4zjhfGH1go9JG123SCZ+oQapJuDNUY3FqGspE0HQjM
+X-Received: by 2002:a0c:e6ea:: with SMTP id m10mr28869755qvn.53.1600674673798;
+        Mon, 21 Sep 2020 00:51:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1600674673; cv=none;
+        d=google.com; s=arc-20160816;
+        b=OHkZvr/0lrK+++LaXVEd9O4FwDJKxsdjF4Tvu7wwZaQrLc334hZA+e1TAh/2b4kzIT
+         Z5ajiB2mKquXWuOdXpwrJ/QMRFCv3GBWatApaoFHQrzT8QCr5VMyV/V1zTj49ijI9PfW
+         DkRB8Zk0ugFp4XXgTSQlDvl+abTJk1RnuOAIQajFNe0NpnaMizOdpkw0xskPjNLAZGlP
+         9l/f748GgdfIJGKFecygwTAB8lOpow44nSV9TN5VUAYoBI69ULdmbJ6X65MsPIzY5rtE
+         svWKsQME6cJnf8XXrTa3VfBYpVdiMbr02NLA9jg/i9si57j9wFn7kqjqEFU4GZl/yWG0
+         MRfw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from;
+        bh=th5rwiZxgjIPQt9abWoyVPeqVsVnTnDLpzVuNXH98MU=;
+        b=nILw/Q3ZVnYQ9Q5D6mDEg4h8La6SjqfHexURA5Tl2NNML+boPe1dL7vGwn7KwVo+YB
+         S8rjque3DtpU/p3RFwLNBTkWJfKFFYMBeWHDYsyuD1jEP4KaxWT5eo+GL+EquDbl1VkS
+         fmzolX8urxPfrG6OvGc48BDlSRNJBvMgrnWVMw5E61gPchTMPZIyePoW6JigxLh8eRER
+         /xaPlYg1QGdZGn1GzeNhqdkHzec0I9F38kI2mRwfsq3UIuuOHEKD+iCmI5inOt9YkrHu
+         thD/5ltHI5axKtIzSx3z9UaUjspVsucnC6zp7EvVqr13ggrtY7rkBhHw+6GdlLcPnUSk
+         rE2A==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-01.prod.iad2.secureserver.net (a2nlsmtp01-01.prod.iad2.secureserver.net. [198.71.224.24])
+        by mx.google.com with ESMTPS id e5si7265569qvx.91.2020.09.21.00.51.07
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 21 Sep 2020 00:51:07 -0700 (PDT)
+Received-SPF: fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) client-ip=198.71.224.24;
+Authentication-Results: mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.224.24 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Received: from mailout02.c01.mtsvc.net ([64.207.129.76])
+	by : HOSTING RELAY : with ESMTP
+	id KGaLkjsbVx3vJKGaLk9xAg; Mon, 21 Sep 2020 00:50:05 -0700
+X-CMAE-Analysis: v=2.3 cv=PduBeRpd c=1 sm=1 tr=0
+ a=4F84bBsrrNdyp59tV0sJTA==:117 a=/15AZbmo+sh/qGbmvzU40Q==:17
+ a=reM5J-MqmosA:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=MGKIFWvDAAAA:8 a=eM1FkN8WAAAA:8
+ a=zwvI-rEBAAAA:8 a=2cVBY8RxzL1nhKSAmd8A:9 a=BBWVza9KbY_4Qjaa:21
+ a=IwXvx5X3gL3gSy_P:21 a=QEXdDO2ut3YA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8
+ a=WerWTMxXAAAA:8 a=rAyzUryieojRc5Q-nasA:9 a=nm8okqUkNyvBg7eA:21
+ a=4UasPNRjB71NuzjL:21 a=YmP8ztTh7IpIErP0:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=e15HVc7nWckFMki6kpuu:22 a=4D1dU0hVIIbnoyLp9NuI:22 a=OoLSvEA_ic9EetkLKI_r:22
+ a=Kx9DWCSqnPAMGBl67n-C:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl03.gs01.gridserver.com ([64.13.192.12])
+	by mailout02.c01.mtsvc.net with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kKGaJ-0007WU-JM
+	for josh@josh.is; Mon, 21 Sep 2020 00:50:05 -0700
+Received: from [90.196.235.220] (port=60808 helo=DESKTOPVL3QK79)
+	by cl03.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kKGa2-0003Ih-L5
+	for josh@josh.is; Mon, 21 Sep 2020 00:50:03 -0700
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+References: <MaMi.110543.4475084.479924830.1600491614.3971198.sKX@a2plmmsworker02.prod.iad2.gdg.mail> <CACNgykNKmEVEV601t9n6TREXRcxrobfwJARBgYSHttHrpZTdog@mail.gmail.com>
+In-Reply-To: <CACNgykNKmEVEV601t9n6TREXRcxrobfwJARBgYSHttHrpZTdog@mail.gmail.com>
+Subject: RE: We can't renew your products: Update your payment info.
+Date: Mon, 21 Sep 2020 08:49:43 +0100
+Message-ID: <056f01d68feb$c6e548d0$54afda70$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0570_01D68FF4.28ABD3B0"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQF+AKxEcbvufAh3LYk7xUfNFvBzEQJ5PFmaqhAMNUA=
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=4.2 tests=ALL_TRUSTED, HTML_FONT_LOW_CONTRAST, HTML_MESSAGE,
+	T_REMOTE_IMAGE, URIBL_BLOCKED version=3.4.2 cmae=_CMAETAG_"
+X-Spam-Level: ****
+X-Spam_score: 4.2
+X-Spam_score_int: 42
+X-CMAE-Envelope: MS4wfKSLwNYQDrR4Iv+Tlt0xr369lx6nHhYugI4dLvpxQHFycU3ZQw7HfIGsTq6/b05uGcu1ZWKHIFDi8xLLCQ4L4NbIjcPTsCM6mitKjCP18TBkYYnisy3W
+ 5Nrv9ZWfSeQmzo4eCNkKatt1kWOQaCkI6pXLwhfJkitWL49TU7GRF1ya6ozVnqHSoFC2sXJuz7kVtA==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_0570_01D68FF4.28ABD3B0
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Can you signal me the login dets and I will take care of it?
+
+C
+
+=20
+
+From: Josh Klein <josh@josh.is>=20
+Sent: 19 September 2020 08:20
+To: Chris at Indigo <chris@indigometrics.com>
+Subject: Fwd: We can't renew your products: Update your payment info.
+
+=20
+
+FYI.
+
+=20
+
+- J
+
+=20
+
+---------- Forwarded message ---------
+From: GoDaddy <donotreply@godaddy.com <mailto:donotreply@godaddy.com> >
+Date: Sat, Sep 19, 2020 at 5:00 AM
+Subject: We can't renew your products: Update your payment info.
+To: <josh@josh.is <mailto:josh@josh.is> >
+
+=20
+
+
+
+
+
+Indigo, there is a problem with the payment method you have in your =
+account. It is either missing or invalid. Please open this email to find =
+out more details and to fix this problem.  =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C=20
+
+ =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C  =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =
+=E2=80=8C =E2=80=8C =E2=80=8C =E2=80=8C =20
+
+=20
+
+
+
+
+ =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/.Layout/Logo/Logoheadgd_gybk_4=
+parameters.link.click&marketId=3Den-GB&redir=3Dhttps%3A%2F%2Fwww.godaddy.=
+com%3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26ut=
+m_campaign%3Den-GB_other_email-revenue_base_gd>=20
+
+
+ <tel:020%207084%201810> 24/7 Support: 020 7084 1810
+Indigo Metrics =E2=80=94 Customer Number: 138639436=20
+
+=20
+
+
+
+ =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body1.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_A.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Fwww.godaddy.com%3Fisc%3Dgdrpa5129%26utm_source%3D=
+gdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_other_email-revenu=
+e_base_gd> Your payment method isn't valid.=20
+
+=20
+
+
+
+ =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body1.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_A.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Fwww.godaddy.com%3Fisc%3Dgdrpa5129%26utm_source%3D=
+gdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_other_email-revenu=
+e_base_gd> So, we can=E2=80=99t renew your products.=20
+
+=20
+
+
+
+Maybe your payment info isn't complete or your card expired. Whatever =
+the reason,  =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body2.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_B.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%3Fisc%3Dgdrpa5129%2=
+6utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_othe=
+r_email-revenue_base_gd> sign in to your account and take care of this =
+today.=20
+
+=20
+
+
+
+
+
+ =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%3Fisc%3Dgdrpa5129%2=
+6utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_othe=
+r_email-revenue_base_gd> Update Payment Now=20
+
+=20
+
+
+
+Hurry though. If you wait too long, your products will expire. This =
+means they=E2=80=99ll stop working and any services connected to them =
+will also quit.=20
+
+=20
+
+
+
+
+=20
+
+=20
+
+
+
+
+=20
+
+=20
+
+
+
+We participate in account update services. As part of Visa=C2=AE and =
+MasterCard=C2=AE programs, banks may notify us of updated credit card =
+expiration date(s) and/or card number(s), which will automatically =
+update your payment information in our system and allow us to attempt to =
+renew your product(s) as scheduled. If paying with American Express, =
+auto-renewal on an expired/re-assigned card may be automatically billed =
+by American Express using the new expiration date and/or card number =
+without notification to us. Similar services may be supported by other =
+card brands. If attempts to bill your credit card are unsuccessful, your =
+product(s) will expire. To update your credit card information, or to =
+change your automatic renewal status, please  =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%3Fisc%3Dgdrpa5129%2=
+6utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_othe=
+r_email-revenue_base_gd> log in to your account.=20
+
+Please do not rely on these services to keep card information up to =
+date. The only way to ensure successful product renewal is to  =
+<https://click-email.godaddy.com/None/?currencyId=3DUSD&eid=3Docp.email.m=
+arketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Blocks/Retention=
+_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&marketId=3Den-G=
+B&redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%3Fisc%3Dgdrpa5129%2=
+6utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB_othe=
+r_email-revenue_base_gd> update your credit card information now. If you =
+wish to cancel automatic renewal, you can turn off this feature in your =
+GoDaddy account.=20
+
+=20
+
+
+
+
+=20
+
+=20
+
+
+
+
+=20
+
+=20
+
+
+
+Please do not reply to this email. Emails sent to this address will not =
+be answered.=20
+
+=20
+
+
+
+Copyright =C2=A9 1999-2020 GoDaddy Operating Company, LLC. 14455 N. =
+Hayden Rd, Ste. 219, Scottsdale, AZ 85260 USA. All rights reserved.=20
+
+=20
+
+
+
+
+=20
+
+=20
+
+
+
+
+4073727483
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3Df2d7a521-2df2-4c52-a560-cb57b2d36395> =E1=90=A7
+
+
+------=_NextPart_000_0570_01D68FF4.28ABD3B0
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 15 (filtered medium)"><!--[if =
+!mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Helvetica;
+	panose-1:2 11 6 4 2 2 2 2 2 4;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Gadugi;
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+p.m-994792883541225923prehdr, li.m-994792883541225923prehdr, =
+div.m-994792883541225923prehdr
+	{mso-style-name:m_-994792883541225923prehdr;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle21
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue =
+vlink=3Dpurple><div class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Can you signal me the login dets =
+and I will take care of it?<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>C<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein =
+&lt;josh@josh.is&gt; <br><b>Sent:</b> 19 September 2020 =
+08:20<br><b>To:</b> Chris at Indigo =
+&lt;chris@indigometrics.com&gt;<br><b>Subject:</b> Fwd: We can't renew =
+your products: Update your payment info.<o:p></o:p></span></p></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p =
+class=3DMsoNormal>FYI.<o:p></o:p></p><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>- =
+J<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div><div><p =
+class=3DMsoNormal>---------- Forwarded message ---------<br>From: =
+<strong><span =
+style=3D'font-family:"Calibri",sans-serif'>GoDaddy</span></strong> =
+&lt;<a =
+href=3D"mailto:donotreply@godaddy.com">donotreply@godaddy.com</a>&gt;<br>=
+Date: Sat, Sep 19, 2020 at 5:00 AM<br>Subject: We can't renew your =
+products: Update your payment info.<br>To: &lt;<a =
+href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;<o:p></o:p></p></div><p =
+class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td width=3D"100%" =
+style=3D'width:100.0%;padding:0cm 15.0pt 0cm 15.0pt'><p =
+class=3Dm-994792883541225923prehdr =
+style=3D'margin:0cm;line-height:4.5pt'><span =
+style=3D'font-size:1.0pt;font-family:"Arial",sans-serif;color:whitesmoke'=
+>Indigo, there is a problem with the payment method you have in your =
+account. It is either missing or invalid. Please open this email to find =
+out more details and to fix this problem. =
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;<o:p></o:p></span></p><div><p class=3DMsoNormal =
+style=3D'mso-line-height-alt:.75pt'><span =
+style=3D'font-size:1.0pt;font-family:"Arial",sans-serif;color:whitesmoke'=
+>&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=
+=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;&nbsp;=E2=80=8C&nbs=
+p;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&n=
+bsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp;=E2=80=8C=
+&nbsp;=E2=80=8C&nbsp;=E2=80=8C&nbsp; =
+<o:p></o:p></span></p></div></td></tr></table></td></tr></table></div></d=
+iv></td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 11.25pt 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%'><tr><td width=3D150 =
+style=3D'width:112.5pt;padding:0cm 0cm 0cm 0cm'><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+align=3Dleft width=3D"100%" style=3D'width:100.0%'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><p class=3DMsoNormal><a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/.Layout/Logo/Logohe=
+adgd_gybk_4parameters.link.click&amp;marketId=3Den-GB&amp;redir=3Dhttps%3=
+A%2F%2Fwww.godaddy.com%3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_=
+medium%3Demail%26utm_campaign%3Den-GB_other_email-revenue_base_gd" =
+target=3D"_blank"><span style=3D'text-decoration:none'><img border=3D0 =
+width=3D150 height=3D45 style=3D'width:1.5625in;height:.4687in' =
+id=3D"_x0000_i1026" =
+src=3D"https://img1.wsimg.com/cdn/Image/Email/All/976dd421-fedb-4c69-b57c=
+-54894570d9ce/godaddy-logo-icon-300x90.png" =
+alt=3DGoDaddy></span></a><o:p></o:p></p></td></tr></table></td><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div align=3Dright><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%'><tr><td style=3D'padding:7.5pt 0cm =
+0cm 0cm'><p align=3Dright =
+style=3D'margin:0cm;text-align:right;line-height:15.75pt'><span =
+style=3D'font-size:10.0pt;font-family:"Helvetica",sans-serif'><a =
+href=3D"tel:020%207084%201810" target=3D"_blank"><span =
+style=3D'color:#111111;text-decoration:none'>24/7 Support: 020 7084 =
+1810</span></a><br>Indigo Metrics =E2=80=94 Customer Number: 138639436 =
+<o:p></o:p></span></p></td></tr></table></div></td></tr></table></div></d=
+iv></td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:white'><tr><td =
+style=3D'padding:45.0pt 30.0pt 0cm 30.0pt'><p class=3DMsoNormal =
+style=3D'line-height:34.5pt'><b><span =
+style=3D'font-size:27.0pt;font-family:"Times New =
+Roman",serif;color:#111111'><a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body1.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_A.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Fwww.godaddy.com%3Fisc%3Dgdrpa5=
+129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB=
+_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:#111111;text-decoration:none'>Your payment method isn't =
+valid.</span></a> =
+<o:p></o:p></span></b></p></td></tr></table></div></div></td></tr></table=
+><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm;text-align:ltr'><div><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:white'><tr><td style=3D'padding:0cm =
+30.0pt 0cm 30.0pt'><p class=3DMsoNormal =
+style=3D'line-height:23.25pt'><b><span =
+style=3D'font-size:16.0pt;font-family:"Arial",sans-serif;color:#111111'><=
+a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body1.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_A.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Fwww.godaddy.com%3Fisc%3Dgdrpa5=
+129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_campaign%3Den-GB=
+_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:#111111;text-decoration:none'>So, we can=E2=80=99t renew =
+your products.</span></a> =
+<o:p></o:p></span></b></p></td></tr></table></div></div></td></tr></table=
+><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:white'><tr><td =
+style=3D'padding:30.0pt 30.0pt 0cm 30.0pt'><p =
+style=3D'margin:0cm;line-height:18.0pt'><span =
+style=3D'font-size:10.5pt;font-family:"Helvetica",sans-serif;color:#11111=
+1'>Maybe your payment info isn't complete or your card expired. Whatever =
+the reason, <a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body2.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_B.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%=
+3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_ca=
+mpaign%3Den-GB_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:#09757A'>sign in to your account</span></a> and take care =
+of this today. =
+<o:p></o:p></span></p></td></tr></table></div></div></td></tr></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 align=3Dleft width=3D"100%" =
+style=3D'width:100.0%;background:white'><tr><td style=3D'padding:30.0pt =
+30.0pt 0cm 30.0pt'><table class=3DMsoNormalTable border=3D0 =
+cellspacing=3D0 cellpadding=3D0 align=3Dleft width=3D"100%" =
+style=3D'width:100.0%'><tr><td style=3D'padding:0cm 0cm 0cm 0cm'><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+align=3Dleft><tr><td style=3D'border:solid #111111 =
+1.0pt;background:#111111;padding:0cm 0cm 0cm 0cm'><p class=3DMsoNormal =
+align=3Dcenter style=3D'text-align:center;line-height:15.0pt'><span =
+style=3D'font-size:12.0pt;font-family:"Helvetica",sans-serif;color:white'=
+><a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%=
+3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_ca=
+mpaign%3Den-GB_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:white;border:solid #111111 =
+6.0pt;padding:0cm;background:#111111;text-decoration:none'>Update =
+Payment Now</span></a> </span><span =
+style=3D'font-size:12.0pt;font-family:"Helvetica",sans-serif'><o:p></o:p>=
+</span></p></td></tr></table></td></tr></table></td></tr></table></td></t=
+r></table></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:white'><tr><td =
+style=3D'padding:30.0pt 30.0pt 0cm 30.0pt'><p =
+style=3D'margin:0cm;line-height:18.0pt'><span =
+style=3D'font-size:10.5pt;font-family:"Helvetica",sans-serif;color:#11111=
+1'>Hurry though. If you wait too long, your products will expire. This =
+means they=E2=80=99ll stop working and any services connected to them =
+will also quit. =
+<o:p></o:p></span></p></td></tr></table></div></div></td></tr></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;background:white;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" style=3D'width:100.0%;background:white;padding:45.0pt =
+30.0pt 0cm 30.0pt'><p style=3D'margin:0cm;mso-line-height-alt:0pt'><span =
+style=3D'font-size:3.0pt;font-family:"Arial",sans-serif;color:#111111'>&n=
+bsp;<o:p></o:p></span></p></td></tr></table></td></tr></table></div></div=
+></td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;background:whitesmoke;border-spacing:0'><tr><t=
+d style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;padding:30.0pt 30.0pt 0cm =
+30.0pt'><p style=3D'margin:0cm;mso-line-height-alt:0pt'><span =
+style=3D'font-size:3.0pt;font-family:"Arial",sans-serif;color:#111111'>&n=
+bsp;<o:p></o:p></span></p></td></tr></table></td></tr></table></div></div=
+></td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:white'><tr><td =
+style=3D'padding:45.0pt 30.0pt 0cm 30.0pt'><p =
+style=3D'margin:0cm;line-height:18.0pt'><span =
+style=3D'font-size:10.5pt;font-family:"Helvetica",sans-serif;color:#11111=
+1'>We participate in account update services. As part of Visa=C2=AE and =
+MasterCard=C2=AE programs, banks may notify us of updated credit card =
+expiration date(s) and/or card number(s), which will automatically =
+update your payment information in our system and allow us to attempt to =
+renew your product(s) as scheduled. If paying with American Express, =
+auto-renewal on an expired/re-assigned card may be automatically billed =
+by American Express using the new expiration date and/or card number =
+without notification to us. Similar services may be supported by other =
+card brands. <strong><span =
+style=3D'font-family:"Helvetica",sans-serif'>If attempts to bill your =
+credit card are unsuccessful, your product(s) will =
+expire.</span></strong> To update your credit card information, or to =
+change your automatic renewal status, please <a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%=
+3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_ca=
+mpaign%3Den-GB_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:#09757A'>log in to your account.</span></a> =
+<br><br>Please do not rely on these services to keep card information up =
+to date. The only way to ensure successful product renewal is to <a =
+href=3D"https://click-email.godaddy.com/None/?currencyId=3DUSD&amp;eid=3D=
+ocp.email.marketing/GDUpdatePaymentMethodsTENDaysTEST/body3.RP_Body_Block=
+s/Retention_UpdatePaymentMethod/GDUPMR_TenDaysTEST_Body_C.link.click&amp;=
+marketId=3Den-GB&amp;redir=3Dhttps%3A%2F%2Faccount.godaddy.com%2Fbilling%=
+3Fisc%3Dgdrpa5129%26utm_source%3Dgdredpoint%26utm_medium%3Demail%26utm_ca=
+mpaign%3Den-GB_other_email-revenue_base_gd" target=3D"_blank"><span =
+style=3D'color:#09757A'>update your credit card information =
+now</span></a>. If you wish to cancel automatic renewal, you can turn =
+off this feature in your GoDaddy account. =
+<o:p></o:p></span></p></td></tr></table></div></div></td></tr></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;background:white;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" style=3D'width:100.0%;background:white;padding:45.0pt =
+30.0pt 0cm 30.0pt'><p style=3D'margin:0cm;mso-line-height-alt:0pt'><span =
+style=3D'font-size:3.0pt;font-family:"Arial",sans-serif;color:#111111'>&n=
+bsp;<o:p></o:p></span></p></td></tr></table></td></tr></table></div></div=
+></td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;padding:30.0pt 30.0pt 0cm =
+30.0pt'><p style=3D'margin:0cm;mso-line-height-alt:0pt'><span =
+style=3D'font-size:3.0pt;font-family:"Arial",sans-serif;color:white'>&nbs=
+p;<o:p></o:p></span></p></td></tr></table></td></tr></table></div></div><=
+/td></tr></table><p class=3DMsoNormal><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 align=3Dleft width=3D"100%" =
+style=3D'width:100.0%'><tr><td style=3D'padding:7.5pt 0cm 0cm 0cm'><p =
+style=3D'margin:0cm;line-height:16.5pt'><span =
+style=3D'font-size:9.0pt;font-family:"Helvetica",sans-serif;color:#767676=
+'>Please do not reply to this email. Emails sent to this address will =
+not be answered. =
+<o:p></o:p></span></p></td></tr></table></td></tr></table></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 align=3Dleft width=3D"100%" =
+style=3D'width:100.0%'><tr><td style=3D'padding:7.5pt 0cm 0cm 0cm'><p =
+style=3D'margin:0cm;line-height:16.5pt'><span =
+style=3D'font-size:9.0pt;font-family:"Helvetica",sans-serif;color:#767676=
+'>Copyright =C2=A9 1999-2020 GoDaddy Operating Company, LLC. 14455 N. =
+Hayden Rd, Ste. 219, Scottsdale, AZ 85260 USA. All rights reserved. =
+<o:p></o:p></span></p></td></tr></table></td></tr></table></table><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><table class=3DMsoNormalTable =
+border=3D0 cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;background:whitesmoke;border-spacing:0'><tr><t=
+d style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;padding:30.0pt 30.0pt 0cm =
+30.0pt'><p style=3D'margin:0cm;mso-line-height-alt:0pt'><span =
+style=3D'font-size:3.0pt;font-family:"Arial",sans-serif;color:#111111'>&n=
+bsp;<o:p></o:p></span></p></td></tr></table></td></tr></table></div></div=
+></td></tr></table></td></tr></table></div><p class=3DMsoNormal =
+style=3D'background:whitesmoke'><o:p>&nbsp;</o:p></p><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" =
+style=3D'width:100.0%;background:whitesmoke;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellpadding=3D0 =
+style=3D'max-width:450.0pt;border-spacing:0'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><table class=3DMsoNormalTable =
+border=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;text-decoration:none!important'><tr><td =
+width=3D"100%" style=3D'width:100.0%;background:whitesmoke;padding:0cm =
+0cm 11.25pt 0cm'><p align=3Dright =
+style=3D'margin:0cm;text-align:right;line-height:16.5pt;text-decoration:n=
+one!important'><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#767676'>40=
+73727483<o:p></o:p></span></p></td></tr></table></td></tr></table></div><=
+/div></td></tr></table></div><div><p class=3DMsoNormal><img border=3D0 =
+id=3D"_x0000_i1025" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3Df2d7a521-2df2-4c52-a560-cb57b2d36395"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div></div></div></div></div></body></html>
+------=_NextPart_000_0570_01D68FF4.28ABD3B0--
+

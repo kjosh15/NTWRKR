@@ -1,0 +1,1463 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Tue, 15 Sep 2020 07:43:00 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9f09:0:0:0:0:0 with SMTP id u9csp2886073ljk;
+        Mon, 13 Apr 2020 15:45:36 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJPxm6eWWqP9mg4pS/Gt6s0keEq+gjEeYF+/NJyh0bGVbnn1HmowkSqecrDDQcgyYbjQ5UR
+X-Received: by 2002:a92:7e4a:: with SMTP id z71mr20380755ilc.83.1586817935624;
+        Mon, 13 Apr 2020 15:45:35 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1586817935; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=dFE5zg17GsLqHO/j5D5JW1IV8M1OKx2esGIee+d3DgWcKzTEEiHH1d/zf2BknYeH8I
+         RmE8VpDR0k90dSBfu+e6lolGBzISi2PpnxHr/cHSiIak7yV+d1nAG1ebNcCL5xXgSiIq
+         WIIwi4sn13tu1hlPwIv9DiSBqyknkBNID33quoJXEKsjivxgVGK7SxGTB5HCPL3IUPFq
+         bfmaPKyqea5OHtm1Rp0Gn1lugJQS/5AZw1Ax99ROlfpB4I6MSI2tKKtcN3OmMKP9suMB
+         2x68MlwoTE5RizhUo3qkBoaxOh06aVIOfDXCJREZNclAc9mn4MphhCx1okIp5frKblHE
+         q1hw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:to
+         :from:dkim-signature;
+        bh=r/hiXbdCYd6BDVU6JbYGujxmv51Xikpu9th+YlJ1eNQ=;
+        b=QAG37/9xV63KEV0fbL2SLvniGg7+9knWInWDTAiOenfu2h3X6rEzjkNx3LxHokeaAE
+         9i1LkGyLMOgXiRZ/fGKasiylwizHgmYGSb/Lvih+cGhRWgHVg0NYUgXb9yjNPFAUXDc9
+         pS0Y04xw65WTaKvrFmEMXsDumExepHeu0N4YXHNAfPKlrvcmzFb418/hM2LyzwVm20bh
+         +XgpTMwpo5+TyZL0M2c9dNb/QJVt/493Jmi0u1z2f65XXdIOaNuRqxZ0qmb6utUPqlQp
+         dXaj6wIu/qZqQxjrI/iFoJf44iH8CDtVfxlwCEefFuIa6pTT5gG/dhGCPLLhOkx8QHUa
+         ZdYA==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@airpear.onmicrosoft.com header.s=selector2-airpear-onmicrosoft-com header.b=0VLYfY+v;
+       arc=pass (i=1 spf=pass spfdomain=canvaspg.com dkim=pass dkdomain=canvaspg.com dmarc=pass fromdomain=canvaspg.com);
+       spf=pass (google.com: domain of reid@canvaspg.com designates 40.107.243.72 as permitted sender) smtp.mailfrom=Reid@canvaspg.com
+Return-Path: <Reid@canvaspg.com>
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2072.outbound.protection.outlook.com. [40.107.243.72])
+        by mx.google.com with ESMTPS id l13si657824iop.12.2020.04.13.15.45.34
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 13 Apr 2020 15:45:35 -0700 (PDT)
+Received-SPF: pass (google.com: domain of reid@canvaspg.com designates 40.107.243.72 as permitted sender) client-ip=40.107.243.72;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@airpear.onmicrosoft.com header.s=selector2-airpear-onmicrosoft-com header.b=0VLYfY+v;
+       arc=pass (i=1 spf=pass spfdomain=canvaspg.com dkim=pass dkdomain=canvaspg.com dmarc=pass fromdomain=canvaspg.com);
+       spf=pass (google.com: domain of reid@canvaspg.com designates 40.107.243.72 as permitted sender) smtp.mailfrom=Reid@canvaspg.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=egoDKU8Hfafv5YvEzinLYo76d4Se6LitVJn51+ZIubugjCdMjKZonKyq8xP58NhDxf4Jy1YFJkVxD74pcZcNeqj8mxBT7JZyaQzVpbr0aJkTmtQ+SvMK4zqZp9lVbcs0NwX64bdsSYZ/N0LK4LVHB3Mr2JgmPg0CaF2KHYP5Kq2Y3CHZ0F2spObzazP8Y5WjzKJ6fNpaZRfMbQOiUN8cpJXE2FCiqSmP74UQJJ0cK6TimSl/xrhcOBAoR1jIKVmCkbix5llfnPkgqK0LrI/e1X2KBmo4cbWwMyZv2OEVKsASfQ2enCRap6IS/aJXNFsUcl/F42bVnF/+0TZ7gx8tiw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r/hiXbdCYd6BDVU6JbYGujxmv51Xikpu9th+YlJ1eNQ=;
+ b=b5sAV3Odqd+uSlhUraCQ00Dubz5+V3g1Y3lM1ktlgrj2lq18DK08admbzgnQvfjzYbvnbKJyl0XV43FulYYo+1o7x3hK3Ia7APA8ps0RkyCu9MZYf6XaWpMGNlWy6lpb2UzBTWDYwZbab9GMjJe5JqePTEwtYTP/Cqi1svP93GVaQMqk06ir7+0j4KImbewwFrVrI7nZjrTowh1OhYUxvkWccaF3NvWo3NRI1+j17/kFP/w/l8/qfzdJ1wjQrEroxlH1Y3XYv7OIJEo9zIy/qOvCHI7P7HEBXwvQje3Em/L70SY6IPspaivZJ5jiHDk1gmCv10N12+oZfBnHXdHW8w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=canvaspg.com; dmarc=pass action=none header.from=canvaspg.com;
+ dkim=pass header.d=canvaspg.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=airpear.onmicrosoft.com; s=selector2-airpear-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=r/hiXbdCYd6BDVU6JbYGujxmv51Xikpu9th+YlJ1eNQ=;
+ b=0VLYfY+vYY9/vaqjDRkK9SpH0HMTCYMErp2nU2w2xkhXlpWYx1sLi7krNyFqp3c+06NR+8UAJ91PlpSC/wB/SlFOVHpSDJtP4MFEjB+ITiIKcvUq3QDsQ7Wuc8F6zz/sv9AqV/WEsrVIicXSlssHT9eEJIlV5Ce99RZSQ9El7kM=
+Received: from BLAPR16MB3714.namprd16.prod.outlook.com (2603:10b6:208:254::14)
+ by BLAPR16MB3939.namprd16.prod.outlook.com (2603:10b6:208:270::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2900.25; Mon, 13 Apr
+ 2020 22:45:32 +0000
+Received: from BLAPR16MB3714.namprd16.prod.outlook.com
+ ([fe80::d164:5484:fdb1:e0f2]) by BLAPR16MB3714.namprd16.prod.outlook.com
+ ([fe80::d164:5484:fdb1:e0f2%5]) with mapi id 15.20.2900.028; Mon, 13 Apr 2020
+ 22:45:32 +0000
+From: Reid <Reid@CanvasPG.com>
+To: Josh Klein <josh@josh.is>
+Subject: RE: Call
+Thread-Topic: Call
+Thread-Index:
+ AQHWASkcK4II6iHW0UiZBnZFkRnK5KhWbDcAgANf/wCAAEW2EIAA/nIAgASe2gCAAbFDAIAC+8wAgAAAOtCAAAJ5AIABfqcAgAABQnCABmXQgIAAX4cAgAAAIDCAAzdRAIADD9EAgARqxwCAAHFX0A==
+Date: Mon, 13 Apr 2020 22:45:31 +0000
+Message-ID: <776372772.175.1600180980312@localhost>
+References:
+ <CACNgykM08c0e5+q_YQZ-WWGcXNxMFzdmeTMnxGdpntMa_sVPOA@mail.gmail.com>
+ <CACNgykPBop6uSiiXC4w_T3CXMpXXfj95goUK8v1XjV5FXsxXKQ@mail.gmail.com>
+ <CACNgykMzY4_Gd50uOCmxYw2yg+7fe0Fspi-Ei4iFrWHDnZNXVw@mail.gmail.com>
+ <BLAPR16MB3714525D8934CB816FFE73D8B0CF0@BLAPR16MB3714.namprd16.prod.outlook.com>
+ <CACNgykPkVUZbLbK9HdpPsBZ03hKNRdJ9vqGuWzzDvtkEv_3+_w@mail.gmail.com>
+ <CACNgykNKH=rLDGbjTaRFWP8P-N2gsh2fxH+YdW8Xc0cFugpSpg@mail.gmail.com>
+ <CACNgykOAUWsgx5W=1FoyVcNZeDUgmP9==ZWcHrkePC4U7DZLCQ@mail.gmail.com>
+ <CACNgykMZNw6ismid-w1-4vfV1YWCZs0ZSXm2BtBVRAZdX0uPyA@mail.gmail.com>
+ <BLAPR16MB37149803CE9D8B27B44E168BB0C90@BLAPR16MB3714.namprd16.prod.outlook.com>
+ <CACNgykP_YkcTk7z21byNo1xDxi2xR1qfBv=Mzmi7mAVFN9SAsQ@mail.gmail.com>
+ <CACNgykO0cne-EbkXLRrGHkf0BoCD+PCjE9t-X6BAayHx-pmFmg@mail.gmail.com>
+ <BLAPR16MB371406F9D7804A7991E9CB0CB0C60@BLAPR16MB3714.namprd16.prod.outlook.com>
+ <CACNgykNH5QZAo17=PN9oCAZ7v14jJJNK15tBEX1cQ6FjQrrDEg@mail.gmail.com>
+ <CACNgykPRA5Tps4iqAShjPNAabR18Ot2xWJGY7ELkoCSgdgDZfg@mail.gmail.com>
+ <BLAPR16MB37144978944D48576A29D539B0C20@BLAPR16MB3714.namprd16.prod.outlook.com>
+ <CACNgykNfQhC+51i9X+xmOgKpL+p6nLD9kGX_bpr6G++gVnZGvQ@mail.gmail.com>
+ <CACNgykP0FJJsynE++LD+iMq5gUpRVujbGBE8EPekQjo8a-A+Fw@mail.gmail.com>
+ <CACNgykPo-Ce3uo_m6yEc3jf9HG894WokDEao+TRPWxc+F-CRCw@mail.gmail.com>
+In-Reply-To:
+ <CACNgykPo-Ce3uo_m6yEc3jf9HG894WokDEao+TRPWxc+F-CRCw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=Reid@CanvasPG.com; 
+x-originating-ip: [73.149.51.234]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: d68f5a70-e6dc-49c1-d370-08d7dffc5f59
+x-ms-traffictypediagnostic: BLAPR16MB3939:
+x-microsoft-antispam-prvs:
+ <BLAPR16MB39390A9B70BCF9103A67FD54B0DD0@BLAPR16MB3939.namprd16.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:6790;
+x-forefront-prvs: 037291602B
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BLAPR16MB3714.namprd16.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(10009020)(39840400004)(396003)(376002)(346002)(136003)(366004)(66574012)(5660300002)(8936002)(33656002)(186003)(3480700007)(71200400001)(6916009)(99936003)(7116003)(81156014)(8676002)(316002)(9686003)(7696005)(66476007)(66946007)(66446008)(64756008)(66556008)(55016002)(66616009)(508600001)(76116006)(86362001)(76236002)(6506007)(53546011)(2906002)(26005)(52536014)(114320200001)(99710200001);DIR:OUT;SFP:1101;
+received-spf: None (protection.outlook.com: CanvasPG.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ DBDNJCP5Oc5yyK20gsa5ZpxPL8VIykcQIR4HMFBobPhiKz2JptT1NBv3eF5HLMdObQNAQyIoKCZjdpa/u4DAcIHFa/SFj5RCie+wHq4+tZ3/urfai/MA5OwNAs9trkxSsVx3dww1YobYDnvEaJAXuZyAEcRtWuaorjn/ypEGhIprlvEx29D+WzliwJdy8Jeq1f2QGEu0pEdCC2rJkwzgmc/UT3vQuu03J/5qTOLf5tg0KC2Z1wYeBSIK7sAT71OQj8BKaH/fmKRgZSg5mIP1XuSH+5XH480h+ntuOjjEzHNTcH9OTUzQFDJeJnTLE2BHGJ2j2zbiNiX5lw6eBgacgfCGtc3LNnFw/SqwXyuB/nRFIgJVEiPkReqR7BW97CL/eRmDc816yuUdXVzpwyD7oEz6sulHr22kJagL2TzdwUqdZVSON+0SbxsjiJF4390HfBJjL6HUntZ62ra5F4SkWagVoui9RHetxTUAfi4eht4eiQqpsyMJQqnVL9g9JV78MTJc7wgZz8LHmxwal1/0Pg7UIvWE9wS6sT0zbgoi8Ws=
+x-ms-exchange-antispam-messagedata:
+ 8ceWZtF4AkfpecIBN5NIirld8g7ZKvz8gKxcwM1sXEyo3cNcBDKBrylNBipc+xmbGQD2v1dHc6QSmI7Ft3ZBhawKOz7MXSS/3tA6pEeTxPHf6aPCNz5RVQik2Mp76Whb2i9lJTtMepp8fl7smN/hVw==
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/related;
+	boundary="_004_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: CanvasPG.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d68f5a70-e6dc-49c1-d370-08d7dffc5f59
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Apr 2020 22:45:31.8927
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3d859c5b-8534-4660-9902-c2be9b7be833
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: p71pAEjbTJKZy8AVkv46BRV7oK3BoucNUYrozBtsJdJd4yjg2kNn7v3DJgtibeKUMNq3FXjh0M5dQx+qfevbJQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR16MB3939
+
+--_004_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_
+Content-Type: multipart/alternative;
+	boundary="_000_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_"
+
+--_000_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Josh =E2=80=93 thank you for the follow up. Our head of construction is wor=
+king on getting someone to the roof to properly address.
+
+Thank you!
+
+
+
+Reid Leveillee
+D 646.403.9939<tel:301.305.9277>
+Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>
+
+From: Josh Klein <josh@josh.is>
+Sent: Monday, April 13, 2020 11:58 AM
+To: Reid <Reid@CanvasPG.com>
+Cc: Joshua William Klein <josh@josh.is>
+Subject: Re: Call
+
+Just following up; with this rain the leak and mold are both growing fast. =
+Let us know on both this and any questions about the lease.
+
+Best wishes,
+Josh
+=E1=90=A7
+
+On Fri, Apr 10, 2020 at 4:30 PM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+Reid,
+
+We haven't heard anything back, so would like you to freeze our rent. Pleas=
+e keep our check for April and we can revisit in mid-May whether you should=
+ cash it June 1. If we don't hear back we'll proceed on this plan.
+
+Also, our ceiling is unsafe (bits falling on us whenever it rains) and mold=
+ing. Is there a timeline for getting this fixed?
+
+Hope you and yours are safe and healthy,
+Josh Klein
+
+On Wed, Apr 8, 2020 at 5:45 PM Josh Klein <josh@josh.is<mailto:josh@josh.is=
+>> wrote:
+Just keeping on the top of your inbox - let us know when you do about payme=
+nt options. Also, any news on a roof repair? We had more rain last night an=
+d the rot seems to be spreading - or at least it's still leaking. :/
+
+Hope you and yours are safe and healthy,
+Josh
+
+
+On Mon, Apr 6, 2020 at 4:40 PM Reid <Reid@canvaspg.com<mailto:Reid@canvaspg=
+.com>> wrote:
+Josh =E2=80=93 again, very sorry about that. Our temp super stopped a day e=
+arly and missed the trash pickup window as that vendor was unable to mobili=
+ze a team quick enough. That will not happen again.
+
+I will be sending out a notice for the trash and repairs.
+
+
+
+Reid Leveillee
+D 646.403.9939<tel:301.305.9277>
+Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: Monday, April 6, 2020 4:38 PM
+To: Reid <Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>>
+Subject: Re: Call
+
+Just saw a crew attacking the garbage, and someone was brushes the stairs o=
+n my way up. Thanks!!
+
+- J
+
+
+On Mon, Apr 6, 2020 at 10:56 AM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+Let us know where this stands; also, a notice to the building might be usef=
+ul - everyone is wondering what's happening with the garbage and repairs.
+
+Thanks, and hope you're doing well!
+- J
+
+On Thu, Apr 2, 2020 at 9:19 AM Reid <Reid@canvaspg.com<mailto:Reid@canvaspg=
+.com>> wrote:
+Still waiting on something from Ownership in regard to some sort of plan. W=
+e have had a few tenants reach out with a similar request, so I hope to get=
+ something out by tomorrow. I=E2=80=99m sincerely sorry for not immediately=
+ getting to you as I am absolutely swamped with emails coming from every di=
+rection!
+
+I do appreciate your follow ups to stay at the top of my inbox.
+
+I=E2=80=99ll reach out to you tomorrow.
+
+
+
+Reid Leveillee
+D 646.403.9939<tel:301.305.9277>
+Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: Thursday, April 2, 2020 9:10 AM
+To: Reid <Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>>
+Subject: Re: Call
+
+Please advise.
+
+Thanks,
+Josh
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3D4ee7e149-1843-49e0-a104-a40147868173]=E1=90=A7
+
+On Wed, Apr 1, 2020 at 10:20 AM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+I can only imagine! The check was sent via mail from our bank.
+
+Let us know if a deferment, reduced payment plan, or something else would w=
+ork best for you.
+
+Thanks!
+Josh
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3Db9536882-e64d-493b-aeeb-0152c708beaa]=E1=90=A7
+
+On Wed, Apr 1, 2020 at 10:13 AM Reid <Reid@canvaspg.com<mailto:Reid@canvasp=
+g.com>> wrote:
+Josh =E2=80=93 extremely sorry about not getting back to you. It has been e=
+xtremely hectic on my end.
+
+You had sent your check via USPS? Or via ClickPay?
+
+
+Best,
+
+Reid Leveillee
+Canvas Property Group| Property Manager
+401 Park Avenue South| New York, NY
+D 646.403.9939<tel:301.305.9277>
+Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: Wednesday, April 1, 2020 10:11 AM
+To: Reid <Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>>
+Subject: Re: Call
+
+We recognize this is a difficult time for all of us, but without any commun=
+ication we cannot come to an agreement on next actions. We need to hear fro=
+m you today or we will cancel the latest check and hope to create a payment=
+ plan at a later date.
+
+Looking forward to hearing from you shortly,
+Josh Klein
+
+B42, Hayes Court
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3D7b740a1a-10b1-4b8a-877f-e698527eca42]=E1=90=A7
+
+On Mon, Mar 30, 2020 at 12:36 PM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+Reid,
+
+Let us know about the leak and payment options; we need to get something pl=
+anned before Wednesday. Hope you're well!
+
+best,
+Josh
+
+On Sun, Mar 29, 2020 at 10:46 AM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+The leak has been going since yesterday and is widening considerably (pictu=
+re attached). Please advise.
+
+Thanks - I hope you and yours are safe and healthy!
+Josh
+
+[cid:image001.jpg@01D611C3.9B992C10]
+
+
+On Thu, Mar 26, 2020 at 12:12 PM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+I'm willing to bet that hectic is the most polite word possible for what yo=
+u're going through at the moment!! Keep me posted on the roof; I'm just con=
+cerned as the leak seems to be spreading to a few different places.
+
+On a separate topic, our income has been wiped out entirely by the virus (a=
+ll the events I was due to speak at have been cancelled). Our bank automati=
+cally sent you a check yesterday but I would expect it to bounce. We're hop=
+eful that there's more income that will land by June; what sort of payment =
+plans do you have until then? Do you want to hold the check that was mailed=
+ in escrow for the time being?
+
+Many thanks,
+Josh
+
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3D07b291e4-1cac-46de-a687-246d7f0d6e9f]=E1=90=A7
+
+On Wed, Mar 25, 2020 at 9:02 PM Reid <Reid@canvaspg.com<mailto:Reid@canvasp=
+g.com>> wrote:
+I hope you have been well yourself! Thank you for the follow up =E2=80=93 i=
+t has been a bit hectic on my end. I will have our head of construction che=
+ck the roof. We had a vendor who was looking at all areas on the roof and I=
+ will need to check in with him.
+
+Will update when I can.
+
+Thanks!
+
+
+Best,
+
+Reid Leveillee
+Canvas Property Group| Property Manager
+401 Park Avenue South| New York, NY
+D 646.403.9939<tel:301.305.9277>
+Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: Wednesday, March 25, 2020 4:52 PM
+To: Reid <Reid@CanvasPG.com<mailto:Reid@CanvasPG.com>>
+Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Re: Call
+
+Reid,
+
+We have a bunch of rain coming - any news on roof repairs?
+
+Hope you and yours are doing well!!
+- J
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3Daf56b413-7c56-45b0-9db6-a13e51acdbd6]=E1=90=A7
+
+On Mon, Mar 23, 2020 at 1:19 PM Josh Klein <josh@josh.is<mailto:josh@josh.i=
+s>> wrote:
+Scratch that - a big chunk of the ceiling (from Eric's last repair) fell ea=
+rlier, and bits and pieces have been following it ever since. Let me know w=
+hen/what we might be able to do to get this fixed given everything else you=
+ must have going on.
+
+All best,
+Josh
+[https://default-dot-mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&ty=
+pe=3Dzerocontent&guid=3D53f7a5ed-f3ee-489e-a8b0-0a0422fd99a9]=E1=90=A7
+
+On Mon, Mar 23, 2020 at 11:37 AM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+Let me know if you have time for a brief call this week; anytime that's goo=
+d for you. I know you must be busy!!
+
+Separately, any news on the roof? I looked through the window but didn't se=
+e anything had been done. So far no leaks today, fingers crossed!
+
+I hope you and yours are safe and healthy,
+Josh
+[https://default-dot-mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&ty=
+pe=3Dzerocontent&guid=3Dfe7204c0-00ec-4679-9c91-239c6601bbbd]=E1=90=A7
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Previous attachments:
+ - image001.jpg (filename: 17175b8282bbcf7c-0-image001.jpg)
+
+Information about the change:
+ - Made with:                 Unattach 2.2.0
+ - Date and time:             2020-09-15T14:43:00.309080Z
+ - Download target hostname:  Muninn-2.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+--_000_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">=
+=20
+  <meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">=
+=20
+  <!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+  <style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+=09{font-family:Gadugi;
+=09panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0in;
+=09margin-bottom:.0001pt;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+=09{mso-style-priority:99;
+=09color:blue;
+=09text-decoration:underline;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-family:"Calibri",sans-serif;}
+@page WordSection1
+=09{size:8.5in 11.0in;
+=09margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+=09{page:WordSection1;}
+--></style>
+  <!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]-->
+  <!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->=20
+ </head>=20
+ <body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">=20
+  <div class=3D"WordSection1">=20
+   <p class=3D"MsoNormal">Josh =E2=80=93 thank you for the follow up. Our h=
+ead of construction is working on getting someone to the roof to properly a=
+ddress.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">Thank you!
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;color:#444444"=
+>
+      <o:p>
+       &nbsp;
+      </o:p></span></b></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;color:#444444"=
+>
+      <o:p>
+       &nbsp;
+      </o:p></span></b></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;color:#444444"=
+>Reid Leveillee</span></b><span style=3D"font-size:10.5pt;color:#444444">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt">D</span></b><=
+span style=3D"font-size:10.0pt">&nbsp;<a href=3D"tel:301.305.9277" target=
+=3D"_blank"><span style=3D"color:#0563C1">646.403.9939</span></a>
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><u><span style=3D"font-size:10.0pt;color:#0563C1"=
+><a href=3D"mailto:Reid@CanvasPG.com"><span style=3D"color:#0563C1">Reid@Ca=
+nvasPG.com</span></a></span></u><span style=3D"font-size:10.0pt;color:#1F49=
+7D">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0=
+in 0in 0in">=20
+    <p class=3D"MsoNormal"><b>From:</b> Josh Klein &lt;josh@josh.is&gt; <br=
+> <b>Sent:</b> Monday, April 13, 2020 11:58 AM<br> <b>To:</b> Reid &lt;Reid=
+@CanvasPG.com&gt;<br> <b>Cc:</b> Joshua William Klein &lt;josh@josh.is&gt;<=
+br> <b>Subject:</b> Re: Call
+     <o:p></o:p></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <p class=3D"MsoNormal">Just following up; with this rain the leak and m=
+old are both growing fast. Let us know on both this and any questions about=
+ the lease.
+     <o:p></o:p></p>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">Best wishes,<br> Josh
+      <o:p></o:p></p>=20
+    </div>=20
+   </div>=20
+   <div>=20
+    <p class=3D"MsoNormal"><img border=3D"0" width=3D"1" height=3D"1" style=
+=3D"width:.0138in;height:.0138in" id=3D"_x0000_i1033" src=3D"https://mailfo=
+ogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;gu=
+id=3D126ebc5d-2e2d-4bcc-b356-ebffda2a37e7"><span style=3D"font-size:7.5pt;f=
+ont-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7</span>
+     <o:p></o:p></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <div>=20
+     <p class=3D"MsoNormal">On Fri, Apr 10, 2020 at 4:30 PM Josh Klein &lt;=
+<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:
+      <o:p></o:p></p>=20
+    </div>=20
+    <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;paddin=
+g:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">=20
+     <div>=20
+      <p class=3D"MsoNormal">Reid,<br> <br> We haven't heard anything back,=
+ so would like you to freeze our rent. Please keep our check for April and =
+we can revisit in mid-May whether you should cash it June 1. If we don't he=
+ar back we'll proceed on this plan.<br> <br> Also, our ceiling is unsafe (b=
+its falling on us whenever it rains) and molding. Is there a timeline for g=
+etting this fixed?<br> <br> Hope you and yours are safe and healthy,<br> Jo=
+sh Klein
+       <o:p></o:p></p>=20
+     </div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+     <div>=20
+      <div>=20
+       <p class=3D"MsoNormal">On Wed, Apr 8, 2020 at 5:45 PM Josh Klein &lt=
+;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wro=
+te:
+        <o:p></o:p></p>=20
+      </div>=20
+      <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;padd=
+ing:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">=20
+       <div>=20
+        <div>=20
+         <p class=3D"MsoNormal">Just keeping on the top of your inbox - let=
+ us know when you do about payment options. Also, any news on a roof repair=
+? We had more rain last night and the rot seems to be spreading - or at lea=
+st it's still leaking. :/
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal">
+          <o:p>
+           &nbsp;
+          </o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal">Hope you and yours are safe and healthy,
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal">Josh
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal">
+          <o:p>
+           &nbsp;
+          </o:p></p>=20
+        </div>=20
+       </div>=20
+       <p class=3D"MsoNormal">
+        <o:p>
+         &nbsp;
+        </o:p></p>=20
+       <div>=20
+        <div>=20
+         <p class=3D"MsoNormal">On Mon, Apr 6, 2020 at 4:40 PM Reid &lt;<a =
+href=3D"mailto:Reid@canvaspg.com" target=3D"_blank">Reid@canvaspg.com</a>&g=
+t; wrote:
+          <o:p></o:p></p>=20
+        </div>=20
+        <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;pa=
+dding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">=20
+         <div>=20
+          <div>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">Josh =E2=80=93 again, very sorry about that. Our temp s=
+uper stopped a day early and missed the trash pickup window as that vendor =
+was unable to mobilize a team quick enough. That will not happen again.
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">I will be sending out a notice for the trash and repair=
+s.=20
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444">&nbsp=
+;</span></b>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444">&nbsp=
+;</span></b>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444">Reid =
+Leveillee</span></b>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><b><span style=3D"font-size:10.0pt">D</span></b><span s=
+tyle=3D"font-size:10.0pt">&nbsp;<a href=3D"tel:301.305.9277" target=3D"_bla=
+nk"><span style=3D"color:#0563C1">646.403.9939</span></a></span>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><u><span style=3D"font-size:10.0pt;color:#0563C1"><a hr=
+ef=3D"mailto:Reid@CanvasPG.com" target=3D"_blank"><span style=3D"color:#056=
+3C1">Reid@CanvasPG.com</span></a></span></u>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><b>From:</b> Josh Klein &lt;<a href=3D"mailto:josh@josh=
+.is" target=3D"_blank">josh@josh.is</a>&gt; <br> <b>Sent:</b> Monday, April=
+ 6, 2020 4:38 PM<br> <b>To:</b> Reid &lt;<a href=3D"mailto:Reid@CanvasPG.co=
+m">Reid@CanvasPG.com</a>&gt;<br> <b>Subject:</b> Re: Call
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">Just saw a crew attacking the garbage, and someone wa=
+s brushes the stairs on my way up. Thanks!!
+              <o:p></o:p></p>=20
+            </div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">&nbsp;
+              <o:p></o:p></p>=20
+            </div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">- J
+              <o:p></o:p></p>=20
+            </div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">&nbsp;
+              <o:p></o:p></p>=20
+            </div>=20
+           </div>=20
+           <div>=20
+            <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-mar=
+gin-bottom-alt:auto">&nbsp;
+             <o:p></o:p></p>=20
+            <div>=20
+             <div>=20
+              <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-m=
+argin-bottom-alt:auto">On Mon, Apr 6, 2020 at 10:56 AM Josh Klein &lt;<a hr=
+ef=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:
+               <o:p></o:p></p>=20
+             </div>=20
+             <blockquote style=3D"border:none;border-left:solid windowtext =
+1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-r=
+ight:0in;margin-bottom:5.0pt;border-color:currentcolor currentcolor current=
+color rgb(204,204,204)">=20
+              <div>=20
+               <div>=20
+                <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso=
+-margin-bottom-alt:auto">Let us know where this stands; also, a notice to t=
+he building might be useful - everyone is wondering what's happening with t=
+he garbage and repairs.
+                 <o:p></o:p></p>=20
+               </div>=20
+               <div>=20
+                <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso=
+-margin-bottom-alt:auto">&nbsp;
+                 <o:p></o:p></p>=20
+               </div>=20
+               <div>=20
+                <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso=
+-margin-bottom-alt:auto">Thanks, and hope you're doing well!
+                 <o:p></o:p></p>=20
+               </div>=20
+              </div>=20
+              <div>=20
+               <div>=20
+                <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso=
+-margin-bottom-alt:auto">- J
+                 <o:p></o:p></p>=20
+               </div>=20
+              </div>=20
+              <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-m=
+argin-bottom-alt:auto">&nbsp;
+               <o:p></o:p></p>=20
+              <div>=20
+               <div>=20
+                <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso=
+-margin-bottom-alt:auto">On Thu, Apr 2, 2020 at 9:19 AM Reid &lt;<a href=3D=
+"mailto:Reid@canvaspg.com" target=3D"_blank">Reid@canvaspg.com</a>&gt; wrot=
+e:
+                 <o:p></o:p></p>=20
+               </div>=20
+               <blockquote style=3D"border:none;border-left:solid windowtex=
+t 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin=
+-right:0in;margin-bottom:5.0pt;border-color:currentcolor currentcolor curre=
+ntcolor rgb(204,204,204)">=20
+                <div>=20
+                 <div>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">Still waiting on something from Ownership in reg=
+ard to some sort of plan. We have had a few tenants reach out with a simila=
+r request, so I hope to get something out by tomorrow. I=E2=80=99m sincerel=
+y sorry for not immediately getting to you as I am absolutely swamped with =
+emails coming from every direction!
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">I do appreciate your follow ups to stay at the t=
+op of my inbox.
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">I=E2=80=99ll reach out to you tomorrow.
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444=
+">&nbsp;</span></b>
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444=
+">&nbsp;</span></b>
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#444444=
+">Reid Leveillee</span></b>
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><b><span style=3D"font-size:10.0pt">D</span></b>=
+<span style=3D"font-size:10.0pt">&nbsp;<a href=3D"tel:301.305.9277" target=
+=3D"_blank"><span style=3D"color:#0563C1">646.403.9939</span></a></span>
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><u><span style=3D"font-size:10.0pt;color:#0563C1=
+"><a href=3D"mailto:Reid@CanvasPG.com" target=3D"_blank"><span style=3D"col=
+or:#0563C1">Reid@CanvasPG.com</span></a></span></u>
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto"><b>From:</b> Josh Klein &lt;<a href=3D"mailto:jo=
+sh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; <br> <b>Sent:</b> Thursd=
+ay, April 2, 2020 9:10 AM<br> <b>To:</b> Reid &lt;<a href=3D"mailto:Reid@Ca=
+nvasPG.com" target=3D"_blank">Reid@CanvasPG.com</a>&gt;<br> <b>Subject:</b>=
+ Re: Call
+                   <o:p></o:p></p>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <div>=20
+                   <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;=
+mso-margin-bottom-alt:auto">Please advise.
+                    <o:p></o:p></p>=20
+                   <div>=20
+                    <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto=
+;mso-margin-bottom-alt:auto">&nbsp;
+                     <o:p></o:p></p>=20
+                   </div>=20
+                   <div>=20
+                    <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto=
+;mso-margin-bottom-alt:auto">Thanks,
+                     <o:p></o:p></p>=20
+                   </div>=20
+                   <div>=20
+                    <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto=
+;mso-margin-bottom-alt:auto">Josh
+                     <o:p></o:p></p>=20
+                   </div>=20
+                  </div>=20
+                  <div>=20
+                   <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;=
+mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x0000_i1032" src=3D"ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D4ee7e149-1843-49e0-a104-a40147868173"><span style=3D"font-=
+size:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7=
+</span>
+                    <o:p></o:p></p>=20
+                  </div>=20
+                  <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;m=
+so-margin-bottom-alt:auto">&nbsp;
+                   <o:p></o:p></p>=20
+                  <div>=20
+                   <div>=20
+                    <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto=
+;mso-margin-bottom-alt:auto">On Wed, Apr 1, 2020 at 10:20 AM Josh Klein &lt=
+;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wro=
+te:
+                     <o:p></o:p></p>=20
+                   </div>=20
+                   <blockquote style=3D"border:none;border-left:solid windo=
+wtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;ma=
+rgin-right:0in;margin-bottom:5.0pt;border-color:currentcolor currentcolor c=
+urrentcolor rgb(204,204,204)">=20
+                    <div>=20
+                     <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:aut=
+o;mso-margin-bottom-alt:auto">I can only imagine! The check was sent via ma=
+il from our bank.&nbsp;
+                      <o:p></o:p></p>=20
+                     <div>=20
+                      <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:au=
+to;mso-margin-bottom-alt:auto">&nbsp;
+                       <o:p></o:p></p>=20
+                     </div>=20
+                     <div>=20
+                      <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:au=
+to;mso-margin-bottom-alt:auto">Let us know if a deferment, reduced payment =
+plan, or something else would work best for you.
+                       <o:p></o:p></p>=20
+                     </div>=20
+                     <div>=20
+                      <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:au=
+to;mso-margin-bottom-alt:auto">&nbsp;
+                       <o:p></o:p></p>=20
+                     </div>=20
+                     <div>=20
+                      <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:au=
+to;mso-margin-bottom-alt:auto">Thanks!<br> Josh
+                       <o:p></o:p></p>=20
+                     </div>=20
+                    </div>=20
+                    <div>=20
+                     <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:aut=
+o;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x0000_i1031" src=3D"=
+https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzero=
+content&amp;guid=3Db9536882-e64d-493b-aeeb-0152c708beaa"><span style=3D"fon=
+t-size:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=
+=A7</span>
+                      <o:p></o:p></p>=20
+                    </div>=20
+                    <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto=
+;mso-margin-bottom-alt:auto">&nbsp;
+                     <o:p></o:p></p>=20
+                    <div>=20
+                     <div>=20
+                      <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:au=
+to;mso-margin-bottom-alt:auto">On Wed, Apr 1, 2020 at 10:13 AM Reid &lt;<a =
+href=3D"mailto:Reid@canvaspg.com" target=3D"_blank">Reid@canvaspg.com</a>&g=
+t; wrote:
+                       <o:p></o:p></p>=20
+                     </div>=20
+                     <blockquote style=3D"border:none;border-left:solid win=
+dowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.0pt;=
+margin-right:0in;margin-bottom:5.0pt;border-color:currentcolor currentcolor=
+ currentcolor rgb(204,204,204)">=20
+                      <div>=20
+                       <div>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">Josh =E2=80=93 extremely sorry about not g=
+etting back to you. It has been extremely hectic on my end.
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">&nbsp;
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">You had sent your check via USPS? Or via C=
+lickPay?
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">&nbsp;
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.5pt">&nbsp;</s=
+pan>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.5pt">Best,</sp=
+an>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#=
+444444">&nbsp;</span></b>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#=
+444444">Reid Leveillee</span></b>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10.5pt;color:#=
+404040">Canvas Property Group</span></b><span style=3D"font-size:10.5pt;col=
+or:#1F497D">| </span><b><span style=3D"font-size:10.5pt;color:#404040">Prop=
+erty Manager</span></b>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.0pt;color:#1F4=
+97D">401 Park Avenue South| New York, NY&nbsp;</span>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10.0pt">D</spa=
+n></b><span style=3D"font-size:10.0pt">&nbsp;<a href=3D"tel:301.305.9277" t=
+arget=3D"_blank"><span style=3D"color:#0563C1">646.403.9939</span></a></spa=
+n>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><u><span style=3D"font-size:10.0pt;color:#=
+0563C1"><a href=3D"mailto:Reid@CanvasPG.com" target=3D"_blank"><span style=
+=3D"color:#0563C1">Reid@CanvasPG.com</span></a></span></u>
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">&nbsp;
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto"><b>From:</b> Josh Klein &lt;<a href=3D"mai=
+lto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; <br> <b>Sent:</b> =
+Wednesday, April 1, 2020 10:11 AM<br> <b>To:</b> Reid &lt;<a href=3D"mailto=
+:Reid@CanvasPG.com" target=3D"_blank">Reid@CanvasPG.com</a>&gt;<br> <b>Subj=
+ect:</b> Re: Call
+                         <o:p></o:p></p>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">&nbsp;
+                         <o:p></o:p></p>=20
+                        <div>=20
+                         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt=
+:auto;mso-margin-bottom-alt:auto">We recognize this is a difficult time for=
+ all of us, but without any communication we cannot come to an agreement on=
+ next actions. We need to hear from you today or we will cancel the latest =
+check and hope to create a payment plan at a later date. <br> <br> Looking =
+forward to hearing from you shortly,<br> Josh Klein<br> <br> B42, Hayes Cou=
+rt
+                          <o:p></o:p></p>=20
+                        </div>=20
+                        <div>=20
+                         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt=
+:auto;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x0000_i1030" src=
+=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3D=
+zerocontent&amp;guid=3D7b740a1a-10b1-4b8a-877f-e698527eca42"><span style=3D=
+"font-size:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=
+=90=A7</span>
+                          <o:p></o:p></p>=20
+                        </div>=20
+                        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:=
+auto;mso-margin-bottom-alt:auto">&nbsp;
+                         <o:p></o:p></p>=20
+                        <div>=20
+                         <div>=20
+                          <p class=3D"MsoNormal" style=3D"mso-margin-top-al=
+t:auto;mso-margin-bottom-alt:auto">On Mon, Mar 30, 2020 at 12:36 PM Josh Kl=
+ein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&=
+gt; wrote:
+                           <o:p></o:p></p>=20
+                         </div>=20
+                         <blockquote style=3D"border:none;border-left:solid=
+ windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:5.=
+0pt;margin-right:0in;margin-bottom:5.0pt;border-color:currentcolor currentc=
+olor currentcolor rgb(204,204,204)">=20
+                          <div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">Reid,
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">Let us know about the leak and payment=
+ options; we need to get something planned before Wednesday. Hope you're we=
+ll!
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">best,
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">Josh
+                             <o:p></o:p></p>=20
+                           </div>=20
+                          </div>=20
+                          <p class=3D"MsoNormal" style=3D"mso-margin-top-al=
+t:auto;mso-margin-bottom-alt:auto">&nbsp;
+                           <o:p></o:p></p>=20
+                          <div>=20
+                           <div>=20
+                            <p class=3D"MsoNormal" style=3D"mso-margin-top-=
+alt:auto;mso-margin-bottom-alt:auto">On Sun, Mar 29, 2020 at 10:46 AM Josh =
+Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a=
+>&gt; wrote:
+                             <o:p></o:p></p>=20
+                           </div>=20
+                           <blockquote style=3D"border:none;border-left:sol=
+id windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-top:=
+5.0pt;margin-right:0in;margin-bottom:5.0pt;border-color:currentcolor curren=
+tcolor currentcolor rgb(204,204,204)">=20
+                            <div>=20
+                             <div>=20
+                              <div>=20
+                               <p class=3D"MsoNormal" style=3D"mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto">The leak has been going since yeste=
+rday and is widening considerably (picture attached). Please advise.
+                                <o:p></o:p></p>=20
+                              </div>=20
+                              <div>=20
+                               <p class=3D"MsoNormal" style=3D"mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                <o:p></o:p></p>=20
+                              </div>=20
+                              <div>=20
+                               <p class=3D"MsoNormal" style=3D"mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto">Thanks - I hope you and yours are s=
+afe and healthy!
+                                <o:p></o:p></p>=20
+                              </div>=20
+                             </div>=20
+                            </div>=20
+                            <div>=20
+                             <div>=20
+                              <div>=20
+                               <p class=3D"MsoNormal" style=3D"mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto">Josh
+                                <o:p></o:p></p>=20
+                              </div>=20
+                             </div>=20
+                             <div>=20
+                              <p class=3D"MsoNormal" style=3D"mso-margin-to=
+p-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                               <o:p></o:p></p>=20
+                             </div>=20
+                             <div>=20
+                              <div>=20
+                               <p class=3D"MsoNormal" style=3D"mso-margin-t=
+op-alt:auto;mso-margin-bottom-alt:auto"><img border=3D"0" width=3D"4032" he=
+ight=3D"3024" style=3D"width:42.0in;height:31.5in" id=3D"gmail-m_-238829161=
+7950157021gmail-m_-2008621926391175975gmail-m_-8089840629540766535_x005f_x0=
+000_i1028" src=3D"cid:image001.jpg@01D611C3.9B992C10">
+                                <o:p></o:p></p>=20
+                              </div>=20
+                              <p class=3D"MsoNormal" style=3D"mso-margin-to=
+p-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                               <o:p></o:p></p>=20
+                             </div>=20
+                             <div>=20
+                              <p class=3D"MsoNormal" style=3D"mso-margin-to=
+p-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                               <o:p></o:p></p>=20
+                              <div>=20
+                               <div>=20
+                                <p class=3D"MsoNormal" style=3D"mso-margin-=
+top-alt:auto;mso-margin-bottom-alt:auto">On Thu, Mar 26, 2020 at 12:12 PM J=
+osh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.i=
+s</a>&gt; wrote:
+                                 <o:p></o:p></p>=20
+                               </div>=20
+                               <blockquote style=3D"border:none;border-left=
+:solid windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-=
+top:5.0pt;margin-right:0in;margin-bottom:5.0pt;border-color:currentcolor cu=
+rrentcolor currentcolor rgb(204,204,204)">=20
+                                <div>=20
+                                 <p class=3D"MsoNormal" style=3D"mso-margin=
+-top-alt:auto;mso-margin-bottom-alt:auto">I'm willing to bet that hectic is=
+ the most polite word possible for what you're going through at the moment!=
+! Keep me posted on the roof; I'm just concerned as the leak seems to be sp=
+reading to a few different places.
+                                  <o:p></o:p></p>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">On a separate topic, our income =
+has been wiped out entirely by the virus (all the events I was due to speak=
+ at have been cancelled). Our bank automatically sent you a check yesterday=
+ but I would expect it to bounce. We're hopeful that there's more income th=
+at will land by June; what sort of payment plans do you have until then? Do=
+ you want to hold the check that was mailed in escrow for the time being?
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">Many thanks,<br> Josh
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                </div>=20
+                                <div>=20
+                                 <p class=3D"MsoNormal" style=3D"mso-margin=
+-top-alt:auto;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x0000_i1=
+028" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp=
+;type=3Dzerocontent&amp;guid=3D07b291e4-1cac-46de-a687-246d7f0d6e9f"><span =
+style=3D"font-size:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;color:wh=
+ite">=E1=90=A7</span>
+                                  <o:p></o:p></p>=20
+                                </div>=20
+                                <p class=3D"MsoNormal" style=3D"mso-margin-=
+top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                 <o:p></o:p></p>=20
+                                <div>=20
+                                 <div>=20
+                                  <p class=3D"MsoNormal" style=3D"mso-margi=
+n-top-alt:auto;mso-margin-bottom-alt:auto">On Wed, Mar 25, 2020 at 9:02 PM =
+Reid &lt;<a href=3D"mailto:Reid@canvaspg.com" target=3D"_blank">Reid@canvas=
+pg.com</a>&gt; wrote:
+                                   <o:p></o:p></p>=20
+                                 </div>=20
+                                 <blockquote style=3D"border:none;border-le=
+ft:solid windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;margi=
+n-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;border-color:currentcolor =
+currentcolor currentcolor rgb(204,204,204)">=20
+                                  <div>=20
+                                   <div>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">I hope you have been well your=
+self! Thank you for the follow up =E2=80=93 it has been a bit hectic on my =
+end. I will have our head of construction check the roof. We had a vendor w=
+ho was looking at all areas on the roof and I will need to check in with hi=
+m.
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">Will update when I can.
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">Thanks!
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.5p=
+t">&nbsp;</span>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.5p=
+t">Best,</span>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10=
+.5pt;color:#444444">&nbsp;</span></b>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10=
+.5pt;color:#444444">Reid Leveillee</span></b>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10=
+.5pt;color:#404040">Canvas Property Group</span></b><span style=3D"font-siz=
+e:10.5pt;color:#1F497D">| </span><b><span style=3D"font-size:10.5pt;color:#=
+404040">Property Manager</span></b>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><span style=3D"font-size:10.0p=
+t;color:#1F497D">401 Park Avenue South| New York, NY&nbsp;</span>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><b><span style=3D"font-size:10=
+.0pt">D</span></b><span style=3D"font-size:10.0pt">&nbsp;<a href=3D"tel:301=
+.305.9277" target=3D"_blank"><span style=3D"color:#0563C1">646.403.9939</sp=
+an></a></span>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><u><span style=3D"font-size:10=
+.0pt;color:#0563C1"><a href=3D"mailto:Reid@CanvasPG.com" target=3D"_blank">=
+<span style=3D"color:#0563C1">Reid@CanvasPG.com</span></a></span></u>
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto"><b>From:</b> Josh Klein &lt;<a=
+ href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; <br> <=
+b>Sent:</b> Wednesday, March 25, 2020 4:52 PM<br> <b>To:</b> Reid &lt;<a hr=
+ef=3D"mailto:Reid@CanvasPG.com" target=3D"_blank">Reid@CanvasPG.com</a>&gt;=
+<br> <b>Cc:</b> Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" ta=
+rget=3D"_blank">josh@josh.is</a>&gt;<br> <b>Subject:</b> Re: Call
+                                     <o:p></o:p></p>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <div>=20
+                                     <p class=3D"MsoNormal" style=3D"mso-ma=
+rgin-top-alt:auto;mso-margin-bottom-alt:auto">Reid,
+                                      <o:p></o:p></p>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">We have a bunch of rain comi=
+ng - any news on roof repairs?
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">Hope you and yours are doing=
+ well!!
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">- J
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                    </div>=20
+                                    <div>=20
+                                     <p class=3D"MsoNormal" style=3D"mso-ma=
+rgin-top-alt:auto;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x000=
+0_i1027" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz=
+&amp;type=3Dzerocontent&amp;guid=3Daf56b413-7c56-45b0-9db6-a13e51acdbd6"><s=
+pan style=3D"font-size:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;colo=
+r:white">=E1=90=A7</span>
+                                      <o:p></o:p></p>=20
+                                    </div>=20
+                                    <p class=3D"MsoNormal" style=3D"mso-mar=
+gin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                     <o:p></o:p></p>=20
+                                    <div>=20
+                                     <div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">On Mon, Mar 23, 2020 at 1:19=
+ PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@j=
+osh.is</a>&gt; wrote:
+                                       <o:p></o:p></p>=20
+                                     </div>=20
+                                     <blockquote style=3D"border:none;borde=
+r-left:solid windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt;m=
+argin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;border-color:currentco=
+lor currentcolor currentcolor rgb(204,204,204)">=20
+                                      <div>=20
+                                       <p class=3D"MsoNormal" style=3D"mso-=
+margin-top-alt:auto;mso-margin-bottom-alt:auto">Scratch that - a big chunk =
+of the ceiling (from Eric's last repair) fell earlier, and bits and pieces =
+have been following it ever since. Let me know when/what we might be able t=
+o do to get this fixed given everything else you must have going on.
+                                        <o:p></o:p></p>=20
+                                       <div>=20
+                                        <p class=3D"MsoNormal" style=3D"mso=
+-margin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                         <o:p></o:p></p>=20
+                                       </div>=20
+                                       <div>=20
+                                        <p class=3D"MsoNormal" style=3D"mso=
+-margin-top-alt:auto;mso-margin-bottom-alt:auto">All best,<br> Josh
+                                         <o:p></o:p></p>=20
+                                       </div>=20
+                                      </div>=20
+                                      <div>=20
+                                       <p class=3D"MsoNormal" style=3D"mso-=
+margin-top-alt:auto;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_x0=
+000_i1026" src=3D"https://default-dot-mailfoogae.appspot.com/t?sender=3Daam=
+9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D53f7a5ed-f3ee-489e-a8b0-0a=
+0422fd99a9"><span style=3D"font-size:7.5pt;font-family:&quot;Gadugi&quot;,s=
+ans-serif;color:white">=E1=90=A7</span>
+                                        <o:p></o:p></p>=20
+                                      </div>=20
+                                      <p class=3D"MsoNormal" style=3D"mso-m=
+argin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                       <o:p></o:p></p>=20
+                                      <div>=20
+                                       <div>=20
+                                        <p class=3D"MsoNormal" style=3D"mso=
+-margin-top-alt:auto;mso-margin-bottom-alt:auto">On Mon, Mar 23, 2020 at 11=
+:37 AM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">jos=
+h@josh.is</a>&gt; wrote:
+                                         <o:p></o:p></p>=20
+                                       </div>=20
+                                       <blockquote style=3D"border:none;bor=
+der-left:solid windowtext 1.0pt;padding:0in 0in 0in 6.0pt;margin-left:4.8pt=
+;margin-top:5.0pt;margin-right:0in;margin-bottom:5.0pt;border-color:current=
+color currentcolor currentcolor rgb(204,204,204)">=20
+                                        <div>=20
+                                         <p class=3D"MsoNormal" style=3D"ms=
+o-margin-top-alt:auto;mso-margin-bottom-alt:auto">Let me know if you have t=
+ime for a brief call this week; anytime that's good for you. I know you mus=
+t be busy!!
+                                          <o:p></o:p></p>=20
+                                         <div>=20
+                                          <p class=3D"MsoNormal" style=3D"m=
+so-margin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                           <o:p></o:p></p>=20
+                                         </div>=20
+                                         <div>=20
+                                          <p class=3D"MsoNormal" style=3D"m=
+so-margin-top-alt:auto;mso-margin-bottom-alt:auto">Separately, any news&nbs=
+p;on the roof? I looked through the window but didn't see anything had been=
+ done. So far no leaks today, fingers crossed!
+                                           <o:p></o:p></p>=20
+                                         </div>=20
+                                         <div>=20
+                                          <p class=3D"MsoNormal" style=3D"m=
+so-margin-top-alt:auto;mso-margin-bottom-alt:auto">&nbsp;
+                                           <o:p></o:p></p>=20
+                                         </div>=20
+                                         <div>=20
+                                          <p class=3D"MsoNormal" style=3D"m=
+so-margin-top-alt:auto;mso-margin-bottom-alt:auto">I hope you and yours are=
+ safe and healthy,
+                                           <o:p></o:p></p>=20
+                                         </div>=20
+                                         <div>=20
+                                          <p class=3D"MsoNormal" style=3D"m=
+so-margin-top-alt:auto;mso-margin-bottom-alt:auto">Josh
+                                           <o:p></o:p></p>=20
+                                         </div>=20
+                                        </div>=20
+                                        <div>=20
+                                         <p class=3D"MsoNormal" style=3D"ms=
+o-margin-top-alt:auto;mso-margin-bottom-alt:auto"><img border=3D"0" id=3D"_=
+x0000_i1025" src=3D"https://default-dot-mailfoogae.appspot.com/t?sender=3Da=
+am9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dfe7204c0-00ec-4679-9c91-=
+239c6601bbbd"><span style=3D"font-size:7.5pt;font-family:&quot;Gadugi&quot;=
+,sans-serif;color:white">=E1=90=A7</span>
+                                          <o:p></o:p></p>=20
+                                        </div>=20
+                                       </blockquote>=20
+                                      </div>=20
+                                     </blockquote>=20
+                                    </div>=20
+                                   </div>=20
+                                  </div>=20
+                                 </blockquote>=20
+                                </div>=20
+                               </blockquote>=20
+                              </div>=20
+                             </div>=20
+                            </div>=20
+                           </blockquote>=20
+                          </div>=20
+                         </blockquote>=20
+                        </div>=20
+                       </div>=20
+                      </div>=20
+                     </blockquote>=20
+                    </div>=20
+                   </blockquote>=20
+                  </div>=20
+                 </div>=20
+                </div>=20
+               </blockquote>=20
+              </div>=20
+             </blockquote>=20
+            </div>=20
+           </div>=20
+          </div>=20
+         </div>=20
+        </blockquote>=20
+       </div>=20
+      </blockquote>=20
+     </div>=20
+    </blockquote>=20
+   </div>=20
+  </div>  =20
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>image001.jpg (filename: /Users/josh/Desktop/ATTACHMENTS/17175b8282bb=
+cf7c-0-image001.jpg, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/171=
+75b8282bbcf7c-0-image001.jpg">local link</a>)</li>=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.2.0</li>=
+=20
+   <li>Date and time: 2020-09-15T14:43:00.309080Z</li>=20
+   <li>Download target host name: Muninn-2.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+--_000_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_--
+
+--_004_BLAPR16MB3714A27811025CCB0EDEB523B0DD0BLAPR16MB3714namp_--

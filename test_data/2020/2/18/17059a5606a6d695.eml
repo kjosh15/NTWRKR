@@ -1,0 +1,984 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b54b:0:0:0:0:0 with SMTP id a11csp7093559ljn;
+        Tue, 18 Feb 2020 10:52:55 -0800 (PST)
+X-Received: by 2002:a05:620a:12a5:: with SMTP id x5mr20117556qki.478.1582051975345;
+        Tue, 18 Feb 2020 10:52:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1582051975; cv=none;
+        d=google.com; s=arc-20160816;
+        b=l/LmLmVtdHq/1VTGfHFs3tCp4Oo54wkoi4z334l5VTwQ26wTq25A4LAiYJ6k6qJxvL
+         eWAfXw+bqucmgEUDXhAYw+CFSTNwZ0zjq1ynuxAIJoJE1MSw9mzSYshtFWmZQpyBL2/j
+         2fFhddUW4WMVMM4PqlLjOoQwMF5bwfU9kTmB5BPS0MUtIRhMxndjx/MA1qRi4nRFEkAd
+         xVBbXljmxsQpaiN69yTrcGBBowEfcpqVA7Sgh5X815Z09xj9QvKEms4oAYOT45o6LMQW
+         i/6NeiaV6oK+RCbP+Fi4FhqUflPKmyMXskkG5khgCNNoHtSX5ZniJo818oMNEtL4v+UF
+         yJsg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:references:message-id:cc:date:in-reply-to:from:subject
+         :mime-version:dkim-signature;
+        bh=0yjBa9vCD4ATZM5szIp2vaap9A44aeCPHM0QkI+YrvY=;
+        b=wus2Df2wA+/FACq+/FOfWoYPfKcQezqyKk3+d7LVNkp6kngRi9qGppB/jUoKeSxStM
+         FrnLw1UEAkJz9U+5rfyfz9q4jzloh4mVaQXzXexlZ4XoOSA4HtwpjFtE4dHyAU9kCKie
+         /5BawTetq3G31MseQsV+xTmEn+ElYwsV7F5amx3IEGX0eQM2HcS2tFBossAxrjy29Mx0
+         st8GzYSUmpq5MZdbcIZUZW+suq/r9pcuFJGCOG6WkwUwznlDxuavFFREcSS8nShDCQpl
+         qusxOQ3pOk850wov9eYHTAYO1drNxoWyc9pVaZ/1t9rcoaOZ+yYSICL1IL1K+qF608lX
+         tvPg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ionchannel-io.20150623.gappssmtp.com header.s=20150623 header.b=eynAWXTU;
+       spf=pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) smtp.mailfrom=jc.herz@ionchannel.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ionchannel.io
+Return-Path: <jc.herz@ionchannel.io>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id p20sor5888735qtl.10.2020.02.18.10.52.55
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 18 Feb 2020 10:52:55 -0800 (PST)
+Received-SPF: pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ionchannel-io.20150623.gappssmtp.com header.s=20150623 header.b=eynAWXTU;
+       spf=pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) smtp.mailfrom=jc.herz@ionchannel.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ionchannel.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionchannel-io.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:subject:from:in-reply-to:date:cc:message-id:references
+         :to;
+        bh=0yjBa9vCD4ATZM5szIp2vaap9A44aeCPHM0QkI+YrvY=;
+        b=eynAWXTUt7ccden2qL64qsb4Jkg/V2lkwLaipJx3Y3k/mjY6DmtFQpzAXMgsV62hjG
+         BUrw90h+0O2orwpaEoOOxS8OuhfbkiAbnx62hXeeWLs6dkcXKZrSZVRVGz50VimwPIvw
+         Kgh2T0JHV6gmGiRO9cF1dsRTpVEm2B77RONGWcZvAEtjfo+4lRUqdKLr9Wpzl/1NWMt0
+         eTCbNrHgmVp+BJUFMxVJ+Zmy1s5aQW8jZDpTNTBu4eZk3OMW/zbhPiCGfXFx9aavQ4Pe
+         G9lseLMp7BugpOz8F+S9oUhhvKyX++E6n1iBWbAgZI9fmVwfwG2XB8CJVDhAg1EQ5xw+
+         eGuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :message-id:references:to;
+        bh=0yjBa9vCD4ATZM5szIp2vaap9A44aeCPHM0QkI+YrvY=;
+        b=MZVcluHTU7Lc+xYMtSLo0HeDaP7+NeVimpMrEJpuLgrat+MORsJrtQCLi/sHbXKUKT
+         J61BIT4ykSF/uTeQ2LBdj/I6PiUN7BpYFtWiGQJZ+ms7WedWep8FLOs55m9O3aAEferj
+         5e4mHr96UtO/1Wfh3C46e2mDyAiJ8Yc1OUEAqyWm/W9aT2z1NXa2Y7STxyeRMsOk0Glt
+         iv7gMZAFh8heuF06Ct1BxHwyaTE0s9Lu6M0kttIQmdZlgRQJINYdNDLmZtis2qURm+xb
+         ffueNUr1X7EdUWh0bRVPSJXW00wMuDLPvXb7Sby8aAPBbxGRcbVqCJU4NRTrIpK8VJNN
+         xsvQ==
+X-Gm-Message-State: APjAAAUAiATk8dAjAEMWaGmwvQl5l8VRcVLj802RMFEi6fbH+x8Mfh8+
+	HCzG5/FvtrbftRiZE2c78nCWzE51zJ0=
+X-Google-Smtp-Source: APXvYqy1bELUtby8QRroAmdgsrRMtDgYCVxhfYJDzii04R1iyI1Uo2oBgks99ri0VDZBZUHVvmmc0A==
+X-Received: by 2002:ac8:7297:: with SMTP id v23mr18413942qto.135.1582051974415;
+        Tue, 18 Feb 2020 10:52:54 -0800 (PST)
+Return-Path: <jc.herz@ionchannel.io>
+Received: from [198.18.6.46] (92.17.559e.ip4.static.sl-reverse.com. [158.85.23.146])
+        by smtp.gmail.com with ESMTPSA id o187sm2288117qkf.26.2020.02.18.10.52.53
+        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 18 Feb 2020 10:52:53 -0800 (PST)
+Content-Type: multipart/alternative; boundary="Apple-Mail=_7D49972E-407F-402C-BB6C-29BCD2E0D90C"
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Subject: Re: Deck
+From: JC Herz <jc.herz@ionchannel.io>
+In-Reply-To: <CACNgykO=JsRTU55nm0jK6sdPfuhAtq2A2f6H1PtxXhZEZ=EG3Q@mail.gmail.com>
+Date: Tue, 18 Feb 2020 13:52:53 -0500
+Cc: "John Scott (Ion Channel)" <john.scott@ionchannel.io>
+Message-Id: <A9334E4B-6BF2-4600-9353-3D0CD4FEF7F9@ionchannel.io>
+References: <444AD607-F1F8-48F4-AED8-75D0F9856857@ionchannel.io> <CACNgykPGxLWGhpvjwWEVB6RyXp-nawcCfGfOcqaZ=OnYoksFLA@mail.gmail.com> <06C96535-E907-40D8-9F58-0F7633A2F21A@ionchannel.io> <CACNgykPbP1arzos0AZryoEnVAfuP+1Gwfgsm-y6-Pu1g+Uxktw@mail.gmail.com> <7B0B297F-4D72-471C-BEB5-5ADB6E485946@ionchannel.io> <CACNgykNj6=+YOf+zDdb3Cf6c12EH8F6ZPY_JexQKxP4cs0XVuw@mail.gmail.com> <47BAE9F7-E21E-4EC3-9DE5-9CCCA7B04FEB@ionchannel.io> <CACNgykO=JsRTU55nm0jK6sdPfuhAtq2A2f6H1PtxXhZEZ=EG3Q@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+X-Mailer: Apple Mail (2.3124)
+
+
+--Apple-Mail=_7D49972E-407F-402C-BB6C-29BCD2E0D90C
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Josh -
+
+Here=E2=80=99s our NDA - fill out with your details, sign and we=E2=80=99l=
+l return a fully executed copy.
+
+
+
+Best,
+
+JC
+
+
+
+
+
+> On Feb 18, 2020, at 11:06 AM, Josh Klein <josh@josh.is> wrote:
+>=20
+> Perfect. Hit me with that NDA so I can do some due diligence and I'll =
+generate a short list of corps I'd like to approach!
+>=20
+> - J
+> =E1=90=A7
+>=20
+> On Tue, Feb 18, 2020 at 10:54 AM JC Herz <jc.herz@ionchannel.io =
+<mailto:jc.herz@ionchannel.io>> wrote:
+>=20
+>> I had some conversations with a couple of my larger corporate clients =
+(Fortune 400 and up) and there was some real initial interest. Do you =
+offer a commission if I can provide an intro that turns into a contract?
+>=20
+>=20
+>=20
+> We do have lead-gen and commission agreements with channel partners if =
+that=E2=80=99s something you=E2=80=99d be interested in. Snapshots of =
+our lead-gen agreement are below - it=E2=80=99s a 5% commission on the =
+first 12 months of revenue from a customer, assuming a purchase is made =
+within 24 months of initial introduction.=20
+>=20
+> If this makes sense, we can get an NDA in place and go from there.
+>=20
+>=20
+>=20
+> Best,
+>=20
+> JC
+>=20
+>=20
+>=20
+>=20
+>=20
+> *************************************
+>=20
+>=20
+>=20
+> <PastedGraphic-1.tiff>
+>=20
+>=20
+> <PastedGraphic-2.tiff>
+> <PastedGraphic-3.tiff>
+>=20
+>> On Feb 17, 2020, at 2:42 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>=20
+>> I had some conversations with a couple of my larger corporate clients =
+(Fortune 400 and up) and there was some real initial interest. Do you =
+offer a commission if I can provide an intro that turns into a contract?
+>>=20
+>> best,
+>> Josh
+>> =E1=90=A7
+>>=20
+>> On Thu, Feb 13, 2020 at 8:51 AM JC Herz <jc.herz@ionchannel.io =
+<mailto:jc.herz@ionchannel.io>> wrote:
+>>=20
+>> Small and medium companies have to do it because larger customers - =
+specifically banks - are requiring it. Part of that is regulatory and =
+part of it is large orgs want to push risk and liability to the left and =
+have the leverage to do so. Our addressable market is the supplier base =
+for defense (100,000 companies and their subcontractors, which includes =
+a lot of public companies and software vendors that do business with the =
+military/intel community) and regulated industry (energy, telecom, =
+healthcare, finance, critical manufacturing, transportation, smart =
+cities, election infrastructure). There are hundreds of thousands of =
+corporate entities who are regulated to care, and the mandates that kick =
+in this year will be almost impossible to satisfy without automation. =
+See: https://csrc.nist.gov/publications/detail/nistir/8276/draft =
+<https://csrc.nist.gov/publications/detail/nistir/8276/draft> and =
+https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_20200131_v2.pd=
+f =
+<https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_20200131_v2.p=
+df>
+>>=20
+>> CIO=E2=80=99s tend to like this because it solves the impasse with =
+security - put something in the background that satisfies the CISO and =
+the chief risk officer (this also mitigates the legal department=E2=80=99s=
+ concerns about third party risk), and all the capabilities you want for =
+the business can move more quickly into operation.=20
+>>=20
+>>=20
+>>=20
+>> JC
+>>=20
+>>=20
+>>> On Feb 13, 2020, at 8:40 AM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>=20
+>>> Makes complete sense, but I wonder about how you=E2=80=99re going to =
+get access to decision makers who aren=E2=80=99t siloed to the point of =
+impotence for a project like this - again, considering where risk =
+(specifically cyber risk) is situated, I could see a CTO at a large =
+company mandating this ... but never enforcing it.=20
+>>>=20
+>>> Conversely, does a small to midsize company have the business =
+imperatives to protect themselves this way, or is it going to be =
+business as usual - growth first, security fifth?
+>>>=20
+>>> Separately, would love your take on approaching intelligence =
+communities - it sounded as though you had some good insights to share!
+>>>=20
+>>> - J
+>>>=20
+>>>=20
+>>> On Wed, Feb 12, 2020 at 2:58 PM JC Herz <jc.herz@ionchannel.io =
+<mailto:jc.herz@ionchannel.io>> wrote:
+>>>>=20
+>>>> Thanks for this! I can already think of a few people to pass this =
+to. Can you follow up with an email contextualizing this for small, =
+medium, and large clients? I tend to work mostly with the latter and =
+some with the former, and not as often with the midsize (although that =
+is a new target for me for 2020 vis a vis board seats).
+>>>=20
+>>> The difficult problem for large enterprises - and any enterprise =
+with a large supplier network - is third party risk management: How do I =
+get a basic level of assurance on the software coming into my =
+enterprise, particularly from outsourced/pro-services teams and small =
+vendors, on a continuos basis. As Equifax showed us, a product that=E2=80=99=
+s green today might be red 90 days later. What if that=E2=80=99s a =
+mobile app that your web agency developed? Or a cutting-edge AI/ML =
+capability from some venture-backed startup (none of which give a =
+rat=E2=80=99s ass about security).=20
+>>>=20
+>>> How do you automate transparency on those inbound deliverables (and =
+their updates) developed outside your boundary?
+>>>=20
+>>> How do you enforce governance on a continuous basis, so that =
+suppliers are on the hook to remediate/update products as =
+vulnerabilities emerge?
+>>>=20
+>>> How does this become a tractable process for procurement and vendor =
+management, so they=E2=80=99re not saddled with cyber forensics that =
+they=E2=80=99re not staffed to take on?=20
+>>>=20
+>>> This is also about pushing risk to the left in contract provisions, =
+and meeting regulatory mandates for cyber responsiveness, as well as =
+known-vulnerability terms of cyber insurance policies.=20
+>>>=20
+>>> An example:
+>>>=20
+>>> 1) The supplier deliverable (either pro services app development or =
+vendor product SBOM) is analyzed prior to procurement. Governance =
+criteria are enforced. For instance, the large banks have prohibited =
+components lists - if you have certain Python libraries in your product =
+(containing malware, per threat intel), you=E2=80=99re not going to sell =
+that product to JP Morgan Chase - it=E2=80=99s a firewall to =
+procurement. One of the big banks requires an SBOM for full pricing - =
+any product without an SBOM is subject to a 40% discount if it gets =
+procured at all.
+>>>=20
+>>> 2) Ion Channel runs analysis on that SBOM every day, parallel to =
+whatever the supplier is doing for assurance.
+>>>=20
+>>> 3) If the deliverable moves from green to red (e.g. new critical =
+vulnerability), that change is time-stamped. Contract provisions - =
+security SLAs - can specify how many hours/days the supplier has to push =
+an update that remediates the vulnerability, and see the time stamp with =
+third party certification that the supplier has met the provision or =
+not, in which case there might be remedies.=20
+>>>=20
+>>>=20
+>>>=20
+>>> Does this make sense?
+>>>=20
+>>>=20
+>>>=20
+>>> JC
+>>>=20
+>>>=20
+>>>>=20
+>>>> Separately, any thinking you may have on how to propose a workable =
+deployment with gov't would be hugely appreciated.
+>>>>=20
+>>>> Sincerely,
+>>>> Josh
+>>>>=20
+>>>> =E1=90=A7
+>>>>=20
+>>>> On Wed, Feb 12, 2020 at 11:09 AM JC Herz <jc.herz@ionchannel.io =
+<mailto:jc.herz@ionchannel.io>> wrote:
+>>>>=20
+>>>=20
+>>=20
+>=20
+
+
+--Apple-Mail=_7D49972E-407F-402C-BB6C-29BCD2E0D90C
+Content-Type: multipart/mixed;
+	boundary="Apple-Mail=_608BE450-BAF2-40BF-BF13-11935945C724"
+
+
+--Apple-Mail=_608BE450-BAF2-40BF-BF13-11935945C724
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =
+class=3D"">Josh -<div class=3D""><br class=3D""></div><div =
+class=3D"">Here=E2=80=99s our NDA - fill out with your details, sign and =
+we=E2=80=99ll return a fully executed copy.</div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""></div><div class=3D"">Best,</div><div class=3D""><br =
+class=3D""></div><div class=3D"">JC</div><div class=3D""><br =
+class=3D""></div><div class=3D""></div></body></html>=
+
+--Apple-Mail=_608BE450-BAF2-40BF-BF13-11935945C724
+Content-Disposition: attachment;
+	filename="NDA-Ion Channel - Josh Klein.docx"
+Content-Type: application/vnd.openxmlformats-officedocument.wordprocessingml.document;
+	name="NDA-Ion Channel - Josh Klein.docx"
+Content-Transfer-Encoding: base64
+
+UEsDBBQABgAIAAAAIQCHSn4zogEAAK0JAAATAAgCW0NvbnRlbnRfVHlwZXNdLnhtbCCiBAIooAAC
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAADE
+lt1qg0AQhe8LfQfZ26KbpFBKiclFfy7bQNMH2OyOUaq7y+7k7+07xkRKSaI0kdwIunPO+WYUmeF4
+XeTBEpzPjI5ZP+qxALQ0KtPzmH1N38JHFngUWoncaIjZBjwbj25vhtONBR+QWvuYpYj2iXMvUyiE
+j4wFTSeJcYVAunVzboX8FnPgg17vgUujETSGWHqw0fAFErHIMXhd0+OKxEHuWfBcFZZZMRPW5pkU
+SOd8qdWflHCXEJFyW+PTzPo7KmD8YEJ5cjxgp/ug0bhMQTARDt9FQVV8ZZziyshFQcrotM0BTpMk
+mYRaX7pZZyR4TzMv8qg+KUSm9/xHOfSimIEj5eVBautGCI+bHPzlCSrf5nhAJEEXADvnRoQVzD47
+o/hl3giSGIPaYBdvo7ZuhACtOmLYOzcipCAUuP7lCSrjlvmDq+WXL6uT/ivjlvkd9N8yvxrT/ZXn
+30F+6/lTnpjl0AXBzroRAmkdgOp6/pe4tTkVSZUTZ6yn9cL9o+39/lCqQ2rYgsPs9J+mTiTrs/uD
+cjVRoA5k8+2yNfoBAAD//wMAUEsDBBQABgAIAAAAIQAekRq37wAAAE4CAAALAAgCX3JlbHMvLnJl
+bHMgogQCKKAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAArJLBasMwDEDvg/2D0b1R2sEYo04vY9DbGNkHCFtJTBPb2GrX/v082NgCXelhR8vS
+05PQenOcRnXglF3wGpZVDYq9Cdb5XsNb+7x4AJWFvKUxeNZw4gyb5vZm/cojSSnKg4tZFYrPGgaR
++IiYzcAT5SpE9uWnC2kiKc/UYySzo55xVdf3mH4zoJkx1dZqSFt7B6o9Rb6GHbrOGX4KZj+xlzMt
+kI/C3rJdxFTqk7gyjWop9SwabDAvJZyRYqwKGvC80ep6o7+nxYmFLAmhCYkv+3xmXBJa/ueK5hk/
+Nu8hWbRf4W8bnF1B8wEAAP//AwBQSwMEFAAGAAgAAAAhAJ36zoRQAQAAwwcAABwACAF3b3JkL19y
+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
+uYUarJLRoYYEbKghARtqSHAKNcC4hxqinEMNUV2hVmdRGqFGRdgwx03CDEPcgGwY4oqzYeiwWjKs
+HVdLBsFxtQRjVcUct1oyg2Yn9I2endA3jHYCKp5WDD6wdhQ6wnaUW6hxq6W2ULsL1U7Ahhq3WrKG
+Grda6gw1brXUGWrcaskeatxqqS3UuNVSW6jdi7Od4BRq3GqpM9S41VJnqHGrJXuocaultlDjVktt
+ocatltpCPXBAtmLcQ41bLXWGGrdasocat1pqCzVutdQWatxqqS3UuNWSNdS41VJnqHGrpc5Q41ZL
+9lDjVkttocatltpCjVsttYUat1qyhhq3WuoMNW611Blq3GrpRpgwD4+AmiQkKwJ/z4u7Ivm8IMMf
+TviQZjTn8TcaBeiujleNd1bJY6h31YnPF6Kj8rHlxneMovKxrRqoPngd1e+WksayRYF+i5berBqu
+r7Gq3zdfabZ+fVjra8hCGfyKuaP+lTuWgd5pbjbeNKbaB3sUzkWXQv1cK0uP9PNp6y9YqafTbvbP
+8hDbsm11claf1hFch6X8XCMoZfst7S6kGDrarMTSGYpST7YGvtcFYlsLRXumcRlC8ct1GgnASr9K
+rGxp9ExKlNh/QeP4hhivc7N8VL/XTezd3VGPM9jYX7/izWJfvevNAhg3G1P+2Z0n5bP69b0F1syX
+darF3epGl6Ge7pnDdWvWpWmzQes9pgKlgNRu+XToMjG2y6dREMJlLqKiasemay4zStVDFDfbIneU
+j1dsrQbydYTgBYbfpRA0erJud/kqks1W6zeUqOPp1xQKQaqCKX5Wn5KjUxmUBRf9ONjf0000PqMy
+tf7Iu6PyvgiZkYpXvWvQi2fyP6qte/qmj/yPC8lqbPPhv45MKJ+pbPFruTP4G0kWfw/0Z7Y4uenA
+9zulj3s4UL8784qKsbJgIZGM9eDT2Kxfl9nYJv2/3jDc8f48fKHSTroS+NfYZbo1L5+4EMjXYc54
+RuUMUzf9t3Ajm8umopNyWv5/kff2lJ5nNzylt33nFJUPPT4DvlOPQj7b4re96r6mtd/EWDV39dp/
+t5R39VO/Nz21+7Z6HvgW7cphvpbufnlPdK3c/3v3Eot7fyA/tvl3xSK+ko8uynhc96n8xDbXH28U
+zT+t6xuzuA7XX8unPxXyTb1iwy6IQLU7UPsDPZnXPhDHqH+5ltPhUhO6gXpv5TLsfEQWIfVInc0m
+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
+--Apple-Mail=_608BE450-BAF2-40BF-BF13-11935945C724
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; -webkit-line-break: after-white-space;" =
+class=3D""><div class=3D""></div><div class=3D""><br class=3D""></div><div=
+ class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""><div><blockquote type=3D"cite" class=3D""><div class=3D"">On =
+Feb 18, 2020, at 11:06 AM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div class=3D""><div dir=3D"ltr" =
+class=3D"">Perfect. Hit me with that NDA so I can do some due diligence =
+and I'll generate a short list of corps I'd like to approach!<div =
+class=3D""><br class=3D""></div><div class=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D""><img =
+alt=3D"" style=3D"width:0px;max-height:0px;overflow:hidden" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D3c33837d-723f-45d6-977a-c66707760a29" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb =
+18, 2020 at 10:54 AM JC Herz &lt;<a href=3D"mailto:jc.herz@ionchannel.io" =
+class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div style=3D"overflow-wrap: =
+break-word;" class=3D""><div class=3D""><br class=3D""></div><div =
+class=3D""><blockquote type=3D"cite" class=3D""><div dir=3D"ltr" =
+class=3D"">I had some conversations with a couple of my larger corporate =
+clients (Fortune 400 and up) and there was some real initial interest. =
+Do you offer a commission if I can provide an intro that turns into a =
+contract?</div></blockquote></div><div class=3D""><div dir=3D"ltr" =
+class=3D""><br class=3D""></div></div><div dir=3D"ltr" class=3D""><br =
+class=3D""></div><div class=3D"">We do have lead-gen and commission =
+agreements with channel partners if that=E2=80=99s something you=E2=80=99d=
+ be interested in. Snapshots of our lead-gen agreement are below - =
+it=E2=80=99s a 5% commission on the first 12 months of revenue from a =
+customer, assuming a purchase is made within 24 months of initial =
+introduction.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">If this makes sense, we can get an NDA in place and go from =
+there.</div><div class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D"">Best,</div><div class=3D""><br class=3D""></div><div =
+class=3D"">JC</div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D"">*************************************</div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""></div><div class=3D"">
+	=09
+=09
+=09
+		<div title=3D"Page 1" class=3D""><span =
+id=3D"cid:170590be6c88ef2ec81">&lt;PastedGraphic-1.tiff&gt;</span></div></=
+div><div class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""></div><span =
+id=3D"cid:170590be6cdaa407672">&lt;PastedGraphic-2.tiff&gt;</span><div =
+class=3D""><span =
+id=3D"cid:170590be6cdc58e0063">&lt;PastedGraphic-3.tiff&gt;</span><br =
+class=3D""><div class=3D""><br class=3D""><div class=3D""><blockquote =
+type=3D"cite" class=3D""><div class=3D"">On Feb 17, 2020, at 2:42 PM, =
+Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">I had some conversations with a =
+couple of my larger corporate clients (Fortune 400 and up) and there was =
+some real initial interest. Do you offer a commission if I can provide =
+an intro that turns into a contract?<div class=3D""><br =
+class=3D""></div><div class=3D"">best,<br class=3D"">Josh</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D""><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Dd36ffb1e-f5a9-40c4-8b05-d16b798afc48" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Feb =
+13, 2020 at 8:51 AM JC Herz &lt;<a href=3D"mailto:jc.herz@ionchannel.io" =
+target=3D"_blank" class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D""><div class=3D""><br =
+class=3D""></div>Small and medium companies have to do it because larger =
+customers - specifically banks - are requiring it. Part of that is =
+regulatory and part of it is large orgs want to push risk and liability =
+to the left and have the leverage to do so. Our addressable market is =
+the supplier base for defense (100,000 companies and their =
+subcontractors, which includes a lot of public companies and software =
+vendors that do business with the military/intel community) and =
+regulated industry (energy, telecom, healthcare, finance, critical =
+manufacturing, transportation, smart cities, election infrastructure). =
+There are hundreds of thousands of corporate entities who are regulated =
+to care, and the mandates that kick in this year will be almost =
+impossible to satisfy without automation. See:&nbsp;<a =
+href=3D"https://csrc.nist.gov/publications/detail/nistir/8276/draft" =
+target=3D"_blank" =
+class=3D"">https://csrc.nist.gov/publications/detail/nistir/8276/draft</a>=
+&nbsp;and&nbsp;<a =
+href=3D"https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_202001=
+31_v2.pdf" target=3D"_blank" =
+class=3D"">https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_202=
+00131_v2.pdf</a><div class=3D""><div class=3D""><br class=3D""></div><div =
+class=3D"">CIO=E2=80=99s tend to like this because it solves the impasse =
+with security - put something in the background that satisfies the CISO =
+and the chief risk officer (this also mitigates the legal department=E2=80=
+=99s concerns about third party risk), and all the capabilities you want =
+for the business can move more quickly into operation.&nbsp;</div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D"">JC<br class=3D""><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""><div =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Feb =
+13, 2020, at 8:40 AM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D""><div class=3D""><div class=3D""><div dir=3D"auto" =
+class=3D"">Makes complete sense, but I wonder about how you=E2=80=99re =
+going to get access to decision makers who aren=E2=80=99t siloed to the =
+point of impotence for a project like this - again, considering where =
+risk (specifically cyber risk) is situated, I could see a CTO at a large =
+company mandating this ... but never enforcing it.&nbsp;</div><div =
+dir=3D"auto" class=3D""><br class=3D""></div><div dir=3D"auto" =
+class=3D"">Conversely, does a small to midsize company have the business =
+imperatives to protect themselves this way, or is it going to be =
+business as usual - growth first, security fifth?</div><div dir=3D"auto" =
+class=3D""><br class=3D""></div><div dir=3D"auto" class=3D"">Separately, =
+would love your take on approaching intelligence communities - it =
+sounded as though you had some good insights to share!</div><div =
+dir=3D"auto" class=3D""><br class=3D""></div><div dir=3D"auto" =
+class=3D"">- J</div><div dir=3D"auto" class=3D""><br =
+class=3D""></div></div><div class=3D""><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Feb =
+12, 2020 at 2:58 PM JC Herz &lt;<a href=3D"mailto:jc.herz@ionchannel.io" =
+target=3D"_blank" class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D""><div =
+class=3D""><blockquote type=3D"cite" class=3D""><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">Thanks for this! I can already =
+think of a few people to pass this to. Can you follow up with an email =
+contextualizing this for small, medium, and large clients? I tend to =
+work mostly with the latter and some with the former, and not as often =
+with the midsize (although&nbsp;that is a new target for me for 2020 vis =
+a vis board seats).</div></div></blockquote><div class=3D""><br =
+class=3D""></div><div class=3D"">The difficult problem for large =
+enterprises - and any enterprise with a large supplier network - is =
+third party risk management: How do I get a basic level of assurance on =
+the software coming into my enterprise, particularly from =
+outsourced/pro-services teams and small vendors, on a continuos basis. =
+As Equifax showed us, a product that=E2=80=99s green today might be red =
+90 days later. What if that=E2=80=99s a mobile app that your web agency =
+developed? Or a cutting-edge AI/ML capability from some venture-backed =
+startup (none of which give a rat=E2=80=99s ass about =
+security).&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">How do you automate transparency on those inbound =
+deliverables (and their updates) developed outside your =
+boundary?</div><div class=3D""><br class=3D""></div><div class=3D"">How =
+do you enforce governance on a continuous basis, so that suppliers are =
+on the hook to remediate/update products as vulnerabilities =
+emerge?</div><div class=3D""><br class=3D""></div><div class=3D"">How =
+does this become a tractable process for procurement and vendor =
+management, so they=E2=80=99re not saddled with cyber forensics that =
+they=E2=80=99re not staffed to take on?&nbsp;</div><div class=3D""><br =
+class=3D""></div><div class=3D"">This is also about pushing risk to the =
+left in contract provisions, and meeting regulatory mandates for cyber =
+responsiveness, as well as known-vulnerability terms of cyber insurance =
+policies.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">An example:</div><div class=3D""><br class=3D""></div><div =
+class=3D"">1) The supplier deliverable (either pro services app =
+development or vendor product SBOM) is analyzed prior to procurement. =
+Governance criteria are enforced. For instance, the large banks have =
+prohibited components lists - if you have certain Python libraries in =
+your product (containing malware, per threat intel), you=E2=80=99re not =
+going to sell that product to JP Morgan Chase - it=E2=80=99s a firewall =
+to procurement. One of the big banks requires an SBOM for full pricing - =
+any product without an SBOM is subject to a 40% discount if it gets =
+procured at all.<br class=3D""><br class=3D"">2) Ion Channel runs =
+analysis on that SBOM every day, parallel to whatever the supplier is =
+doing for assurance.<br class=3D""><br class=3D"">3) If the deliverable =
+moves from green to red (e.g. new critical vulnerability), that change =
+is time-stamped. Contract provisions - security SLAs - can specify how =
+many hours/days the supplier has to push an update that remediates the =
+vulnerability, and see the time stamp with third party certification =
+that the supplier has met the provision or not, in which case there =
+might be remedies.&nbsp;<br class=3D""></div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""></div><div class=3D""><br =
+class=3D""></div><div class=3D"">Does this make =
+sense?</div></div></div><div class=3D""><div class=3D""><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D"">JC</div><div =
+class=3D""><br class=3D""></div><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D""><div class=3D""><br=
+ class=3D""></div><div class=3D"">Separately, any thinking you may have =
+on how to propose a workable deployment with gov't would be hugely =
+appreciated.</div><div class=3D""><br class=3D""></div><div =
+class=3D"">Sincerely,</div><div class=3D"">Josh</div><div class=3D""><br =
+class=3D""></div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D9f164aca-24d6-4204-9144-cf5aad26b6ea" =
+class=3D""><font size=3D"1" style=3D"color:rgb(255,255,255)" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Feb =
+12, 2020 at 11:09 AM JC Herz &lt;<a href=3D"mailto:jc.herz@ionchannel.io" =
+target=3D"_blank" class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><br class=3D"">
+</blockquote></div>
+</div></blockquote></div><br class=3D""></div></blockquote></div></div>
+</div></blockquote></div><br =
+class=3D""></div></div></div></div></blockquote></div>
+</div></blockquote></div><br =
+class=3D""></div></div></div></blockquote></div>
+</div></blockquote></div><br class=3D""></div></body></html>=
+
+--Apple-Mail=_608BE450-BAF2-40BF-BF13-11935945C724--
+
+--Apple-Mail=_7D49972E-407F-402C-BB6C-29BCD2E0D90C--

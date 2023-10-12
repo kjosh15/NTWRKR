@@ -1,0 +1,623 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp19369ljh;
+        Mon, 6 Jul 2020 02:01:25 -0700 (PDT)
+X-Received: by 2002:a05:6122:1048:: with SMTP id z8mr34659422vkn.71.1594026085557;
+        Mon, 06 Jul 2020 02:01:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1594026085; cv=none;
+        d=google.com; s=arc-20160816;
+        b=uFlTvsK+SN/2TLjPG6dm7iGgf0FttfPw2H2MJy4wkPA5zfQSt2NIrVAwNyXNgwm5jc
+         weeOhHgIII5/KEndEr6mHbywNmXrV92/IB0Y4FmCYI6i11eKd2rvzwUqJW+f/X6fUZX/
+         pT5lx81xzGSsn132fMi7uW6z43Kc0ycMEyMfSlP949kEA7Z+O+l8dWi8bd8UKLCyYesg
+         GTWAR+TQLAuLTMZLnwUCMhGhkcHJgYvfdcX3uZIj/Njk37ifV4qTGLEXbFYOd1B2AyFe
+         z2t2y/KGKoqUx+b972XMGsOhODfeGSrE1l2AIkEcMvzU1JKkFoG1tCdu3lsnFWicUjqe
+         7ytQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:references:to:subject:in-reply-to:date:from:mime-version
+         :dkim-signature;
+        bh=CQajnO++xA/USlPcWrJCW+0j/IDxf0NFtB6lZ3pTVLw=;
+        b=htuRXeXEe3FnsGzWXyuRcpaW2DMyZw4i12a4LiYXmLcTUMLW72BTAYC4i7g+PG0Lmf
+         nv0hwd42tDFGj+Xe8bNM+/Svtalr4GBkawAKxp8QfijPCzBUhvPoKm0HCpxVqIpUSfwr
+         IemILAxp9igex9BLIhKKdoeaduT2u+0VDoo/42lQj7F7jHu9Yqys/vY4WGBD1AKjG0sv
+         cAhJmaQOvxUPt9Tj9nql8VkSGComf02EwLdJ1r132Ipd0Fl3wjTbHel8zqsckHiEmvzi
+         NoyP8PjsV5NCx2uCCw2mMDHQvFXJn7N6R7BgeQLZ0E1VnqJoHmS3uaaLiM6bYGmGMtww
+         IdDg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@grid-is.20150623.gappssmtp.com header.s=20150623 header.b=T6G+LBYf;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of hg@grid.is) smtp.mailfrom=hg@grid.is;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=grid.is
+Return-Path: <hg@grid.is>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id h9sor8795693vsr.74.2020.07.06.02.01.25
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 06 Jul 2020 02:01:25 -0700 (PDT)
+Received-SPF: neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of hg@grid.is) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@grid-is.20150623.gappssmtp.com header.s=20150623 header.b=T6G+LBYf;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of hg@grid.is) smtp.mailfrom=hg@grid.is;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=grid.is
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grid-is.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:in-reply-to:subject:to:references:message-id;
+        bh=CQajnO++xA/USlPcWrJCW+0j/IDxf0NFtB6lZ3pTVLw=;
+        b=T6G+LBYfSEob/a0M09pMTpYUE6poWRh/E9qs6Xko5Rb3dhVfxvVKLlXBXdo4PdcbIK
+         YKOIZ4g0bT4NAmOSNqeybGAEmr4XPmsDQTMookOwizkBu6djXzGfmT9mTRrPwuggcEAB
+         aT75MD9IyysG4CEqXMOnU5LGwaDcL7ZNMT/ZKsfVAvkIRzYLPcpLKu0yLvKTu7s2I0Yk
+         vb3zKajUyZd6Lf/V3DGFF8xgw7sdlPTaoO8VYDxLOKfcL6kvwhF0PuBOanKgx++gCKj2
+         ssL57hKPirFswGqo8LngzZLTpegxymH7t032EIB1ukuyZO8QHyVSHUx5xCJpuUMEwyaY
+         IP9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:in-reply-to:subject:to
+         :references:message-id;
+        bh=CQajnO++xA/USlPcWrJCW+0j/IDxf0NFtB6lZ3pTVLw=;
+        b=jRh5DkGU1BBB+k8u/f3RIpb9omddZTPqIWFLuG9HhnA5imirm40DdNLGffQfb6HSB1
+         mVLYEIdGotpsBCfdXJ6jp3+KhBH7dQuhGv7KFOSzB7MY9wzjLcXOhD8hGv+zK3z9MBnP
+         eFWlgbhP/savyFbrThPVj/XyBIKC426fuFAT5MSCOf8gLSXUHKiiVJcvUvBSq5wFac8p
+         tpb4iKIwZIq0UBc8i6o4DhAT7t74Fv+DdhyegiV3vJibfUZw7JV3AVfY07j5KeXagd8v
+         NySTzahaFAy+P/J281yLlDoaU7yb4VpN5r2KZ3kLJXeir0uadq/4zT2PTuFuI4NkSgfG
+         7KUw==
+X-Gm-Message-State: AOAM532PQCqNAp3lbZFv9S7VQTzdrBsyUAr/Tw+zEhCNBYZ2mPnsgX5i
+	hDWWfV+dljQXjXDTWhK8J95DEW5Srkk=
+X-Google-Smtp-Source: ABdhPJzbdvp6ZF25zqBUOQfIRHHawuUdO2I0Cc/3BgZ5BF9V4+ik9UgnbnwlCaeOv3mBxMVDa+PqrQ==
+X-Received: by 2002:a67:e091:: with SMTP id f17mr30544985vsl.199.1594026084592;
+        Mon, 06 Jul 2020 02:01:24 -0700 (PDT)
+Return-Path: <hg@grid.is>
+Received: from localhost (0.92.231.35.bc.googleusercontent.com. [35.231.92.0])
+        by smtp.gmail.com with ESMTPSA id e5sm4688141vsq.15.2020.07.06.02.01.24
+        for <josh@josh.is>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 06 Jul 2020 02:01:24 -0700 (PDT)
+Mime-Version: 1.0
+From: "Hjalmar Gislason" <hg@grid.is>
+Date: Mon, 06 Jul 2020 09:01:23 +0000
+X-Mailer: Superhuman Desktop (2020-07-02T22:06:04Z)
+X-Superhuman-ID: kca9ylbr.e644cc1c-546e-4654-8ea6-a66bc2edb868
+In-Reply-To: <CACNgykPasHL_CYWqkd-37HB2HN6=X-xzcxdnQAnAQVTbQ_gYMw@mail.gmail.com>
+Subject: Re: On rec. of Halla Tomasdottir
+To: "Josh Klein" <josh@josh.is>
+X-Superhuman-Draft-ID: draft009b7117cf98e24d
+References: <CACNgykMktFwTOj4RtJzZtOudFGCGaHr-m-XU4B8w-yqC2ZA3Yg@mail.gmail.com> <jzrbhnjr.02c9392a-2540-46bb-ba3e-faca60ef344f@we.are.superhuman.com>
+ <CACNgykNZgPXNrWP4jc96_kDbmVyfkcJeJfx_sRHuTdSdOcPB-w@mail.gmail.com>
+ <jztl6wuw.88deff18-fda5-4e7d-8f3c-23b64dbbe198@we.are.superhuman.com>
+ <CACNgykP3hEeR70PUJieFoEw2uA50XCYGRcZRHkLmZEd+MaPmaQ@mail.gmail.com>
+ <kbrrg3tc.2625d16f-8b96-4f82-8573-b75cbe43f4be@we.are.superhuman.com>
+ <CACNgykOY3rPG+npJZvS6c+Uk_bU8peYa+ikunC_XuT42ycA6Jw@mail.gmail.com>
+ <CACNgykPasHL_CYWqkd-37HB2HN6=X-xzcxdnQAnAQVTbQ_gYMw@mail.gmail.com>
+Message-ID: <kca9xbhx.72500960-bcbb-4462-8ec3-5c2c2df6d7af@we.are.superhuman.com>
+Content-Type: multipart/alternative;
+ boundary=0b907feb76a3052e43cc26348ebab083e254d1ca009deb4628a401c931fe
+
+--0b907feb76a3052e43cc26348ebab083e254d1ca009deb4628a401c931fe
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Open for drinks of any sort either day from 6pm-ish and onwards. Let me kno=
+w what suits you.
+
+Best,
+
+*Hjalmar Gislason*
+
+Founder & CEO
+
+*GRID - the new face of spreadsheets*
+
+hg@grid.is | grid.is ( https://www.grid.is ) | @GRID_hq ( https://twitter.c=
+om/GRID_hq )
+
+On Fri, Jul 03, 2020 at 11:40:38, Josh Klein < josh@josh.is > wrote:
+
+>=20
+> Looks like we'll be in R.vik Tues/Wed if you're around for a
+> coffee/beer/whatever!
+>=20
+>=20
+> - J
+> =E1=90=A7
+>=20
+> On Thu, Jun 25, 2020 at 2:04 PM Josh Klein < josh@ josh. is ( josh@josh.i=
+s
+> ) > wrote:
+>=20
+>=20
+>> Fair=C2=A0enough - I'm chewing over a visit that way in the next few wee=
+ks and
+>> will ping you as soon as I have some times!
+>>=20
+>>=20
+>> - J
+>> =E1=90=A7
+>>=20
+>> On Tue, Jun 23, 2020 at 10:03 AM Hjalmar Gislason < hg@ grid. is (
+>> hg@grid.is ) > wrote:
+>>=20
+>>=20
+>>> Will you be back in Reykjavik at some point in this trip?
+>>>=20
+>>>=20
+>>>=20
+>>> Perhaps rather aim for a coffee - phone calls can happen at any time :)
+>>>=20
+>>> *Hjalmar Gislason*
+>>>=20
+>>>=20
+>>>=20
+>>> Founder & CEO
+>>>=20
+>>> *GRID - the new face of spreadsheets*
+>>>=20
+>>>=20
+>>> hg@ grid. is ( hg@grid.is ) | grid. is ( https://www.grid.is ) | @ GRID=
+_hq
+>>> ( https://twitter.com/GRID_hq )
+>>>=20
+>>>=20
+>>>=20
+>>> On Tue, Jun 23, 2020 at 09:38:32, Josh Klein < josh@ josh. is (
+>>> josh@josh.is ) > wrote:
+>>>=20
+>>>> Didn't get a chance to connect over the winter break, but we've finall=
+y
+>>>> made it to Iceland so are in the same time zone if not the same city
+>>>> (we're in Akureyri now.)
+>>>>=20
+>>>>=20
+>>>> Let me know=C2=A0if you're up for a brief call to compare notes on gro=
+wing a
+>>>> company in a pandemic - I'd love to hear your thoughts on tech employm=
+ent
+>>>> in Iceland and see if I can help connect you with anyone abroad!
+>>>>=20
+>>>>=20
+>>>> All best,
+>>>> Josh
+>>>> =E1=90=A7
+>>>>=20
+>>>> On Tue, Aug 27, 2019 at 8:47 AM Hjalmar Gislason < hg@ grid. is (
+>>>> hg@grid.is ) > wrote:
+>>>>=20
+>>>>=20
+>>>>> These are all great objectives :)
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> Reach out ahead of your visit this winter and we'll find time for cof=
+fee.
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> Best,
+>>>>>=20
+>>>>> *Hjalmar Gislason*
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> Founder & CEO
+>>>>>=20
+>>>>> *GRID - the new face of spreadsheets*
+>>>>>=20
+>>>>>=20
+>>>>> hg@ grid. is ( hg@grid.is ) | grid. is ( https://www.grid.is ) | @ GR=
+ID_hq
+>>>>> ( https://twitter.com/GRID_hq )
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>> On Mon, Aug 26, 2019 at 2:06 PM, Josh Klein < josh@ josh. is ( josh@j=
+osh.is
+>>>>> ) > wrote:
+>>>>>=20
+>>>>>> Totally understand about being super focused; no worries if you need=
+ to
+>>>>>> keep heads down.
+>>>>>>=20
+>>>>>>=20
+>>>>>> I=E2=80=99m keen to learn more about the business community in Icela=
+nd, share
+>>>>>> notes about how to influence it, and to see how I might get more inv=
+olved
+>>>>>> here. I=E2=80=99m in a weird spot where I=E2=80=99m speaking regular=
+ly to major business
+>>>>>> leaders but only able to be in Iceland a few months a year, and keep
+>>>>>> thinking there=E2=80=99s got to be a way for companies here to get m=
+ore access
+>>>>>> abroad.
+>>>>>>=20
+>>>>>>=20
+>>>>>> If that=E2=80=99s something on your immediate list let me know, and =
+otherwise I=E2=80=99ll
+>>>>>> be coming back to Iceland this winter. If you=E2=80=99re amenable I=
+=E2=80=99ll contact you
+>>>>>> again then!
+>>>>>>=20
+>>>>>>=20
+>>>>>> Much thanks,
+>>>>>> Josh
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>> On Sun, Aug 25, 2019 at 8:55 PM Hjalmar Gislason < hg@ grid. is (
+>>>>>> hg@grid.is ) > wrote:
+>>>>>>=20
+>>>>>>=20
+>>>>>>> Hello Josh,
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> Thanks for reaching out. As I'm starting up, I'm trying to be
+>>>>>>> super-focused about any time I put into non-work activities. It sou=
+nds
+>>>>>>> like you have a lot of interesting things going on and I have no do=
+ubt
+>>>>>>> that meeting to discuss them would be a lot of fun, but do you have=
+ a
+>>>>>>> particular goal/topic in mind at this time or are you thinking in t=
+erms of
+>>>>>>> general networking?
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> *Hjalmar Gislason*
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> Founder & CEO
+>>>>>>>=20
+>>>>>>> *GRID - the new face of spreadsheets*
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> hg@ grid. is ( hg@grid.is ) | grid. is ( https://www.grid.is ) | @ =
+GRID_hq
+>>>>>>> ( https://twitter.com/GRID_hq )
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>> On Fri, Aug 23, 2019 at 7:49 PM, Josh Klein < josh@ josh. is ( josh=
+@josh.is
+>>>>>>> ) > wrote:
+>>>>>>>=20
+>>>>>>>> Can you please see that this message gets to Hjalli?
+>>>>>>>>=20
+>>>>>>>> Takk!
+>>>>>>>> - J
+>>>>>>>>=20
+>>>>>>>> #######
+>>>>>>>>=20
+>>>>>>>> Halla and I spoke today and she said I should reach out to you; I'=
+ve also
+>>>>>>>> got a tech background (mostly consulting to senior execs on tech s=
+trategy
+>>>>>>>> these days, but also advising a couple startups and currently buil=
+ding a
+>>>>>>>> psychometrics platform) and am super interested in how to restruct=
+ure
+>>>>>>>> organizations to be more permeable, how to use technology's inhere=
+nt bias'
+>>>>>>>> to align internal incentives with sustainable externalities, and h=
+ow to
+>>>>>>>> get Iceland to use its current time in the global spotlight to dem=
+onstrate
+>>>>>>>> democratic agility - especially around issues of equality, technol=
+ogy, and
+>>>>>>>> environmentalism. Halla thought we'd have a lot to talk about.
+>>>>>>>>=20
+>>>>>>>> I'm in Reykjavik on the 27th (we spend every summer here and we'll=
+ be on
+>>>>>>>> our way out) if you happen to be free!
+>>>>>>>>=20
+>>>>>>>> Kv.,
+>>>>>>>> Josh
+>>>>>>>>=20
+>>>>>>>=20
+>>>>>>>=20
+>>>>>>=20
+>>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>=20
+>>>>=20
+>>>=20
+>>>=20
+>>=20
+>>=20
+>=20
+>
+--0b907feb76a3052e43cc26348ebab083e254d1ca009deb4628a401c931fe
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<html><head></head><body><div><div><div style=3D"display: none; border: 0px=
+; width: 0px; height: 0px; overflow: hidden; visibility: hidden;"><img src=
+=3D"https://r.superhuman.com/RJ-t8gRoOsJ_ymzbLuAq9MJ1bzYUtOhncls83su25z_f7f=
+LSSoWOcstQh4bBPzJdggorVFJdgKn_T-FUJvlmgKnXi4dRbPW8FcOZV6Fpo_HsKPdys0azo4aB1=
+oZCscJsFq9MU4Gp4TybS8Ksq9ZhPTRooxOzvNbBOupjbfFIva0.gif" alt=3D" " width=3D"=
+1" height=3D"0" style=3D"display: none; border: 0px; width: 0px; height: 0p=
+x; overflow: hidden; visibility: hidden;"/><!--                            =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                      --></div><div><div><div class=3D"">Open for drinks of=
+ any sort either day from 6pm-ish and onwards. Let me know what suits you.<=
+br/></div><div class=3D""><br/></div><div class=3D"">Best,</div></div><br/>=
+<div class=3D"gmail_signature"><div><div dir=3D"ltr"><div><div dir=3D"ltr">=
+<div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><d=
+iv style=3D"font-size:small"><b style=3D"font-family:Helvetica;">Hjalmar Gi=
+slason</b><br/></div><div style=3D"font-size:small"><div style=3D"font-fami=
+ly:Helvetica;"><br/></div><div style=3D"font-family:Helvetica;"><span style=
+=3D"color:rgb(34,34,34);font-family:Arial,Helvetica,sans-serif;font-size:sm=
+all">Founder &amp; CEO</span><br/></div><div style=3D"font-family:Helvetica=
+;"><b>GRID - the new face of spreadsheets</b></div><div style=3D"font-famil=
+y:Helvetica;"><br/></div><div style=3D"font-family:Helvetica;"><a rel=3D"no=
+opener noreferrer" href=3D"mailto:hg@grid.is" target=3D"_blank">hg@grid.is<=
+/a>=C2=A0|=C2=A0<a rel=3D"noopener noreferrer" href=3D"https://www.grid.is"=
+ target=3D"_blank">grid.is</a>=C2=A0| <a href=3D"https://twitter.com/GRID_h=
+q" target=3D"_blank" rel=3D"noopener noreferrer">@GRID_hq</a></div></div></=
+div></div></div></div></div></div></div></div></div><br/></div></div><br/><=
+div><div class=3D"gmail_quote">On Fri, Jul 03, 2020 at 11:40:38, Josh Klein=
+ <span dir=3D"ltr">&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">jo=
+sh@josh.is</a>&gt;</span> wrote:<br/><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div cl=
+ass=3D"gmail_extra"><div class=3D"gmail_quote sh-color-black sh-color" styl=
+e=3D"null" id=3D"null"><div dir=3D"ltr" class=3D"sh-color-black sh-color">L=
+ooks like we&#39;ll be in R.vik Tues/Wed if you&#39;re around for a coffee/=
+beer/whatever!<div class=3D"sh-color-black sh-color"><br/></div><div class=
+=3D"sh-color-black sh-color">- J</div></div><div style=3D"max-height:1px" c=
+lass=3D"sh-color-black sh-color"><font size=3D"1" color=3D"#ffffff">=E1=90=
+=A7</font></div><br/><div class=3D"gmail_quote sh-color-black sh-color"><di=
+v class=3D"gmail_attr sh-color-black sh-color" dir=3D"ltr">On Thu, Jun 25, =
+2020 at 2:04 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_b=
+lank" rel=3D"noopener noreferrer">josh@<wbr/>josh.<wbr/>is</a>&gt; wrote:<b=
+r/></div><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1px soli=
+d rgb(204,204,204);padding-left:1ex" class=3D"gmail_quote sh-color-black sh=
+-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color">Fair=C2=A0enough=
+ - I&#39;m chewing over a visit that way in the next few weeks and will pin=
+g you as soon as I have some times!<div class=3D"sh-color-black sh-color"><=
+br/></div><div class=3D"sh-color-black sh-color">- J</div></div><div style=
+=3D"max-height:1px" class=3D"sh-color-black sh-color"><font size=3D"1" colo=
+r=3D"#ffffff">=E1=90=A7</font></div><br/><div class=3D"gmail_quote sh-color=
+-black sh-color"><div class=3D"gmail_attr sh-color-black sh-color" dir=3D"l=
+tr">On Tue, Jun 23, 2020 at 10:03 AM Hjalmar Gislason &lt;<a href=3D"mailto=
+:hg@grid.is" target=3D"_blank" rel=3D"noopener noreferrer">hg@<wbr/>grid.<w=
+br/>is</a>&gt; wrote:<br/></div><blockquote style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex" class=3D"gmail_=
+quote sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><div =
+class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><d=
+iv class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-color"=
+><div class=3D"sh-color-black sh-color">Will you be back in Reykjavik at so=
+me point in this trip?<br/></div><div class=3D"sh-color-black sh-color"><br=
+/></div><div class=3D"sh-color-black sh-color">Perhaps rather aim for a cof=
+fee - phone calls can happen at any time :)</div></div><br/><div class=3D"s=
+h-color-black sh-color"><div class=3D"sh-color-black sh-color"><div dir=3D"=
+ltr" class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-colo=
+r"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div class=3D"sh-colo=
+r-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div d=
+ir=3D"ltr" class=3D"sh-color-black sh-color"><div dir=3D"ltr" class=3D"sh-c=
+olor-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><di=
+v style=3D"font-size:small" class=3D"sh-color-black sh-color"><b style=3D"f=
+ont-family:Helvetica" class=3D"sh-color-black sh-color">Hjalmar Gislason</b=
+><br/></div><div style=3D"font-size:small" class=3D"sh-color-black sh-color=
+"><div style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><b=
+r/></div><div style=3D"font-family:Helvetica" class=3D"sh-color-black sh-co=
+lor"><span style=3D"color:rgb(34,34,34);font-family:Arial,Helvetica,sans-se=
+rif;font-size:small" class=3D"sh-color-black sh-color">Founder &amp; CEO</s=
+pan><br/></div><div style=3D"font-family:Helvetica" class=3D"sh-color-black=
+ sh-color"><b class=3D"sh-color-black sh-color">GRID - the new face of spre=
+adsheets</b></div><div style=3D"font-family:Helvetica" class=3D"sh-color-bl=
+ack sh-color"><br/></div><div style=3D"font-family:Helvetica" class=3D"sh-c=
+olor-black sh-color"><a href=3D"mailto:hg@grid.is" rel=3D"noopener noreferr=
+er" target=3D"_blank">hg@<wbr/>grid.<wbr/>is</a>=C2=A0|=C2=A0<a href=3D"htt=
+ps://www.grid.is" rel=3D"noopener noreferrer" target=3D"_blank">grid.<wbr/>=
+is</a>=C2=A0| <a rel=3D"noopener noreferrer" href=3D"https://twitter.com/GR=
+ID_hq" target=3D"_blank">@<wbr/>GRID_hq</a></div></div></div></div></div></=
+div></div></div></div></div></div><br/></div></div><br/><div class=3D"sh-co=
+lor-black sh-color"><div class=3D"gmail_quote sh-color-black sh-color">On T=
+ue, Jun 23, 2020 at 09:38:32, Josh Klein <span dir=3D"ltr" class=3D"sh-colo=
+r-black sh-color">&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" rel=
+=3D"noopener noreferrer">josh@<wbr/>josh.<wbr/>is</a>&gt;</span> wrote:<br/=
+><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
+4,204,204);padding-left:1ex" class=3D"gmail_quote sh-color-black sh-color">=
+<div class=3D"gmail_extra sh-color-black sh-color"><div id=3D"gmail-m_52967=
+92464488888999gmail-m_4325047762258692661null" class=3D"gmail_quote sh-colo=
+r-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color">Didn&#=
+39;t get a chance to connect over the winter break, but we&#39;ve finally m=
+ade it to Iceland so are in the same time zone if not the same city (we&#39=
+;re in Akureyri now.)=C2=A0<div class=3D"sh-color-black sh-color"><br/></di=
+v><div class=3D"sh-color-black sh-color">Let me know=C2=A0if you&#39;re up =
+for a brief call to compare notes on growing a company in a pandemic - I&#3=
+9;d love to hear your thoughts on tech employment in Iceland and see if I c=
+an help connect you with anyone abroad!<div class=3D"sh-color-black sh-colo=
+r"><br/></div><div class=3D"sh-color-black sh-color">All best,</div><div cl=
+ass=3D"sh-color-black sh-color">Josh</div></div></div><div style=3D"max-hei=
+ght:1px" class=3D"sh-color-black sh-color"><font color=3D"#ffffff" size=3D"=
+1">=E1=90=A7</font></div><br/><div class=3D"gmail_quote sh-color-black sh-c=
+olor"><div dir=3D"ltr" class=3D"gmail_attr sh-color-black sh-color">On Tue,=
+ Aug 27, 2019 at 8:47 AM Hjalmar Gislason &lt;<a rel=3D"noopener noreferrer=
+" href=3D"mailto:hg@grid.is" target=3D"_blank">hg@<wbr/>grid.<wbr/>is</a>&g=
+t; wrote:<br/></div><blockquote class=3D"gmail_quote sh-color-black sh-colo=
+r" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex"><div class=3D"sh-color-black sh-color"><div class=3D"sh-=
+color-black sh-color"><div class=3D"sh-color-black sh-color"><div class=3D"=
+sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><div class=
+=3D"sh-color-black sh-color">These are all great objectives :)<br/></div><d=
+iv class=3D"sh-color-black sh-color"><br/></div><div class=3D"sh-color-blac=
+k sh-color">Reach out ahead of your visit this winter and we&#39;ll find ti=
+me for coffee.<br/></div><div class=3D"sh-color-black sh-color"><br/></div>=
+<div class=3D"sh-color-black sh-color">Best,</div></div><br/><div class=3D"=
+sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><div dir=3D=
+"ltr" class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-col=
+or"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div dir=3D"ltr" cla=
+ss=3D"sh-color-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-=
+color"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div style=3D"fon=
+t-size:small" class=3D"sh-color-black sh-color"><b style=3D"font-family:Hel=
+vetica" class=3D"sh-color-black sh-color">Hjalmar Gislason</b><br/></div><d=
+iv style=3D"font-size:small" class=3D"sh-color-black sh-color"><div style=
+=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><br/></div><di=
+v style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><span s=
+tyle=3D"color:rgb(34,34,34);font-family:Arial,Helvetica,sans-serif;font-siz=
+e:small" class=3D"sh-color-black sh-color">Founder &amp; CEO</span><br/></d=
+iv><div style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><=
+b class=3D"sh-color-black sh-color">GRID - the new face of spreadsheets</b>=
+</div><div style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color=
+"><br/></div><div style=3D"font-family:Helvetica" class=3D"sh-color-black s=
+h-color"><a rel=3D"noopener noreferrer" href=3D"mailto:hg@grid.is" target=
+=3D"_blank">hg@<wbr/>grid.<wbr/>is</a>=C2=A0|=C2=A0<a rel=3D"noopener noref=
+errer" href=3D"https://www.grid.is" target=3D"_blank">grid.<wbr/>is</a>=C2=
+=A0| <a href=3D"https://twitter.com/GRID_hq" rel=3D"noopener noreferrer" ta=
+rget=3D"_blank">@<wbr/>GRID_hq</a></div><span style=3D"font-family:Helvetic=
+a" class=3D"sh-color-black sh-color"></span><br style=3D"font-family:Helvet=
+ica"/><span style=3D"font-family:Helvetica" class=3D"sh-color-black sh-colo=
+r"></span><span style=3D"font-family:Helvetica" class=3D"sh-color-black sh-=
+color"></span><img alt=3D"" class=3D"sh-color-black sh-color"/><img src=3D"=
+https://docs.google.com/uc?export=3Ddownload&amp;id=3D1nrDMiXtYVSuO_k0Xz82z=
+1GwBm3BJ3CNw&amp;revid=3D0B3mhHmEMNgFmelptTVZXVU1iSVZhSjlCRzdQWU54c20zcnBnP=
+Q" class=3D"sh-color-black sh-color"/><br/></div></div></div></div></div></=
+div></div></div><br/></div></div><br/><div class=3D"sh-color-black sh-color=
+"><div class=3D"gmail_quote sh-color-black sh-color">On Mon, Aug 26, 2019 a=
+t 2:06 PM, Josh Klein <span dir=3D"ltr" class=3D"sh-color-black sh-color">&=
+lt;<a rel=3D"noopener noreferrer" href=3D"mailto:josh@josh.is" target=3D"_b=
+lank">josh@<wbr/>josh.<wbr/>is</a>&gt;</span> wrote:<br/><blockquote class=
+=3D"gmail_quote sh-color-black sh-color" style=3D"margin:0px 0px 0px 0.8ex;=
+border-left:1px solid rgb(204,204,204);padding-left:1ex"><div class=3D"gmai=
+l_extra sh-color-black sh-color"><div class=3D"gmail_quote sh-color-black s=
+h-color" id=3D"gmail-m_5296792464488888999gmail-m_4325047762258692661gmail-=
+m_-3132721920129543736null"><div class=3D"sh-color-black sh-color"><div dir=
+=3D"auto" class=3D"sh-color-black sh-color">Totally understand about being =
+super focused; no worries if you need to keep heads down.</div><div dir=3D"=
+auto" class=3D"sh-color-black sh-color"><br/></div><div dir=3D"auto" class=
+=3D"sh-color-black sh-color">I=E2=80=99m keen to learn more about the busin=
+ess community in Iceland, share notes about how to influence it, and to see=
+ how I might get more involved here. I=E2=80=99m in a weird spot where I=E2=
+=80=99m speaking regularly to major business leaders but only able to be in=
+ Iceland a few months a year, and keep thinking there=E2=80=99s got to be a=
+ way for companies here to get more access abroad.</div></div><div dir=3D"a=
+uto" class=3D"sh-color-black sh-color"><br/></div><div dir=3D"auto" class=
+=3D"sh-color-black sh-color">If that=E2=80=99s something on your immediate =
+list let me know, and otherwise I=E2=80=99ll be coming back to Iceland this=
+ winter. If you=E2=80=99re amenable I=E2=80=99ll contact you again then!</d=
+iv><div dir=3D"auto" class=3D"sh-color-black sh-color"><br/></div><div dir=
+=3D"auto" class=3D"sh-color-black sh-color">Much thanks,</div><div dir=3D"a=
+uto" class=3D"sh-color-black sh-color">Josh</div><div dir=3D"auto" class=3D=
+"sh-color-black sh-color"><br/></div><div dir=3D"auto" class=3D"sh-color-bl=
+ack sh-color"><br/></div><div class=3D"sh-color-black sh-color"><br/><div c=
+lass=3D"gmail_quote sh-color-black sh-color"><div class=3D"gmail_attr sh-co=
+lor-black sh-color" dir=3D"ltr">On Sun, Aug 25, 2019 at 8:55 PM Hjalmar Gis=
+lason &lt;<a href=3D"mailto:hg@grid.is" rel=3D"noopener noreferrer" target=
+=3D"_blank">hg@<wbr/>grid.<wbr/>is</a>&gt; wrote:<br/></div><blockquote sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex" class=3D"gmail_quote sh-color-black sh-color"><div class=3D"sh=
+-color-black sh-color"><div class=3D"sh-color-black sh-color"><div class=3D=
+"sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><div class=
+=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-color">Hello J=
+osh,<br/></div><div class=3D"sh-color-black sh-color"><br/></div><div class=
+=3D"sh-color-black sh-color">Thanks for reaching out. As I&#39;m starting u=
+p, I&#39;m trying to be super-focused about any time I put into non-work ac=
+tivities. It sounds like you have a lot of interesting things going on and =
+I have no doubt that meeting to discuss them would be a lot of fun, but do =
+you have a particular goal/topic in mind at this time or are you thinking i=
+n terms of general networking?<br/></div></div><br/><div class=3D"sh-color-=
+black sh-color"><div class=3D"sh-color-black sh-color"><div dir=3D"ltr" cla=
+ss=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><div =
+dir=3D"ltr" class=3D"sh-color-black sh-color"><div dir=3D"ltr" class=3D"sh-=
+color-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><d=
+iv dir=3D"ltr" class=3D"sh-color-black sh-color"><div style=3D"font-size:sm=
+all" class=3D"sh-color-black sh-color"><b style=3D"font-family:Helvetica" c=
+lass=3D"sh-color-black sh-color">Hjalmar Gislason</b><br/></div><div style=
+=3D"font-size:small" class=3D"sh-color-black sh-color"><div style=3D"font-f=
+amily:Helvetica" class=3D"sh-color-black sh-color"><br/></div><div style=3D=
+"font-family:Helvetica" class=3D"sh-color-black sh-color"><span style=3D"co=
+lor:rgb(34,34,34);font-family:Arial,Helvetica,sans-serif;font-size:small" c=
+lass=3D"sh-color-black sh-color">Founder &amp; CEO</span><br/></div><div st=
+yle=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><b class=3D=
+"sh-color-black sh-color">GRID - the new face of spreadsheets</b></div><div=
+ style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><br/></d=
+iv><div style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"><=
+a href=3D"mailto:hg@grid.is" rel=3D"noopener noreferrer" target=3D"_blank">=
+hg@<wbr/>grid.<wbr/>is</a>=C2=A0|=C2=A0<a href=3D"https://www.grid.is" rel=
+=3D"noopener noreferrer" target=3D"_blank">grid.<wbr/>is</a>=C2=A0| <a rel=
+=3D"noopener noreferrer" href=3D"https://twitter.com/GRID_hq" target=3D"_bl=
+ank">@<wbr/>GRID_hq</a></div><span style=3D"font-family:Helvetica" class=3D=
+"sh-color-black sh-color"></span><br style=3D"font-family:Helvetica"/><span=
+ style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"></span><=
+span style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color"></sp=
+an><img alt=3D"" class=3D"sh-color-black sh-color"/><img src=3D"https://doc=
+s.google.com/uc?export=3Ddownload&amp;id=3D1nrDMiXtYVSuO_k0Xz82z1GwBm3BJ3CN=
+w&amp;revid=3D0B3mhHmEMNgFmelptTVZXVU1iSVZhSjlCRzdQWU54c20zcnBnPQ" class=3D=
+"sh-color-black sh-color"/><br/></div></div></div></div></div></div></div><=
+/div><br/></div></div></div></div></div><div class=3D"sh-color-black sh-col=
+or"><div class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-=
+color"><br/><div class=3D"sh-color-black sh-color"><div class=3D"gmail_quot=
+e sh-color-black sh-color">On Fri, Aug 23, 2019 at 7:49 PM, Josh Klein <spa=
+n dir=3D"ltr" class=3D"sh-color-black sh-color">&lt;<a href=3D"mailto:josh@=
+josh.is" rel=3D"noopener noreferrer" target=3D"_blank">josh@<wbr/>josh.<wbr=
+/>is</a>&gt;</span> wrote:<br/><blockquote style=3D"margin:0px 0px 0px 0.8e=
+x;border-left:1px solid rgb(204,204,204);padding-left:1ex" class=3D"gmail_q=
+uote sh-color-black sh-color"><div class=3D"gmail_extra sh-color-black sh-c=
+olor"><div id=3D"gmail-m_5296792464488888999gmail-m_4325047762258692661gmai=
+l-m_-3132721920129543736m_6667039099770901545null" class=3D"gmail_quote sh-=
+color-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color">Ca=
+n you please see that this message gets to Hjalli? <br/><br/>Takk!<br/>- J<=
+br/><br/>#######<br/><br/><div class=3D"sh-color-black sh-color">Halla and =
+I spoke today and she said I should reach out to you; I&#39;ve also got a t=
+ech background (mostly consulting to senior execs on tech strategy these da=
+ys, but also advising a couple startups and currently building a psychometr=
+ics platform) and am super interested in how to restructure organizations t=
+o be more permeable, how to use technology&#39;s inherent bias&#39; to alig=
+n internal incentives with sustainable externalities, and how to get Icelan=
+d to use its current time in the global spotlight to demonstrate democratic=
+ agility - especially around issues of equality, technology, and environmen=
+talism. Halla thought we&#39;d have a lot to talk about.</div><br/>I&#39;m =
+in Reykjavik on the 27th (we spend every summer here and we&#39;ll be on ou=
+r way out) if you happen to be free!<br/><br/>Kv.,<br/>Josh</div></div></di=
+v></blockquote></div></div></div></div></div></blockquote></div></div></div=
+></div></blockquote></div></div></div></div></div></blockquote></div></div>=
+</div></blockquote></div></div></div></div></div></blockquote></div></block=
+quote></div></div></div></blockquote></div></div><br/></div></div></body></=
+html>
+--0b907feb76a3052e43cc26348ebab083e254d1ca009deb4628a401c931fe--

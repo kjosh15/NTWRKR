@@ -1,0 +1,964 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp4656179vqp;
+        Sun, 7 Nov 2021 05:37:28 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJwyB5BWM4jRXI5i7zfDxG7dUlsVl9AEDaRIGN5UbgH1+vRvjGuDp/UoGQz3Gs9BxDsSZxOq
+X-Received: by 2002:a63:4758:: with SMTP id w24mr22712385pgk.200.1636292248757;
+        Sun, 07 Nov 2021 05:37:28 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1636292248; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vWW1a2Bf5BbzDrtBF1d9nU+FCFGXZ2ZNpmRiT1EC6fNYgPjde2daofSsKR+DfCZF5u
+         6hCES8qh+DEtPC7Qu/mdGYpqmIVYwYpcVt2fxVmm7nJs+JOrvRTOfwh8L/y/or4WG80o
+         mDdBeOsBI5GIbeuZMipPh0pRDRl4qj89N/oo/pOvKi1S/fv2pQ6BVhlKMuS3x430lqKG
+         s+4DrRc4YY7n7bhpsJdUilMXwy2xOy2R9I3Z/9yoCicGXQLL63mK/p4prZkVdorD1KAo
+         E2A2M4+kGqTQy6fwQFt2xO4o0VG2vzwK+Li2/ywBXxqQD3u1c/eacKvbWA7lesdqLN5L
+         ElHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:date:subject:from:message-id:content-transfer-encoding
+         :mime-version:dkim-signature;
+        bh=XYM1P2JAIShZVbN5gQSCLW6MmFZgpACCmUv6VnQEMik=;
+        b=xviqaoNfO9XWI54/sw8+PKiBN+iLKCJckoDtX1TWwl5kDfpYlDC6Rr4N0nJXyzQiMw
+         3Bhqw2APkbMir+iKqdv8qXuHIxtkZyjlzFDALSyCzYwbp/Or31uUsSTdXMsRYFC3N3Ur
+         2S6XXXNOBYqAN3YUjhguJCabiyKYKsCECdj9VO4W6U1L6ylZX+g2a3pPXY1W46P/svSX
+         VZ5gAWdvQTb/O+xmxJaY8RzecToydtCRHquStFGDgb4UEmkPItsVJeycWs1/ewHhbYs9
+         wV/E29mecrEaV3/VOxgRZOPre/5g4OeXya9kEIt7tXNvsTO/MarMZhnNRTU7qXr1f9XJ
+         hJHA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@uber.com header.s=s1 header.b=ZMJn8Lx6;
+       spf=pass (google.com: domain of bounces+13641-dd1f-josh=josh.is@em.uber.com designates 167.89.42.176 as permitted sender) smtp.mailfrom="bounces+13641-dd1f-josh=josh.is@em.uber.com";
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=uber.com
+Return-Path: <bounces+13641-dd1f-josh=josh.is@em.uber.com>
+Received: from o21.email.uber.com (o21.email.uber.com. [167.89.42.176])
+        by mx.google.com with ESMTPS id w10si9815261plb.184.2021.11.07.05.37.27
+        for <josh@josh.is>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 07 Nov 2021 05:37:28 -0800 (PST)
+Received-SPF: pass (google.com: domain of bounces+13641-dd1f-josh=josh.is@em.uber.com designates 167.89.42.176 as permitted sender) client-ip=167.89.42.176;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@uber.com header.s=s1 header.b=ZMJn8Lx6;
+       spf=pass (google.com: domain of bounces+13641-dd1f-josh=josh.is@em.uber.com designates 167.89.42.176 as permitted sender) smtp.mailfrom="bounces+13641-dd1f-josh=josh.is@em.uber.com";
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=uber.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uber.com;
+	h=mime-version:content-transfer-encoding:content-type:from:subject:to;
+	s=s1; bh=XYM1P2JAIShZVbN5gQSCLW6MmFZgpACCmUv6VnQEMik=;
+	b=ZMJn8Lx6ADWo1JSyhZv9Ef8p/T1hb7/zg/xLr3bi5nUMoapvG2UIiggP6zE/yxF+08jM
+	atBb7OrvfGbBmsuAQapXo1tjieBLDUxtc1AcTAFwiWp5cDI2WTFCaF8DTwLXl8J4pJd592
+	8SVrreanxO3YrlkpCP8GcD5a6OPVoqxQO0og4BtYM6YsrTSPXerVpVFi3BcQtePCnNTdJz
+	mN/WGmXipJsgIyqTmMwNOVZEhPiUwrEGRc4c4BZCFAPs/8hB6IgzHE5aqLF1KWAjxrl9e5
+	GdiOIhBrMLM3C4Jyx2NERAs3Hs5DCyzNDq4EMrxBZnwxxPBpFbcSqX8NS9/ugCkw==
+Received: by filterdrecv-5bb48d8f58-5fksx with SMTP id filterdrecv-5bb48d8f58-5fksx-1-6187D696-4A
+        2021-11-07 13:37:26.755001343 +0000 UTC m=+5757381.359187224
+Received: from localhost (unknown)
+	by ismtpd0072p1las1.sendgrid.net (SG)
+	with ESMTP id TOfCkYa8SgWEjyAvaDCOpA
+	for <josh@josh.is>;
+	Sun, 07 Nov 2021 13:37:26.699 +0000 (UTC)
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <a518dfb4-ec64-572c-925a-cd4894e34f75@mail.uber.com>
+X-Uber-Id: a518dfb4-ec64-572c-925a-cd4894e34f75
+Content-Type: text/html; charset=iso-8859-1
+From: Uber Receipts <noreply@uber.com>
+Subject: Your Sunday afternoon e-bike ride with Lime
+Date: Sun, 07 Nov 2021 13:37:26 +0000 (UTC)
+X-SG-EID: 
+ =?us-ascii?Q?nqNt4aYjwnm6SMJzFCmPwMJOfdwVeFAfAPUn0hQa9Z1wwLiNA8qGnMvL0vimZ1?=
+ =?us-ascii?Q?kS2YxnShe4Sj2zZeOIuEuxd7dO5AJTjOmoBNfYJ?=
+ =?us-ascii?Q?29FDwT3j3th61kbVKyGaZAtV1uQtty3V2+xmAdv?=
+ =?us-ascii?Q?RjCoaYA1b739DqJ9jy8Rhw3Fjgfs=2FHzb0ZFNndr?=
+ =?us-ascii?Q?TnSbKyBdW5gpG5xgq6C4ROirvqbgh1wPFeWb3CA?=
+ =?us-ascii?Q?Cl7h4qGXGXKscal3c=3D?=
+X-SG-ID: 
+ =?us-ascii?Q?N2C25iY2uzGMFz6rgvQsb9yz3XhDNMifsM984dnh5rdSQyHdVhXQ9tUO=2FyMcqU?=
+ =?us-ascii?Q?BWJPTwSGSHOf4zPDE4gUlHpnVxIiLOM4eK77m=2FY?=
+ =?us-ascii?Q?euSy9M2bueiGBRf8epUP4+wV1oO81uK6uUfPccT?=
+ =?us-ascii?Q?NkzTBPMyofbiwwF2CXnVsNxkV+sReSxgs3aieRw?=
+ =?us-ascii?Q?4IeykoXOhGQsVwzncwHUcaqTQ+qyRRgNGu2IZkE?=
+ =?us-ascii?Q?GiKH2tGqCeOu=2F+PkxWlPguUKmHJKm1Ak6=2F1O=2FoE?=
+ =?us-ascii?Q?6DWfWanNRLVgfUf+7egfeljwPyCXfDK2xpnErV5?=
+ =?us-ascii?Q?PohEYAJhnbHvvQsEVbSNhk5lyvQVPWzjmmmKm72?=
+ =?us-ascii?Q?usweNCSxickqnjsH9qIdtHIFPXLEuacQZ75VYOJ?=
+ =?us-ascii?Q?HgkC+i5uPXTKxBuDHumjVZnYk6VxtoH50XAnWqI?=
+ =?us-ascii?Q?ASiIgLIjCkFNKA9N4A5iPzzciPCjTV3q7uQ?=
+To: josh@josh.is
+X-Entity-ID: 92v7Mj6XZLD3rChEwyNQYg==
+
+<!doctype html><html><head><meta charset=3D"utf-8"><meta name=3D"viewport" =
+content=3D"width=3Ddevice-width"><!--[if !mso]><meta http-equiv=3D"x-ua-com=
+patible" content=3D"IE=3Dedge"><![endif]--><!--[if gte mso 9]><xml><o:offic=
+edocumentsettings><o:allowpng><o:pixelsperinch>96</o:pixelsperinch></o:offi=
+cedocumentsettings></xml><![endif]--><style type=3D"text/css">@media screen=
+ and (max-width:699px){.t1of12,.t2of12,.t3of12,.t4of12,.t5of12,.t6of12,.t7o=
+f12,.t8of12,.t9of12,.t10of12,.t11of12,.t12of12,.full{width:100%!important;m=
+ax-width:none!important}a[x-apple-data-detectors]{color:inherit!important;t=
+ext-decoration:none!important;font-size:inherit!important;font-family:inher=
+it!important;font-weight:inherit!important;line-height:inherit!important}.h=
+eaderTextLeft{text-align:left!important}}@media screen and (-webkit-min-dev=
+ice-pixel-ratio:1){.arrow{vertical-align:6%;line-height:20px!important}}@me=
+dia screen{@font-face{font-family:clanpro-thin;src:url(https://d1a3f4spazzr=
+p4.cloudfront.net/emails/2017/global/fonts/ClanProForUBER-Thin.woff)format(=
+'woff'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/=
+ClanProForUBER-Thin.ttf)format('truetype');font-weight:400!important;font-s=
+tyle:normal!important;mso-font-alt:'Arial'}@font-face{font-family:clanpro-b=
+ook;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/=
+ClanProForUBER-Book.woff)format('woff'),url(https://d1a3f4spazzrp4.cloudfro=
+nt.net/emails/2017/global/fonts/ClanProForUBER-Book.ttf)format('truetype');=
+font-weight:400!important;font-style:normal!important;mso-font-alt:'Arial'}=
+@font-face{font-family:clanpro-news;src:url(https://d1a3f4spazzrp4.cloudfro=
+nt.net/emails/2017/global/fonts/ClanProForUBER-News.woff)format('woff'),url=
+(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/ClanProForU=
+BER-News.ttf)format('truetype');font-weight:400!important;font-style:normal=
+!important;mso-font-alt:'Arial'}@font-face{font-family:ubermove;src:url(htt=
+ps://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/UberMove-Light.=
+woff2)format('woff2'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2019=
+/global/fonts/UberMove-Light.woff)format('woff');font-weight:200;font-style=
+:normal;font-display:swap;mso-font-alt:'Arial'}@font-face{font-family:uberm=
+ove;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/=
+UberMove-Regular.woff2)format('woff2'),url(https://d1a3f4spazzrp4.cloudfron=
+t.net/emails/2019/global/fonts/UberMove-Regular.woff)format('woff');font-we=
+ight:400;font-style:normal;font-display:swap;mso-font-alt:'Arial'}@font-fac=
+e{font-family:ubermove;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails=
+/2019/global/fonts/UberMove-Medium.woff2)format('woff2'),url(https://d1a3f4=
+spazzrp4.cloudfront.net/emails/2019/global/fonts/UberMove-Medium.woff)forma=
+t('woff');font-weight:500;font-style:normal;font-display:swap;mso-font-alt:=
+'Arial'}@font-face{font-family:ubermove;src:url(https://d1a3f4spazzrp4.clou=
+dfront.net/emails/2019/global/fonts/UberMove-Bold.woff2)format('woff2'),url=
+(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/UberMove-Bo=
+ld.woff)format('woff');font-weight:600;font-style:normal;font-display:swap;=
+mso-font-alt:'Arial'}@font-face{font-family:ubermovetext;src:url(https://d1=
+a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/UberMoveText-Light.wof=
+f2)format('woff2'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/gl=
+obal/fonts/UberMoveText-Light.woff)format('woff');font-weight:200;font-styl=
+e:normal;font-display:swap;mso-font-alt:'Arial'}@font-face{font-family:uber=
+movetext;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/f=
+onts/UberMoveText-Regular.woff2)format('woff2'),url(https://d1a3f4spazzrp4.=
+cloudfront.net/emails/2019/global/fonts/UberMoveText-Regular.woff)format('w=
+off');font-weight:400;font-style:normal;font-display:swap;mso-font-alt:'Ari=
+al'}@font-face{font-family:ubermovetext;src:url(https://d1a3f4spazzrp4.clou=
+dfront.net/emails/2019/global/fonts/UberMoveText-Medium.woff2)format('woff2=
+'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/UberM=
+oveText-Medium.woff)format('woff');font-weight:500;font-style:normal;font-d=
+isplay:swap;mso-font-alt:'Arial'}@font-face{font-family:ubermovetext;src:ur=
+l(https://d1a3f4spazzrp4.cloudfront.net/emails/2019/global/fonts/UberMoveTe=
+xt-Bold.woff2)format('woff2'),url(https://d1a3f4spazzrp4.cloudfront.net/ema=
+ils/2019/global/fonts/UberMoveText-Bold.woff)format('woff');font-weight:600=
+;font-style:normal;font-display:swap;mso-font-alt:'Arial'}@font-face{font-f=
+amily:clanpro-medium;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2=
+017/global/fonts/ClanProForUBER-Medium.woff)format('woff'),url(https://d1a3=
+f4spazzrp4.cloudfront.net/emails/2017/global/fonts/ClanProForUBER-Medium.tt=
+f)format('truetype');font-weight:400!important;font-style:normal!important;=
+mso-font-alt:'Arial'}}.btn a:hover{background-color:#007279!important;borde=
+r-color:#007279!important}.textcta a:hover{color:#007279!important}a[x-appl=
+e-data-detectors]{color:inherit!important;text-decoration:none!important;fo=
+nt-size:inherit!important;font-family:inherit!important;font-weight:inherit=
+!important;line-height:inherit!important}@media yahoo{.wrapper{min-width:70=
+0px!important}*{overflow:visible!important}.y-overflow-hidden{overflow:hidd=
+en!important}}</style><style>@media yahoo{.wrapper{min-width:700px!importan=
+t}}@media screen{@font-face{font-family:uber18-bold;src:url(https://d1a3f4s=
+pazzrp4.cloudfront.net/emails/2017/global/fonts/uber18/Uber_Bold_180627.wof=
+f)format('woff'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/glob=
+al/fonts/uber18/Uber_Bold_180627.ttf)format('truetype');font-weight:400!imp=
+ortant;font-style:normal!important;mso-font-alt:'Arial'}@font-face{font-fam=
+ily:uber18-medium;src:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017=
+/global/fonts/uber18/Uber_Medium_180627.woff)format('woff'),url(https://d1a=
+3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/uber18/Uber_Medium_1806=
+27.ttf)format('truetype');font-weight:400!important;font-style:normal!impor=
+tant;mso-font-alt:'Arial'}@font-face{font-family:uber18-text-regular;src:ur=
+l(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/uber18/Ube=
+r_Text_Regular_180627.woff)format('woff'),url(https://d1a3f4spazzrp4.cloudf=
+ront.net/emails/2017/global/fonts/uber18/Uber_Text_Regular_180627.ttf)forma=
+t('truetype');font-weight:400!important;font-style:normal!important;mso-fon=
+t-alt:'Arial'}@font-face{font-family:uber18-text-bold;src:url(https://d1a3f=
+4spazzrp4.cloudfront.net/emails/2017/global/fonts/uber18/Uber_Text_Bold_180=
+627.woff)format('woff'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/20=
+17/global/fonts/uber18/Uber_Text_Bold_180627.ttf)format('truetype');font-we=
+ight:400!important;font-style:normal!important;mso-font-alt:'Arial'}@font-f=
+ace{font-family:uber18-text-medium;src:url(https://d1a3f4spazzrp4.cloudfron=
+t.net/emails/2017/global/fonts/uber18/Uber_Text_Medium_180627.woff)format('=
+woff'),url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/global/fonts/u=
+ber18/Uber_Text_Medium_180627.ttf)format('truetype');font-weight:400!import=
+ant;font-style:normal!important;mso-font-alt:'Arial'}}.Uber18_text_p1{font-=
+size:16px;line-height:28px;font-family:UberMoveText,open sans,helvetica neu=
+e,Helvetica,sans-serif;font-weight:400;color:#000}.Uber18_text_p2{font-size=
+:16px;line-height:28px;font-family:UberMoveText,open sans,helvetica neue,He=
+lvetica,sans-serif;font-weight:600;color:#000}.Uber18_text_p3{font-size:16p=
+x;line-height:28px;font-family:UberMoveText,open sans,helvetica neue,Helvet=
+ica,sans-serif;font-weight:500;color:#000}.Uber18_p2{font-size:16px;line-he=
+ight:28px;font-family:UberMove,open sans,helvetica neue,Helvetica,sans-seri=
+f;font-weight:600;color:#000}.Uber18_p3{font-size:16px;line-height:28px;fon=
+t-family:UberMove,open sans,helvetica neue,Helvetica,sans-serif;font-weight=
+:500;color:#888}.grey_divider{width:100%;height:1px;background-color:#bdbdb=
+d}.mobileMap,.mobileContent{display:none}.btn a:hover{background-color:#084=
+fd2!important;border-color:#084fd2!important}.textcta a:hover{color:#084fd2=
+!important}.btn_green a:hover{background-color:#006900!important;border-col=
+or:#006900!important}.textcta_green a:hover{color:#006900!important}.receip=
+t_body{max-width:648px}@media screen and (max-width:9000px){.header_h2{font=
+-size:30px!important;line-height:40px!important;font-weight:500;word-break:=
+break-word}.header_h3{font-size:44px!important;line-height:48px!important}.=
+header_Uber18_text_p1{font-size:22px!important}.bannerDivider_eats{border-r=
+ight:1px solid #000}}@media screen and (max-width:1105px){u~div .gmail_head=
+er_icon_table{float:right!important}}@media screen and (max-width:3000px){.=
+desktopPipe{display:block!important}.bannerDivider{border-right:1px solid #=
+fff!important}}@media screen and (max-width:699px){.desktopMap,.desktopPipe=
+{display:none!important}.mobileMap{display:block!important}.bannerPipe{bord=
+er:none!important;display:block!important;padding-top:8px!important;padding=
+-bottom:8px!important}.bannerDivider{border:none!important}.visa_m_vertical=
+_pad{padding-top:34px!important;padding-bottom:34px!important}.mobileConten=
+t *{max-width:none!important;max-height:none!important}.mobileCard_b_pad{pa=
+dding-bottom:15px!important}.flag{padding-left:12px!important;padding-right=
+:12px!important}.headline{font-size:36px!important;padding-bottom:35px!impo=
+rtant}.header_illustrator{margin:0 auto!important}.header_icon{margin:0 0 0=
+ auto}.mobile_img{width:100%!important;height:auto!important;max-width:100%=
+!important;max-height:none!important}.desktopContent{display:none!important=
+}.mobileContent{display:block!important}.total_head{font-size:26px!importan=
+t;line-height:32px!important}.receipt_body{max-width:none!important}}@media=
+ screen and (max-width:415px){.header_bg_rider{background-image:url(https:/=
+/d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt/R-Default-1M.png)!imp=
+ortant}.header_bg_eats_default{background-image:url(https://d1a3f4spazzrp4.=
+cloudfront.net/emails/2017/01/receipt/E-Default-1M.png)!important}.header_b=
+g_eats_tip_added{background-image:url(https://d1a3f4spazzrp4.cloudfront.net=
+/emails/2017/01/receipt/E-Tip-2M.png)!important}.header_bg_eats_refund{back=
+ground-image:url(https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/recei=
+pt/E-Refund-3M.png)!important}.header_headline{font-size:24px!important}.ba=
+nnerDivider_eats{border:none!important}.eats_footer_table{max-width:none!im=
+portant;width:100%!important}.eats_footer_table *{text-align:left!important=
+}.eats_option_item{padding-left:15px!important}.header_h3{font-size:34px!im=
+portant;line-height:38px!important}.header_Uber18_text_p1{font-size:20px!im=
+portant}.logo{padding-top:25px!important}.total_head{font-size:34px!importa=
+nt}.flag{padding-left:11px!important;padding-right:10px!important}.desktopC=
+ontent{display:none!important}.mobileContent{display:block!important}}@medi=
+a screen and (max-width:350px){.eats_option_item{padding-left:0!important}}=
+.cta{font-size:14px;line-height:20px;font-family:UberMoveText,open sans,hel=
+vetica neue,Helvetica,sans-serif!important;font-weight:600}</style><!--[if =
+(gte mso 9)|(IE)]><style>.desktopPipe{display:block!important}.bannerDivide=
+r{border-right:1px solid #fff!important}</style><![endif]--></head><body st=
+yle=3D"-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;background-c=
+olor:#d6d6d5;margin:0;min-width:100%;padding:0;width:100%"><table width=3D"=
+100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"background-=
+color:#d6d6d5;border:none;border-collapse:collapse;border-spacing:0;mso-tab=
+le-lspace:0;mso-table-rspace:0;width:100%" bgcolor=3D"#d6d6d5"><tr><td alig=
+n=3D"center"><!--[if (gte mso 9)|(IE)]><table width=3D"700" align=3D"center=
+" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><tab=
+le width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D=
+"border:none;border-collapse:collapse;border-spacing:0;max-width:700px;mso-=
+table-lspace:0;mso-table-rspace:0;width:100%" class=3D"wrapper"><tr><td sty=
+le=3D"background-color:#fff" align=3D"center"><table width=3D"100%" border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-coll=
+apse:collapse;border-spacing:0;margin:auto;max-width:700px;mso-table-lspace=
+:0;mso-table-rspace:0;width:100%" class=3D"tron"><tr><td align=3D"center"><=
+table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=
+=3D"background-color:#fff;border:none;border-collapse:collapse;border-spaci=
+ng:0;margin:auto;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor=
+=3D"#ffffff" class=3D"basetable"><tr><td align=3D"center"><!--[if (gte mso =
+9)|(IE)]><table width=3D"700" align=3D"center" cellpadding=3D"0" cellspacin=
+g=3D"0" border=3D"0"><tr><td align=3D"center"><![endif]--><table width=3D"1=
+00%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"basetable" s=
+tyle=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lsp=
+ace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"center" style=3D"back=
+ground-color:#fff"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+width=3D"100%" class=3D"basetable" style=3D"border:none;border-collapse:col=
+lapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><t=
+r><td><!--[if (gte mso 9)|(IE)]><table width=3D"700" align=3D"center" cellp=
+adding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table bord=
+er=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" class=3D"baseta=
+ble" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-tab=
+le-lspace:0;mso-table-rspace:0;width:100%"><tr><td bgcolor=3D"#ffffff"><!--=
+[if (gte mso 9)|(IE)]><table width=3D"100%" align=3D"center" cellpadding=3D=
+"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table width=3D"100%=
+" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;bor=
+der-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:=
+0;width:100%"><tbody><tr><td align=3D"left" style=3D"direction:ltr;text-ali=
+gn:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"b=
+order:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso=
+-table-rspace:0;width:100%"><tbody><tr><td bgcolor=3D"#ffe2e0" style=3D"dir=
+ection:ltr;text-align:left"><table width=3D"100%" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;bord=
+er-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><=
+td width=3D"14" style=3D"direction:ltr;text-align:left">&nbsp;</td><td alig=
+n=3D"left" style=3D"direction:ltr;text-align:left"><table border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:collap=
+se;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbod=
+y><tr><td align=3D"center"><!--[if (gte mso 9)|(IE)]><table width=3D"616" a=
+lign=3D"center" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><!=
+[endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"=
+t11of12 layout" align=3D"center" style=3D"border:none;border-collapse:colla=
+pse;border-spacing:0;max-width:616px;mso-table-lspace:0;mso-table-rspace:0;=
+width:100%"><tbody><tr><td align=3D"center" style=3D"font-size:1px;height:1=
+px;line-height:1px;padding-left:0!important;padding-right:0!important"><!--=
+[if (gte mso 9)|(IE)]><table width=3D"560" align=3D"center" cellpadding=3D"=
+0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D"0" c=
+ellpadding=3D"0" cellspacing=3D"0" class=3D"t10of12 layout" align=3D"center=
+" style=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:=
+560px;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td widt=
+h=3D"12" style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!i=
+mportant;padding-right:0!important;direction:ltr;text-align:left">&nbsp;</t=
+d><td style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!impo=
+rtant;padding-right:0!important;direction:ltr;text-align:left"><table borde=
+r=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" s=
+tyle=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lsp=
+ace:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tbody><tr><td styl=
+e=3D"direction:ltr;text-align:left"><table width=3D"100%" border=3D"0" cell=
+padding=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:collap=
+se;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbod=
+y><tr><td class=3D"logo" align=3D"left" style=3D"padding-top:45px;padding-b=
+ottom:40px;direction:ltr;text-align:left" valign=3D"middle"><table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-coll=
+apse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:=
+100%"><tbody><tr><td class=3D"Uber18_text_p1 black" valign=3D"top" align=3D=
+"left" width=3D"250" height=3D"26" style=3D"color:#000;font-family:UberMove=
+Text,open sans,helvetica neue,Helvetica,sans-serif;line-height:30px;padding=
+-right:12px;padding-top:5px;direction:ltr;text-align:left"><img src=3D"http=
+s://d1a3f4spazzrp4.cloudfront.net/receipt_v3/receipt_uber_logo_lime_bike.pn=
+g" border=3D"0" width=3D"250" style=3D"-ms-interpolation-mode:bicubic;clear=
+:both;display:block;height:auto;outline:none;text-decoration:none"></td><td=
+ class=3D"Uber18_text_p1" width=3D"80%" align=3D"right" style=3D"color:#000=
+;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;fon=
+t-size:12px;line-height:18px;text-align:right;direction:ltr" valign=3D"midd=
+le"><div>Total
+<span class=3D"Uber18_text_p2" style=3D"color:#000;font-family:UberMoveText=
+,open sans,helvetica neue,Helvetica,sans-serif;font-size:12px;line-height:1=
+8px">=A38.05</span></div><span class=3D"Uber18_text_p1" style=3D"color:#000=
+;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;fon=
+t-size:12px;line-height:15px">November 7, 2021</span></td></tr></tbody></ta=
+ble></td></tr></tbody></table></td></tr></tbody></table></td><td width=3D"1=
+2" style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!importa=
+nt;padding-right:0!important;direction:ltr;text-align:left">&nbsp;</td></tr=
+></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></=
+td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endi=
+f]--></td></tr></tbody></table></td><td width=3D"14" style=3D"direction:ltr=
+;text-align:left">&nbsp;</td></tr></tbody></table></td></tr></tbody></table=
+></td></tr></tbody></table><table width=3D"100%" border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;bord=
+er-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><=
+td align=3D"left" style=3D"direction:ltr;text-align:left"><table border=3D"=
+0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse=
+:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%=
+"><tbody><tr><td background=3D"https://d1a3f4spazzrp4.cloudfront.net/emails=
+/2017/01/receipt_18_headerbg.png" bgcolor=3D"#ffe2e0" width=3D"700" valign=
+=3D"top" style=3D"background-repeat:no-repeat;background-position:100% 100%=
+;direction:ltr;text-align:left"><!--[if gte mso 9]><v:rect xmlns:v=3D"urn:s=
+chemas-microsoft-com:vml" fill=3D"true" stroke=3D"false" style=3D"width:700=
+px;"><v:fill type=3D"frame" origin=3D"0, 1" position=3D"0,1" src=3D"https:/=
+/d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt_18_headerbg.png" colo=
+r=3D"#FFE2E0"><v:textbox style=3D"mso-fit-shape-to-text:true" inset=3D"0,0,=
+0,0"><![endif]--><div><div style=3D"font-size:0;line-height:0"><table width=
+=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:=
+none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table=
+-rspace:0;width:100%"><tbody><tr><td width=3D"14" style=3D"direction:ltr;te=
+xt-align:left">&nbsp;</td><td align=3D"left" style=3D"direction:ltr;text-al=
+ign:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"=
+border:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;ms=
+o-table-rspace:0;width:100%"><tbody><tr><td align=3D"center"><!--[if (gte m=
+so 9)|(IE)]><table width=3D"616" align=3D"center" cellpadding=3D"0" cellspa=
+cing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" class=3D"t11of12 layout" align=3D"center" style=3D=
+"border:none;border-collapse:collapse;border-spacing:0;max-width:616px;mso-=
+table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td align=3D"cente=
+r" style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!importa=
+nt;padding-right:0!important"><!--[if (gte mso 9)|(IE)]><table width=3D"560=
+" align=3D"center" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td=
+><![endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"t10of12 layout" align=3D"center" style=3D"border:none;border-collapse:c=
+ollapse;border-spacing:0;max-width:560px;mso-table-lspace:0;mso-table-rspac=
+e:0;width:100%"><tbody><tr><td width=3D"12" style=3D"font-size:1px;height:1=
+px;line-height:1px;padding-left:0!important;padding-right:0!important;direc=
+tion:ltr;text-align:left">&nbsp;</td><td style=3D"font-size:1px;height:1px;=
+line-height:1px;padding-left:0!important;padding-right:0!important;directio=
+n:ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D=
+"0" width=3D"100%" align=3D"left" style=3D"border:none;border-collapse:coll=
+apse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fi=
+xed;width:100%"><tbody><tr><td style=3D"direction:ltr;text-align:left"><tab=
+le width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D=
+"border:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;m=
+so-table-rspace:0;width:100%"><tbody><tr><td align=3D"left" style=3D"font-s=
+ize:0;direction:ltr;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=
+=3D"392" align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><t=
+r><td><![endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" c=
+lass=3D"t7of12 layout" style=3D"border:none;border-collapse:collapse;border=
+-spacing:0;display:inline-block;max-width:392px;mso-table-lspace:0;mso-tabl=
+e-rspace:0;vertical-align:bottom;width:100%"><tbody><tr><td style=3D"font-s=
+ize:1px;height:1px;line-height:1px;padding-left:0!important;padding-right:0=
+!important;direction:ltr;text-align:left"><table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"border:none=
+;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rsp=
+ace:0;table-layout:fixed;width:100%"><tbody><tr><td class=3D"Uber18_p3 head=
+er_h3" style=3D"color:#000;font-family:uber18-medium,Helvetica,Arial,sans-s=
+erif;font-size:34px;line-height:38px;padding-bottom:13px;direction:ltr;text=
+-align:left">Thanks for riding, Josh.</td></tr><tr><td class=3D"Uber18_text=
+_p1" style=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue,=
+Helvetica,sans-serif;font-size:16px;line-height:28px;direction:ltr;text-ali=
+gn:left"><!--[if (gte mso 9)|(IE)]><table width=3D"308" align=3D"left" cell=
+padding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table bor=
+der=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t6of12 layout" align=
+=3D"left" style=3D"border:none;border-collapse:collapse;border-spacing:0;ma=
+x-width:308px;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr>=
+<td style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!import=
+ant;padding-right:0!important;direction:ltr;text-align:left"><table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" st=
+yle=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lspa=
+ce:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tbody><tr><td class=
+=3D"Uber18_text_p1 header_Uber18_text_p1" style=3D"color:#000;font-family:U=
+berMoveText,open sans,helvetica neue,Helvetica,sans-serif;font-size:20px;li=
+ne-height:26px;padding-bottom:40px;direction:ltr;text-align:left">We hope y=
+ou enjoyed your ride this afternoon.</td></tr></tbody></table></td></tr></t=
+body></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td><=
+/tr></tbody></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></t=
+d></tr></table><![endif]--><!--[if (gte mso 9)|(IE)]></td><td valign=3D"bot=
+tom"><![endif]--><!--[if (gte mso 9)|(IE)]><table width=3D"144" align=3D"le=
+ft" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><t=
+able border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t3of12 layou=
+t gmail_header_icon_table" style=3D"border:none;border-collapse:collapse;bo=
+rder-spacing:0;display:inline-block;max-width:144px;mso-table-lspace:0;mso-=
+table-rspace:0;vertical-align:bottom;width:100%"><tbody><tr><td style=3D"fo=
+nt-size:1px;height:1px;line-height:1px;padding-left:0!important;padding-rig=
+ht:0!important;direction:ltr;text-align:left"><table border=3D"0" cellpaddi=
+ng=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"border:no=
+ne;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-r=
+space:0;table-layout:fixed;width:100%"><tbody><tr><td style=3D"padding-top:=
+0;direction:ltr;text-align:left"><img class=3D"header_icon" src=3D"https://=
+d1a3f4spazzrp4.cloudfront.net/receipt_v3/Jump_Logo_v1.png" width=3D"144" he=
+ight border=3D"0" style=3D"-ms-interpolation-mode:bicubic;clear:both;displa=
+y:block;height:auto;margin:0 0 0 auto;max-height:144px;max-width:144px;outl=
+ine:none;text-decoration:none;width:100%" alt></td></tr></tbody></table></t=
+d></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif=
+]--></td></tr></tbody></table></td></tr></tbody></table></td><td width=3D"1=
+2" style=3D"font-size:1px;height:1px;line-height:1px;padding-left:0!importa=
+nt;padding-right:0!important;direction:ltr;text-align:left">&nbsp;</td></tr=
+></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></=
+td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endi=
+f]--></td></tr></tbody></table></td><td width=3D"14" style=3D"direction:ltr=
+;text-align:left">&nbsp;</td></tr></tbody></table></div></div><!--[if gte m=
+so 9]></v:textbox></v:rect><![endif]--></td></tr></tbody></table></td></tr>=
+</tbody></table><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;=
+mso-table-lspace:0;mso-table-rspace:0;width:100%;margin-bottom:20px"><tr><t=
+d align=3D"center" style=3D"background-color:##ffffff"><table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:co=
+llapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><=
+tr><td align=3D"center"><!--[if (gte mso 9)|(IE)]><table width=3D"648" alig=
+n=3D"center" cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"bord=
+er:none;border-collapse:collapse;mso-table-lspace:0;mso-table-rspace:0"><tr=
+><td align=3D"center" style=3D"text-align:center" bgcolor=3D"#ffffff"><![en=
+dif]--><table class=3D"receipt_body" width=3D"100%" border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;bor=
+der-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%" bgcolor=3D"=
+#ffffff"><tr><td class=3D"outsidegutter" align=3D"left" bgcolor=3D"#ffffff"=
+ style=3D"padding:45px 14px 0;direction:ltr;text-align:left"><table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-coll=
+apse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:=
+100%"><tr><td align=3D"center"><!--[if (gte mso 9)|(IE)]><table width=3D"56=
+0" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><ta=
+ble border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t10of12" styl=
+e=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:560px;=
+mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td style=3D"padding-=
+left:0;padding-right:0"><table width=3D"100%" border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;border-sp=
+acing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"=
+left" style=3D"padding-left:12px;padding-right:12px"><table border=3D"0" ce=
+llpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-collapse:coll=
+apse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tb=
+ody><tr><td class=3D"Uber18_p3 total_head" valign=3D"top" align=3D"left" st=
+yle=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue,Helveti=
+ca,sans-serif;font-size:44px;line-height:44px;padding-right:12px;direction:=
+ltr;text-align:left">Total</td><td class=3D"Uber18_p3 total_head" valign=3D=
+"top" align=3D"right" style=3D"color:#000;font-family:UberMoveText,open san=
+s,helvetica neue,Helvetica,sans-serif;font-size:44px;line-height:44px;text-=
+align:right;direction:ltr">=A38.05</td></tr></tbody></table></td></tr></tab=
+le><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" s=
+tyle=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lsp=
+ace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"left" style=3D"paddin=
+g-left:12px;padding-right:12px"></td></tr></table><table width=3D"100%" bor=
+der=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;border-c=
+ollapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;wid=
+th:100%"><tr><td align=3D"left" style=3D"padding-left:12px;padding-right:12=
+px"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" =
+style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-ls=
+pace:0;mso-table-rspace:0;width:100%"><tr><td style=3D"padding-top:26px;pad=
+ding-bottom:26px"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" w=
+idth=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collapse;=
+border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;w=
+idth:100%"><tr><td valign=3D"top" align=3D"left" style=3D"font-size:1px;lin=
+e-height:1px;background-color:#009eb7">&nbsp;</td></tr></table></td></tr></=
+table></td></tr></table><table width=3D"100%" border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;border-sp=
+acing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"=
+left" style=3D"padding-left:12px;padding-right:12px"><table border=3D"0" ce=
+llpadding=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"border:none;borde=
+r-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;=
+width:100%"><tr><td class=3D"Uber18_text_p1 black" valign=3D"top" align=3D"=
+left" style=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue=
+,Helvetica,sans-serif;font-size:16px;line-height:28px;padding-bottom:5px;pa=
+dding-right:12px;padding-top:5px;direction:ltr;text-align:left">Base Fare<!=
+--[if (gte mso 9)]>&nbsp;<![endif]--></td><td class=3D"Uber18_text_p1 black=
+" valign=3D"top" align=3D"right" style=3D"color:#000;font-family:UberMoveTe=
+xt,open sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-height=
+:28px;padding-bottom:5px;padding-right:0;padding-top:5px;text-align:right;d=
+irection:ltr">=A31.00</td></tr></table><table border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" width=3D"100%" style=3D"border:none;border-collapse:col=
+lapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><t=
+r><td class=3D"Uber18_text_p1 black" valign=3D"top" align=3D"left" style=3D=
+"color:#000;font-family:UberMoveText,open sans,helvetica neue,Helvetica,san=
+s-serif;font-size:16px;line-height:28px;padding-bottom:5px;padding-right:12=
+px;padding-top:5px;direction:ltr;text-align:left">Duration Fare<!--[if (gte=
+ mso 9)]>&nbsp;<![endif]--></td><td class=3D"Uber18_text_p1 black" valign=
+=3D"top" align=3D"right" style=3D"color:#000;font-family:UberMoveText,open =
+sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-height:28px;pa=
+dding-bottom:5px;padding-right:0;padding-top:5px;text-align:right;direction=
+:ltr">=A37.05</td></tr></table><table border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0" width=3D"100%" style=3D"border:none;border-collapse:collapse;bo=
+rder-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr=
+><td style=3D"padding-top:26px;padding-bottom:26px"><table border=3D"0" cel=
+lpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"bor=
+der:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-t=
+able-rspace:0;table-layout:fixed;width:100%"><tbody><tr><td valign=3D"top" =
+align=3D"left" style=3D"font-size:1px;line-height:1px;background-color:#bdb=
+dbd">&nbsp;</td></tr></tbody></table></td></tr></tbody></table><table borde=
+r=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"border:=
+none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table=
+-rspace:0;width:100%"><tr><td class=3D"Uber18_text_p3 black" valign=3D"top"=
+ align=3D"left" style=3D"color:#000;font-family:UberMoveText,open sans,helv=
+etica neue,Helvetica,sans-serif;font-size:16px;line-height:28px;padding-bot=
+tom:5px;padding-right:12px;padding-top:5px;direction:ltr;text-align:left">S=
+ubtotal</td><td class=3D"Uber18_text_p3 black" valign=3D"top" align=3D"righ=
+t" style=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue,He=
+lvetica,sans-serif;font-size:16px;line-height:28px;padding-bottom:5px;paddi=
+ng-top:5px;text-align:right;direction:ltr">=A38.05</td></tr></table></td></=
+tr></table><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-t=
+able-lspace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"left" style=
+=3D"padding-left:12px;padding-right:12px"><table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%" style=3D"border:none;border-collaps=
+e:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100=
+%"><tbody><tr><td style=3D"padding-top:26px;padding-bottom:26px"><table bor=
+der=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left"=
+ style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-l=
+space:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tbody><tr><td va=
+lign=3D"top" align=3D"left" style=3D"font-size:1px;line-height:1px;backgrou=
+nd-color:#bdbdbd">&nbsp;</td></tr></tbody></table></td></tr></tbody></table=
+><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" sty=
+le=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lspac=
+e:0;mso-table-rspace:0;width:100%"><tbody><tr><td class=3D"Uber18_text_p3 b=
+lack" valign=3D"top" align=3D"left" style=3D"color:#000;font-family:UberMov=
+eText,open sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-hei=
+ght:28px;padding-bottom:5px;padding-right:12px;padding-top:5px;direction:lt=
+r;text-align:left">Amount Charged</td><td class=3D"Uber18_text_p1 black" va=
+lign=3D"top" align=3D"right" style=3D"color:#000;font-family:UberMoveText,o=
+pen sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-height:28p=
+x;padding-bottom:5px;padding-top:5px;direction:ltr;text-align:left">&nbsp;<=
+/td></tr></tbody></table><table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"100%" style=3D"border:none;border-collapse:collapse;border-=
+spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td =
+class=3D"Uber18_text_p1 black mobileCard_b_pad" valign=3D"middle" align=3D"=
+left" style=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue=
+,Helvetica,sans-serif;font-size:16px;line-height:28px;padding-bottom:5px;pa=
+dding-right:12px;padding-top:5px;direction:ltr;text-align:left"><table widt=
+h=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border=
+:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-tabl=
+e-rspace:0;width:100%"><tbody><tr><td align=3D"left" style=3D"direction:ltr=
+;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=3D"initial" cellpa=
+dding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table align=
+=3D"left" width=3D"initial" border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-=
+lspace:0;mso-table-rspace:0;width:initial"><tbody><tr><td align=3D"left" wi=
+dth=3D"55" style=3D"padding-top:2px;padding-bottom:2px;direction:ltr;text-a=
+lign:left"><img src=3D"https://tb-static.uber.com/prod/wallet/icons/visa_3x=
+.png" width=3D"35" height=3D"23" border=3D"0" style=3D"-ms-interpolation-mo=
+de:bicubic;clear:both;display:inline-block;height:23px;max-width:100%;outli=
+ne:none;padding-right:18px;text-decoration:none;vertical-align:middle;width=
+:32px"></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td><![endif]--=
+><!--[if (gte mso 9)|(IE)]><td><![endif]--><table align=3D"left" width=3D"i=
+nitial" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:no=
+ne;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-r=
+space:0;width:initial"><tbody><tr><td class=3D"Uber18_text_p1 black" align=
+=3D"left" style=3D"color:#000;font-family:UberMoveText,open sans,helvetica =
+neue,Helvetica,sans-serif;font-size:16px;line-height:28px;padding-bottom:2p=
+x;padding-right:5px;padding-top:2px;direction:ltr;text-align:left">&bull;&b=
+ull;&bull;&bull; 8671</td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></=
+td><![endif]--></td></tr></tbody></table></td><td class=3D"Uber18_text_p3 b=
+lack" valign=3D"top" align=3D"right" style=3D"color:#000;font-family:UberMo=
+veText,open sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-he=
+ight:28px;padding-bottom:10px;padding-top:10px;text-align:right;direction:l=
+tr">=A38.05</td></tr></tbody></table></td></tr></table><table width=3D"100%=
+" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;bor=
+der-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:=
+0;width:100%"><tr><td align=3D"left" style=3D"padding-left:12px;padding-rig=
+ht:12px"></td></tr></table></td></tr></table><!--[if (gte mso 9)|(IE)]></td=
+></tr></table><![endif]--></td></tr></table></td></tr></table><!--[if (gte =
+mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></table></td></tr></ta=
+ble><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"background-color:#f6f6f6;border:none;border-collapse:collapse;bord=
+er-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><=
+td class=3D"outsidegutter" align=3D"left" style=3D"padding:40px 14px;direct=
+ion:ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-t=
+able-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td style=3D"direct=
+ion:ltr;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=3D"560" ali=
+gn=3D"center" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![e=
+ndif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t1=
+0of12 layout" align=3D"center" style=3D"margin:0 auto;border:none;border-co=
+llapse:collapse;border-spacing:0;max-width:560px;mso-table-lspace:0;mso-tab=
+le-rspace:0;width:100%"><tbody><tr><td style=3D"font-size:1px;height:1px;li=
+ne-height:1px;padding-left:0!important;padding-right:0!important;direction:=
+ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" width=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collap=
+se;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixe=
+d;width:100%"><tbody><tr><td style=3D"font-size:0;line-height:0;direction:l=
+tr;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=3D"112" align=3D=
+"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--=
+><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t2of12" s=
+tyle=3D"border:none;border-collapse:collapse;border-spacing:0;display:inlin=
+e-block;max-width:112px;mso-table-lspace:0;mso-table-rspace:0;vertical-alig=
+n:middle;width:100%"><tbody><tr><td style=3D"padding-left:12px;padding-righ=
+t:12px;direction:ltr;text-align:left"><table border=3D"0" cellpadding=3D"0"=
+ cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"border:none;borde=
+r-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;=
+table-layout:fixed;width:100%"><tbody><tr><td style=3D"padding-bottom:15px;=
+direction:ltr;text-align:left"><img src=3D"https://d1a3f4spazzrp4.cloudfron=
+t.net/receipt_v3/Jump_circle.png" width=3D"88" height border=3D"0" style=3D=
+"-ms-interpolation-mode:bicubic;clear:both;display:block;height:auto;max-he=
+ight:88px;max-width:88px;outline:none;text-decoration:none;width:100%"></td=
+></tr></tbody></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]><=
+/td></tr></table><![endif]--><!--[if mso]></td><td valign=3D"top"><![endif]=
+--><!--[if (gte mso 9)|(IE)]><table width=3D"448" align=3D"left" cellpaddin=
+g=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D=
+"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t8of12" style=3D"border:no=
+ne;border-collapse:collapse;border-spacing:0;display:inline-block;max-width=
+:448px;mso-table-lspace:0;mso-table-rspace:0;vertical-align:middle;width:10=
+0%"><tbody><tr><td style=3D"padding-left:12px;padding-right:12px;direction:=
+ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" width=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collap=
+se;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixe=
+d;width:100%"><tbody><tr><td style=3D"padding-bottom:5px;font-family:UberMo=
+veText,open sans,helvetica neue,Helvetica,sans-serif;font-size:20px;line-he=
+ight:28px;color:#000;direction:ltr;text-align:left">You rode LIME e-bike nu=
+mber JDE142</td></tr><tr><td class=3D"p2" style=3D"color:#000;font-family:u=
+bermovetext-regular,helveticaneue,Helvetica,Arial,sans-serif;font-size:16px=
+;line-height:22px;padding-bottom:7px;padding-top:0;direction:ltr;text-align=
+:left">4.60 miles | 47 min</td></tr></tbody></table></td></tr></tbody></tab=
+le><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></tbod=
+y></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></t=
+able><![endif]--></td></tr></tbody></table></td></tr></tbody></table><table=
+ width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"b=
+order:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso=
+-table-rspace:0;width:100%"><tbody><tr><td class=3D"outsidegutter" align=3D=
+"left" style=3D"background-color:#fff;padding:50px 14px 20px;direction:ltr;=
+text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" st=
+yle=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lspa=
+ce:0;mso-table-rspace:0;width:100%"><tbody><tr><td align=3D"center"><!--[if=
+ (gte mso 9)|(IE)]><table width=3D"56" align=3D"left" cellpadding=3D"0" cel=
+lspacing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D"0" cellpad=
+ding=3D"0" cellspacing=3D"0" class=3D"t1of12 layout" align=3D"left" style=
+=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:56px;ms=
+o-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td style=3D"fon=
+t-size:1px;height:1px;line-height:1px;padding-left:0!important;padding-righ=
+t:0!important;direction:ltr;text-align:left"><table border=3D"0" cellpaddin=
+g=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"border:non=
+e;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rs=
+pace:0;table-layout:fixed;width:100%"><tbody><tr><td style=3D"font-size:1px=
+;line-height:1px;height:1px;min-height:1px;direction:ltr;text-align:left">&=
+nbsp;</td></tr></tbody></table></td></tr></tbody></table><!--[if (gte mso 9=
+)|(IE)]></td></tr></table><![endif]--><!--[if mso]></td><td valign=3D"top">=
+<![endif]--><!--[if (gte mso 9)|(IE)]><table width=3D"616" cellpadding=3D"0=
+" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D"0" ce=
+llpadding=3D"0" cellspacing=3D"0" class=3D"t11of12" style=3D"border:none;bo=
+rder-collapse:collapse;border-spacing:0;max-width:616px;mso-table-lspace:0;=
+mso-table-rspace:0;width:100%"><tbody><tr><td style=3D"padding-left:0;paddi=
+ng-right:0;direction:ltr;text-align:left"><table border=3D"0" cellpadding=
+=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=3D"border:none=
+;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rsp=
+ace:0;table-layout:fixed;width:100%"><tbody><tr><td align=3D"left" style=3D=
+"direction:ltr;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=3D"2=
+80" align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td=
+><![endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=
+=3D"t5of12" align=3D"left" style=3D"border:none;border-collapse:collapse;bo=
+rder-spacing:0;direction:ltr;max-width:280px;mso-table-lspace:0;mso-table-r=
+space:0;width:100%"><tbody><tr><td style=3D"padding:20px 12px;direction:ltr=
+;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" w=
+idth=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collapse;=
+border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;w=
+idth:100%"><tbody><tr><td align=3D"left" style=3D"direction:ltr;text-align:=
+left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"init=
+ial" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-tab=
+le-lspace:0;mso-table-rspace:0;table-layout:auto;width:100%"><tr><td width=
+=3D"4" style=3D"width:4px;font-size:1px;line-height:1px" valign=3D"top"><im=
+g src=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt/recei=
+pt_18_square_top_fill_left.png" width=3D"4" height=3D"17" border=3D"0" styl=
+e=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;height:17px;ma=
+x-width:100%;outline:none;text-decoration:none;width:4px"></td><td style=3D=
+"font-size:1px;line-height:1px;width:1px;background-color:#000" valign=3D"t=
+op"><img src=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receip=
+t/receipt_18_square_top_fill_middle.png" width=3D"1" height=3D"17" border=
+=3D"0" style=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;hei=
+ght:17px;max-width:100%;outline:none;text-decoration:none;width:1px"></td><=
+td width=3D"3" style=3D"width:3px;font-size:1px;line-height:1px" valign=3D"=
+top"><img src=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/recei=
+pt/receipt_18_square_top_fill_right.png" width=3D"3" height=3D"17" border=
+=3D"0" style=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;hei=
+ght:17px;max-width:100%;outline:none;text-decoration:none;width:3px"></td><=
+td class=3D"Uber18_text_p2 black" valign=3D"top" style=3D"color:#000;font-f=
+amily:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;font-size:=
+16px;line-height:28px;padding-bottom:28px;padding-left:34px;direction:ltr;t=
+ext-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" wid=
+th=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collapse;bo=
+rder-spacing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td cl=
+ass=3D"Uber18_text_p2 black" valign=3D"top" align=3D"left" style=3D"color:#=
+000;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;=
+font-size:16px;line-height:28px;direction:ltr;text-align:left">12:51 PM</td=
+></tr><tr><td class=3D"Uber18_text_p1 black" align=3D"left" style=3D"color:=
+#000;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif=
+;font-size:16px;line-height:28px;direction:ltr;text-align:left">Holly Lodge=
+ Mansions, Oakeshott Ave, London N6 6DS, UK</td></tr></table></td></tr></ta=
+ble><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"initia=
+l" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table=
+-lspace:0;mso-table-rspace:0;table-layout:auto;width:100%"><tr><td width=3D=
+"4" style=3D"width:4px;font-size:1px;line-height:1px" valign=3D"top"><img s=
+rc=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt/receipt_=
+18_square_top_fill_left.png" width=3D"4" height=3D"17" border=3D"0" style=
+=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;height:17px;max=
+-width:100%;outline:none;text-decoration:none;width:4px"></td><td style=3D"=
+font-size:1px;line-height:1px;width:1px;background-color:#fff" valign=3D"to=
+p"><img src=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt=
+_18_square_btm_fill_middle.png" width=3D"1" height=3D"20" border=3D"0" styl=
+e=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;height:20px;ma=
+x-width:100%;outline:none;text-decoration:none;width:1px"></td><td width=3D=
+"3" style=3D"width:3px;font-size:1px;line-height:1px" valign=3D"top"><img s=
+rc=3D"https://d1a3f4spazzrp4.cloudfront.net/emails/2017/01/receipt/receipt_=
+18_square_top_fill_right.png" width=3D"3" height=3D"17" border=3D"0" style=
+=3D"-ms-interpolation-mode:bicubic;clear:both;display:block;height:17px;max=
+-width:100%;outline:none;text-decoration:none;width:3px"></td><td class=3D"=
+Uber18_text_p2 black" valign=3D"top" style=3D"color:#000;font-family:UberMo=
+veText,open sans,helvetica neue,Helvetica,sans-serif;font-size:16px;line-he=
+ight:16px;padding-left:34px;direction:ltr;text-align:left"><table border=3D=
+"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=3D"left" style=
+=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:=
+0;mso-table-rspace:0;width:100%"><tr><td class=3D"Uber18_text_p2 black" val=
+ign=3D"top" style=3D"color:#000;font-family:UberMoveText,open sans,helvetic=
+a neue,Helvetica,sans-serif;font-size:16px;line-height:28px;direction:ltr;t=
+ext-align:left">1:37 PM</td></tr><tr><td class=3D"Uber18_text_p1 black" sty=
+le=3D"color:#000;font-family:UberMoveText,open sans,helvetica neue,Helvetic=
+a,sans-serif;font-size:16px;line-height:28px;direction:ltr;text-align:left"=
+>332 Oxford St, London W1C 1JF, UK</td></tr></table></td></tr></table></td>=
+</tr></tbody></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></=
+td></tr></table><![endif]--><!--[if mso]></td><td valign=3D"top"><![endif]-=
+-><!--[if (gte mso 9)|(IE)]><table width=3D"336" align=3D"left" cellpadding=
+=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table border=3D"=
+0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t6of12" align=3D"left" styl=
+e=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:336px;=
+mso-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td class=3D"d=
+esktopMap" style=3D"padding:20px 12px 30px;direction:ltr;text-align:left"><=
+table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" align=
+=3D"left" style=3D"border:none;border-collapse:collapse;border-spacing:0;ms=
+o-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tbody><=
+tr><td style=3D"direction:ltr;text-align:left"><div class=3D"desktopMap"><i=
+mg src=3D"https://static-maps.uber.com/raster/image?mapid=3D7f03ef28-9931-3=
+996-8e1d-31cc798a0ba7&expiration=3D1699364245495&signature=3DsUw1wH8drGNBUP=
+-hh8IB2ry-o7k=3D" width=3D"312" height border=3D"0" style=3D"-ms-interpolat=
+ion-mode:bicubic;clear:both;display:block;height:auto;max-height:358px;max-=
+width:312px;outline:none;text-decoration:none;width:100%"></div></td></tr><=
+/tbody></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></t=
+r></table><![endif]--></td></tr></tbody></table></td></tr></tbody></table><=
+!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></=
+table></td></tr><tr><td style=3D"direction:ltr;text-align:left"><div class=
+=3D"mobileMap" style=3D"display:none;mso-hide:all;padding-bottom:30px"><img=
+ id=3D"map_5f0dd28a-3fc9-11ec-9bfc-bc97e1416626_wide" src=3D"https://static=
+-maps.uber.com/raster/image?mapid=3D8bd2dbe8-d25a-3af5-b9be-2d799f215cac&ex=
+piration=3D1699364245492&signature=3DunVk2jq1TyeOqP73YrVuxG2pA_0=3D" width=
+=3D"415" height=3D"auto" border=3D"0" style=3D"-ms-interpolation-mode:bicub=
+ic;clear:both;display:block;height:auto;max-width:100%;outline:none;text-de=
+coration:none;width:100%"></div></td></tr></tbody></table><table width=3D"1=
+00%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none;=
+border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspa=
+ce:0;width:100%"><tbody><tr><td align=3D"left" style=3D"background-color:#2=
+76ef1;padding-top:15px;padding-bottom:15px;direction:ltr;text-align:left"><=
+table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"border:none=
+;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rsp=
+ace:0;width:100%"><tbody><tr><td style=3D"text-align:center;font-size:0;dir=
+ection:ltr"><!--[if (gte mso 9)|(IE)]><style>.eats_footer_table{width:100%!=
+important}</style><![endif]--><!--[if (gte mso 9)|(IE)]><table width=3D"350=
+" align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><=
+![endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D=
+"eats_footer_table 6of12" style=3D"border:none;border-collapse:collapse;bor=
+der-spacing:0;display:inline-block;max-width:none;min-width:208px;mso-table=
+-lspace:0;mso-table-rspace:0"><tbody><tr><td style=3D"padding:10px 0;direct=
+ion:ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" width=3D"100%" align=3D"left" style=3D"border:none;border-collapse:c=
+ollapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout=
+:fixed;width:100%"><tbody><tr><td style=3D"padding-left:26px;padding-right:=
+12px" align=3D"center"><div class=3D"desktopContent"><a class=3D"Uber18_tex=
+t_p2 white" href=3D"mailto:support@li.me" style=3D"color:#fff;font-family:U=
+berMoveText,open sans,helvetica neue,Helvetica,sans-serif;font-size:14px;li=
+ne-height:16px;padding:2px 0;text-decoration:none">Contact support <span st=
+yle=3D"padding-left:10px" class=3D"arrow">&#x276f;</span></a></div><div cla=
+ss=3D"mobileContent" style=3D"display:none;mso-hide:all"><a class=3D"Uber18=
+_text_p2 white" href=3D"https://email.uber.com/ls/click?upn=3D5TQkI4cGxaIGl=
+twScN15UhsnoIwAadTOlSNvQSo3Fc34YbtY4UcIVbF8MIM9EpU8vVRh_nrbcMZxZBQxLIRfusj-=
+2FT4KrH5aldllcYUB8t8qeK6GuGtVk5BtPeNNqdWUw4G67yDdtgHBtWrOw-2FxZzbJjz1sLYcrh=
+p2RjSs1vixIUGN7Pf2GNTTBl855MvIDru4iG6TR3sZwoo-2F7-2BiYOU4C2zHmicWgRJTSURsxT=
+nqk2oxNrxA55VAL9TQJzpSNLpwchwNJS6TuZPHOnlNHgsbaidclkt-2BzcuALjnFhsd-2BzQBf5=
+i-2BDzA2Cqr55o4VcmfhpaT1OcbR9soyxhXOVUtCS5NW6p9nCpWOQaF3jbia8RRHag63wnWNucH=
+xES8e-2B6PJ98iyYcDwkX-2Bn7LgpmbUzFk5tg817ev6keGErvFNxCeKPhJFbHbHRIDtXSYHOhs=
+zhydTekJ5scOUg3t8AcwY8Wwq7GAFnbc5TgxjxtuskagNiFzRIXyyLHFKiFnbrYc9PYpnxKsAcj=
+x-2Bur09ldBCzkCO6m3JvfC3FqIj-2F4-2FID-2BPhpK575BsxfDmWODQgVI5bWmuSVqAmcrfkt=
+CyiQIkl0LubsCybhnbG3dvtJ6i9ApGpLE05yp9-2BcRFc-2BSxEleLvcCUytjD-2FQ94R4T3atK=
+ZyP6p6Y02vP7ez6bVEwD9Je-2F38sGDQFi2FQr7YGQ3G-2Bkq5fjZEDdG" style=3D"color:#=
+fff;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;=
+font-size:14px;line-height:16px;padding:2px 0;text-decoration:none">Contact=
+ support <span style=3D"padding-left:10px" class=3D"arrow">&#x276f;</span><=
+/a></div></td></tr></tbody></table></td></tr></tbody></table><!--[if (gte m=
+so 9)|(IE)]></td></tr></table><![endif]--></td></tr></tbody></table></td></=
+tr></tbody></table><table width=3D"100%" border=3D"0" cellpadding=3D"0" cel=
+lspacing=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing=
+:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"left"=
+ style=3D"background-color:#000"><table border=3D"0" cellpadding=3D"0" cell=
+spacing=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:=
+0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"center=
+"><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" st=
+yle=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:700p=
+x;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td style=3D"paddin=
+g:0 26px"><!--[if (gte mso 9)|(IE)]><table width=3D"648" align=3D"center" c=
+ellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![endif]--><table =
+class=3D"receipt_body" width=3D"100%" border=3D"0" cellpadding=3D"0" cellsp=
+acing=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;=
+mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tr><t=
+d style=3D"font-size:0;line-height:0;padding-top:20px">&nbsp;</td></tr><tr>=
+<td><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-table-ls=
+pace:0;mso-table-rspace:0;width:100%"><tr><td align=3D"left"><!--[if (gte m=
+so 9)|(IE)]><table width=3D"585" align=3D"left" cellpadding=3D"0" cellspaci=
+ng=3D"0" border=3D"0"><tr><td width=3D"335"><![endif]--><table border=3D"0"=
+ cellpadding=3D"0" cellspacing=3D"0" class=3D"basetable" align=3D"left" sty=
+le=3D"border:none;border-collapse:collapse;border-spacing:0;max-width:335px=
+;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;width:100%"><tr><=
+td style=3D"padding-top:40px"><table border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0" class=3D"basetable" width=3D"100%" align=3D"left" style=3D"borde=
+r:none;border-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-tab=
+le-rspace:0;table-layout:fixed;width:100%"><tr><td align=3D"left"><img src=
+=3D"https://d1a3f4spazzrp4.cloudfront.net/receipt_v3/Uber_Logo_White_RGB_13=
+8x48.png" width=3D"69" height=3D"24" style=3D"-ms-interpolation-mode:bicubi=
+c;border:none;clear:both;display:block;max-width:100%;outline:none;text-dec=
+oration:none;width:auto" alt></td></tr></table></td></tr></table><!--[if (g=
+te mso 9)|(IE)]></td><td width=3D"250"><![endif]--><!--[if (gte mso 9)|(IE)=
+]></td></tr></table><![endif]--></td></tr></table></td></tr><tr><td style=
+=3D"padding:40px 0 0"><table width=3D"100%" border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0" style=3D"border:none;border-collapse:collapse;border-spac=
+ing:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td height=3D"1=
+" style=3D"font-size:0;line-height:0;background:#333">&nbsp;</td></tr></tab=
+le></td></tr><tr><td><table width=3D"100%" border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" style=3D"border:none;border-collapse:collapse;border-spaci=
+ng:0;mso-table-lspace:0;mso-table-rspace:0;width:100%"><tr><td style=3D"ver=
+tical-align:top" valign=3D"top"><!--[if (gte mso 9)|(IE)]><table width=3D"6=
+48" align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td=
+ width=3D"335" style=3D"vertical-align:top" valign=3D"top"><![endif]--><tab=
+le border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"basetable" ali=
+gn=3D"left" style=3D"border:none;border-collapse:collapse;border-spacing:0;=
+max-width:335px;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;wi=
+dth:100%"><tr><td style=3D"padding-top:30px;vertical-align:top" valign=3D"t=
+op" align=3D"left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+class=3D"basetable" width=3D"100%" align=3D"left" style=3D"border:none;bord=
+er-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0=
+;table-layout:fixed;width:100%"><tr><td class=3D"p2" style=3D"color:#fff;fo=
+nt-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;font-s=
+ize:12px;line-height:26px" align=3D"left"><a href=3D"https://email.uber.com=
+/ls/click?upn=3D5TQkI4cGxaIGltwScN15UiEU1Z05tLORYDhCMvHDxMXp1-2FGrvQPqpo9EF=
+NFs3mqmwnK9G-2F3FherPjzsICj7yM-2FK-2FJYue6uKR2EHeIe26RLwpFTiSq-2BB-2FMOIwXA=
+4MEf4KzHSrwM9QQbMHeXFgqFXItep-2Bp1Kf9guqlEKa1wFayRA3nSyhHdpw0M5nDUB4Sy-2FJs=
+ESM7ZfaBkdKepvt8RTcsw-3D-3Do0UM_nrbcMZxZBQxLIRfusj-2FT4KrH5aldllcYUB8t8qeK6=
+GuGtVk5BtPeNNqdWUw4G67yDdtgHBtWrOw-2FxZzbJjz1sLYcrhp2RjSs1vixIUGN7Pf2GNTTBl=
+855MvIDru4iG6TR3sZwoo-2F7-2BiYOU4C2zHmicWgRJTSURsxTnqk2oxNrxA55VAL9TQJzpSNL=
+pwchwNJS6TuZPHOnlNHgsbaidclkt-2BzcuALjnFhsd-2BzQBf5i-2BDzA2Cqr55o4VcmfhpaT1=
+OcbR9soyxhXOVUtCS5NW6p9nCpWOQaF3jbia8RRHag63wnWNucHxES8e-2B6PJ98iyYcDwkX-2B=
+n7LgpmbUzFk5tg817ev6keGErvFNxCeKPhJFbHbHRIDtXSYHOhszhydTekJ5scOUg3t8AcwY8Ww=
+q7GAFnbc5TgxjxtuskagNiFzRIXyyLHFKiFnbrYc9PYpnxKsc18Wi5PoVtgTQnEKOtgW8B6PM0u=
+QN0SPQOM96c7t9Mjh7068-2FlKyn3kLAHSzGVKzx1FcDi-2BjbQdIB3-2F4YTumaGHSqnFXp1Xr=
+WHLfju7CUdCzy-2B12M74R61UHgIfMsrvnRK-2BNi7UXJ8h-2BofJAJAtmUHB0RfCZSKMkXXRnN=
+ppzxStPnlnOWQ4qdgOMNsYX9cxK" style=3D"color:#fff;text-decoration:none">Forg=
+ot password</a></td></tr><tr><td style=3D"color:#9d9da3;font-family:UberMov=
+eText,open sans,helvetica neue,Helvetica,sans-serif;font-size:12px;line-hei=
+ght:26px;padding-top:6px" class=3D"p3" align=3D"left"><a href=3D"https://em=
+ail.uber.com/ls/click?upn=3DIb78WjkFQ66GYzavQJcfTaUW2mLjCZlesuzr-2FyzEQzDKq=
+5PxwjJLnlhd3kWpjkC8nk0Q_nrbcMZxZBQxLIRfusj-2FT4KrH5aldllcYUB8t8qeK6GuGtVk5B=
+tPeNNqdWUw4G67yDdtgHBtWrOw-2FxZzbJjz1sLYcrhp2RjSs1vixIUGN7Pf2GNTTBl855MvIDr=
+u4iG6TR3sZwoo-2F7-2BiYOU4C2zHmicWgRJTSURsxTnqk2oxNrxA55VAL9TQJzpSNLpwchwNJS=
+6TuZPHOnlNHgsbaidclkt-2BzcuALjnFhsd-2BzQBf5i-2BDzA2Cqr55o4VcmfhpaT1OcbR9soy=
+xhXOVUtCS5NW6p9nCpWOQaF3jbia8RRHag63wnWNucHxES8e-2B6PJ98iyYcDwkX-2Bn7LgpmbU=
+zFk5tg817ev6keGErvFNxCeKPhJFbHbHRIDtXSYHOhszhydTekJ5scOUg3t8AcwY8Wwq7GAFnbc=
+5TgxjxtuskagNiFzRIXyyLHFKiFnbrYc9PYpnxKsbqTVkFRyXz5QbbrNcR35hwzd2S8hqjQw75j=
+O8fruH-2BQgrBFHPgt61q7kd-2BYI2s7HAuZUA2fPM0ENBDSkCcU4IR8yJT61spVW2nNljeabwd=
+ohJ-2Fr4yIPu-2B1BACISAmc1BEeMlETpbrna8fbVcCXDdj2stmr47W3OYhDDWo7tUtMAoF1bP2=
+Ic26xecgnwYoDrK" style=3D"color:#fff;text-decoration:none">Privacy</a></td>=
+</tr><tr><td style=3D"color:#9d9da3;font-family:UberMoveText,open sans,helv=
+etica neue,Helvetica,sans-serif;font-size:12px;line-height:26px;padding-top=
+:6px" class=3D"p3" align=3D"left"><a href=3D"https://email.uber.com/ls/clic=
+k?upn=3DIb78WjkFQ66GYzavQJcfTaUW2mLjCZlesuzr-2FyzEQzD9L-2F1tKRCOuyZn2F4t4pF=
+G4ugE_nrbcMZxZBQxLIRfusj-2FT4KrH5aldllcYUB8t8qeK6GuGtVk5BtPeNNqdWUw4G67yDdt=
+gHBtWrOw-2FxZzbJjz1sLYcrhp2RjSs1vixIUGN7Pf2GNTTBl855MvIDru4iG6TR3sZwoo-2F7-=
+2BiYOU4C2zHmicWgRJTSURsxTnqk2oxNrxA55VAL9TQJzpSNLpwchwNJS6TuZPHOnlNHgsbaidc=
+lkt-2BzcuALjnFhsd-2BzQBf5i-2BDzA2Cqr55o4VcmfhpaT1OcbR9soyxhXOVUtCS5NW6p9nCp=
+WOQaF3jbia8RRHag63wnWNucHxES8e-2B6PJ98iyYcDwkX-2Bn7LgpmbUzFk5tg817ev6keGErv=
+FNxCeKPhJFbHbHRIDtXSYHOhszhydTekJ5scOUg3t8AcwY8Wwq7GAFnbc5TgxjxtuskagNiFzRI=
+XyyLHFKiFnbrYc9PYpnxKsm9w96v-2F6K0Cq9O48KqA5oviEv4Bl5vW1PMhids5zQpVbtLWrl2F=
+4cT-2FoBqBp1uOvtgpvX3ZW6xuPXK0kzZVP3YlVzt-2BJ54kFoDuA5uTqByRyU642isxfjnNFYy=
+Dx03mLzJgAXg9WYd96MsQlSvhNe2oaTYyTPwQTBJ8l0ygD6DeZDdr6hjgCDipAOjnIjZPG" sty=
+le=3D"color:#fff;text-decoration:none">Terms</a></td></tr></table></td></tr=
+></table><!--[if (gte mso 9)|(IE)]></td><td width=3D"313"><![endif]--><tabl=
+e border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"basetable" alig=
+n=3D"left" style=3D"border:none;border-collapse:collapse;border-spacing:0;m=
+ax-width:313px;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;wid=
+th:100%"><tr><td><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" cl=
+ass=3D"basetable" width=3D"100%" align=3D"left" style=3D"border:none;border=
+-collapse:collapse;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;w=
+idth:100%"><tr><td align=3D"left"><!--[if (gte mso 9)|(IE)]><table width=3D=
+"195" align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><=
+td><![endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" clas=
+s=3D"basetable" align=3D"left" style=3D"border:none;border-collapse:collaps=
+e;border-spacing:0;max-width:195px;mso-table-lspace:0;mso-table-rspace:0;ta=
+ble-layout:fixed;width:100%"><tr><td style=3D"color:#9d9da3;font-family:Ube=
+rMoveText,open sans,helvetica neue,Helvetica,sans-serif;font-size:12px;line=
+-height:18px;padding-right:10px;padding-top:30px" class=3D"p3" align=3D"lef=
+t">Uber B.V.<br>Mr. Treublaan 7<br>1097 DP Amsterdam</td></tr></table><!--[=
+if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></table></td><=
+/tr></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></=
+tr></table></td></tr><tr><td></td></tr><tr><td style=3D"font-size:0;line-he=
+ight:0;padding-top:60px">&nbsp;</td></tr></table><!--[if (gte mso 9)|(IE)]>=
+</td></tr></table><![endif]--></td></tr></table></td></tr></table></td></tr=
+></table><table width=3D"100%" border=3D"0" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;mso-t=
+able-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td class=3D"outsid=
+egutter" align=3D"left" style=3D"background-color:#f1f1f1;padding:0 14px;di=
+rection:ltr;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspac=
+ing=3D"0" style=3D"border:none;border-collapse:collapse;border-spacing:0;ms=
+o-table-lspace:0;mso-table-rspace:0;width:100%"><tbody><tr><td style=3D"dir=
+ection:ltr;text-align:left"><!--[if (gte mso 9)|(IE)]><table width=3D"616" =
+align=3D"left" cellpadding=3D"0" cellspacing=3D"0" border=3D"0"><tr><td><![=
+endif]--><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" class=3D"t=
+11of12" align=3D"left" style=3D"border:none;border-collapse:collapse;border=
+-spacing:0;max-width:616px;mso-table-lspace:0;mso-table-rspace:0;width:100%=
+"><tbody><tr><td style=3D"padding-left:12px;padding-right:12px;direction:lt=
+r;text-align:left"><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+width=3D"100%" align=3D"left" style=3D"border:none;border-collapse:collapse=
+;border-spacing:0;mso-table-lspace:0;mso-table-rspace:0;table-layout:fixed;=
+width:100%"><tbody><tr><td class=3D"Uber18_text_p1 black" style=3D"color:#0=
+00;font-family:UberMoveText,open sans,helvetica neue,Helvetica,sans-serif;f=
+ont-size:12px;line-height:20px;padding-bottom:30px;padding-top:30px;directi=
+on:ltr;text-align:left">Fare does not include fees that may be charged by y=
+our bank. Please contact your bank directly for inquiries.</td></tr></tbody=
+></table></td></tr></tbody></table><!--[if (gte mso 9)|(IE)]></td></tr></ta=
+ble><![endif]--></td></tr></tbody></table></td></tr></tbody></table><!--[if=
+ (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></table><!--[if =
+(gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr></table></td></tr=
+></table><!--[if (gte mso 9)|(IE)]></td></tr></table><![endif]--></td></tr>=
+</table></td></tr></table></td></tr></table><!--[if (gte mso 9)|(IE)]></td>=
+</tr></table><![endif]--></td></tr></table><img src=3D"https://email.uber.c=
+om/wf/open?upn=3DuTRf4eeJqtKXLgXKYi7KzDvfd-2B-2FAAe4mlV-2FFvISMkACoRv9iNvaH=
+cfs-2Fxlh0C4Wjul1jQXK2PuXOHkjYfp1t45KtvErcr-2BwjikexZmqPyQYhZPgn3-2FB9jSRpe=
+Tv7zxSp9C4vTSCNYYlY4a1Uqn-2FJ8wDayiwhy87LWd3nin6vhJpoFUljIBn8td1PVrYF3CiI5v=
+-2BACFUgreFfVsTRbtjqXls2J4r-2BbDZKVV0rt2zA5D99LRBFKH2fDek4BXoN84JW8wUDtrEKK=
+kgauX5T4qDxfY913NNqGtUfBPfZWQH8Mfal6P01-2BNw31fyyVnuzeKyzrEqA1rtaNjh309jj7C=
+8J-2F2oTwEHn45fbbIOaizqc98ExPA0wB9qV5nspT1DkVXdrH4ALVRN5Dpzdpiw80GQKbprtcNv=
+Js9z2pIwtYBROl4NjwCzRQ15fi1PgsOC6MLvtbHAiNPzDGUt64a6AUXZkK2Jo1E3hUX3TP-2BKa=
+FxiP4vixbxPgPa4-2FXyvibqt1tOsplFA63DrWPpDFI8oA-2BjJD5zKQboE4ufE66K3KIQ8dUFM=
+7YJnJqrM-2FztKQX9-2BiyoP-2FeCLWP5evP0lxoAO3uUsf281uukiXtVEx5LMuqumbp9jxbJoO=
+3-2Bt793eTUDLNntBB" alt=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D=
+"height:1px !important;width:1px !important;border-width:0 !important;margi=
+n-top:0 !important;margin-bottom:0 !important;margin-right:0 !important;mar=
+gin-left:0 !important;padding-top:0 !important;padding-bottom:0 !important;=
+padding-right:0 !important;padding-left:0 !important;"/></body></html>

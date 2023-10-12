@@ -1,0 +1,572 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:501c:0:0:0:0:0 with SMTP id e28csp5258666ljb;
+        Mon, 30 Nov 2020 13:44:07 -0800 (PST)
+X-Received: by 2002:a1c:27c4:: with SMTP id n187mr584639wmn.157.1606772646913;
+        Mon, 30 Nov 2020 13:44:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1606772646; cv=none;
+        d=google.com; s=arc-20160816;
+        b=UcKijskzZRkR9xU4JhomWAnlwiiycCilSCMCyhUGZHnQXbKLZLcu0I9p/tq9XJ+qOv
+         HQZlkoVrHQW8RDGbxmq70cMJna5ixzTvAdVurhJIX1SIgNjriyQnsU3AVBqvG0pmdVPR
+         no25gVAxYdKX5k73RWBA03r0z8PvKuwfate9Wl7Wth0SKVL2s7pyayZoG1ePXIWjoqJE
+         RnDhy2tIWcEUd/D1UZlNkcsr4YWFRYAw1vnJaAcbanRJbwmlTMJq/moz9Up5aKGlLMru
+         KPyvx7USC1QF5F7J8iD5vtcZ5uSkn5ZlMnq53Gfo3GfR3xH6YrsUcbyIjVo8CXbGbpXC
+         v1TQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :dkim-signature;
+        bh=/Zukrb0Bf5ZpwEJc2PiB3DhFosolgWQNPp/0EJWOjsU=;
+        b=iJRycnQwm9g9ghl1juKmh+Q7gjDhf/dJeiwjF7JjuGa3NJT7R/6gHJRtBD2CeIU822
+         5Vl2dRILyTySrjwduc5eq0sPWBGLvqjoyzZlub/2x67/59ycQ73xaupPvVffCAsVRJMn
+         0Fjiydijcps7UvEJzFLw/PWrzvj3aO6oscYOID3xMIkE4VMiO16rzwB5v9bVkfUA2CxG
+         aMq6AsQBqgHpmWmzM+BPu3tTw/jzQ2kmkS2MBIZhMiHv2qgfprJPpE7Jv6p/b4wbp9WK
+         Q9Zve5rSMiBP2Iz20E+k0QPkg6RZYhhPAOY6gYCdvJ0IyPCBZP6F6kPvPAgF3BoN9NPG
+         FSNA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@bensaunders.com header.s=google header.b=tr4fC1y9;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of ben@bensaunders.com) smtp.mailfrom=ben@bensaunders.com
+Return-Path: <ben@bensaunders.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id c67sor329896wmd.10.2020.11.30.13.44.06
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 30 Nov 2020 13:44:06 -0800 (PST)
+Received-SPF: neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of ben@bensaunders.com) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@bensaunders.com header.s=google header.b=tr4fC1y9;
+       spf=neutral (google.com: 209.85.220.41 is neither permitted nor denied by best guess record for domain of ben@bensaunders.com) smtp.mailfrom=ben@bensaunders.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bensaunders.com; s=google;
+        h=from:mime-version:subject:date:references:to:in-reply-to:message-id;
+        bh=/Zukrb0Bf5ZpwEJc2PiB3DhFosolgWQNPp/0EJWOjsU=;
+        b=tr4fC1y9ma8UohuQPGMIuiNppyOCAX9IizESum8ct4Tf22za/CyJ7enfpzXue5mdf0
+         sios3h58/f1E1zYEZ61C4J3lMLBPIthli3zDTfAqZ2rrDVPOPhN4tCVwrvPRxrXX7CiW
+         qFBVwxjqza3DVXRJmyHxMqHLx6nNEn89tIp1Y=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:subject:date:references:to
+         :in-reply-to:message-id;
+        bh=/Zukrb0Bf5ZpwEJc2PiB3DhFosolgWQNPp/0EJWOjsU=;
+        b=aUlkMFSa+XVHo9HtRAasVkaMyYxzQ8+DERFB7DS2nL0lzhCx57ftEmJ4Eflh9fTqNY
+         ibppFbyYCqy5/D2vgjJ7WwtzkvgGLJb1Quxbtp/EyS2hzB3Qjo14npqMHvw8ilTMefdr
+         p+OI+eX5D6BQjORqujlUrKZ8xWcGFqOTWCW+6MICPIToSb5QKvg2l5UG8OS1adpnUEcs
+         nKRQzZMaB2S6Ey/HHM0xBiej3BQ3+F91meDLAvHaCqgTpGfWTb3lRm9LGisDXVd/2cTy
+         E2hd8/lXmPrD+YMGDPZK4iScDU1VljlpxLGDdejhj4xFAaVISacttUTgV3k+Wv+BMJRJ
+         0kiQ==
+X-Gm-Message-State: AOAM5316Ph4XGEsbkXFroRKORJWkZEB1TWz8/KFLnVf/RTxlLLoo5xAk
+	0o8Wa2jhI8Yx7/zKhk6tc/QHQia2cC3fC+1T
+X-Google-Smtp-Source: ABdhPJx/20a4oHbmxymxVMrJnaNyhNR0yWHvT1/sIhez9Tv1vgv7AKXColQu/0EzJfOjEvYPLENSPQ==
+X-Received: by 2002:a7b:c2e8:: with SMTP id e8mr897689wmk.103.1606772645735;
+        Mon, 30 Nov 2020 13:44:05 -0800 (PST)
+Return-Path: <ben@bensaunders.com>
+Received: from bens-mbp-527.lan ([213.18.146.227])
+        by smtp.gmail.com with ESMTPSA id c2sm30600211wrf.68.2020.11.30.13.44.04
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Nov 2020 13:44:05 -0800 (PST)
+From: Ben Saunders <ben@bensaunders.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_2771F320-2006-43DF-9D94-98A4EF67D059"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: Welcome to the future
+Date: Mon, 30 Nov 2020 21:44:04 +0000
+References: <CACNgykNTGXOdJSU8D451OH8L3DUEOFBwP0mtzz4rkFTveRvoPA@mail.gmail.com>
+ <CACNgykNdPGn_MEPQSAbZ+pm3f41A6aPffE28MTpGwuQDk3YsqQ@mail.gmail.com>
+ <0E532A03-277C-42DA-B0D8-A40D90B51C75@bensaunders.com>
+ <CACNgykOqAU+3UvhODweC=aAh-3Cj+QnhHOmuOh4UtbTaYSsWhw@mail.gmail.com>
+ <4D5E339B-43C4-408E-8470-5DCF8F4E4AED@bensaunders.com>
+ <96C59B65-97EC-4847-8CDA-F29334F477EC@bensaunders.com>
+ <CACNgykMfJb80ottw99=RTXpfJ8HbhCJvUYzZbP=-SnpUz650+w@mail.gmail.com>
+ <05913A07-C53B-4C3C-9AFA-DF02E0E738E5@bensaunders.com>
+ <CACNgykPrnWaLcRtVq-e8_dZ+KZaH6ChrDEmsAXBkquWGEZWJYQ@mail.gmail.com>
+ <CACNgykOvzFA-Af3AqV3ZSzKTg6RwDRa-W-VaAiJMsfbc5qZJ7Q@mail.gmail.com>
+ <CACNgykOJfPi6-hpEc=gfETSgFN3=eYL8QC8afDYvL6yNLtqdTw@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <CACNgykOJfPi6-hpEc=gfETSgFN3=eYL8QC8afDYvL6yNLtqdTw@mail.gmail.com>
+Message-Id: <EB766D84-D21A-4F3D-8696-40CDCBBA70A7@bensaunders.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+
+
+--Apple-Mail=_2771F320-2006-43DF-9D94-98A4EF67D059
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Josh!
+
+Huge apologies. My mother-in-law had a cancer diagnosis earlier this =
+month, so the inbox has been somewhat neglected=E2=80=A6
+
+I=E2=80=99ll connect you with Jack K and with Bernhard Raschke (ex-Korn =
+Ferry) via email now. I haven=E2=80=99t spoken to Sami in years so will =
+think about the best approach there.
+
+I=E2=80=99ll come back to you re filming my forthcoming project with =
+students in Antarctica =E2=80=93 there=E2=80=99s a chance it=E2=80=99ll =
+be in the 2022-23 season now as I have one major partner interested in =
+funding the whole shebang, but they may need a little more lead time.
+
+On a different note, I=E2=80=99ve been asked to lead a 20-day voyage to =
+the Antarctic Peninsula with Insider Expeditions =
+<https://insiderexpeditions.com/> from 26th November to 15th December =
+next year, on one of the most structurally and technologically advanced =
+class of polar ship to date, and one of the most environmentally =
+friendly vessels ever to visit Antarctic waters. The objective is to see =
+the solar eclipse (the next time it will be visible from Antarctica will =
+be in 2039!) but also to bring a likeminded group of global citizens =
+together for a unique journey that will be as much about connection, =
+conversation, inspiration and co-creating a meaningful legacy as it will =
+be about witnessing a v rare natural phenomenon in the most stunning =
+natural environment on the planet.
+
+The group will be relatively small (50 max) and we=E2=80=99re partnering =
+with the non-profit Students on Ice =E2=80=93 https://studentsonice.com/ =
+<https://studentsonice.com/> =E2=80=93 both to further their =
+extraordinary work, and to enable eight of their young beneficiaries to =
+join the expedition.
+
+Given the collective ambition for this journey, I wondered if there =
+could be scope to talk to World 50 about offering their members the =
+opportunity to join. I don=E2=80=99t know the organisation at all, but =
+I=E2=80=99d love to hear if you think it might be worth exploring...
+
+V best,
+Ben=20
+
+
+> On 30 Nov 2020, at 19:21, Josh Klein <josh@josh.is> wrote:
+>=20
+> Don't want to be a pest; let me know if it'd be better to follow up in =
+future!
+>=20
+> All best wishes,
+> Josh
+>=20
+> P.S. My 7 y.o. really wants to be on your show - you'd better plan on =
+making it an ongoing series!! :D
+> =E1=90=A7
+>=20
+> On Tue, Nov 24, 2020 at 4:59 PM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+> Just following up - let me know if I can provide any further info.
+>=20
+> best,
+> Josh
+> =E1=90=A7
+>=20
+> On Wed, Nov 11, 2020 at 1:38 PM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+> Ben,
+>=20
+> Thanks again for the call yesterday; it was so good to catch up!! I'd =
+mentioned a few contacts - take a look and let me know if/which you'd =
+like an intro to:
+>=20
+> Texas Crew Productions (www.texascrew.com <http://www.texascrew.com/>) =
+- I've worked on a couple tv pitches and really like them, but they're =
+not especially deep into Netflix yet. Could be useful for context, =
+however, as they've done a lot of different kinds of work.=20
+> NHNZ.TV <http://nhnz.tv/> - I've done two series with these guys; =
+they're apparently now well connected with Netflix. Based in NZ.
+> grrco.com <http://grrco.com/> - This is my friend Matt; we're pitching =
+an AI-powered show together atm and he's great. Worth talking to =
+regardless of what you do, he's got a very very cutting edge =
+understanding of the media landscape today.
+> Alan Gershenfeld - Head of elinemedia.com <http://elinemedia.com/>. If =
+you're into narrative, he's worth talking to. Plus, he built a game =
+about the arctic and is deeply focused on environmental issues. If =
+nothing else I suspect you'd enjoy each other!
+>=20
+> Separately, I'd love an intro to your former Korn Ferry senior guy, =
+the one who is now at electrocomponents, to talk about IndigoMetrics.com
+>=20
+> On a different tack, I'd also love to talk to both Jack Kreindler and =
+Sami Inkinen about the CGM project if that's still possible.=20
+>=20
+> Very much obliged - keep in touch and looking forward to hearing about =
+more adventures soon!
+>=20
+> All best,
+> Josh
+> =E1=90=A7
+>=20
+> On Wed, Oct 28, 2020 at 6:43 PM Ben Saunders <ben@bensaunders.com =
+<mailto:ben@bensaunders.com>> wrote:
+> Excellent! And likewise =E2=80=93 looking forward to speaking...
+>=20
+>> On 26 Oct 2020, at 13:13, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>=20
+>> OK, that's Iceland for you - I've been to Vigur a couple of times in =
+the summer when my son attends a language camp near there. Looking =
+forward to discovering more syncronocities!!
+>>=20
+>> - J
+>> =E1=90=A7
+>>=20
+>> On Fri, Oct 23, 2020 at 6:29 PM Ben Saunders <ben@bensaunders.com =
+<mailto:ben@bensaunders.com>> wrote:
+>> Also, random Icelandic connection: my friend Felicity Aston runs =
+https://www.vigurisland.com/ <https://www.vigurisland.com/>=20
+>>=20
+>>> On 23 Oct 2020, at 19:26, Ben Saunders <ben@bensaunders.com =
+<mailto:ben@bensaunders.com>> wrote:
+>>>=20
+>>> Done! It=E2=80=99s not until 10th Nov, but we=E2=80=99re offline up =
+in the Scottish Highlands for nine days before that.
+>>>=20
+>>> Looking forward to talking then!
+>>> B
+>>>=20
+>>>> On 23 Oct 2020, at 14:13, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>=20
+>>>> Good to hear from you! I'm in Iceland atm, so am pretty flexible on =
+times - my cal is here <https://josh.is/scheduling>, or suggest =
+something that works for you!
+>>>>=20
+>>>> Looking forward to it,
+>>>> Josh
+>>>>=20
+>>>> =E1=90=A7
+>>>>=20
+>>>> On Thu, Oct 22, 2020 at 7:54 PM Ben Saunders <ben@bensaunders.com =
+<mailto:ben@bensaunders.com>> wrote:
+>>>> Josh! Sorry for the delay =E2=80=93 crazy couple of weeks. How =
+about a Zoom chat on Wednesday 28th? I=E2=80=99m UK based so my =
+afternoon would be better (assuming you=E2=80=99re in the States!)
+>>>>=20
+>>>> It would be great to talk. Like you I tried a continuous blood =
+glucose monitor in 2018 (I=E2=80=99m not diabetic, but a friend is a =
+doctor and an ex-pro Ironman triathlete, so she slapped one on my =
+shoulder!) and was fascinated by the data and insight=E2=80=A6
+>>>>=20
+>>>> V best,
+>>>> Ben=20
+>>>>=20
+>>>>> On 15 Oct 2020, at 12:36, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>>=20
+>>>>> It's been a while since Tony introduced us in 2012 - let me know =
+if you're game to compare notes and catch up! No agenda, just looking to =
+reconnect meaningfully with good people as we reorient on the world =
+beyond this pandemic.
+>>>>>=20
+>>>>> All best,
+>>>>> Josh
+>>>>> =E1=90=A7
+>>>>>=20
+>>>>> On Sun, Oct 4, 2020 at 5:16 PM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>> Since the pandemic, networking seems to have turned mostly into =
+spam. You and I have worked together in the past, so I wanted to invite =
+you to reconnect to see if we could help each other in the future.
+>>>>>=20
+>>>>> Below are a few of my current projects, or just hit me with an =
+update on what you're working on. I=E2=80=99m curious to hear how I can =
+help!
+>>>>>=20
+>>>>> All best wishes,
+>>>>> Josh
+>>>>>=20
+>>>>> ###
+>>>>>=20
+>>>>> Current Projects:
+>>>>>=20
+>>>>> IndigoMetrics =
+<http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/9827253=
+0-6153-4eb1-bb85-a2c6eaf4737e>; an AI platform for measuring behavior =
+and beliefs in employees. Super useful for newly remote staff, this =
+gives employees clear measures of where and how to improve.
+>>>>>=20
+>>>>> Continuous Glucose Monitor Testing =
+<http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/af59939=
+2-a471-4f18-83c6-963469387899>; a project to understand how to use =
+physically embedded sensors to reduce the health impacts of obesity, =
+heart disease, and diabetes (and hence Covid!)
+>>>>>=20
+>>>>> Professional Services =
+<http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/8c95869=
+0-1b7f-45de-a04f-a05720b88869>: as ever, I continue to work with senior =
+leaders and teams on technology strategy and new innovation / product =
+development.
+>>>>>=20
+>>>>> =20
+>>>>> P.S. If you're interested in the theory behind this outreach, =
+there is a whitepaper here =
+<http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/8a16b17=
+1-4e43-4b4a-871d-011275b785d0>.
+>>>>=20
+>>>=20
+>>=20
+>=20
+
+
+--Apple-Mail=_2771F320-2006-43DF-9D94-98A4EF67D059
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" =
+class=3D"">Josh!<div class=3D""><br class=3D""></div><div class=3D"">Huge =
+apologies. My mother-in-law had a cancer diagnosis earlier this month, =
+so the inbox has been somewhat neglected=E2=80=A6</div><div class=3D""><br=
+ class=3D""></div><div class=3D"">I=E2=80=99ll connect you with Jack K =
+and with Bernhard Raschke (ex-Korn Ferry) via email now. I haven=E2=80=99t=
+ spoken to Sami in years so will think about the best approach =
+there.</div><div class=3D""><br class=3D""></div><div class=3D"">I=E2=80=99=
+ll come back to you re filming my forthcoming project with students in =
+Antarctica =E2=80=93 there=E2=80=99s a chance it=E2=80=99ll be in the =
+2022-23 season now as I have one major partner interested in funding the =
+whole shebang, but they may need a little more lead time.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">On a different note, =
+I=E2=80=99ve been asked to lead&nbsp;a 20-day voyage to the Antarctic =
+Peninsula with&nbsp;<a href=3D"https://insiderexpeditions.com/" =
+class=3D"">Insider Expeditions</a>&nbsp;from 26th November to 15th =
+December next year, on one of the most structurally and technologically =
+advanced class of polar ship to date, and one of the most =
+environmentally friendly vessels ever to visit Antarctic waters. The =
+objective is to see the solar eclipse (the next time it will be visible =
+from Antarctica will be in 2039!) but also to bring a likeminded group =
+of global citizens together for a unique journey that will be as much =
+about connection, conversation, inspiration and co-creating a meaningful =
+legacy as it will be about&nbsp;witnessing a v rare natural phenomenon =
+in&nbsp;the most stunning natural environment on&nbsp;the =
+planet.</div><div class=3D""><br class=3D""></div><div class=3D"">The =
+group will be relatively small (50 max) and we=E2=80=99re partnering =
+with the non-profit Students on Ice =E2=80=93&nbsp;<a =
+href=3D"https://studentsonice.com/" =
+class=3D"">https://studentsonice.com/</a>&nbsp;=E2=80=93 both to further =
+their extraordinary work, and to enable eight of their young =
+beneficiaries to join the expedition.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Given the collective ambition for this =
+journey, I wondered if there could be scope to talk to World 50 about =
+offering their members the opportunity to join. I don=E2=80=99t know the =
+organisation at all, but I=E2=80=99d love to hear if you think it might =
+be worth exploring...</div><div class=3D""><br class=3D""></div><div =
+class=3D""><div class=3D"">V best,</div><div =
+class=3D"">Ben&nbsp;</div></div><div class=3D""><br class=3D""></div><div =
+class=3D""><div><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On 30 Nov 2020, at 19:21, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; =
+wrote:</div><br class=3D"Apple-interchange-newline"><div class=3D""><div =
+dir=3D"ltr" class=3D"">Don't want to be a pest; let me know if it'd be =
+better to follow up in future!<div class=3D""><br class=3D""></div><div =
+class=3D"">All best wishes,<br class=3D"">Josh</div><div class=3D""><br =
+class=3D""></div><div class=3D"">P.S. My 7 y.o. really wants to be on =
+your show - you'd better plan on making it an ongoing series!! =
+:D</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px" =
+class=3D""><img alt=3D"" =
+style=3D"width:0px;max-height:0px;overflow:hidden" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Db2380e48-cbcf-4da3-b531-201152d6775b" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Nov =
+24, 2020 at 4:59 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br class=3D""></div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr" class=3D"">Just =
+following up - let me know if I can provide any further info.<br =
+class=3D"">
+
+<br class=3D"">
+
+best,<br class=3D"">
+
+Josh<br class=3D""></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Dc2b9944c-5d8a-415a-bd3f-f39ae320bbfc" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Nov =
+11, 2020 at 1:38 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr" class=3D"">Ben,<br =
+class=3D""><br class=3D"">Thanks again for the call yesterday; it was so =
+good to catch up!! I'd mentioned a few contacts - take a look and let me =
+know if/which you'd like an intro to:<br class=3D""><br class=3D""><ul =
+class=3D""><li class=3D"">Texas Crew Productions (<a =
+href=3D"http://www.texascrew.com/" target=3D"_blank" =
+class=3D"">www.texascrew.com</a>) - I've worked on a couple tv pitches =
+and really like them, but they're not especially deep into Netflix yet. =
+Could be useful for context, however, as they've done a lot of different =
+kinds of work.&nbsp;</li><li class=3D""><a href=3D"http://nhnz.tv/" =
+target=3D"_blank" class=3D"">NHNZ.TV</a> - I've done two series with =
+these guys; they're apparently now well connected with Netflix. Based in =
+NZ.</li><li class=3D""><a href=3D"http://grrco.com/" target=3D"_blank" =
+class=3D"">grrco.com</a> - This is my friend Matt; we're pitching an =
+AI-powered show together atm and he's great. Worth talking to regardless =
+of what you do,&nbsp;he's got a very very cutting edge understanding of =
+the media landscape today.</li><li class=3D"">Alan Gershenfeld - Head of =
+<a href=3D"http://elinemedia.com/" target=3D"_blank" =
+class=3D"">elinemedia.com</a>. If you're into narrative, he's worth =
+talking to. Plus, he built a game about the arctic and is deeply focused =
+on environmental issues. If nothing else I suspect you'd enjoy each =
+other!</li></ul><br class=3D"">Separately, I'd love an intro to your =
+former Korn Ferry senior guy, the one who is now at electrocomponents, =
+to talk about <a href=3D"http://IndigoMetrics.com" =
+class=3D"">IndigoMetrics.com</a><br class=3D""><br class=3D"">On a =
+different tack, I'd also love to talk to both Jack Kreindler and Sami =
+Inkinen about the CGM project if that's still possible. <br class=3D""><br=
+ class=3D"">Very much obliged - keep in touch and looking forward to =
+hearing about more adventures soon!<br class=3D""><br class=3D"">All =
+best,<br class=3D"">Josh<br class=3D""></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D""><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D58aa830b-5cca-476b-acdd-0571961b3260" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Oct =
+28, 2020 at 6:43 PM Ben Saunders &lt;<a =
+href=3D"mailto:ben@bensaunders.com" target=3D"_blank" =
+class=3D"">ben@bensaunders.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Excellent! And =
+likewise =E2=80=93 looking forward to speaking...<br class=3D""><div =
+class=3D""><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On 26 Oct 2020, at 13:13, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">OK, that's Iceland for you - I've =
+been to Vigur a couple&nbsp;of times in the summer when my son attends a =
+language camp near there. Looking forward to discovering more =
+syncronocities!!<div class=3D""><br class=3D""></div><div class=3D"">- =
+J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px" =
+class=3D""><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: =
+hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Dd10ddf49-b007-4434-87ec-057d350f2647" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Oct =
+23, 2020 at 6:29 PM Ben Saunders &lt;<a =
+href=3D"mailto:ben@bensaunders.com" target=3D"_blank" =
+class=3D"">ben@bensaunders.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Also, random =
+Icelandic connection: my friend Felicity Aston runs&nbsp;<a =
+href=3D"https://www.vigurisland.com/" target=3D"_blank" =
+class=3D"">https://www.vigurisland.com/</a>&nbsp;<br class=3D""><div =
+class=3D""><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On 23 Oct 2020, at 19:26, Ben Saunders &lt;<a =
+href=3D"mailto:ben@bensaunders.com" target=3D"_blank" =
+class=3D"">ben@bensaunders.com</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div class=3D"">Done! It=E2=80=99s not until 10th Nov, but =
+we=E2=80=99re offline up in&nbsp;the Scottish Highlands for nine days =
+before that.<div class=3D""><br class=3D""></div><div class=3D"">Looking =
+forward to talking then!</div><div class=3D"">B<br class=3D""><div =
+class=3D""><div class=3D""><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D"">On 23 Oct 2020, at 14:13, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">Good to hear from you! I'm in =
+Iceland atm, so am pretty flexible on times - my cal is <a =
+href=3D"https://josh.is/scheduling" target=3D"_blank" class=3D"">here</a>,=
+ or suggest something that works for you!<div class=3D""><br =
+class=3D""></div><div class=3D"">Looking forward to it,</div><div =
+class=3D"">Josh</div><div class=3D""><br class=3D""></div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D""><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D04bd6092-e61f-43ff-9eb1-f988e0de15a7" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Oct =
+22, 2020 at 7:54 PM Ben Saunders &lt;<a =
+href=3D"mailto:ben@bensaunders.com" target=3D"_blank" =
+class=3D"">ben@bensaunders.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Josh!&nbsp;Sorry for =
+the delay =E2=80=93 crazy couple of weeks. How about a Zoom chat on =
+Wednesday 28th? I=E2=80=99m UK based so my afternoon would be better =
+(assuming you=E2=80=99re in&nbsp;the States!)<div class=3D""><br =
+class=3D""></div><div class=3D"">It would be great to talk. Like you I =
+tried a continuous blood glucose monitor in 2018 (I=E2=80=99m not =
+diabetic, but a friend is a doctor and an ex-pro Ironman triathlete, so =
+she slapped one on my shoulder!) and was fascinated by the data and =
+insight=E2=80=A6</div><div class=3D""><br class=3D""></div><div =
+class=3D""><div class=3D"">V best,</div><div =
+class=3D"">Ben&nbsp;</div><div class=3D""><br class=3D""><blockquote =
+type=3D"cite" class=3D""><div class=3D"">On 15 Oct 2020, at 12:36, Josh =
+Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">It's been a while since Tony =
+introduced us in 2012 - let me know if you're game to compare notes and =
+catch up! No agenda, just looking to reconnect meaningfully with good =
+people as we reorient on the world beyond this pandemic.<div =
+class=3D""><br class=3D""></div><div class=3D"">All best,<br =
+class=3D"">Josh</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Ddba848f3-8d9f-428d-baff-44a4f548f180" =
+class=3D""><font color=3D"#ffffff" size=3D"1" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sun, Oct =
+4, 2020 at 5:16 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><u class=3D""></u>
+     =20
+     =20
+       =20
+       =20
+     =20
+      <div class=3D""><p class=3D""><span class=3D"">Since the pandemic, =
+networking seems to have turned mostly into spam. You and I have worked =
+together in the past, so I wanted to invite you to reconnect to see if =
+we could help each other in the future.</span></p><p class=3D""><span =
+class=3D"">Below are a few of my current projects, or just hit me with =
+an update on what you're working on. I=E2=80=99m curious to hear how I =
+can help!</span></p><p class=3D""><span class=3D"">All best =
+wishes,</span><span class=3D""><br class=3D""></span><span =
+class=3D"">Josh</span></p><p class=3D""><span class=3D"">###</span></p><p =
+class=3D""><span class=3D"">Current Projects:</span></p><p class=3D""><a =
+href=3D"http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/=
+98272530-6153-4eb1-bb85-a2c6eaf4737e" target=3D"_blank" class=3D""><span =
+class=3D"">IndigoMetrics</span></a><span class=3D"">; an AI platform for =
+measuring behavior and beliefs in employees. Super useful for newly =
+remote staff, this gives employees clear measures of where and how to =
+improve.</span></p><p class=3D""><a =
+href=3D"http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/=
+af599392-a471-4f18-83c6-963469387899" target=3D"_blank" class=3D""><span =
+class=3D"">Continuous Glucose Monitor Testing</span></a><span class=3D"">;=
+ a project to understand how to use physically embedded sensors to =
+reduce the health impacts of obesity, heart disease, and diabetes (and =
+hence Covid!)</span></p><p class=3D""><a =
+href=3D"http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/=
+8c958690-1b7f-45de-a04f-a05720b88869" target=3D"_blank" class=3D""><span =
+class=3D"">Professional Services</span></a><span class=3D"">: as ever, I =
+continue to work with senior leaders and teams on technology strategy =
+and new innovation / product development.</span></p><div =
+class=3D"">&nbsp;<br class=3D""></div>
+<span class=3D""><span class=3D"">P.S. If you're interested in the =
+theory behind this outreach, there is a whitepaper </span><a =
+href=3D"http://tracking.josh.is/prod/254539cd-ff08-4149-a3a9-45b8ab4596d5/=
+8a16b171-4e43-4b4a-871d-011275b785d0" target=3D"_blank" class=3D""><span =
+class=3D"">here</span></a><span class=3D"">.</span></span><img alt=3D"" =
+width=3D"1" height=3D"1" =
+src=3D"http://tracking.josh.is/prod/open/254539cd-ff08-4149-a3a9-45b8ab459=
+6d5" style=3D"float: left;" class=3D""></div>
+      </blockquote></div>
+</div></blockquote></div><br class=3D""></div></div></blockquote></div>
+</div></blockquote></div><br =
+class=3D""></div></div></div></div></blockquote></div><br =
+class=3D""></div></blockquote></div>
+</div></blockquote></div><br class=3D""></div></blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</div></blockquote></div><br class=3D""></div></body></html>=
+
+--Apple-Mail=_2771F320-2006-43DF-9D94-98A4EF67D059--

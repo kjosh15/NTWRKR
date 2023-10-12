@@ -1,0 +1,922 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp1410283ljh;
+        Tue, 7 Jul 2020 13:53:55 -0700 (PDT)
+X-Received: by 2002:a05:6102:1002:: with SMTP id q2mr33685856vsp.238.1594155235639;
+        Tue, 07 Jul 2020 13:53:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1594155235; cv=none;
+        d=google.com; s=arc-20160816;
+        b=AXeuNCawXCqE0zFPlmSrbE5qyhktF6eHyBbeAPgX1iA4U4waAzQjYJnbvC+y18YXg7
+         qzd4fVkRkRfxZrzzOJHOCs1ikOin3wImqh98pmf98qsdrtaS+KvqCFZgVVppQ0SV5NwO
+         gzSSuq9t7P/cGrz0Hf3nCCewbw0L/0VN/mAFJ3/FZGaIn6p9YWcRzwAZM5/EWJ2TKiiC
+         FD57+k5EBzaYcbDZK60RaAhR+euU3TdQdUlA7FdiZiNEmwbhmkx6/wYey+ca9ef3sVsH
+         vI7VZHCpuj+G4VoeIWhsSHpxi8a53EJ2/H5R8IaLU6vBGhs2/dtFZzhDiCqs78L0HuGr
+         U98A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=ZgwbArMybEHN8UwFz8BkY8GhvzObHXApjCCRzanKPao=;
+        b=eTMd4o395itAr108dtlSZJfH75itk/9stTx+fmY70J5bEJRi9a8o5J5u27l1OdM3XB
+         D2MGsmTn1cfWMgLvYLU1hYXRX0pMZB++uINWhaRlc+2LlXUnseY6HyF1SJ5QQ5NkLvdB
+         J51+ewOqvm51xqBFs6T8qBSsJVLM5/u/ZdJBdQIgTM5ytB21LQU08AcaB6lotDhdg/Ki
+         BFCzUkulZ0XSJ5o0XV5I/Viermz13poXxPbRtkErJlXsW0ye0HM167tNuJ7I8Lvc5PxM
+         kElz/98mi1F1UDxfMteJ0Ob8jqKTdYQTobldW8YDYzGSIwfEhJNEz33HHzgSmkE6vAf+
+         owLg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@rapid7.com header.s=google header.b=Bx2eOTnb;
+       spf=pass (google.com: domain of anthony_craigwell@rapid7.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=anthony_craigwell@rapid7.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=rapid7.com
+Return-Path: <anthony_craigwell@rapid7.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id s17sor14980575vsi.63.2020.07.07.13.53.55
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 07 Jul 2020 13:53:55 -0700 (PDT)
+Received-SPF: pass (google.com: domain of anthony_craigwell@rapid7.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@rapid7.com header.s=google header.b=Bx2eOTnb;
+       spf=pass (google.com: domain of anthony_craigwell@rapid7.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=anthony_craigwell@rapid7.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=rapid7.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rapid7.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=ZgwbArMybEHN8UwFz8BkY8GhvzObHXApjCCRzanKPao=;
+        b=Bx2eOTnb77v9YtVmbvmMF8TQnqoRBmqnr8X7HsG6AOOBZxNGHYYQ9FItLB/tRoqYer
+         OlP1Al/QqFhYi3FC85m8RiLY3gAfiyL+WJQjJYQ2YMkbKytypH/PJpPM2IM+Es7wVmKf
+         l3SXWfXkyFCg+tchY6f4JYrWXdNGvr2Hf9xbkqh+WEEAAz2c5TBQBYEz7xX+eVSNWRmI
+         sH6OUqUD7Oq5DkVAujVq8Nns21k5rXIu4UWSyV+tiNNaLjaDiYMs+LIucr9SQRxvblup
+         HFRlk4rkMczzHe/AcjglUu1brPy/4tOVTxYudww2gFe9UU4PPqvQQQAb3BurZuzN5EeG
+         uF7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=ZgwbArMybEHN8UwFz8BkY8GhvzObHXApjCCRzanKPao=;
+        b=e/aChjRbOqPUnl5wwOgh/MqFNPJWKJwVWM3PiEjRwDhIWFJgn600TfMsLK/6UcOuwj
+         6n7AgFxM2I76KIdMULZFGne7aavZkJ66M8JA38dwfGcPFaazzkq65kH8Fna0pRy/lTMb
+         YWeRawgg4H3YBps7wrIgFMi/kS3Vy+G6CqUZvJSHNwE+e1JVnN6dmymyGi9uEY1usoBj
+         98weXtewJJWo/GaPlRHPSRkGYSofsljAVE4KX0PqIXClNLL3zQ4AYBZp/bmYJjLDgNDy
+         jJ6D/zefxnqO9wfdDp9POPT42voV/4zYmdONH3e4MhITt9ZOlFU+Va3yU+xFRdXF8ZSz
+         bcGA==
+X-Gm-Message-State: AOAM531ZKHMwZhRzR/0zZHlNgrtF8stabWBgHZjt8Pm4vR7yoxPGT0/A
+	7rVdoiPPS6YndfU+WTDaSy0XJLlUe/e7MZ9KjjcujiQ/bMgKezb0OqEeDTybkqbhppoTDSRAika
+	yAeJ57Jb64l+3c88=
+X-Google-Smtp-Source: ABdhPJypJbYOSphA95xWOiiFUWUSwedLSrXWbMfL/GKrUair9LPBWf8sNQo6t7R0cmZpK4otAUPZmbbt60Mk8JGAXXQ=
+X-Received: by 2002:a67:8003:: with SMTP id b3mr40133988vsd.12.1594155234673;
+ Tue, 07 Jul 2020 13:53:54 -0700 (PDT)
+MIME-Version: 1.0
+References: <000000000000b2c3b605a9359b2a@google.com> <CACNgykO9M8FaAwG6mgKqcRng-Kt5cd0QiFyUb81NicRoMms+=A@mail.gmail.com>
+ <CAE2frRuM-3kUoZLquDYyBF-s+FnArQdNKYNvufRzAJgZoFqyng@mail.gmail.com>
+ <CACNgykNVRuhgdjBrgtXeUVyJVrU1zn-O-W1Tmv+1E1-7TjvLHg@mail.gmail.com>
+ <CAE2frRsGY3NyAjLV1N3miu-sqrJ2bWd2fq8Ku0pfh0Me9uaKSw@mail.gmail.com>
+ <CACNgykMcq9S9YuzUuqshkdM++6_WQHKN2m+hhOx7JRqsUX1w-Q@mail.gmail.com>
+ <CAOt0pt-jsoJtY18zqg_mEe_amsft1gVxa5c2Br_UnOrXY1-3vg@mail.gmail.com>
+ <CACNgykPy=MnGgTLTtJou5Vtzmztc7JAgxY7EG-y9-fBrAZH6xw@mail.gmail.com> <CAOt0pt-LF22AxaY+xwRUruO7tD0Hx5UU7FuZMtiZ3-GE0uKCaA@mail.gmail.com>
+In-Reply-To: <CAOt0pt-LF22AxaY+xwRUruO7tD0Hx5UU7FuZMtiZ3-GE0uKCaA@mail.gmail.com>
+From: Anthony Craigwell <anthony_craigwell@rapid7.com>
+Date: Tue, 7 Jul 2020 16:54:26 -0400
+Message-ID: <CAOt0pt_FPDUEpAcN+Ty1R+b3EsPsr+ToW1Y+fqE9jfMx4UcWuA@mail.gmail.com>
+Subject: Re: Canceled event: Josh Klein & Phoebe Werrell (Rapid7) @ Tue Jun
+ 30, 2020 4pm - 4:30pm (GMT) (Josh Klein)
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="0000000000007afe1e05a9e030b9"
+
+--0000000000007afe1e05a9e030b9
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+Were you able to get the trials up and running?
+
+Best,
+Anthony
+
+On Mon, Jun 29, 2020 at 4:30 PM Anthony Craigwell <
+anthony_craigwell@rapid7.com> wrote:
+
+> Thanks for that information Josh, here are links to the trials for both
+> solutions:
+>
+> InsightAppSec Trial (application scanning tool)
+> <https://www.rapid7.com/products/insightappsec/try/>
+>
+> InsightVM Trial (vulnerability management tool)
+> <https://www.rapid7.com/products/insightvm/download/>
+>
+> If you have any questions please feel free to reach out.
+>
+> Best,
+> Anthony
+>
+>
+> On Mon, Jun 29, 2020 at 4:11 PM Josh Klein <josh@josh.is> wrote:
+>
+>> Thanks for the followup. Initially we need an application scanning tool
+>> for our web app, especially as part of SOC2 certification and maintenanc=
+e.
+>> Longer term we will need a vulnerability management solution for our
+>> network, particularly as we deploy multiple instances and new features o=
+n
+>> AWS.
+>>
+>> - J
+>> =E1=90=A7
+>>
+>> On Mon, Jun 29, 2020 at 5:00 PM Anthony Craigwell <
+>> anthony_craigwell@rapid7.com> wrote:
+>>
+>>> Hi Josh,
+>>>
+>>> My name is Anthony Craigwell, and I'm the US rep that will be assisting
+>>> you going forward. I can send you a trial of one or multiple of our
+>>> solutions to try out but I would just need clarification as to what you
+>>> need. Are you looking for a vulnerability management solution for your
+>>> network, an application scanning tool for your web application, or
+>>> something else?
+>>> I have attached a company overview that shows what we offer so if you
+>>> can let me know what you want a trial of I can get that over to you.
+>>>
+>>> Best,
+>>> Anthony
+>>>
+>>>
+>>> On Mon, Jun 29, 2020 at 8:00 AM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> I can be reached at 354-655-3925. My company needs to do regular
+>>>> security assessments for SOC2 compliance, and we want a best-in-class
+>>>> solution to point to for comprehensive analytics, especially as we evo=
+lve
+>>>> and add other features (right now we have a SaaS web front end, and an
+>>>> API-accessed DB/processing engine backend, both of which are being mig=
+rated
+>>>> into AWS).
+>>>>
+>>>> Not being able to try the product first is a problem, however. When ca=
+n
+>>>> we do that?
+>>>>
+>>>> Thanks,
+>>>> Josh
+>>>>
+>>>>
+>>>> On Mon, Jun 29, 2020 at 11:54 AM Phoebe Werrell <
+>>>> phoebe_werrell@rapid7.com> wrote:
+>>>>
+>>>>> Hello Josh,
+>>>>>
+>>>>>
+>>>>> Thank you for your response. I have included Anthony from the team in
+>>>>> the US to help you out. We will need to book a call before a demo to =
+scope
+>>>>> what it is you are looking at and the reasons why.
+>>>>>
+>>>>> Can you let us know what the best number is to reach you on please?
+>>>>>
+>>>>>
+>>>>> Thank you,
+>>>>>
+>>>>> Phoebe
+>>>>>
+>>>>> On Mon, Jun 29, 2020 at 12:18 PM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> My company primarily operates in the US, has one co-founder in the
+>>>>>> UK, and I'm currently GMT. Let me know when you're available.
+>>>>>>
+>>>>>> Thanks!
+>>>>>> Josh
+>>>>>>
+>>>>>>
+>>>>>> On Mon, Jun 29, 2020 at 10:22 AM Phoebe Werrell <
+>>>>>> phoebe_werrell@rapid7.com> wrote:
+>>>>>>
+>>>>>>> Hi Josh,
+>>>>>>>
+>>>>>>> What is your company please? Also can I have the best number to
+>>>>>>> reach you on? I'm based in the UK so may have to align you to a dif=
+ferent
+>>>>>>> rep depending on where you are based.
+>>>>>>>
+>>>>>>> Many thanks,
+>>>>>>>
+>>>>>>> On Mon, Jun 29, 2020 at 11:20 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> When can we reschedule this for? I'd like to trial the software.
+>>>>>>>>
+>>>>>>>> - J
+>>>>>>>>
+>>>>>>>> On Mon, Jun 29, 2020 at 9:23 AM <phoebe_werrell@rapid7.com> wrote:
+>>>>>>>>
+>>>>>>>>> *This event has been canceled and removed from your calendar.*
+>>>>>>>>> Josh Klein & Phoebe Werrell (Rapid7)
+>>>>>>>>>
+>>>>>>>>> *When*
+>>>>>>>>> Tue Jun 30, 2020 4pm =E2=80=93 4:30pm Greenwich Mean Time
+>>>>>>>>>
+>>>>>>>>> *Calendar*
+>>>>>>>>> Josh Klein
+>>>>>>>>>
+>>>>>>>>> *Who*
+>>>>>>>>> =E2=80=A2
+>>>>>>>>> phoebe_werrell@rapid7.com - organizer
+>>>>>>>>> =E2=80=A2
+>>>>>>>>> Josh Klein
+>>>>>>>>>
+>>>>>>>>> Invitation from Google Calendar <https://www.google.com/calendar/=
+>
+>>>>>>>>>
+>>>>>>>>> You are receiving this email at the account josh@josh.is because
+>>>>>>>>> you are subscribed for cancellations on calendar Josh Klein.
+>>>>>>>>>
+>>>>>>>>> To stop receiving these emails, please log in to
+>>>>>>>>> https://www.google.com/calendar/ and change your notification
+>>>>>>>>> settings for this calendar.
+>>>>>>>>>
+>>>>>>>>> Forwarding this invitation could allow any recipient to send a
+>>>>>>>>> response to the organizer and be added to the guest list, or invi=
+te others
+>>>>>>>>> regardless of their own invitation status, or to modify your RSVP=
+. Learn
+>>>>>>>>> More <https://support.google.com/calendar/answer/37135#forwarding=
+>
+>>>>>>>>> .
+>>>>>>>>>
+>>>>>>>>> NOTICE OF CONFIDENTIALITY: At Rapid7, the privacy of our
+>>>>>>>>> customers, partners, and employees is paramount. If you received =
+this email
+>>>>>>>>> in error, please notify the sender and delete it from your inbox =
+right
+>>>>>>>>> away. Learn how Rapid7 handles privacy at
+>>>>>>>>> rapid7.com/privacy-policy
+>>>>>>>>> <https://rapid7.samanage.com/incidents/54726448-update-link-in-fo=
+oter-of-external-emails>.
+>>>>>>>>> To opt-out of Rapid7 marketing emails, please click here
+>>>>>>>>> <https://information.rapid7.com/communication-preferences.html> o=
+r
+>>>>>>>>> email privacy@rapid7.com.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>
+>>>>>>> --
+>>>>>>> PHOEBE WERRELL
+>>>>>>> Business Development Representative
+>>>>>>>
+>>>>>>> *||* office:* +44-118-402-9331*email:* phoebe_werrell@rapid7.com*
+>>>>>>> <phoebe_werrell@rapid7.com>
+>>>>>>> [image: Rapid7] <https://www.rapid7.com/>
+>>>>>>> RAPID7.COM <https://www.rapid7.com/>
+>>>>>>> <https://www.facebook.com/rapid7/>
+>>>>>>> <https://www.linkedin.com/company/rapid7/>
+>>>>>>> <https://twitter.com/rapid7/>
+>>>>>>>
+>>>>>>> [image:
+>>>>>>> https://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_so=
+urce=3DDTXM20RAP]
+>>>>>>> <https://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_s=
+ource=3DDTXM20RAP>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> NOTICE OF CONFIDENTIALITY: At Rapid7, the privacy of our customers,
+>>>>>>> partners, and employees is paramount. If you received this email in=
+ error,
+>>>>>>> please notify the sender and delete it from your inbox right away. =
+Learn
+>>>>>>> how Rapid7 handles privacy at rapid7.com/privacy-policy
+>>>>>>> <https://rapid7.samanage.com/incidents/54726448-update-link-in-foot=
+er-of-external-emails>.
+>>>>>>> To opt-out of Rapid7 marketing emails, please click here
+>>>>>>> <https://information.rapid7.com/communication-preferences.html> or
+>>>>>>> email privacy@rapid7.com.
+>>>>>>
+>>>>>>
+>>>>>
+>>>>> --
+>>>>> PHOEBE WERRELL
+>>>>> Business Development Representative
+>>>>>
+>>>>> *||* office:* +44-118-402-9331*email:* phoebe_werrell@rapid7.com*
+>>>>> <phoebe_werrell@rapid7.com>
+>>>>> [image: Rapid7] <https://www.rapid7.com/>
+>>>>> RAPID7.COM <https://www.rapid7.com/>
+>>>>> <https://www.facebook.com/rapid7/>
+>>>>> <https://www.linkedin.com/company/rapid7/>
+>>>>> <https://twitter.com/rapid7/>
+>>>>>
+>>>>> [image:
+>>>>> https://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_sour=
+ce=3DDTXM20RAP]
+>>>>> <https://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_sou=
+rce=3DDTXM20RAP>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>>
+>>>>> NOTICE OF CONFIDENTIALITY: At Rapid7, the privacy of our customers,
+>>>>> partners, and employees is paramount. If you received this email in e=
+rror,
+>>>>> please notify the sender and delete it from your inbox right away. Le=
+arn
+>>>>> how Rapid7 handles privacy at rapid7.com/privacy-policy
+>>>>> <https://rapid7.samanage.com/incidents/54726448-update-link-in-footer=
+-of-external-emails>.
+>>>>> To opt-out of Rapid7 marketing emails, please click here
+>>>>> <https://information.rapid7.com/communication-preferences.html> or
+>>>>> email privacy@rapid7.com.
+>>>>
+>>>>
+>>>
+>>> --
+>>> ANTHONY CRAIGWELL
+>>> Senior Business Development Representative
+>>>
+>>> mobile:* +17812961411 **||* office:* +18579904627*email:
+>>> * anthony_craigwell@rapid7.com* <anthony_craigwell@rapid7.com>
+>>> [image: Rapid7] <https://www.rapid7.com/>
+>>> RAPID7.COM <https://www.rapid7.com/>
+>>> <https://www.facebook.com/GoRapid7/>
+>>> <https://www.linkedin.com/company/rapid7/> <https://twitter.com/rapid7/=
+>
+>>>
+>>> NOTICE OF CONFIDENTIALITY: At Rapid7, the privacy of our customers,
+>>> partners, and employees is paramount. If you received this email in err=
+or,
+>>> please notify the sender and delete it from your inbox right away. Lear=
+n
+>>> how Rapid7 handles privacy at rapid7.com/privacy-policy
+>>> <https://rapid7.samanage.com/incidents/54726448-update-link-in-footer-o=
+f-external-emails>.
+>>> To opt-out of Rapid7 marketing emails, please click here
+>>> <https://information.rapid7.com/communication-preferences.html> or
+>>> email privacy@rapid7.com.
+>>
+>>
+>
+> --
+> ANTHONY CRAIGWELL
+> Senior Business Development Representative
+>
+> mobile:* +17812961411 **||* office:* +18579904627*email:
+> * anthony_craigwell@rapid7.com* <anthony_craigwell@rapid7.com>
+> [image: Rapid7] <https://www.rapid7.com/>
+> RAPID7.COM <https://www.rapid7.com/>
+> <https://www.facebook.com/GoRapid7/>
+> <https://www.linkedin.com/company/rapid7/> <https://twitter.com/rapid7/>
+>
+
+
+--=20
+ANTHONY CRAIGWELL
+Senior Business Development Representative
+
+mobile:* +17812961411 **||* office:* +18579904627*email:
+* anthony_craigwell@rapid7.com* <anthony_craigwell@rapid7.com>
+[image: Rapid7] <https://www.rapid7.com/>
+RAPID7.COM <https://www.rapid7.com/>
+<https://www.facebook.com/GoRapid7/>
+<https://www.linkedin.com/company/rapid7/> <https://twitter.com/rapid7/>
+
+--=20
+NOTICE OF CONFIDENTIALITY: At Rapid7, the privacy of our customers,=20
+partners, and employees is paramount. If you received this email in error,=
+=20
+please notify the sender and delete it from your inbox right away. Learn=20
+how Rapid7 handles privacy at=C2=A0rapid7.com/privacy-policy=20
+<https://rapid7.samanage.com/incidents/54726448-update-link-in-footer-of-ex=
+ternal-emails>.=20
+To opt-out of Rapid7 marketing emails, please=C2=A0click here=20
+<https://information.rapid7.com/communication-preferences.html>=C2=A0or ema=
+il=C2=A0
+privacy@rapid7.com <mailto:privacy@rapid7.com>.
+
+--0000000000007afe1e05a9e030b9
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Hi Josh,<div><br></div><div>Were you able to get the trial=
+s up and running?</div><div><br></div><div>Best,</div><div>Anthony</div></d=
+iv><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On =
+Mon, Jun 29, 2020 at 4:30 PM Anthony Craigwell &lt;<a href=3D"mailto:anthon=
+y_craigwell@rapid7.com">anthony_craigwell@rapid7.com</a>&gt; wrote:<br></di=
+v><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;borde=
+r-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Thanks=
+ for that information Josh, here are links to the trials for both solutions=
+:<div><br></div><div><a href=3D"https://www.rapid7.com/products/insightapps=
+ec/try/" target=3D"_blank">InsightAppSec Trial (application scanning tool)<=
+/a>=C2=A0=C2=A0<br></div><div><br></div><div><a href=3D"https://www.rapid7.=
+com/products/insightvm/download/" target=3D"_blank">InsightVM Trial (vulner=
+ability management tool)</a>=C2=A0=C2=A0<br></div><div><br></div><div>If yo=
+u have any questions please feel free to reach out.</div><div><br></div><di=
+v>Best,</div><div>Anthony</div><div><br></div></div><br><div class=3D"gmail=
+_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 2020 at 4:11 =
+PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@jo=
+sh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:=
+1ex"><div dir=3D"ltr">Thanks for the followup. Initially we need an applica=
+tion scanning tool for our web app, especially as part of SOC2 certificatio=
+n and maintenance. Longer term we will need a vulnerability management solu=
+tion for our network, particularly as we deploy multiple instances and new =
+features on AWS.<div><br></div><div>- J</div></div><div hspace=3D"streak-pt=
+-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-heig=
+ht: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Df709583c-5401-4a61-8=
+820-2bc6682f84ef"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon=
+, Jun 29, 2020 at 5:00 PM Anthony Craigwell &lt;<a href=3D"mailto:anthony_c=
+raigwell@rapid7.com" target=3D"_blank">anthony_craigwell@rapid7.com</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Hi Josh,<div><br></div><div>My name is Anthony Craigwell, and I&#3=
+9;m the US rep that will be assisting you going forward. I can send you a t=
+rial of one or multiple=C2=A0of our solutions to try out but I would just n=
+eed clarification as to what you need. Are you looking for a vulnerability =
+management solution for your network, an application scanning tool for your=
+ web application, or something else?</div><div>I have attached a company ov=
+erview=C2=A0that shows what we offer so if you can let me know what you wan=
+t a trial of I can get that over to=C2=A0you.</div><div><br></div><div>Best=
+,<br>Anthony</div><div><br></div></div><br><div class=3D"gmail_quote"><div =
+dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 2020 at 8:00 AM Josh Klein=
+ &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr"><div>I can be reached at 354-655-3925. My company needs to do regu=
+lar security assessments for SOC2 compliance, and we want a best-in-class s=
+olution to point to for comprehensive analytics, especially as we evolve an=
+d add other features (right now we have a SaaS web front end, and an API-ac=
+cessed DB/processing engine backend, both of which are being migrated into =
+AWS). <br></div><div><br></div><div>Not being able to try the product first=
+ is a problem, however. When can we do that?</div><div><br></div><div>Thank=
+s,</div><div>Josh</div><div><br></div></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 2020 at 11:54 AM Phoe=
+be Werrell &lt;<a href=3D"mailto:phoebe_werrell@rapid7.com" target=3D"_blan=
+k">phoebe_werrell@rapid7.com</a>&gt; wrote:<br></div><blockquote class=3D"g=
+mail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204=
+,204,204);padding-left:1ex"><div dir=3D"ltr">Hello Josh,=C2=A0<div><br></di=
+v><div><br></div><div>Thank you for your response. I have included Anthony =
+from the team in the US to help you out. We will need to book a call before=
+ a demo to scope what it is you are looking at and the reasons why.=C2=A0</=
+div><div><br></div><div>Can you let us know what the best number is to reac=
+h you on please?=C2=A0</div><div><br></div><div><br></div><div>Thank you,=
+=C2=A0</div><div><br></div><div>Phoebe=C2=A0</div></div><br><div class=3D"g=
+mail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 2020 at 1=
+2:18 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">jo=
+sh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr"><div>My company primarily operates in the US, h=
+as one co-founder in the UK, and I&#39;m currently GMT. Let me know when yo=
+u&#39;re available. <br></div><div><br></div><div>Thanks!<br></div><div>Jos=
+h</div><div><br></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr"=
+ class=3D"gmail_attr">On Mon, Jun 29, 2020 at 10:22 AM Phoebe Werrell &lt;<=
+a href=3D"mailto:phoebe_werrell@rapid7.com" target=3D"_blank">phoebe_werrel=
+l@rapid7.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" styl=
+e=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddin=
+g-left:1ex"><div dir=3D"ltr">Hi Josh,=C2=A0<div><br></div><div>What is your=
+ company=C2=A0please? Also can I have the best number to reach you on? I&#3=
+9;m based in the UK so may have to align you to a different rep depending o=
+n where you are based.=C2=A0</div><div><br></div><div>Many thanks,=C2=A0</d=
+iv><img src=3D"https://click.api.drift.com/o/fa62ac85-c8c0-4d0f-a1de-af4bcf=
+b152f3?orgId=3D36981" style=3D"border: 0px none; width: 0px; height: 0px; o=
+verflow: hidden;" width=3D"0" height=3D"0"></div><br><div class=3D"gmail_qu=
+ote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 2020 at 11:20 AM=
+ Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh=
+.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div dir=3D"ltr"><div>When can we reschedule this for? I&#39;d like to t=
+rial the software.</div><div><br></div><div>- J<br></div></div><br><div cla=
+ss=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 29, 20=
+20 at 9:23 AM &lt;<a href=3D"mailto:phoebe_werrell@rapid7.com" target=3D"_b=
+lank">phoebe_werrell@rapid7.com</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><span><span><div><table summary=3D"" style=
+=3D"width:100%;font-family:Arial,sans-serif;border-color:rgb(204,204,204);b=
+order-style:solid;border-width:1px 2px 2px 1px;background-color:rgb(255,255=
+,255)" cellspacing=3D"0" cellpadding=3D"8" border=3D"0"><tbody><tr><td><h4 =
+style=3D"padding:6px 10px;margin:0px 0px 4px;font-family:Arial,sans-serif;f=
+ont-size:13px;line-height:1.4;border:1px solid rgb(255,204,204);background:=
+none 0% 0% repeat scroll rgb(255,204,204);color:rgb(34,34,34);font-weight:n=
+ormal"><strong>This event has been canceled and removed from your calendar.=
+</strong></h4><div style=3D"padding:2px"><span></span><h3 style=3D"padding:=
+0px 0px 6px;margin:0px;font-family:Arial,sans-serif;font-size:16px;font-wei=
+ght:bold;color:rgb(34,34,34)"><span>Josh Klein &amp; Phoebe Werrell (Rapid7=
+)</span></h3><table style=3D"display:inline-table" summary=3D"Event details=
+" cellspacing=3D"0" cellpadding=3D"0" border=3D"0"><tbody><tr><td style=3D"=
+padding:0px 1em 10px 0px;font-family:Arial,sans-serif;font-size:13px;color:=
+rgb(136,136,136);white-space:nowrap" valign=3D"top"><div><i style=3D"font-s=
+tyle:normal">When</i></div></td><td style=3D"padding-bottom:10px;font-famil=
+y:Arial,sans-serif;font-size:13px;color:rgb(34,34,34)" valign=3D"top">Tue J=
+un 30, 2020 4pm =E2=80=93 4:30pm <span style=3D"color:rgb(136,136,136)">Gre=
+enwich Mean Time</span></td></tr><tr><td style=3D"padding:0px 1em 10px 0px;=
+font-family:Arial,sans-serif;font-size:13px;color:rgb(136,136,136);white-sp=
+ace:nowrap" valign=3D"top"><div><i style=3D"font-style:normal">Calendar</i>=
+</div></td><td style=3D"padding-bottom:10px;font-family:Arial,sans-serif;fo=
+nt-size:13px;color:rgb(34,34,34)" valign=3D"top">Josh Klein</td></tr><tr><t=
+d style=3D"padding:0px 1em 10px 0px;font-family:Arial,sans-serif;font-size:=
+13px;color:rgb(136,136,136);white-space:nowrap" valign=3D"top"><div><i styl=
+e=3D"font-style:normal">Who</i></div></td><td style=3D"padding-bottom:10px;=
+font-family:Arial,sans-serif;font-size:13px;color:rgb(34,34,34)" valign=3D"=
+top"><table cellspacing=3D"0" cellpadding=3D"0"><tbody><tr><td style=3D"pad=
+ding-right:10px;font-family:Arial,sans-serif;font-size:13px;color:rgb(34,34=
+,34)"><span style=3D"font-family:&quot;Courier New&quot;,monospace">=E2=80=
+=A2</span></td><td style=3D"padding-right:10px;font-family:Arial,sans-serif=
+;font-size:13px;color:rgb(34,34,34)"><div><div style=3D"margin:0px 0px 0.3e=
+m"><span><span><a href=3D"mailto:phoebe_werrell@rapid7.com" target=3D"_blan=
+k">phoebe_werrell@rapid7.com</a></span></span><span></span><span style=3D"f=
+ont-size:11px;color:rgb(136,136,136)"> - organizer</span></div></div></td><=
+/tr><tr><td style=3D"padding-right:10px;font-family:Arial,sans-serif;font-s=
+ize:13px;color:rgb(34,34,34)"><span style=3D"font-family:&quot;Courier New&=
+quot;,monospace">=E2=80=A2</span></td><td style=3D"padding-right:10px;font-=
+family:Arial,sans-serif;font-size:13px;color:rgb(34,34,34)"><div><div style=
+=3D"margin:0px 0px 0.3em"><span><span>Josh Klein</span></span></div></div><=
+/td></tr></tbody></table></td></tr></tbody></table></div></td></tr><tr><td =
+style=3D"background-color:rgb(246,246,246);color:rgb(136,136,136);border-to=
+p:1px solid rgb(204,204,204);font-family:Arial,sans-serif;font-size:11px"><=
+p>Invitation from <a href=3D"https://www.google.com/calendar/" target=3D"_b=
+lank">Google Calendar</a></p><p>You are receiving this email at the account=
+ <a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a> because=
+ you are subscribed for cancellations on calendar Josh Klein.</p><p>To stop=
+ receiving these emails, please log in to <a href=3D"https://www.google.com=
+/calendar/" target=3D"_blank">https://www.google.com/calendar/</a> and chan=
+ge your notification settings for this calendar.</p><p>Forwarding this invi=
+tation could allow any recipient to send a response to the organizer and be=
+ added to the guest list, or invite others regardless of their own invitati=
+on status, or to modify your RSVP. <a href=3D"https://support.google.com/ca=
+lendar/answer/37135#forwarding" target=3D"_blank">Learn More</a>.</p></td><=
+/tr></tbody></table></div></span></span>
+<br>
+<span style=3D"color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-s=
+erif;font-size:16px;background-color:rgb(255,255,255)">NOTICE OF CONFIDENTI=
+ALITY: At Rapid7, the privacy of our customers, partners, and employees is =
+paramount. If you received this email in error, please notify the sender an=
+d delete it from your inbox right away. Learn how Rapid7 handles privacy at=
+=C2=A0</span><a href=3D"https://rapid7.samanage.com/incidents/54726448-upda=
+te-link-in-footer-of-external-emails" style=3D"color:rgb(0,121,170);backgro=
+und-color:rgb(255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;fon=
+t-size:16px" target=3D"_blank">rapid7.com/privacy-policy</a><span style=3D"=
+color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-serif;font-size:=
+16px;background-color:rgb(255,255,255)">. To opt-out of Rapid7 marketing em=
+ails, please=C2=A0</span><a href=3D"https://information.rapid7.com/communic=
+ation-preferences.html" style=3D"color:rgb(0,121,170);background-color:rgb(=
+255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;font-size:16px" t=
+arget=3D"_blank">click here</a><span style=3D"color:rgb(17,17,17);font-fami=
+ly:&quot;Open Sans&quot;,sans-serif;font-size:16px;background-color:rgb(255=
+,255,255)">=C2=A0or email=C2=A0</span><a href=3D"mailto:privacy@rapid7.com"=
+ style=3D"color:rgb(0,121,170);background-color:rgb(255,255,255);font-famil=
+y:&quot;Open Sans&quot;,sans-serif;font-size:16px" target=3D"_blank">privac=
+y@rapid7.com</a><span style=3D"color:rgb(17,17,17);font-family:&quot;Open S=
+ans&quot;,sans-serif;font-size:16px;background-color:rgb(255,255,255)">.</s=
+pan></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=
+=3D"ltr"><table style=3D"font-family:&quot;Times New Roman&quot;"><tbody><t=
+r style=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td sty=
+le=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h1 st=
+yle=3D"letter-spacing:1px;text-transform:uppercase;margin:0px 0px 3px;font-=
+family:&quot;Muli Black&quot;,Arial,sans-serif;font-size:16px;line-height:1=
+2px;color:rgb(232,94,38)"><span>PHOEBE</span>=C2=A0<span>WERRELL</span></h1=
+></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;display:t=
+able"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px=
+ 10px"><h2 style=3D"margin:0px 0px 4px;font-family:Muli,Arial,sans-serif;fo=
+nt-size:13px;color:rgb(130,147,156)"><span>Business Development Representat=
+ive</span></h2></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing=
+:0px;display:table"><td style=3D"border-left:4px solid rgb(232,94,38);paddi=
+ng:0px 0px 0px 10px"><h2 style=3D"margin:0px;font-family:Roboto,Arial,sans-=
+serif;font-weight:300;font-size:12px;color:rgb(93,109,117);line-height:16px=
+"></h2></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;dis=
+play:table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0=
+px 0px 10px"><p style=3D"font-family:Roboto,Arial,sans-serif;font-size:12px=
+;color:rgb(93,109,117);margin:0px;line-height:16px"><span style=3D"display:=
+block"><span><b><span style=3D"color:rgb(232,94,38)">||</span></b></span>=
+=C2=A0<span>office:<b>=C2=A0<span>+44-118-402-9331</span></b></span></span>=
+email:<a href=3D"mailto:phoebe_werrell@rapid7.com" style=3D"color:rgb(93,10=
+9,117);margin:0px;line-height:16px;letter-spacing:0px" target=3D"_blank"><b=
+>=C2=A0<span>phoebe_werrell@rapid7.com</span></b></a></p></td></tr><tr styl=
+e=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"=
+border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><a href=3D"h=
+ttps://www.rapid7.com/" target=3D"_blank"><img alt=3D"Rapid7" src=3D"https:=
+//www.rapid7.com/globalassets/_images/email/rapid7-email-signature-logo-20x=
+116.jpg" style=3D"margin: 10px 0px 5px;" width=3D"116" height=3D"20"></a><b=
+r></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;display:=
+table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0p=
+x 10px"><a href=3D"https://www.rapid7.com/" title=3D"Visit Rapid7.com" styl=
+e=3D"font-family:Roboto,Arial,sans-serif;font-size:12px;color:rgb(130,147,1=
+56);margin:0px;letter-spacing:2px;text-transform:uppercase" target=3D"_blan=
+k">RAPID7.COM</a><div style=3D"float:right;margin:0px 0px 0px 8px"><a title=
+=3D"Rapid7 Facebook" href=3D"https://www.facebook.com/rapid7/" target=3D"_b=
+lank"><img src=3D"https://www.rapid7.com/globalassets/_images/email/faceboo=
+k-gray.jpg" style=3D"float: left; height: 16px; width: 20px;" width=3D"20" =
+height=3D"16"></a><a title=3D"Rapid7 Linkedin" href=3D"https://www.linkedin=
+.com/company/rapid7/" target=3D"_blank"><img src=3D"https://www.rapid7.com/=
+globalassets/_images/email/linkedin-gray.jpg" style=3D"float: left; height:=
+ 16px; width: 20px;" width=3D"20" height=3D"16"></a><a title=3D"Rapid7 Twit=
+ter" href=3D"https://twitter.com/rapid7/" target=3D"_blank"><img src=3D"htt=
+ps://www.rapid7.com/globalassets/_images/email/twitter-gray.jpg" style=3D"f=
+loat: left; height: 16px; width: 20px;" width=3D"20" height=3D"16"></a></di=
+v></td></tr></tbody></table><br></div></div><div dir=3D"ltr"><a href=3D"htt=
+ps://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_source=3DDTXM=
+20RAP" target=3D"_blank"><img src=3D"https://evessio.s3.amazonaws.com/custo=
+mer/8c4659ee-526a-4e9c-89dc-f6f4c3c1a789/event/38e5ee8a-8f3a-4495-a356-de88=
+ff69a7c6/media/General_Content/216356bc-node_428x60.jpg" alt=3D"https://ima=
+go.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_source=3DDTXM20RAP"><=
+/a><br></div><div dir=3D"ltr"><br></div><div dir=3D"ltr"><br></div><div dir=
+=3D"ltr"><br></div><div dir=3D"ltr"><br></div><div dir=3D"ltr"><br></div></=
+div></div></div></div></div></div>
+
+<br>
+<span style=3D"color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-s=
+erif;font-size:16px;background-color:rgb(255,255,255)">NOTICE OF CONFIDENTI=
+ALITY: At Rapid7, the privacy of our customers, partners, and employees is =
+paramount. If you received this email in error, please notify the sender an=
+d delete it from your inbox right away. Learn how Rapid7 handles privacy at=
+=C2=A0</span><a href=3D"https://rapid7.samanage.com/incidents/54726448-upda=
+te-link-in-footer-of-external-emails" style=3D"color:rgb(0,121,170);backgro=
+und-color:rgb(255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;fon=
+t-size:16px" target=3D"_blank">rapid7.com/privacy-policy</a><span style=3D"=
+color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-serif;font-size:=
+16px;background-color:rgb(255,255,255)">. To opt-out of Rapid7 marketing em=
+ails, please=C2=A0</span><a href=3D"https://information.rapid7.com/communic=
+ation-preferences.html" style=3D"color:rgb(0,121,170);background-color:rgb(=
+255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;font-size:16px" t=
+arget=3D"_blank">click here</a><span style=3D"color:rgb(17,17,17);font-fami=
+ly:&quot;Open Sans&quot;,sans-serif;font-size:16px;background-color:rgb(255=
+,255,255)">=C2=A0or email=C2=A0</span><a href=3D"mailto:privacy@rapid7.com"=
+ style=3D"color:rgb(0,121,170);background-color:rgb(255,255,255);font-famil=
+y:&quot;Open Sans&quot;,sans-serif;font-size:16px" target=3D"_blank">privac=
+y@rapid7.com</a><span style=3D"color:rgb(17,17,17);font-family:&quot;Open S=
+ans&quot;,sans-serif;font-size:16px;background-color:rgb(255,255,255)">.</s=
+pan></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div dir=
+=3D"ltr"><table style=3D"font-family:&quot;Times New Roman&quot;"><tbody><t=
+r style=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td sty=
+le=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h1 st=
+yle=3D"letter-spacing:1px;text-transform:uppercase;margin:0px 0px 3px;font-=
+family:&quot;Muli Black&quot;,Arial,sans-serif;font-size:16px;line-height:1=
+2px;color:rgb(232,94,38)"><span>PHOEBE</span>=C2=A0<span>WERRELL</span></h1=
+></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;display:t=
+able"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px=
+ 10px"><h2 style=3D"margin:0px 0px 4px;font-family:Muli,Arial,sans-serif;fo=
+nt-size:13px;color:rgb(130,147,156)"><span>Business Development Representat=
+ive</span></h2></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing=
+:0px;display:table"><td style=3D"border-left:4px solid rgb(232,94,38);paddi=
+ng:0px 0px 0px 10px"><h2 style=3D"margin:0px;font-family:Roboto,Arial,sans-=
+serif;font-weight:300;font-size:12px;color:rgb(93,109,117);line-height:16px=
+"></h2></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;dis=
+play:table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0=
+px 0px 10px"><p style=3D"font-family:Roboto,Arial,sans-serif;font-size:12px=
+;color:rgb(93,109,117);margin:0px;line-height:16px"><span style=3D"display:=
+block"><span><b><span style=3D"color:rgb(232,94,38)">||</span></b></span>=
+=C2=A0<span>office:<b>=C2=A0<span>+44-118-402-9331</span></b></span></span>=
+email:<a href=3D"mailto:phoebe_werrell@rapid7.com" style=3D"color:rgb(93,10=
+9,117);margin:0px;line-height:16px;letter-spacing:0px" target=3D"_blank"><b=
+>=C2=A0<span>phoebe_werrell@rapid7.com</span></b></a></p></td></tr><tr styl=
+e=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"=
+border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><a href=3D"h=
+ttps://www.rapid7.com/" target=3D"_blank"><img alt=3D"Rapid7" src=3D"https:=
+//www.rapid7.com/globalassets/_images/email/rapid7-email-signature-logo-20x=
+116.jpg" style=3D"margin: 10px 0px 5px;" width=3D"116" height=3D"20"></a><b=
+r></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;display:=
+table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0p=
+x 10px"><a href=3D"https://www.rapid7.com/" title=3D"Visit Rapid7.com" styl=
+e=3D"font-family:Roboto,Arial,sans-serif;font-size:12px;color:rgb(130,147,1=
+56);margin:0px;letter-spacing:2px;text-transform:uppercase" target=3D"_blan=
+k">RAPID7.COM</a><div style=3D"float:right;margin:0px 0px 0px 8px"><a title=
+=3D"Rapid7 Facebook" href=3D"https://www.facebook.com/rapid7/" target=3D"_b=
+lank"><img src=3D"https://www.rapid7.com/globalassets/_images/email/faceboo=
+k-gray.jpg" style=3D"float: left; height: 16px; width: 20px;" width=3D"20" =
+height=3D"16"></a><a title=3D"Rapid7 Linkedin" href=3D"https://www.linkedin=
+.com/company/rapid7/" target=3D"_blank"><img src=3D"https://www.rapid7.com/=
+globalassets/_images/email/linkedin-gray.jpg" style=3D"float: left; height:=
+ 16px; width: 20px;" width=3D"20" height=3D"16"></a><a title=3D"Rapid7 Twit=
+ter" href=3D"https://twitter.com/rapid7/" target=3D"_blank"><img src=3D"htt=
+ps://www.rapid7.com/globalassets/_images/email/twitter-gray.jpg" style=3D"f=
+loat: left; height: 16px; width: 20px;" width=3D"20" height=3D"16"></a></di=
+v></td></tr></tbody></table><br></div></div><div dir=3D"ltr"><a href=3D"htt=
+ps://imago.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_source=3DDTXM=
+20RAP" target=3D"_blank"><img src=3D"https://evessio.s3.amazonaws.com/custo=
+mer/8c4659ee-526a-4e9c-89dc-f6f4c3c1a789/event/38e5ee8a-8f3a-4495-a356-de88=
+ff69a7c6/media/General_Content/216356bc-node_428x60.jpg" alt=3D"https://ima=
+go.circdata-solutions.co.uk/RFG/publish/DTXMAN20/?utm_source=3DDTXM20RAP"><=
+/a><br></div><div dir=3D"ltr"><br></div><div dir=3D"ltr"><br></div><div dir=
+=3D"ltr"><br></div><div dir=3D"ltr"><br></div><div dir=3D"ltr"><br></div></=
+div></div></div></div></div></div>
+
+<br>
+<span style=3D"color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-s=
+erif;font-size:16px;background-color:rgb(255,255,255)">NOTICE OF CONFIDENTI=
+ALITY: At Rapid7, the privacy of our customers, partners, and employees is =
+paramount. If you received this email in error, please notify the sender an=
+d delete it from your inbox right away. Learn how Rapid7 handles privacy at=
+=C2=A0</span><a href=3D"https://rapid7.samanage.com/incidents/54726448-upda=
+te-link-in-footer-of-external-emails" style=3D"color:rgb(0,121,170);backgro=
+und-color:rgb(255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;fon=
+t-size:16px" target=3D"_blank">rapid7.com/privacy-policy</a><span style=3D"=
+color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-serif;font-size:=
+16px;background-color:rgb(255,255,255)">. To opt-out of Rapid7 marketing em=
+ails, please=C2=A0</span><a href=3D"https://information.rapid7.com/communic=
+ation-preferences.html" style=3D"color:rgb(0,121,170);background-color:rgb(=
+255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;font-size:16px" t=
+arget=3D"_blank">click here</a><span style=3D"color:rgb(17,17,17);font-fami=
+ly:&quot;Open Sans&quot;,sans-serif;font-size:16px;background-color:rgb(255=
+,255,255)">=C2=A0or email=C2=A0</span><a href=3D"mailto:privacy@rapid7.com"=
+ style=3D"color:rgb(0,121,170);background-color:rgb(255,255,255);font-famil=
+y:&quot;Open Sans&quot;,sans-serif;font-size:16px" target=3D"_blank">privac=
+y@rapid7.com</a><span style=3D"color:rgb(17,17,17);font-family:&quot;Open S=
+ans&quot;,sans-serif;font-size:16px;background-color:rgb(255,255,255)">.</s=
+pan></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><table style=3D"font-family:&quot;T=
+imes New Roman&quot;"><tbody><tr style=3D"padding:0px;margin:0px;border-spa=
+cing:0px;display:table"><td style=3D"border-left:4px solid rgb(232,94,38);p=
+adding:0px 0px 0px 10px"><h1 style=3D"letter-spacing:1px;text-transform:upp=
+ercase;margin:0px 0px 3px;font-family:&quot;Muli Black&quot;,Arial,sans-ser=
+if;font-size:16px;line-height:12px;color:rgb(232,94,38)"><span>ANTHONY=C2=
+=A0</span><span>CRAIGWELL</span></h1></td></tr><tr style=3D"padding:0px;mar=
+gin:0px;border-spacing:0px;display:table"><td style=3D"border-left:4px soli=
+d rgb(232,94,38);padding:0px 0px 0px 10px"><h2 style=3D"margin:0px 0px 4px;=
+font-family:Muli,Arial,sans-serif;font-size:13px;color:rgb(130,147,156)"><s=
+pan>Senior Business Development Representative</span></h2></td></tr><tr sty=
+le=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D=
+"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h2 style=
+=3D"margin:0px;font-family:Roboto,Arial,sans-serif;font-weight:300;font-siz=
+e:12px;color:rgb(93,109,117);line-height:16px"></h2></td></tr><tr style=3D"=
+padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"borde=
+r-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><p style=3D"font-=
+family:Roboto,Arial,sans-serif;font-size:12px;color:rgb(93,109,117);margin:=
+0px;line-height:16px"><span style=3D"display:block"><span>mobile:<b>=C2=A0<=
+span>+17812961411</span>=C2=A0</b><b><span style=3D"color:rgb(232,94,38)">|=
+|</span></b></span>=C2=A0<span>office:<b>=C2=A0<span>+18579904627</span></b=
+></span></span>email:<a href=3D"mailto:anthony_craigwell@rapid7.com" style=
+=3D"color:rgb(93,109,117);margin:0px;line-height:16px;letter-spacing:0px" t=
+arget=3D"_blank"><b>=C2=A0<span>anthony_craigwell@rapid7.com</span></b></a>=
+</p></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;displa=
+y:table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px =
+0px 10px"><a href=3D"https://www.rapid7.com/" target=3D"_blank"><img alt=3D=
+"Rapid7" src=3D"https://www.rapid7.com/globalassets/_images/email/rapid7-em=
+ail-signature-logo-20x116.jpg" width=3D"116" height=3D"20" style=3D"margin:=
+ 10px 0px 5px;"></a>=C2=A0<br></td></tr><tr style=3D"padding:0px;margin:0px=
+;border-spacing:0px;display:table"><td style=3D"border-left:4px solid rgb(2=
+32,94,38);padding:0px 0px 0px 10px"><a href=3D"https://www.rapid7.com/" tit=
+le=3D"Visit Rapid7.com" style=3D"font-family:Roboto,Arial,sans-serif;font-s=
+ize:12px;color:rgb(130,147,156);margin:0px;letter-spacing:2px;text-transfor=
+m:uppercase" target=3D"_blank">RAPID7.COM</a><div style=3D"float:right;marg=
+in:0px 0px 0px 8px"><a title=3D"Rapid7 Facebook" href=3D"https://www.facebo=
+ok.com/GoRapid7/" target=3D"_blank"><img src=3D"https://www.rapid7.com/glob=
+alassets/_images/email/facebook-gray.jpg" width=3D"20" height=3D"16" style=
+=3D"float: left; height: 16px; width: 20px;"></a><a title=3D"Rapid7 Linkedi=
+n" href=3D"https://www.linkedin.com/company/rapid7/" target=3D"_blank"><img=
+ src=3D"https://www.rapid7.com/globalassets/_images/email/linkedin-gray.jpg=
+" width=3D"20" height=3D"16" style=3D"float: left; height: 16px; width: 20p=
+x;"></a><a title=3D"Rapid7 Twitter" href=3D"https://twitter.com/rapid7/" ta=
+rget=3D"_blank"><img src=3D"https://www.rapid7.com/globalassets/_images/ema=
+il/twitter-gray.jpg" width=3D"20" height=3D"16" style=3D"float: left; heigh=
+t: 16px; width: 20px;"></a></div></td></tr></tbody></table></div></div></di=
+v></div>
+
+<br>
+<span style=3D"color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-s=
+erif;font-size:16px;background-color:rgb(255,255,255)">NOTICE OF CONFIDENTI=
+ALITY: At Rapid7, the privacy of our customers, partners, and employees is =
+paramount. If you received this email in error, please notify the sender an=
+d delete it from your inbox right away. Learn how Rapid7 handles privacy at=
+=C2=A0</span><a href=3D"https://rapid7.samanage.com/incidents/54726448-upda=
+te-link-in-footer-of-external-emails" style=3D"color:rgb(0,121,170);backgro=
+und-color:rgb(255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;fon=
+t-size:16px" target=3D"_blank">rapid7.com/privacy-policy</a><span style=3D"=
+color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-serif;font-size:=
+16px;background-color:rgb(255,255,255)">. To opt-out of Rapid7 marketing em=
+ails, please=C2=A0</span><a href=3D"https://information.rapid7.com/communic=
+ation-preferences.html" style=3D"color:rgb(0,121,170);background-color:rgb(=
+255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;font-size:16px" t=
+arget=3D"_blank">click here</a><span style=3D"color:rgb(17,17,17);font-fami=
+ly:&quot;Open Sans&quot;,sans-serif;font-size:16px;background-color:rgb(255=
+,255,255)">=C2=A0or email=C2=A0</span><a href=3D"mailto:privacy@rapid7.com"=
+ style=3D"color:rgb(0,121,170);background-color:rgb(255,255,255);font-famil=
+y:&quot;Open Sans&quot;,sans-serif;font-size:16px" target=3D"_blank">privac=
+y@rapid7.com</a><span style=3D"color:rgb(17,17,17);font-family:&quot;Open S=
+ans&quot;,sans-serif;font-size:16px;background-color:rgb(255,255,255)">.</s=
+pan></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><table style=3D"font-family:&quot;T=
+imes New Roman&quot;"><tbody><tr style=3D"padding:0px;margin:0px;border-spa=
+cing:0px;display:table"><td style=3D"border-left:4px solid rgb(232,94,38);p=
+adding:0px 0px 0px 10px"><h1 style=3D"letter-spacing:1px;text-transform:upp=
+ercase;margin:0px 0px 3px;font-family:&quot;Muli Black&quot;,Arial,sans-ser=
+if;font-size:16px;line-height:12px;color:rgb(232,94,38)"><span>ANTHONY=C2=
+=A0</span><span>CRAIGWELL</span></h1></td></tr><tr style=3D"padding:0px;mar=
+gin:0px;border-spacing:0px;display:table"><td style=3D"border-left:4px soli=
+d rgb(232,94,38);padding:0px 0px 0px 10px"><h2 style=3D"margin:0px 0px 4px;=
+font-family:Muli,Arial,sans-serif;font-size:13px;color:rgb(130,147,156)"><s=
+pan>Senior Business Development Representative</span></h2></td></tr><tr sty=
+le=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D=
+"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h2 style=
+=3D"margin:0px;font-family:Roboto,Arial,sans-serif;font-weight:300;font-siz=
+e:12px;color:rgb(93,109,117);line-height:16px"></h2></td></tr><tr style=3D"=
+padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"borde=
+r-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><p style=3D"font-=
+family:Roboto,Arial,sans-serif;font-size:12px;color:rgb(93,109,117);margin:=
+0px;line-height:16px"><span style=3D"display:block"><span>mobile:<b>=C2=A0<=
+span>+17812961411</span>=C2=A0</b><b><span style=3D"color:rgb(232,94,38)">|=
+|</span></b></span>=C2=A0<span>office:<b>=C2=A0<span>+18579904627</span></b=
+></span></span>email:<a href=3D"mailto:anthony_craigwell@rapid7.com" style=
+=3D"color:rgb(93,109,117);margin:0px;line-height:16px;letter-spacing:0px" t=
+arget=3D"_blank"><b>=C2=A0<span>anthony_craigwell@rapid7.com</span></b></a>=
+</p></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;displa=
+y:table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px =
+0px 10px"><a href=3D"https://www.rapid7.com/" target=3D"_blank"><img alt=3D=
+"Rapid7" src=3D"https://www.rapid7.com/globalassets/_images/email/rapid7-em=
+ail-signature-logo-20x116.jpg" width=3D"116" height=3D"20" style=3D"margin:=
+ 10px 0px 5px;"></a>=C2=A0<br></td></tr><tr style=3D"padding:0px;margin:0px=
+;border-spacing:0px;display:table"><td style=3D"border-left:4px solid rgb(2=
+32,94,38);padding:0px 0px 0px 10px"><a href=3D"https://www.rapid7.com/" tit=
+le=3D"Visit Rapid7.com" style=3D"font-family:Roboto,Arial,sans-serif;font-s=
+ize:12px;color:rgb(130,147,156);margin:0px;letter-spacing:2px;text-transfor=
+m:uppercase" target=3D"_blank">RAPID7.COM</a><div style=3D"float:right;marg=
+in:0px 0px 0px 8px"><a title=3D"Rapid7 Facebook" href=3D"https://www.facebo=
+ok.com/GoRapid7/" target=3D"_blank"><img src=3D"https://www.rapid7.com/glob=
+alassets/_images/email/facebook-gray.jpg" width=3D"20" height=3D"16" style=
+=3D"float: left; height: 16px; width: 20px;"></a><a title=3D"Rapid7 Linkedi=
+n" href=3D"https://www.linkedin.com/company/rapid7/" target=3D"_blank"><img=
+ src=3D"https://www.rapid7.com/globalassets/_images/email/linkedin-gray.jpg=
+" width=3D"20" height=3D"16" style=3D"float: left; height: 16px; width: 20p=
+x;"></a><a title=3D"Rapid7 Twitter" href=3D"https://twitter.com/rapid7/" ta=
+rget=3D"_blank"><img src=3D"https://www.rapid7.com/globalassets/_images/ema=
+il/twitter-gray.jpg" width=3D"20" height=3D"16" style=3D"float: left; heigh=
+t: 16px; width: 20px;"></a></div></td></tr></tbody></table></div></div></di=
+v></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><table st=
+yle=3D"font-family:&quot;Times New Roman&quot;"><tbody><tr style=3D"padding=
+:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"border-left:=
+4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h1 style=3D"letter-spac=
+ing:1px;text-transform:uppercase;margin:0px 0px 3px;font-family:&quot;Muli =
+Black&quot;,Arial,sans-serif;font-size:16px;line-height:12px;color:rgb(232,=
+94,38)"><span>ANTHONY=C2=A0</span><span>CRAIGWELL</span></h1></td></tr><tr =
+style=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=
+=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><h2 styl=
+e=3D"margin:0px 0px 4px;font-family:Muli,Arial,sans-serif;font-size:13px;co=
+lor:rgb(130,147,156)"><span>Senior Business Development Representative</spa=
+n></h2></td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;dis=
+play:table"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0=
+px 0px 10px"><h2 style=3D"margin:0px;font-family:Roboto,Arial,sans-serif;fo=
+nt-weight:300;font-size:12px;color:rgb(93,109,117);line-height:16px"></h2><=
+/td></tr><tr style=3D"padding:0px;margin:0px;border-spacing:0px;display:tab=
+le"><td style=3D"border-left:4px solid rgb(232,94,38);padding:0px 0px 0px 1=
+0px"><p style=3D"font-family:Roboto,Arial,sans-serif;font-size:12px;color:r=
+gb(93,109,117);margin:0px;line-height:16px"><span style=3D"display:block"><=
+span>mobile:<b>=C2=A0<span>+17812961411</span>=C2=A0</b><b><span style=3D"c=
+olor:rgb(232,94,38)">||</span></b></span>=C2=A0<span>office:<b>=C2=A0<span>=
++18579904627</span></b></span></span>email:<a href=3D"mailto:anthony_craigw=
+ell@rapid7.com" style=3D"color:rgb(93,109,117);margin:0px;line-height:16px;=
+letter-spacing:0px" target=3D"_blank"><b>=C2=A0<span>anthony_craigwell@rapi=
+d7.com</span></b></a></p></td></tr><tr style=3D"padding:0px;margin:0px;bord=
+er-spacing:0px;display:table"><td style=3D"border-left:4px solid rgb(232,94=
+,38);padding:0px 0px 0px 10px"><a href=3D"https://www.rapid7.com/" target=
+=3D"_blank"><img alt=3D"Rapid7" src=3D"https://www.rapid7.com/globalassets/=
+_images/email/rapid7-email-signature-logo-20x116.jpg" width=3D"116" height=
+=3D"20" style=3D"margin: 10px 0px 5px;"></a>=C2=A0<br></td></tr><tr style=
+=3D"padding:0px;margin:0px;border-spacing:0px;display:table"><td style=3D"b=
+order-left:4px solid rgb(232,94,38);padding:0px 0px 0px 10px"><a href=3D"ht=
+tps://www.rapid7.com/" title=3D"Visit Rapid7.com" style=3D"font-family:Robo=
+to,Arial,sans-serif;font-size:12px;color:rgb(130,147,156);margin:0px;letter=
+-spacing:2px;text-transform:uppercase" target=3D"_blank">RAPID7.COM</a><div=
+ style=3D"float:right;margin:0px 0px 0px 8px"><a title=3D"Rapid7 Facebook" =
+href=3D"https://www.facebook.com/GoRapid7/" target=3D"_blank"><img src=3D"h=
+ttps://www.rapid7.com/globalassets/_images/email/facebook-gray.jpg" width=
+=3D"20" height=3D"16" style=3D"float: left; height: 16px; width: 20px;"></a=
+><a title=3D"Rapid7 Linkedin" href=3D"https://www.linkedin.com/company/rapi=
+d7/" target=3D"_blank"><img src=3D"https://www.rapid7.com/globalassets/_ima=
+ges/email/linkedin-gray.jpg" width=3D"20" height=3D"16" style=3D"float: lef=
+t; height: 16px; width: 20px;"></a><a title=3D"Rapid7 Twitter" href=3D"http=
+s://twitter.com/rapid7/" target=3D"_blank"><img src=3D"https://www.rapid7.c=
+om/globalassets/_images/email/twitter-gray.jpg" width=3D"20" height=3D"16" =
+style=3D"float: left; height: 16px; width: 20px;"></a></div></td></tr></tbo=
+dy></table></div></div></div></div>
+
+<br>
+<span style=3D"color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-s=
+erif;font-size:16px;background-color:rgb(255,255,255)">NOTICE OF CONFIDENTI=
+ALITY: At Rapid7, the privacy of our customers, partners, and employees is =
+paramount. If you received this email in error, please notify the sender an=
+d delete it from your inbox right away. Learn how Rapid7 handles privacy at=
+=C2=A0</span><a href=3D"https://rapid7.samanage.com/incidents/54726448-upda=
+te-link-in-footer-of-external-emails" style=3D"color:rgb(0,121,170);backgro=
+und-color:rgb(255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;fon=
+t-size:16px" target=3D"_blank">rapid7.com/privacy-policy</a><span style=3D"=
+color:rgb(17,17,17);font-family:&quot;Open Sans&quot;,sans-serif;font-size:=
+16px;background-color:rgb(255,255,255)">. To opt-out of Rapid7 marketing em=
+ails, please=C2=A0</span><a href=3D"https://information.rapid7.com/communic=
+ation-preferences.html" style=3D"color:rgb(0,121,170);background-color:rgb(=
+255,255,255);font-family:&quot;Open Sans&quot;,sans-serif;font-size:16px" t=
+arget=3D"_blank">click here</a><span style=3D"color:rgb(17,17,17);font-fami=
+ly:&quot;Open Sans&quot;,sans-serif;font-size:16px;background-color:rgb(255=
+,255,255)">=C2=A0or email=C2=A0</span><a href=3D"mailto:privacy@rapid7.com"=
+ style=3D"color:rgb(0,121,170);background-color:rgb(255,255,255);font-famil=
+y:&quot;Open Sans&quot;,sans-serif;font-size:16px" target=3D"_blank">privac=
+y@rapid7.com</a><span style=3D"color:rgb(17,17,17);font-family:&quot;Open S=
+ans&quot;,sans-serif;font-size:16px;background-color:rgb(255,255,255)">.</s=
+pan>
+--0000000000007afe1e05a9e030b9--

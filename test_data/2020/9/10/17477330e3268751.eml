@@ -1,0 +1,1312 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:a173:0:0:0:0:0 with SMTP id u19csp1121406ljl;
+        Thu, 10 Sep 2020 01:47:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy6zvJhQ4tM48qj/T608tlmeFC5jtsn97Idp9kR4Wtphd6t1UEMPzN95x3pfw9XrIyeZl40
+X-Received: by 2002:a63:e655:: with SMTP id p21mr3661511pgj.420.1599727668800;
+        Thu, 10 Sep 2020 01:47:48 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1599727668; cv=none;
+        d=google.com; s=arc-20160816;
+        b=F3y1cqGtOCbmWWnQUR7QXuOEKYKeyr1jjzqW9qOu8LPeDlfhRqIgpHsuS3ynZQxsYP
+         6jVasBBjAD2npEhP26ZSB5aXB7VEXwudH5AMcZF+1VJM7DA7TdVTuyQMhxdV3gT1LfYg
+         JNjvIJOCA99iZfzzEWpvnH1aARMJbppMyRqALvUhr0alJdBho1kafnF+QoYf7nSCgfo+
+         nC+Ml93q1obhTbYSgBoQh3aKmWjoG929hGYs5G09IK2ABZNoPHrsdbOVRrX5VVG5T7tk
+         /RrsXE3EEu5W4RomASGuGcXMZxhhd+9zbkBK9qGWG96obl9+DzpKvrBGUjvyAzNVoPoL
+         acVQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :dkim-signature;
+        bh=4kdhvkmrAfigZEo/o2zQcvHOkQWzms3RKFEYGsvydbM=;
+        b=mu/BHd3Xje5Xif+vjoub58QnEpwQe8I+NOfRwn8LPopMyOrkkj8/zcb5S1z/UUbOB+
+         M0RWEaxJ9ZLAEnrQaOA3QEkTb35cnhqEOQieIwYZKE8lzUPSb+SRHtQktYZZQD8a2lA9
+         7EWZOERnAZt/AViAiG6O9r8e9k0ECm6wFYUDQOGMGI0e7TKJSLS3eFQcAIGEH2Ap85+o
+         2qDTxSFomA2hfi9+93QdSLVMtadQnPnjxxD/JbSezSlh2+wfvWmIGbhdF4mXrGYdIhDm
+         1YhZZXfKt4IDogKMZMxDx9FsESaBEpV5hlCRkU5a7kAuGx5zp/HX//ugZ3Ku0gJ7rGg2
+         z9Vg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=temperror (no key for signature) header.i=@mattdanzico.com header.s=mattdanzico.com header.b=BgOzS0ke;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 23.83.222.63 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+Return-Path: <matt@mattdanzico.com>
+Received: from frog.ash.relay.mailchannels.net (frog.ash.relay.mailchannels.net. [23.83.222.63])
+        by mx.google.com with ESMTPS id x3si4219159pll.320.2020.09.10.01.47.45
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 10 Sep 2020 01:47:48 -0700 (PDT)
+Received-SPF: pass (google.com: domain of matt@mattdanzico.com designates 23.83.222.63 as permitted sender) client-ip=23.83.222.63;
+Authentication-Results: mx.google.com;
+       dkim=temperror (no key for signature) header.i=@mattdanzico.com header.s=mattdanzico.com header.b=BgOzS0ke;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 23.83.222.63 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+X-Sender-Id: dreamhost|x-authsender|matt@mattdanzico.com
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 072515412F2
+	for <josh@josh.is>; Thu, 10 Sep 2020 08:47:42 +0000 (UTC)
+Received: from pdx1-sub0-mail-a55.g.dreamhost.com (100-96-8-70.trex.outbound.svc.cluster.local [100.96.8.70])
+	(Authenticated sender: dreamhost)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 7FD1754182A
+	for <josh@josh.is>; Thu, 10 Sep 2020 08:47:41 +0000 (UTC)
+X-Sender-Id: dreamhost|x-authsender|matt@mattdanzico.com
+Received: from pdx1-sub0-mail-a55.g.dreamhost.com (pop.dreamhost.com
+ [64.90.62.162])
+	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384)
+	by 0.0.0.0:2500 (trex/5.18.9);
+	Thu, 10 Sep 2020 08:47:41 +0000
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: dreamhost|x-authsender|matt@mattdanzico.com
+X-MailChannels-Auth-Id: dreamhost
+X-Power-Robust: 0509a19d065c8967_1599727661825_1222354204
+X-MC-Loop-Signature: 1599727661825:3293184127
+X-MC-Ingress-Time: 1599727661824
+Received: from pdx1-sub0-mail-a55.g.dreamhost.com (localhost [127.0.0.1])
+	by pdx1-sub0-mail-a55.g.dreamhost.com (Postfix) with ESMTP id B97CE96C4B
+	for <josh@josh.is>; Thu, 10 Sep 2020 01:47:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=mattdanzico.com; h=from
+	:content-type:mime-version:subject:date:references:to
+	:in-reply-to:message-id; s=mattdanzico.com; bh=/vloHZpu18dFCZqJb
+	ZWhVQD6tA0=; b=BgOzS0ken4S3YW8AoD2leNq4RwXEwBe5iXAzoYVva2hyrDsoV
+	rXgB4BxRMeeqb/imGr+2HvHx3brk+PucEaaYlfTDPfR6DLOlVWvD347OVf4vpf3X
+	50dwjtZsTsNssCcPUPd503izJPhhGV9up8FZqMLlPNnvAciz9LkNvWv6/Y=
+Received: from [192.168.1.34] (211.red-81-34-228.dynamicip.rima-tde.net [81.34.228.211])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: matt@mattdanzico.com)
+	by pdx1-sub0-mail-a55.g.dreamhost.com (Postfix) with ESMTPSA id 4E9FE96C44
+	for <josh@josh.is>; Thu, 10 Sep 2020 01:47:39 -0700 (PDT)
+X-DH-BACKEND: pdx1-sub0-mail-a55
+From: Matt Danzico <matt@mattdanzico.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_4516E26C-0BA4-4090-9481-E4BC3723E177"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: Iceland
+Date: Thu, 10 Sep 2020 10:47:37 +0200
+References: <CACNgykM_1Re7rbyeSxnGAj+U8WNGd-EoCPMY7Cf0g_gi68KBvQ@mail.gmail.com>
+ <D84FE9A7-91A2-40B6-ADB7-39B55979EA79@mattdanzico.com>
+ <CACNgykMk4OdU3eeH+Tw3Ji5Cf8qufjoP2iZ+wQbd6LGu1Qf2Og@mail.gmail.com>
+ <30155F1C-D226-47E6-883A-3848B1535B79@mattdanzico.com>
+ <CACNgykMkVRdVLaxCvDOp04gBUp6cbE-A71sMpH9C=t1gG8NO4w@mail.gmail.com>
+ <9CB40859-7F89-4263-AB6D-37C794949413@mattdanzico.com>
+ <CACNgykPeL0nLpett_zVzu6OLZ18E_FMbpevFijB6R0YdEBq2MA@mail.gmail.com>
+ <A6278FB8-305C-4536-B4C8-B91FE65E711D@mattdanzico.com>
+ <CACNgykNPgf1ctjR_v35hQVWc5y3FxgnU0LM90H0FHCSo4ECULQ@mail.gmail.com>
+ <01F9E2C2-C4BA-4F4F-BDEF-6C50B04C3D2F@mattdanzico.com>
+ <CACNgykOy62KtxPWdsqw7OjYKLTZrXOt9O8RKModHmAzYXo+Ptw@mail.gmail.com>
+ <EF08CD67-0D81-42BC-BA86-A5766595AF83@mattdanzico.com>
+ <CACNgykPjvWO8JPzPFS1sQT4MoiY5OHnY2DvNfqTy5DiSGM7ENA@mail.gmail.com>
+ <B5185029-D667-428F-B0B4-CDB0886184EE@mattdanzico.com>
+ <CACNgykN=WQmTLNdm5j6qMn1C78+yuHv6CWm81npVZEqCCAdCHQ@mail.gmail.com>
+ <93968C9B-9083-49CB-BE0F-E82A57D13EAE@mattdanzico.com>
+ <CACNgykOA-HMU-tFjBfus0tq7KA9TANEui=ciWOr4-L8J8D0E+g@mail.gmail.com>
+ <CAFjNjTwprOWry6Cd=x2tNS2n=WMvQ19M2FqHOKACx-WyW5929Q@mail.gmail.com>
+ <F9E8EA2E-D5F9-420D-B5CE-F91A5090441A@mattdanzico.com>
+ <CACNgykM4+ZkL41MHrfQ3HVqYymED4eq8BCMKOCf6PW9PSg24KQ@mail.gmail.com>
+ <3E1882CF-C92E-4D65-87F5-88EA490C794F@mattdanzico.com>
+ <A8A1558C-F0F9-4CCE-8D0C-BDAB9B3F9A9B@mattdanzico.com>
+ <CACNgykMoQEm1dC1OmNrxzXr9TCgC8=hL2hKg21d8F8b9GoCyRQ@mail.gmail.com>
+ <8E6C3657-FD09-4340-940B-E512EE766F04@mattdanzico.com>
+ <CACNgykPgrumFpt86bMN6iFRE6f993G17RmiUoz=cXcGMFs-4Jg@mail.gmail.com>
+ <C79751D0-EFA9-440E-97A2-D7957F72F2E5@mattdanzico.com>
+ <CACNgykMztsPwjZQiKXbpprKRjnOsNRbG8aRQOdQYUvyqErmB=w@mail.gmail.com>
+ <CACNgykN6xmi=6fFoEEw306kWoUyxT_mK1Wbs0oYT4P1gJjgbjg@mail.gmail.com>
+ <E1D0E317-2307-4810-B823-05DCFACB43C1@mattdanzico.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <E1D0E317-2307-4810-B823-05DCFACB43C1@mattdanzico.com>
+Message-Id: <65A49854-1588-4BC2-9CF4-FB6A5EC32DCC@mattdanzico.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-VR-OUT-STATUS: OK
+X-VR-OUT-SCORE: -100
+X-VR-OUT-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduiedrudehjedgtdduucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuggftfghnshhusghstghrihgsvgdpffftgfetoffjqffuvfenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhephfgtggfuffhfvfgjkffosegrtdhmrehhtdejnecuhfhrohhmpeforghtthcuffgrnhiiihgtohcuoehmrghtthesmhgrthhtuggrnhiiihgtohdrtghomheqnecuggftrfgrthhtvghrnhephffhtedttdeukeejgeetleduiedtjeetjeekleefiefhhfffhfefleehudeljeejnecuffhomhgrihhnpehthhgvghhurghrughirghnrdgtohhmpdhthhgvtghulhhtuhhrvghtrhhiphdrtghomhdpnhgrthhiohhnrghlghgvohhgrhgrphhhihgtrdgtohhmpdhhihhsthhorhihthgvnhdrtghomhdpfihikhhiphgvughirgdrohhrghdprghnughrihhmrghgnhgrshhonhdrtghomhenucfkphepkedurdefgedrvddvkedrvdduudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdphhgvlhhopegludelvddrudeikedruddrfeegngdpihhnvghtpeekuddrfeegrddvvdekrddvuddupdhrvghtuhhrnhdqphgrthhhpeforghtthcuffgrnhiiihgtohcuoehmrghtthesmhgrthhtuggrnhiiihgtohdrtghomheqpdhmrghilhhfrhhomhepmhgrthhtsehmrghtthgurghniihitg
+ hordgtohhmpdhnrhgtphhtthhopehjohhshhesjhhoshhhrdhish
+
+
+--Apple-Mail=_4516E26C-0BA4-4090-9481-E4BC3723E177
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Josh,
+
+I=E2=80=99ve enjoyed reading these articles this morning. Funny enough, =
+I=E2=80=99m making a documentary as we speak about newsrooms using AI. =
+So The Guardian article was rather timely.
+
+Just some food for thought here.
+
+I can see two format threads developing. I do like the idea of using our =
+Saga-based viking female warrior as a host=E2=80=94or our ice queen. =
+It=E2=80=99s fantastical, interesting and just perfect for Disney+.=20
+
+But I also have enjoyed thinking about your input on AI, especially =
+after reading The Guardian piece. A mashing up of these formats, could =
+be fascinating. Machines investigating us around climate change is just =
+fascinating=E2=80=94if we frame it correctly.
+
+There=E2=80=99s a framing we can develop in the program whereby machines =
+are interested in investigating climate change because they are the ones =
+inheriting the earth from us=E2=80=94or something equally as stark and =
+fascinating. The show would obviously stay far more tech-focused.=20
+
+I=E2=80=99m looking forward to discussing these threads with you. And =
+I=E2=80=99ll have some thoughts on how we can address this visually.
+
+Thanks,
+Matt
+
+
+
+
+> On Sep 9, 2020, at 4:18 PM, Matt Danzico <matt@mattdanzico.com> wrote:
+>=20
+> Hi Josh,
+>=20
+> Thanks for these links. I=E2=80=99ll have a look.
+>=20
+> It=E2=80=99d be great if you can synthesize these over a call, and =
+more importantly, tell me your thoughts on what you=E2=80=99ve uncovered =
+in comparison to the concept I designed.
+>=20
+> Does that work? Looking forward to hearing your thoughts on how these =
+weave into the format.
+>=20
+> Shall we try to reconnection Friday?
+>=20
+> Thank you, sir.
+>=20
+> Matt
+>=20
+>=20
+>=20
+>> On Sep 9, 2020, at 12:29 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>=20
+>> Wanted to get you some links while I keep digging:
+>>=20
+>> =
+https://www.theguardian.com/commentisfree/2020/sep/08/robot-wrote-this-art=
+icle-gpt-3?utm_source=3Djoin1440&utm_medium=3Demail =
+<https://www.theguardian.com/commentisfree/2020/sep/08/robot-wrote-this-ar=
+ticle-gpt-3?utm_source=3Djoin1440&utm_medium=3Demail>
+>> =
+https://theculturetrip.com/europe/iceland/articles/iceland-vikings-the-wom=
+en-you-never-hear-about/ =
+<https://theculturetrip.com/europe/iceland/articles/iceland-vikings-the-wo=
+men-you-never-hear-about/>
+>> =
+https://www.nationalgeographic.com/news/2017/09/viking-warrior-woman-archa=
+eology-spd/ =
+<https://www.nationalgeographic.com/news/2017/09/viking-warrior-woman-arch=
+aeology-spd/>
+>> https://www.historyten.com/viking/best-female-viking-warrior/ =
+<https://www.historyten.com/viking/best-female-viking-warrior/> =20
+>>=20
+>> More soon - let me know what you think of the above in the meantime!
+>>=20
+>> best,
+>> Josh
+>>=20
+>>=20
+>> On Tue, Sep 1, 2020 at 12:03 PM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >
+>> > Sounds good. Just sent an invite; let me know if you need to change =
+it!
+>> >
+>> > - J
+>> > =E1=90=A7
+>> >
+>> > On Mon, Aug 31, 2020 at 6:56 PM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>> >>
+>> >> Sounds good. Let=E2=80=99s do Friday afternoon. I=E2=80=99m in an =
+edit all morning. Does 2pm work?
+>> >>
+>> >> Thanks!
+>> >> Matt
+>> >>
+>> >>
+>> >>
+>> >> On Aug 31, 2020, at 2:46 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>
+>> >> Unfortunately today is booked up; are you free later this week? =
+Thursday / Friday early afternoon looks good for me so far!
+>> >>
+>> >> best,
+>> >> Josh
+>> >> =E1=90=A7
+>> >>
+>> >> On Fri, Aug 28, 2020 at 7:42 PM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>> >>>
+>> >>> Good questions. Often finer details are worked into the =
+treatment. But good points to start discussion, especially =E2=80=9Cwho =
+is Ka=C3=B0l=C3=ADn.=E2=80=9D=20
+>> >>>
+>> >>> How does Monday afternoon work for you?
+>> >>>
+>> >>> Have a great weekend, Josh. Looking forward to it!=20
+>> >>>
+>> >>> M
+>> >>>
+>> >>>
+>> >>> On Aug 27, 2020, at 10:43 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>
+>> >>> Perfect, love this as a starting point! Some questions:
+>> >>>
+>> >>> Why is Iceland in the front of the idea? What is the target =
+group? Who is Ka=C3=B0l=C3=ADn - is she an actress or a digital =
+character? What is the format? What is the target group? Who are the =
+people he feels are the extreme environmentalists? What is the filming =
+style? What is the documentary element of it?=20
+>> >>>
+>> >>> All stuff to discuss in our call - let me know when you're =
+around!
+>> >>>
+>> >>> All best,
+>> >>> Josh
+>> >>> =E1=90=A7
+>> >>>
+>> >>> On Wed, Aug 26, 2020 at 3:50 PM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>
+>> >>>> Hi Josh,
+>> >>>>
+>> >>>> Here is the one-sheet I came up with for the Iceland series.
+>> >>>>
+>> >>>> Why don=E2=80=99t you have a read and then we can discuss when =
+free.
+>> >>>>
+>> >>>> Very exciting.
+>> >>>>
+>> >>>> Many thanks,
+>> >>>> Matt
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>> On Aug 21, 2020, at 2:58 PM, Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>> >>>>
+>> >>>> Hi Josh,
+>> >>>>
+>> >>>> It was nice chatting last week. I finished the short film I was =
+working a few days ago and have begun thinking about the climate change =
+series we discussed.
+>> >>>>
+>> >>>> I need a few more days to put thoughts together on this. So =
+I=E2=80=99ll be back with you soon with some lines.
+>> >>>>
+>> >>>> Have a great weekend,
+>> >>>> Matt
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>> On Aug 11, 2020, at 12:47 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>
+>> >>>> Sounds good - just sent an invite!
+>> >>>>
+>> >>>> - J
+>> >>>> =E1=90=A7
+>> >>>>
+>> >>>> On Tue, Aug 11, 2020 at 9:09 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>
+>> >>>>> Hi Josh,
+>> >>>>>
+>> >>>>> Afraid I now am shooting at this time today. Can we push to =
+tomorrow at 4:30 CET?
+>> >>>>>
+>> >>>>> Tx,
+>> >>>>> Matt
+>> >>>>>
+>> >>>>>
+>> >>>>>
+>> >>>>> On Aug 11, 2020, at 1:35 AM, Matthew Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>
+>> >>>>> That sounds good. I have a call at 2:30 GMT, but a quick =
+catch-up will work.=20
+>> >>>>>
+>> >>>>> Speak then.=20
+>> >>>>>
+>> >>>>> M
+>> >>>>>
+>> >>>>>
+>> >>>>>
+>> >>>>> On Mon, Aug 10, 2020 at 12:55 PM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>
+>> >>>>>> 2pm GMT ok? I've got calls at 3 and 4.
+>> >>>>>>
+>> >>>>>> - J
+>> >>>>>> =E1=90=A7
+>> >>>>>>
+>> >>>>>> On Mon, Aug 10, 2020 at 8:51 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>
+>> >>>>>>> Super. 3:30 your time on Tuesday?
+>> >>>>>>>
+>> >>>>>>> Tx,
+>> >>>>>>> Matt
+>> >>>>>>>
+>> >>>>>>>
+>> >>>>>>>
+>> >>>>>>>
+>> >>>>>>> On Aug 10, 2020, at 10:44 AM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>
+>> >>>>>>> Yes; I=E2=80=99m GMT - what time works for you?
+>> >>>>>>>
+>> >>>>>>> - J
+>> >>>>>>>
+>> >>>>>>> On Sun, Aug 9, 2020 at 3:06 PM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>
+>> >>>>>>>> That sounds good, Josh. Just so we=E2=80=99re on the same =
+page, do you have some time to catch up about this over the phone on =
+Tuesday afternoon?
+>> >>>>>>>>
+>> >>>>>>>> Thanks,
+>> >>>>>>>> Matt
+>> >>>>>>>>
+>> >>>>>>>>
+>> >>>>>>>> On Aug 7, 2020, at 11:39 AM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>
+>> >>>>>>>> Had some good conversations last night and it seems like we =
+can get a one-sheet to Bjork's manager no problem; a good friend of mine =
+here is a good friend of his.
+>> >>>>>>>>
+>> >>>>>>>> Similarly, I know a number of folks in different foundations =
+who might be able to steer us in the right direction for pilot funding. =
+(Singularity, Kauffman, Aspen, Soros, etc.)
+>> >>>>>>>>
+>> >>>>>>>> Can you take a first shot at a one pager and we can kick it =
+back and forth until it's ready to pass to Bjork as a first step?
+>> >>>>>>>>
+>> >>>>>>>> best,
+>> >>>>>>>> Josh
+>> >>>>>>>> =E1=90=A7
+>> >>>>>>>>
+>> >>>>>>>> On Thu, Aug 6, 2020 at 9:34 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>
+>> >>>>>>>>> Josh, that=E2=80=99s really great news.
+>> >>>>>>>>>
+>> >>>>>>>>> This could actually be a fantastically interesting project =
+if we have access to that community.
+>> >>>>>>>>>
+>> >>>>>>>>> In my opinion, the right thing to do=E2=80=94before =
+approaching those at Nat Geo or elsewhere=E2=80=94would be to =
+investigate whether we can align ourselves with Bjork specifically.
+>> >>>>>>>>>
+>> >>>>>>>>> I adore Bjork=E2=80=99s style and design sensibilities. If =
+we could craft the series in such a way where it speaks to that level of =
+creativity but about something as important as climate change, that =
+could actually be just a perfect combination.
+>> >>>>>>>>>
+>> >>>>>>>>> And if Bjork was EP, that wouldn=E2=80=99t require too much =
+of her time.
+>> >>>>>>>>>
+>> >>>>>>>>> So it=E2=80=99s my thinking that we should approach her =
+group with a simple but very creative one-sheet and ask whether she =
+might be interested in EPing such a project.
+>> >>>>>>>>>
+>> >>>>>>>>> The one-sheet is a way we can test the waters with them =
+without requiring extra funding or devoting weeks of work to a full =
+treatment. If they require a more full treatment, we can then tell them =
+it=E2=80=99s in the works.
+>> >>>>>>>>>
+>> >>>>>>>>> If we get confirmed interest from her camp via the =
+one-sheet, we can then approach a climate foundation in Iceland or a =
+similar outfit to help fund the making of the treatment ($7-10k) that we =
+can use to get written partnership on the project with Bjork or just =
+simply go straight to Nat Geo or another network with.
+>> >>>>>>>>>
+>> >>>>>>>>> Hope that all makes sense.
+>> >>>>>>>>>
+>> >>>>>>>>> But my gut tells me that getting Bjork to EP the series =
+would be the right way to go.
+>> >>>>>>>>>
+>> >>>>>>>>> Would love to hear your thoughts on approach and =
+feasibility.
+>> >>>>>>>>>
+>> >>>>>>>>> Thanks,
+>> >>>>>>>>> Matt
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>>
+>> >>>>>>>>> On Aug 5, 2020, at 2:59 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>
+>> >>>>>>>>> Matt,
+>> >>>>>>>>>
+>> >>>>>>>>> Had some encouraging conversations and think there's a real =
+possibility here. A big part of it is that there's a huge community of =
+folks with film/tv capabilities who have a deep culture of getting =
+things done, but also because there's a lot of political will around the =
+climate issue. For example:
+>> >>>>>>>>>
+>> >>>>>>>>> =
+https://en.wikipedia.org/wiki/Global_Roundtable_on_Climate_Change =
+<https://en.wikipedia.org/wiki/Global_Roundtable_on_Climate_Change>
+>> >>>>>>>>> https://www.andrimagnason.com/ =
+<https://www.andrimagnason.com/>
+>> >>>>>>>>>
+>> >>>>>>>>> Also Bjork is a huge proponent of the highlands here, the =
+Prime Minister is from the Green Party, the current minister of =
+environment is a very interesting guy in terms of investment and new =
+angles to the topic, etc. We can get access to all of these as the =
+community is quite small and I've been lucky enough to get to know some =
+very connected folks in this community.
+>> >>>>>>>>>
+>> >>>>>>>>> The big questions now are around what a one pager would =
+look like, as well as how/where we could source financing - the =
+community here is super small and I don't think we'd be able to raise =
+enough to do a good job of it. I could connect with my contacts at =
+NatGeo, Discovery, TED, etc., but let me know what you think!
+>> >>>>>>>>>
+>> >>>>>>>>> Stoked,
+>> >>>>>>>>> Josh
+>> >>>>>>>>> =E1=90=A7
+>> >>>>>>>>>
+>> >>>>>>>>> On Mon, Aug 3, 2020 at 10:40 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>>
+>> >>>>>>>>>> It was fine in the end. We needed special permission by =
+the consulate but we received that just fine.
+>> >>>>>>>>>>
+>> >>>>>>>>>> Looking forward to hearing what comes of your Iceland =
+meetings in the far north.
+>> >>>>>>>>>>
+>> >>>>>>>>>> I really think this idea has legs. Obviously, it=E2=80=99s =
+just a blurb. But we can craft this into a one-sheet and then a =
+treatment easily.
+>> >>>>>>>>>>
+>> >>>>>>>>>> It requires quite a bit of design work, which is why I=E2=80=
+=99d advise we simply float the idea out over a coffee to begin and then =
+take it in steps from there.
+>> >>>>>>>>>>
+>> >>>>>>>>>> Once a group is onboard, we should be pretty well-suited =
+to hooking a network.
+>> >>>>>>>>>>
+>> >>>>>>>>>> A program about what technological advances are being =
+crafted to thwart climate change would actually be quite a brilliant =
+series.
+>> >>>>>>>>>>
+>> >>>>>>>>>> Looking forward to hearing how it goes.
+>> >>>>>>>>>>
+>> >>>>>>>>>> Matt
+>> >>>>>>>>>>
+>> >>>>>>>>>>
+>> >>>>>>>>>>
+>> >>>>>>>>>>
+>> >>>>>>>>>>
+>> >>>>>>>>>> On Jul 27, 2020, at 3:07 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>>
+>> >>>>>>>>>> How was the border crossing difficult? We've been kicking =
+around the idea of heading to the South of Spain for the winter =
+(Icelandic winters are brutal!)
+>> >>>>>>>>>>
+>> >>>>>>>>>> I'll be spending a week in the far north of Iceland =
+starting Aug 2 with some contacts who are very involved in the TV/film =
+industry here in Iceland. Let me sound this idea out there and then =
+revert back to you.=20
+>> >>>>>>>>>>
+>> >>>>>>>>>> Glad you're well; excited to see where we can go from =
+here!
+>> >>>>>>>>>>
+>> >>>>>>>>>> best,
+>> >>>>>>>>>> Josh
+>> >>>>>>>>>>
+>> >>>>>>>>>> =E1=90=A7
+>> >>>>>>>>>>
+>> >>>>>>>>>> On Mon, Jul 27, 2020 at 8:48 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Hi Josh,
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Settling back into Spain. Getting through the EU border =
+was more difficult than expected.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> It depends on your relationships with those in Iceland =
+and who you were interested in partnering with. That would be the =
+starting point.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> The first step would be identify a group that you feel =
+represents such an idea, an Icelandic equivalent to the National Science =
+Foundation perhaps.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> So I=E2=80=99d have a think about who in your contacts =
+there best represents such an idea. And then we can craft a one sheet to =
+gage interest from them.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> And then we can discuss a network, if there=E2=80=99s a =
+devoted interest from a group there.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Hope that helps.
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Matt
+>> >>>>>>>>>>>
+>> >>>>>>>>>>>
+>> >>>>>>>>>>>
+>> >>>>>>>>>>>
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> On Jul 20, 2020, at 2:38 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Certainly looks interesting; who would we pitch this to? =
+Discovery or NatGeo? BBC? I can help support in terms of execution on =
+the ground - how else can I help bring this forward?
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> Best,
+>> >>>>>>>>>>> Josh
+>> >>>>>>>>>>>
+>> >>>>>>>>>>>
+>> >>>>>>>>>>> On Mon, Jul 20, 2020 at 8:25 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Hi Josh,
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Sounds fun. I don=E2=80=99t know Laura Rister. But I=E2=80=
+=99m sure Iceland will offer many fun opportunities for you both.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Here=E2=80=99s a quick bite about the concept that =
+struck me the other day.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Saving Iceland
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Saving Iceland is a cinematic eight-part series that =
+examines the advanced technologies being developed around the world to =
+save earth's coldest locales from melting as well as the rest of the =
+planet from the ever-approaching climate catastrophe. Using Iceland=E2=80=99=
+s glaciers and the broader landscape of the country as a recoccuring =
+visual example of how climate change is impacting our world, Saving =
+Iceland will venture to the far pockets of the globe to unearth research =
+being done to save all of Earth=E2=80=99s coldest lands.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Next steps would be to craft a one-sheet. Then if =
+there=E2=80=99s committed interest, a treatment.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> But as it takes time and money to craft such things, =
+we=E2=80=99d need confirmation of interest and to discuss finer details =
+for each step in the process.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> If not a good fit, no worries though. Looking forward to =
+hearing back.
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> Tks,
+>> >>>>>>>>>>>> Matt
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> On Jul 17, 2020, at 8:02 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> In Iceland, may be facilitating a project for Laura =
+Rister here. What were you thinking??
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> All best,
+>> >>>>>>>>>>>> Josh
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> On Fri, Jul 17, 2020 at 5:40 PM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Hi Josh,
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Sorry for the huge delay. I=E2=80=99ve been swamped the =
+past two months.
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Are you now in Iceland? Are you still looking for =
+Iceland projects?
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Something struck me today. If interested, I can put it =
+into a quick paragraph email brief. If you=E2=80=99re into it, we can =
+draft a one-sheet and pass it to those you mentioned. And if they=E2=80=99=
+re then keen, we can take it from there.
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Thanks,
+>> >>>>>>>>>>>>> Matt
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> On Apr 30, 2020, at 4:27 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> Brilliant. Let me know how I can help. And if you need =
+a host to explore Iceland who knows how to stand in front of a camera, =
+speaks Icelandic (badly) and knows the country really well, keep me in =
+mind...
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> - J
+>> >>>>>>>>>>>>> =E1=90=A7
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>> On Thu, Apr 30, 2020 at 10:13 AM Matt Danzico =
+<matt@mattdanzico.com <mailto:matt@mattdanzico.com>> wrote:
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Hi Josh=E2=80=94
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Nice to hear from. you.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Iceland. Interesting.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> I think I can come up with something here. I adore =
+Iceland.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> I=E2=80=99m currently in the US in the woods finishing =
+a short, odd little doc on something that may have a direct tie to =
+Iceland actually. It=E2=80=99s on historic folklore and what that =
+folklore says about everything from modern culture to federal policy to =
+the pandemic response.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> It=E2=80=99s been super interesting, and I=E2=80=99ve =
+been thinking I can go even bigger with this manner of idea. And Iceland =
+is home of the saga=E2=80=A6.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Let me circle back with you soon. There may be =
+something here.
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Matt
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> On Apr 28, 2020, at 11:06 AM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Not sure what you're up to given the pandemic, but I =
+hope you and yours are safe and healthy!
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> Wanted to put a bug in your ear that I know a ton of =
+folks in the culture, business, and gov't communities in Iceland and =
+that they're quite keen to solicit filming projects. I'll be there =
+starting mid-June. Let me know if I can help in any way if shooting =
+there sounds appealing!
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>> All best,
+>> >>>>>>>>>>>>>> Josh
+>> >>>>>>>>>>>>>> =E1=90=A7
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>>
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>>
+>> >>>>>>>>>>>> =E1=90=A7
+>> >>>>
+>> >>>>
+>> >>>>
+>> >>>
+>> =E1=90=A7
+>=20
+
+
+--Apple-Mail=_4516E26C-0BA4-4090-9481-E4BC3723E177
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" =
+class=3D"">Josh,<div class=3D""><br class=3D""></div><div =
+class=3D"">I=E2=80=99ve enjoyed reading these articles this morning. =
+Funny enough, I=E2=80=99m making a documentary as we speak about =
+newsrooms using AI. So The Guardian article was rather timely.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Just some food for =
+thought here.</div><div class=3D""><br class=3D""></div><div class=3D"">I =
+can see two format threads developing. I do like the idea of using our =
+Saga-based viking female warrior as a host=E2=80=94or our ice queen. =
+It=E2=80=99s fantastical, interesting and just perfect for =
+Disney+.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">But I also have enjoyed thinking about your input on AI, =
+especially after reading The Guardian piece. A mashing up of these =
+formats, could be fascinating. Machines investigating us around climate =
+change is just fascinating=E2=80=94if we frame it correctly.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">There=E2=80=99s a =
+framing we can develop in the program whereby machines are interested in =
+investigating climate change because they are the ones inheriting the =
+earth from us=E2=80=94or something equally as stark and fascinating. The =
+show would obviously stay far more tech-focused.&nbsp;</div><div =
+class=3D""><br class=3D""></div><div class=3D"">I=E2=80=99m looking =
+forward to discussing these threads with you. And I=E2=80=99ll have some =
+thoughts on how we can address this visually.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Thanks,</div><div =
+class=3D"">Matt</div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""><div><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Sep =
+9, 2020, at 4:18 PM, Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div class=3D""><meta =
+http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8" =
+class=3D""><div style=3D"word-wrap: break-word; -webkit-nbsp-mode: =
+space; line-break: after-white-space;" class=3D"">Hi Josh,<div =
+class=3D""><br class=3D""></div><div class=3D"">Thanks for these links. =
+I=E2=80=99ll have a look.</div><div class=3D""><br class=3D""></div><div =
+class=3D"">It=E2=80=99d be great if you can synthesize these over a =
+call, and more importantly, tell me your thoughts on what you=E2=80=99ve =
+uncovered in comparison to the concept I designed.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Does that work? Looking =
+forward to hearing your thoughts on how these weave into the =
+format.</div><div class=3D""><br class=3D""></div><div class=3D"">Shall =
+we try to reconnection Friday?</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Thank you, sir.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Matt</div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""></div><div class=3D""><div=
+ class=3D""><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On Sep 9, 2020, at 12:29 PM, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; =
+wrote:</div><br class=3D"Apple-interchange-newline"><div class=3D""><div =
+dir=3D"ltr" class=3D"">Wanted to get you some links while I keep =
+digging:<br class=3D""><br class=3D""><ul class=3D""><li class=3D""><a =
+href=3D"https://www.theguardian.com/commentisfree/2020/sep/08/robot-wrote-=
+this-article-gpt-3?utm_source=3Djoin1440&amp;utm_medium=3Demail" =
+class=3D"">https://www.theguardian.com/commentisfree/2020/sep/08/robot-wro=
+te-this-article-gpt-3?utm_source=3Djoin1440&amp;utm_medium=3Demail</a></li=
+><li class=3D""><a =
+href=3D"https://theculturetrip.com/europe/iceland/articles/iceland-vikings=
+-the-women-you-never-hear-about/" =
+class=3D"">https://theculturetrip.com/europe/iceland/articles/iceland-viki=
+ngs-the-women-you-never-hear-about/</a></li><li class=3D""><a =
+href=3D"https://www.nationalgeographic.com/news/2017/09/viking-warrior-wom=
+an-archaeology-spd/" =
+class=3D"">https://www.nationalgeographic.com/news/2017/09/viking-warrior-=
+woman-archaeology-spd/</a></li><li class=3D""><a =
+href=3D"https://www.historyten.com/viking/best-female-viking-warrior/" =
+class=3D"">https://www.historyten.com/viking/best-female-viking-warrior/</=
+a> &nbsp;</li></ul><br class=3D"">More soon - let me know what you think =
+of the above in the meantime!<br class=3D""><br class=3D"">best,<br =
+class=3D"">Josh<br class=3D""><br class=3D""><br class=3D"">On Tue, Sep =
+1, 2020 at 12:03 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br class=3D"">&gt;<br =
+class=3D"">&gt; Sounds good. Just sent an invite; let me know if you =
+need to change it!<br class=3D"">&gt;<br class=3D"">&gt; - J<br =
+class=3D"">&gt; =E1=90=A7<br class=3D"">&gt;<br class=3D"">&gt; On Mon, =
+Aug 31, 2020 at 6:56 PM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br class=3D"">&gt;&gt;<br =
+class=3D"">&gt;&gt; Sounds good. Let=E2=80=99s do Friday afternoon. =
+I=E2=80=99m in an edit all morning. Does 2pm work?<br =
+class=3D"">&gt;&gt;<br class=3D"">&gt;&gt; Thanks!<br class=3D"">&gt;&gt; =
+Matt<br class=3D"">&gt;&gt;<br class=3D"">&gt;&gt;<br =
+class=3D"">&gt;&gt;<br class=3D"">&gt;&gt; On Aug 31, 2020, at 2:46 PM, =
+Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br class=3D"">&gt;&gt;<br =
+class=3D"">&gt;&gt; Unfortunately today is booked up; are you free later =
+this week? Thursday / Friday early afternoon looks good for me so =
+far!<br class=3D"">&gt;&gt;<br class=3D"">&gt;&gt; best,<br =
+class=3D"">&gt;&gt; Josh<br class=3D"">&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;<br class=3D"">&gt;&gt; On Fri, Aug 28, 2020 at 7:42 =
+PM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; Good questions. Often =
+finer details are worked into the treatment. But good points to start =
+discussion, especially =E2=80=9Cwho is Ka=C3=B0l=C3=ADn.=E2=80=9D <br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; How does Monday =
+afternoon work for you?<br class=3D"">&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt; Have a great weekend, Josh. Looking forward to =
+it! <br class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; M<br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt; On Aug 27, 2020, at 10:43 PM, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; Perfect, love this as =
+a starting point! Some questions:<br class=3D"">&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt; Why is Iceland in the front of the idea? What is =
+the target group? Who is Ka=C3=B0l=C3=ADn - is she an actress or a =
+digital character? What is the format? What is the target group? Who are =
+the people he feels are the extreme environmentalists? What is the =
+filming style? What is the documentary element of it? <br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; All stuff to discuss =
+in our call - let me know when you're around!<br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; All best,<br =
+class=3D"">&gt;&gt;&gt; Josh<br class=3D"">&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt; On Wed, Aug 26, 2020 =
+at 3:50 PM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; Hi Josh,<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; Here is the =
+one-sheet I came up with for the Iceland series.<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; Why don=E2=80=99=
+t you have a read and then we can discuss when free.<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; Very =
+exciting.<br class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; =
+Many thanks,<br class=3D"">&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; On Aug 21, =
+2020, at 2:58 PM, Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com"=
+ class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; Hi Josh,<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; It was nice =
+chatting last week. I finished the short film I was working a few days =
+ago and have begun thinking about the climate change series we =
+discussed.<br class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; =
+I need a few more days to put thoughts together on this. So I=E2=80=99ll =
+be back with you soon with some lines.<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt; Have a great weekend,<br =
+class=3D"">&gt;&gt;&gt;&gt; Matt<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; On Aug 11, =
+2020, at 12:47 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt; Sounds good - just sent an invite!<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt; - J<br =
+class=3D"">&gt;&gt;&gt;&gt; =E1=90=A7<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt; On Tue, Aug 11, 2020 at 9:09 AM Matt Danzico =
+&lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt; Hi =
+Josh,<br class=3D"">&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt; Afraid I now am shooting at this time =
+today. Can we push to tomorrow at 4:30 CET?<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt; =
+Tx,<br class=3D"">&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt; On =
+Aug 11, 2020, at 1:35 AM, Matthew Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt; That =
+sounds good. I have a call at 2:30 GMT, but a quick catch-up will work. =
+<br class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt; =
+Speak then. <br class=3D"">&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt; M<br class=3D"">&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt; On Mon, Aug 10, 2020 at 12:55 PM Josh =
+Klein &lt;<a href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; =
+wrote:<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt; 2pm GMT ok? I've got calls at 3 and =
+4.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt; - J<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;=
+ On Mon, Aug 10, 2020 at 8:51 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Super. 3:30 your time on =
+Tuesday?<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Tx,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Aug 10, 2020, at 10:44 AM, =
+Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; Yes; I=E2=80=99m GMT - what time =
+works for you?<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; - J<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Sun, Aug 9, 2020 at 3:06 PM =
+Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; That sounds good, Josh. Just =
+so we=E2=80=99re on the same page, do you have some time to catch up =
+about this over the phone on Tuesday afternoon?<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Thanks,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Aug 7, 2020, at 11:39 AM, =
+Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Had some good conversations =
+last night and it seems like we can get a one-sheet to Bjork's manager =
+no problem; a good friend of mine here is a good friend of his.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Similarly, I know a number =
+of folks in different foundations who might be able to steer us in the =
+right direction for pilot funding. (Singularity, Kauffman, Aspen, Soros, =
+etc.)<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Can you take a first shot at =
+a one pager and we can kick it back and forth until it's ready to pass =
+to Bjork as a first step?<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; best,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Thu, Aug 6, 2020 at 9:34 =
+AM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh, that=E2=80=99s =
+really great news.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; This could actually be a =
+fantastically interesting project if we have access to that =
+community.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; In my opinion, the right =
+thing to do=E2=80=94before approaching those at Nat Geo or =
+elsewhere=E2=80=94would be to investigate whether we can align ourselves =
+with Bjork specifically.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; I adore Bjork=E2=80=99s =
+style and design sensibilities. If we could craft the series in such a =
+way where it speaks to that level of creativity but about something as =
+important as climate change, that could actually be just a perfect =
+combination.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; And if Bjork was EP, =
+that wouldn=E2=80=99t require too much of her time.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; So it=E2=80=99s my =
+thinking that we should approach her group with a simple but very =
+creative one-sheet and ask whether she might be interested in EPing such =
+a project.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; The one-sheet is a way =
+we can test the waters with them without requiring extra funding or =
+devoting weeks of work to a full treatment. If they require a more full =
+treatment, we can then tell them it=E2=80=99s in the works.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; If we get confirmed =
+interest from her camp via the one-sheet, we can then approach a climate =
+foundation in Iceland or a similar outfit to help fund the making of the =
+treatment ($7-10k) that we can use to get written partnership on the =
+project with Bjork or just simply go straight to Nat Geo or another =
+network with.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hope that all makes =
+sense.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; But my gut tells me that =
+getting Bjork to EP the series would be the right way to go.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Would love to hear your =
+thoughts on approach and feasibility.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Thanks,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Aug 5, 2020, at 2:59 =
+PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Had some encouraging =
+conversations and think there's a real possibility here. A big part of =
+it is that there's a huge community of folks with film/tv capabilities =
+who have a deep culture of getting things done, but also because there's =
+a lot of political will around the climate issue. For example:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; <a =
+href=3D"https://en.wikipedia.org/wiki/Global_Roundtable_on_Climate_Change"=
+ =
+class=3D"">https://en.wikipedia.org/wiki/Global_Roundtable_on_Climate_Chan=
+ge</a><br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; <a =
+href=3D"https://www.andrimagnason.com/" =
+class=3D"">https://www.andrimagnason.com/</a><br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Also Bjork is a huge =
+proponent of the highlands here, the Prime Minister is from the Green =
+Party, the current minister of environment is a very interesting guy in =
+terms of investment and new angles to the topic, etc. We can get access =
+to all of these as the community is quite small and I've been lucky =
+enough to get to know some very connected folks in this community.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; The big questions now =
+are around what a one pager would look like, as well as how/where we =
+could source financing - the community here is super small and I don't =
+think we'd be able to raise enough to do a good job of it. I could =
+connect with my contacts at NatGeo, Discovery, TED, etc., but let me =
+know what you think!<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br=
+ class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Stoked,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Mon, Aug 3, 2020 at =
+10:40 AM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; It was fine in the =
+end. We needed special permission by the consulate but we received that =
+just fine.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Looking forward to =
+hearing what comes of your Iceland meetings in the far north.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; I really think this =
+idea has legs. Obviously, it=E2=80=99s just a blurb. But we can craft =
+this into a one-sheet and then a treatment easily.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; It requires quite a =
+bit of design work, which is why I=E2=80=99d advise we simply float the =
+idea out over a coffee to begin and then take it in steps from there.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Once a group is =
+onboard, we should be pretty well-suited to hooking a network.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; A program about what =
+technological advances are being crafted to thwart climate change would =
+actually be quite a brilliant series.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Looking forward to =
+hearing how it goes.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Jul 27, 2020, at =
+3:07 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; How was the border =
+crossing difficult? We've been kicking around the idea of heading to the =
+South of Spain for the winter (Icelandic winters are brutal!)<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; I'll be spending a =
+week in the far north of Iceland starting Aug 2 with some contacts who =
+are very involved in the TV/film industry here in Iceland. Let me sound =
+this idea out there and then revert back to you. <br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Glad you're well; =
+excited to see where we can go from here!<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; best,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Mon, Jul 27, 2020 =
+at 8:48 AM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hi Josh,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Settling back =
+into Spain. Getting through the EU border was more difficult than =
+expected.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; It depends on =
+your relationships with those in Iceland and who you were interested in =
+partnering with. That would be the starting point.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; The first step =
+would be identify a group that you feel represents such an idea, an =
+Icelandic equivalent to the National Science Foundation perhaps.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; So I=E2=80=99d =
+have a think about who in your contacts there best represents such an =
+idea. And then we can craft a one sheet to gage interest from them.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; And then we can =
+discuss a network, if there=E2=80=99s a devoted interest from a group =
+there.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hope that =
+helps.<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Jul 20, 2020, =
+at 2:38 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Certainly looks =
+interesting; who would we pitch this to? Discovery or NatGeo? BBC? I can =
+help support in terms of execution on the ground - how else can I help =
+bring this forward?<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Best,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Mon, Jul 20, =
+2020 at 8:25 AM Matt Danzico &lt;<a href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hi Josh,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Sounds fun. =
+I don=E2=80=99t know Laura Rister. But I=E2=80=99m sure Iceland will =
+offer many fun opportunities for you both.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Here=E2=80=99s=
+ a quick bite about the concept that struck me the other day.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Saving =
+Iceland<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Saving =
+Iceland is a cinematic eight-part series that examines the advanced =
+technologies being developed around the world to save earth's coldest =
+locales from melting as well as the rest of the planet from the =
+ever-approaching climate catastrophe. Using Iceland=E2=80=99s glaciers =
+and the broader landscape of the country as a recoccuring visual example =
+of how climate change is impacting our world, Saving Iceland will =
+venture to the far pockets of the globe to unearth research being done =
+to save all of Earth=E2=80=99s coldest lands.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Next steps =
+would be to craft a one-sheet. Then if there=E2=80=99s committed =
+interest, a treatment.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; But as it =
+takes time and money to craft such things, we=E2=80=99d need =
+confirmation of interest and to discuss finer details for each step in =
+the process.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; If not a =
+good fit, no worries though. Looking forward to hearing back.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Tks,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Jul 17, =
+2020, at 8:02 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; In Iceland, =
+may be facilitating a project for Laura Rister here. What were you =
+thinking??<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; All best,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Fri, Jul =
+17, 2020 at 5:40 PM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hi =
+Josh,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Sorry =
+for the huge delay. I=E2=80=99ve been swamped the past two months.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Are you =
+now in Iceland? Are you still looking for Iceland projects?<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Something struck me today. If interested, I can put it into a quick =
+paragraph email brief. If you=E2=80=99re into it, we can draft a =
+one-sheet and pass it to those you mentioned. And if they=E2=80=99re =
+then keen, we can take it from there.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Thanks,<br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;=
+ Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Apr =
+30, 2020, at 4:27 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Brilliant. Let me know how I can help. And if you need a host to explore =
+Iceland who knows how to stand in front of a camera, speaks Icelandic =
+(badly) and knows the country really well, keep me in mind...<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; - J<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<=
+br class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On Thu, =
+Apr 30, 2020 at 10:13 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Hi =
+Josh=E2=80=94<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Nice =
+to hear from. you.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Iceland. Interesting.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; I =
+think I can come up with something here. I adore Iceland.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+I=E2=80=99m currently in the US in the woods finishing a short, odd =
+little doc on something that may have a direct tie to Iceland actually. =
+It=E2=80=99s on historic folklore and what that folklore says about =
+everything from modern culture to federal policy to the pandemic =
+response.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+It=E2=80=99s been super interesting, and I=E2=80=99ve been thinking I =
+can go even bigger with this manner of idea. And Iceland is home of the =
+saga=E2=80=A6.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Let =
+me circle back with you soon. There may be something here.<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Matt<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; On =
+Apr 28, 2020, at 11:06 AM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; Not =
+sure what you're up to given the pandemic, but I hope you and yours are =
+safe and healthy!<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Wanted to put a bug in your ear that I know a ton of folks in the =
+culture, business, and gov't communities in Iceland and that they're =
+quite keen to solicit filming projects. I'll be there starting mid-June. =
+Let me know if I can help in any way if shooting there sounds =
+appealing!<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; All =
+best,<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+Josh<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =
+=E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt;&gt; =E1=90=A7<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;&gt;<br =
+class=3D"">&gt;&gt;&gt;&gt;<br class=3D"">&gt;&gt;&gt;<br =
+class=3D""></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px" =
+class=3D""><img alt=3D"" =
+style=3D"width:0px;max-height:0px;overflow:hidden" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D525f9f83-4d89-4b87-a5cf-f6cff3cd6535" =
+class=3D""><font color=3D"#ffffff" size=3D"1" class=3D"">=E1=90=A7</font><=
+/div>
+</div></blockquote></div><br =
+class=3D""></div></div></div></blockquote></div><br =
+class=3D""></div></body></html>=
+
+--Apple-Mail=_4516E26C-0BA4-4090-9481-E4BC3723E177--

@@ -1,0 +1,1278 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Wed, 18 May 2022 04:10:09 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a59:b786:0:b0:25e:ef80:4753 with SMTP id t6csp525729vqh;
+        Thu, 25 Nov 2021 06:30:10 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxiShAIJ4yKIgOS8mFWYYGFxnZA5KuW9mo7XZJnplUqt/gjfw1rg+ROHty7ZFkeQEKK48J4
+X-Received: by 2002:a5d:4e09:: with SMTP id p9mr6924751wrt.28.1637850607019;
+        Thu, 25 Nov 2021 06:30:07 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1637850606; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=MkTPcaUAV8qomfgVKiU2zdGGyPSY2lgVuH4TRXjZUSYZYLyYFLSzb4rmqya8sndZjj
+         ncHi5OjCnbnxNpxGrr8Ld2sjmFzk8HCY2NHliASmWb2AbFKcRHU8P6kBzUfzKHLVVPW0
+         vUC+mvxqWF+YUB++muTy9XH6kY2OjGbKQgvkt/N5hNJ1KYRoxzOF8YKkIbeDVlaP3Zou
+         VUCnz+ipp0eysTM/zviVpS7J5wGfwc2C5sjSl7JVfP/RqpzSXJtCjf8La+EId3KP54k5
+         2VfAdQE7AL8ZkRUZNkGSQ4AYeaLmPS+xz+36Q0Ku1V4vZdG1dIRmubnTdmd17Bh1Q6hK
+         g1oQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:to:from:dkim-signature;
+        bh=l9GYNOlN+1WMwDd1ZSlJlnAkbC78nUplS63TdwH7cRU=;
+        b=0FXe+hj43YQ3JijE1+vWITJLE5D9FdyD1dWbdU0d9NcOPh6NEP5BUXAEPE4WCycQbA
+         vFK1JjCZx2h73hUnmCFARM5NvmzGI15GztyuDJlhm80hmUscDr6O29+cY/kUmbjn+sdX
+         orgb1IWRptxAgUCWpYA63wQoYZjuj+7xFqrbqJamgVsx5Fds19h5UBIRb/n/YCkU0ybf
+         U9Ptj1oEHvfHOH9FrHwas0RxuUhXLXUUq2N5InuV/+ySOw2zayXThlqWpAbHoScxqHKg
+         QN999pgwq9VlB92YRGLYORdDFUyTHo4AvN/rn9wRr+XIUlQzsKgGkv890UlhbsueTONa
+         dqNA==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@allianzisl.onmicrosoft.com header.s=selector2-allianzisl-onmicrosoft-com header.b=IYLFbNXX;
+       arc=pass (i=1 spf=pass spfdomain=allianz.is dkim=pass dkdomain=allianz.is dmarc=pass fromdomain=allianz.is);
+       spf=pass (google.com: domain of asgeir@allianz.is designates 40.107.21.109 as permitted sender) smtp.mailfrom=asgeir@allianz.is
+Return-Path: <asgeir@allianz.is>
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2109.outbound.protection.outlook.com. [40.107.21.109])
+        by mx.google.com with ESMTPS id w8si5419734wrl.809.2021.11.25.06.30.06
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 25 Nov 2021 06:30:06 -0800 (PST)
+Received-SPF: pass (google.com: domain of asgeir@allianz.is designates 40.107.21.109 as permitted sender) client-ip=40.107.21.109;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@allianzisl.onmicrosoft.com header.s=selector2-allianzisl-onmicrosoft-com header.b=IYLFbNXX;
+       arc=pass (i=1 spf=pass spfdomain=allianz.is dkim=pass dkdomain=allianz.is dmarc=pass fromdomain=allianz.is);
+       spf=pass (google.com: domain of asgeir@allianz.is designates 40.107.21.109 as permitted sender) smtp.mailfrom=asgeir@allianz.is
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NXHMdfXrw/6qStCw7cBxeNWV5wTdCk/hdAWxZeEgt1tgPUAU/+hvUjLSZgJb3VcoQVhyopD9sELy0sLuMA7hWrC22L+8wINsfALetWqzxe0SSSxuI5qzvlBMyKGvvEGTpzD8ytJuTQzMMjJe4z1dSiK9YMO+vz1+GKD4U0AD7qfpPUT7qtcW+O+w8ZZ42/tRt5lElpmWlX/bAda/lcBIe9casJFnGGK8muCz2wvDtyIzsOOHszuUhykgRfRaYe+nvDDL0/1Ru58b3fFxqS7GXYkC/U2tJunxaX6i5+K5VzWNki0tbz5C+oi4ExJNh5t4nqF8aamXKcDU86Z7qXYH0Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=l9GYNOlN+1WMwDd1ZSlJlnAkbC78nUplS63TdwH7cRU=;
+ b=BXs/oGxdqgx/EN/jxP5kYPlwCtDJFKYXF8EBZE/Sbl475IAc9RL1VaINd462pYtty68G6RGejy+R9K2TQ1oRYto5cVV9DSXjOzMjh8uFSMZks58rPsibg+WwSCdbfTkTTPkn94BxhYG5kQb/4yiWb/r0GEMj7rwmRlMxWmN2Qa0EPzjfExtRT5pGA67aoVX6NZe++lCXWdQDQyeI75muSYabKY3sEceVfI8IQho0i1ZLiDWXAZnKC9+OJJt4/zZswD/OrTzNo2HXMBl/nujUnF9cnpTLf6FambXofDfM0F5kXs3b+rbqzeiEuo2pSIoq/J0JU6Vxj/QbKIZdAylzcw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=allianz.is; dmarc=pass action=none header.from=allianz.is;
+ dkim=pass header.d=allianz.is; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=allianzisl.onmicrosoft.com; s=selector2-allianzisl-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=l9GYNOlN+1WMwDd1ZSlJlnAkbC78nUplS63TdwH7cRU=;
+ b=IYLFbNXXYHmDBjOXJ8yD6uWKjBHK9pQ1FgAOuwhJDnL5u/+5CorS+PYp8Che5o1YhmeXMui1MUnxeedRHD4vJUg9UsIVkVGONg4w1gx5rXY1uXBCuvk+ngbrRmsMWXuL6Zm+5CgalnaJaUMSCOScrDdbDWmBBVkmaWGC3ztakxA=
+Received: from AM6PR02MB5331.eurprd02.prod.outlook.com (2603:10a6:20b:33::20)
+ by AM7PR02MB6276.eurprd02.prod.outlook.com (2603:10a6:20b:1bb::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4734.22; Thu, 25 Nov
+ 2021 14:30:02 +0000
+Received: from AM6PR02MB5331.eurprd02.prod.outlook.com
+ ([fe80::5550:e9d:6b74:ab78]) by AM6PR02MB5331.eurprd02.prod.outlook.com
+ ([fe80::5550:e9d:6b74:ab78%7]) with mapi id 15.20.4734.022; Thu, 25 Nov 2021
+ 14:30:02 +0000
+From: =?utf-8?B?w4FzZ2VpciBNYWduw7pzIMOTbGFmc3Nvbg==?= <asgeir@allianz.is>
+To: Josh Klein <josh@josh.is>
+Subject: RE: Allianz , Life and accident insurance - Josh Klein 151074-2279
+Thread-Topic: Allianz , Life and accident insurance - Josh Klein 151074-2279
+Thread-Index: AdfiCO0Cj1eL2KPYTZS4xWdXeQ1z3A==
+Date: Thu, 25 Nov 2021 14:30:02 +0000
+Message-ID: <583320158.171.1652872208667@localhost>
+Accept-Language: is-IS, en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=allianz.is;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5c45f1c8-836f-487a-90cf-08d9b0201167
+x-ms-traffictypediagnostic: AM7PR02MB6276:
+x-microsoft-antispam-prvs:
+ <AM7PR02MB62766594FD12F532291D7C43B8629@AM7PR02MB6276.eurprd02.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Rheet5yH67VFl36PnAPKjMT92UAfksxSztjx0Vi/biNcwF28YLWIIJMew7L2GpkZ9c/7WLrYwdUEUIvkiLgxZGZ96XAzJI5YZa0tGSZ9i/EBzGn8BdnnCPN2eLr/eHtgJVTFtpA2aF8YP4fLyiONHrXFKr9J3xiKXBKJ8aI0gOCUyY7qgVNiTYgXfUt0GBZMtNtI6TJW1zebp3pCLzG5q47nd0/kex+Q9J/Rsa71GauizgbbMczwThwKe/vOeh2DJE7Rfhkx2Fljs75MuLkYvr0grxIvBkixdif7eVT8Aax/+83tZynV+RLcQXJXP0W8OSwuMAgwV4tV1RTRcr/ikV151lTKiaZ7YaEbGfx4+lKwc+7eHRhNAumHxItQeQrI8OkbBWCgK+YVgpdcurdFXrkBkVtLdfrn3m6DgtKLNdixkfdHJuahFt+Kp5YfIjunxaSTNRdM2R2aevVUE0IwxytPlZg3xx735jMJmeF9K4NET4BAQl7LiGY0BhfAK9xAWRY1ODTV3OE6t14//9XzzfJWnVlaFJbJcwjAk7PkbEkedTVfMa1N18A/jyxeeS+ZN9a6QWIZ+F5UL8JmUY7orbLsygIsEPp8giY5w659y/PEEN7LiRyjw2FyIKRn3Qb5JB7E5Us1VfRe0/t6Q74K69NyaFvCE0ZKVTfO77NvS/hSaFiMSI+buA8JWRL2PcEl88ydd8PUJ/vof+XGhsvlpxAWj7wIwBgBDYH//21F8Z/BPHtzbUzb5z5RvDhBZwhGvnbg4PBA+IG7+mvnvOSZDPXq1kfj+14aCyB8sPJV87I=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM6PR02MB5331.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(366004)(136003)(376002)(346002)(39840400004)(84040400005)(52536014)(76236003)(8936002)(66574015)(85182001)(966005)(66946007)(26005)(7066003)(166002)(38070700005)(2906002)(83380400001)(316002)(55016003)(9686003)(508600001)(7696005)(6506007)(66476007)(53546011)(38100700002)(6916009)(8676002)(66556008)(64756008)(66446008)(71200400001)(122000001)(5660300002)(86362001)(186003)(85202003)(76116006)(33656002)(99936003)(99710200001)(522484007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?VmJPRWFHMDdRQ3BvSDlyLzJjbmg5QjQzeVVzazdyalFhM3AydVd6OThpMmtX?=
+ =?utf-8?B?TWxRRzdHYTBmU0dRMFVacEdUTDR2U0xYNkUybTZDcndYdk9mcCtNMnc3R3ND?=
+ =?utf-8?B?dm5vKzlob2lGMzdIbmdGZXluWnBWZFFiUG04amo5blV2V3lpYU82dzVtUFA4?=
+ =?utf-8?B?MGF2end4R2lwenkxNjQ5YkFwVE43UGxzV0k3VkUwVjk0OS9NZjJrL00yREF6?=
+ =?utf-8?B?T0k3cStpWU10T0ZmQUwzWUJSSEphTFpuc1IyL1pRb09sRFpNMjhvRTNJS0k3?=
+ =?utf-8?B?anZXYlRrODBjSTREbk5QZnlIeTh1UVpjdUhFRzkyQUdVcU4rTTNYeWhDYzJP?=
+ =?utf-8?B?SVptcEdTTm9jOHJrOGJsNWJqQ3NETkdCWkh3TGNtTFhtMzVUY1dBRlF3UFpN?=
+ =?utf-8?B?SUFlTHhHcldiY2lGOVZab0poQjl6WGNHb2hFODJzNjRrOUVxbEFrVkhJbjFB?=
+ =?utf-8?B?Y2NyRHJLd0lTUFJWMDY0UEczNWFCNzlSVCtvM2xFQXlSV05kMTRhMTFveTE5?=
+ =?utf-8?B?d1MzWEJKZGtNWnM2bXFCNHpQRFF5eWJTZEtTeE5zeGFUSGlWRE1XdjZuYlVJ?=
+ =?utf-8?B?VmY5N0FTdWJCQW9ZY21OVUcvZm1ONk5MK3FnNkNIQTZscVcrREpRSnJwQXM5?=
+ =?utf-8?B?b3Jjb3JRWWNTTS9EV3dWeS83T0VERHBtcnljdXkzb0JKeWtiaGRVMHlMaVBl?=
+ =?utf-8?B?RGFmRnFwTlBiUTduUE1vdGxrUHRocFcrc3ZCd3ZaQzNpQVFoL3JxMGtyV083?=
+ =?utf-8?B?aDRWVXRuNVdkdkc5enFiTkUvQlEveXpVbXRKZTNEQ3ExeFhmQkxvUThPWUNh?=
+ =?utf-8?B?SHFZR3NQMjc1ZDZQVU93QlgvdlY4OUtOL2NCdytPOENaNmNFeWFlNDNLeVlj?=
+ =?utf-8?B?ODdLdVpnb2c5Q2orVERxclBlamxwc3NTbFFuZFFTaDNNYlZKbSt5OUlDOXpC?=
+ =?utf-8?B?SHMrRmpncXQvRFZhWFo3R1I4bElTRkMzY01uOXJSWWhVM01oOHpKMlYyaEVs?=
+ =?utf-8?B?YWlSc3k1TVhBMVRqVXdEU29Pd1lqdzU4T3VIajNWMy9qRThmUm5XQW9zeXow?=
+ =?utf-8?B?dVhia2pFZU1QZXBZYnI5YTcrT3B1WWgwcTFaWWRrcXZWaWIyd1N5ZHEyWnls?=
+ =?utf-8?B?dGtDOFo1aGl0T0dIdEZtZVV3eFN5QjhVTk43MkJmYTg0YnptR0NYNWdsc0c2?=
+ =?utf-8?B?OFFCTjNOck1HTjVTTkcrQWhPK2UzdHNDUWRkVnR5ak16aHRVMW1LM2lFTVJj?=
+ =?utf-8?B?eHRhd0p5Q21JMTQ0dnRWMFhRb3AzaiswbzVTa3VSZmNUMVNmZFlCTG4zOE5L?=
+ =?utf-8?B?QWN3b3lVR3dxSm9ESzVwNm1GMUZqVHJDeFpSOVQzQ0RhWGVMb3dkaDZyL0tZ?=
+ =?utf-8?B?VEpYWEwzTmlLanJYdVpKYmk1VE5PNjkvbXNTdm1ia0o3blo3Z0tNSDRIUnd0?=
+ =?utf-8?B?QTNXQUdUVGhHUjBBcnlqcTRDWkFjeEhBNFZYNnlrQ01QaXVMbXpNdlhEMU1o?=
+ =?utf-8?B?cHBabXR4K2pxVTlCbWlORlhvSHRpeFN0KzhpWW50VHRXZFJvbXBzR20zMzlD?=
+ =?utf-8?B?Q3dkY0lkMm1id0dIaVRyTXFJUXFuNCtXdncxL216Slp2RVhPRldDWHhaRk9j?=
+ =?utf-8?B?MkxoTGNyb3hBUzl0UUZZOXlGM2RQY0twMVN6S3Z5WmJOVFNPWTl5KzkwcWVL?=
+ =?utf-8?B?RWJvQ1VwL1N6MVh1M0JOOWptT0JWQWVSYjdBMVRCNG16aTduelRzQ21nYmxo?=
+ =?utf-8?B?azYxM2wyb2RlVm10dGdvYXpzWSs4L0RXZjRNLy9MbTNnbXVqM0NSdEtLdzZW?=
+ =?utf-8?B?ZWVabjNBbEVWb0ZTcEJFQ0IxMEJ6ekovSlhEOHhLNGhJOC9CMDBnUE1xUnU0?=
+ =?utf-8?B?V0ttdnE1TGFNK1gzNUc5aWNlNFNFdGhqakVDc0JCeDgybmwrR29jbXBKRUdT?=
+ =?utf-8?B?NVZCcUtFQ0xDL1VqWU0rbTI2Mnl6cXp4NVh5bVM4Qllld0FRV3pFWjRHS3ZH?=
+ =?utf-8?B?R2M1c0VyL3FVQ1hvWVJvZ0lkN25DV2M4V0NuYmFNcUNaMmd4RmRYTEtIb3l6?=
+ =?utf-8?B?aWY1MXRiSzA2YjBvdzZhd05rU0dhbE1hU2ZNMWtsanR3amtnbEdPWVQxeUNa?=
+ =?utf-8?B?TWFMR3ZsUHdBVUxjbWdWN2FRK0dCSmlyanVjcXRmaEM1WEZ0VUFoVHBRd0l4?=
+ =?utf-8?Q?pkGw7N/Obcb21KYEjcF9IkU=3D?=
+Content-Type: multipart/mixed;
+	boundary="_006_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: allianz.is
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: AM6PR02MB5331.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c45f1c8-836f-487a-90cf-08d9b0201167
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Nov 2021 14:30:02.5248
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 909252da-c251-404c-a9f5-e6c168a310fd
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Fhv8Yyr537hIOKrHMyvDeeKedDrFQQgQWk0FFxwklJx9IzVKdLEByajY/CFfM1TOOruOFuCUNqMz+WM/Mm84Ug==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM7PR02MB6276
+
+--_006_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_
+Content-Type: multipart/related;
+	boundary="_005_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_";
+	type="multipart/alternative"
+
+--_005_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_
+Content-Type: multipart/alternative;
+	boundary="_000_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_"
+
+--_000_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+Thanks for the meeting,
+Att. are new calculations.
+I added hospital allowance in accident insurance, Allianz Slysatrygging.
+Allianz Vi=C3=B0b=C3=B3tarl=C3=ADfeyrir (Privat pension/Supplementary pensi=
+on) is paid through a salary system similar to a mandatory pension. It must=
+  be from an Icelandic company. I use 1,000,000 ISK monthly salary, if 500,=
+000 then the results are halved, if 2,000,000 then the results are doubled,=
+ and so on.
+https://www.allianz.is/sparnadur/vidbotarlifeyrir/
+If it is not an Icelandic company, it is possible to have an Allianz L=C3=
+=ADfeyrisvi=C3=B0auki (extra savings/pension), which is then debited from a=
+ bank account or credit card.
+https://www.allianz.is/sparnadur/lifeyrisvidauki/
+All Allianz Savings is a secure insurance contract. Savings in EUR, 93% of =
+principal guaranteed, return and profit share in 2021 is 3.4%.
+
+Lets keep in touch when you have reviewed this as well as other rights you =
+have here in Iceland.
+
+Me=C3=B0 kve=C3=B0ju,
+
+=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+R=C3=A1=C3=B0gjafi
+
+[cid:image001.png@01D7E202.2315C440]
+
+Allianz =C3=8Dsland hf
+S=C3=ADmi: 595-3420
+Gsm: 860-4444
+http://www.allianz.is<http://www.allianz.is/>
+
+
+
+From: Josh Klein <josh@josh.is>
+Sent: 25. n=C3=B3vember 2021 13:02
+To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asgeir@allianz.is>
+Subject: Re: Allianz , Life and accident insurance - Josh Klein
+
+Sorry, I was just looking for the meeting link? You can call my phone (655 =
+3925), but we get poor reception here - I'll send a hangouts link in a seco=
+nd.
+
+- J
+=E1=90=A7
+
+On Thu, Nov 25, 2021 at 12:59 PM =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asg=
+eir@allianz.is<mailto:asgeir@allianz.is>> wrote:
+Hi Josh,
+
+I=E2=80=98m going to call you in few minutes, what is your phonenumber?
+
+Me=C3=B0 kve=C3=B0ju,
+
+=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+R=C3=A1=C3=B0gjafi
+
+[cid:image001.png@01D7E202.2315C440]
+
+Allianz =C3=8Dsland hf
+S=C3=ADmi: 595-3420
+Gsm: 860-4444
+http://www.allianz.is<http://www.allianz.is/>
+
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: 15. n=C3=B3vember 2021 11:55
+To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asgeir@allianz.is<mailto:asgeir@=
+allianz.is>>
+Cc: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Re: Allianz , Life and accident insurance - Josh Klein
+
+Sounds good. Information below; please let me know when here<http://josh.is=
+/scheduling> would work for a brief call regarding.
+
+Much obliged,
+Josh
+
+
+# Disability Insurance
+=E2=80=A2 Benefits start 181 day of disability
+=E2=80=A2 $6,000 USD per month
+=E2=80=A2 Max benefit period is 36 months
+=E2=80=A2 After disabled for 90 days will waive any premium for as long as =
+I remain disabled
+=E2=80=A2 Costs $117.26 USD monthly
+# Life Insurance
+=E2=80=A2 Policy worth $500,000 USD
+=E2=80=A2 Costs $130.27 USD every 3 months
+
+=E1=90=A7
+
+On Mon, Sep 27, 2021 at 12:46 PM =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asg=
+eir@allianz.is<mailto:asgeir@allianz.is>> wrote:
+Hi Josh,
+I should be able to help you with this. We can start by having a phone call=
+ and I explain better the Allianz=E2=80=98s insurance.
+You can also send me about the insurance you have today so I can compare it=
+ for you.
+
+Me=C3=B0 kve=C3=B0ju,
+
+=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+R=C3=A1=C3=B0gjafi
+
+[cid:image001.png@01D7E202.2315C440]
+
+Allianz =C3=8Dsland hf
+S=C3=ADmi: 595-3420
+Gsm: 860-4444
+http://www.allianz.is<http://www.allianz.is/>
+
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: 25. september 2021 10:53
+To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asgeir@allianz.is<mailto:asgeir@=
+allianz.is>>
+Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: Re: Allianz , Life and accident insurance - Josh Klein
+
+Thanks, =C3=81sgeir. I'm having trouble doing a side-by-side comparison of =
+prices and features; it's not clear to me what's different between the plan=
+s nor how the pricing really compares. Can you help?
+
+
+
+
+On Thu, Sep 23, 2021 at 2:03 PM =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asge=
+ir@allianz.is<mailto:asgeir@allianz.is>> wrote:
+>
+> Hi Josh,
+>
+>
+>
+> Is there anything you want me to help you with regarding the insurance?
+>
+>
+>
+> I also suggest you to look at Allianz privat pension savings from salarie=
+s and other Allianz savings for adults and children.
+>
+>
+>
+> Me=C3=B0 kve=C3=B0ju,
+>
+>
+>
+> =C3=81sgeir Magn=C3=BAs =C3=93lafsson
+>
+> R=C3=A1=C3=B0gjafi
+>
+>
+>
+>
+>
+> Allianz =C3=8Dsland hf
+>
+> S=C3=ADmi: 595-3420
+>
+> Gsm: 860-4444
+>
+> http://www.allianz.is
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> From: =C3=81sgeir Magn=C3=BAs =C3=93lafsson
+> Sent: 16. september 2021 15:21
+> To: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+> Subject: RE: Allianz , Life and accident insurance - Josh Klein
+>
+>
+>
+> Hello Josh,
+>
+>
+>
+> Here are my calculations. Two versions of life insurance, one valid until=
+ the age of 60 and the other until the age of 65. Premiums remain unchanged=
+ throughout the contract period.
+>
+> The life insurance premium you have today probably increases every year a=
+nd there may be additional benefits in the Allianz insurance, see: https://=
+www.allianz.is/liftryggingar/l%C3%ADftrygging/
+>
+>
+> The Allianz accident insurance is not the same as you have today. I use a=
+ maximum monthly pension if +50% disability which is 3,000 EUR. I must also=
+ have a minimum disability benefit of EUR 20,000. In addition, I put in eme=
+rgency benefits (br=C3=A1=C3=B0ab=C3=A6tur) which is an optional factor as =
+well as a few others. This includes rescue costs, costs for plastic surgery=
+ after an accident, costs for aids and immediate care.
+>
+> Premiums for accident insurance increase by 5% annually after the age of =
+55.
+>
+>
+> Please hear from me if you would like more information.
+>
+>
+>
+> Me=C3=B0 kve=C3=B0ju,
+>
+>
+>
+> =C3=81sgeir Magn=C3=BAs =C3=93lafsson
+>
+> R=C3=A1=C3=B0gjafi
+>
+>
+>
+>
+>
+> Allianz =C3=8Dsland hf
+>
+> S=C3=ADmi: 595-3420
+>
+> Gsm: 860-4444
+>
+> http://www.allianz.is
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+> Sent: 16. september 2021 10:46
+> To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asgeir@allianz.is<mailto:asgei=
+r@allianz.is>>
+> Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+> Subject: Re: Allianz , Life and accident insurance - Josh Klein
+>
+>
+>
+> Thanks so much, =C3=81sgeir!
+>
+>
+>
+> Here's the information you requested:
+>
+> ID number: 1510742279
+> Job title: CEO, Indigometrics.com
+> Level of education: Masters
+>
+> Here's the details on my existing life and disability insurance policies:
+>
+> # Disability Insurance
+>
+> Benefits start 181 day of disability
+> $6,000 USD per month
+> Max benefit period is 36 months
+> After disabled for 90 days will waive any premium for as long as I remain=
+ disabled
+> Costs $117.26 USD monthly
+>
+> # Life Insurance
+>
+> Policy worth $500,000 USD
+> Costs $130.27 USD every 3 months
+>
+> Can you please help me compare the above to your policies?
+>
+> Many thanks,
+> Josh
+>
+> =E1=90=A7
+>
+>
+>
+> On Wed, Sep 15, 2021 at 11:21 AM =C3=81sgeir Magn=C3=BAs =C3=93lafsson <a=
+sgeir@allianz.is<mailto:asgeir@allianz.is>> wrote:
+>
+> That is great, then there should be no problem for you to sign contracts =
+with Allianz. I did not expect that you could have acquired Icelandic citiz=
+enship after just over a year.
+>
+> We only have terms in Icelandic and German that are below from our websit=
+e:
+>
+> Life insurance:
+>
+> https://allianz.overcastcdn.com/documents/RISLEB_-_2020-%C3%ADslenskir-LC=
+0UZ11.pdf
+>
+> https://allianz.overcastcdn.com/documents/RISLEB_-_2020-%C3%BE%C3%BDskir-=
+LC0UZ11.pdf
+>
+> Life insurance wiht savings:
+>
+> https://allianz.overcastcdn.com/documents/LEBEN_-_2020-%C3%ADslenskir-RSK=
+U2C13.pdf
+>
+> https://allianz.overcastcdn.com/documents/RISLEB_-_2020-%C3%BE%C3%BDskir-=
+LC0UZ11.pdf
+>
+> Accident insurance:
+>
+> https://allianz.overcastcdn.com/documents/RIS_-_%C3%ADslenskir_-_2018-PU-=
+7030Z0000.pdf
+>
+> https://allianz.overcastcdn.com/documents/RIS_-_%C3%BE%C3%BDskir_-_2018-P=
+U-7030Z0000.pdf
+>
+> Maby this can help:
+>
+> https://www.allianzlife.com/
+>
+> For comparison it would be best for you to look at calculations from me. =
+Then I need to have your ID number, what is your job title and level of edu=
+cation. It would also be good to get an idea of life insurance amount you w=
+ant.
+>
+>
+>
+> Me=C3=B0 kve=C3=B0ju,
+>
+>
+>
+> =C3=81sgeir Magn=C3=BAs =C3=93lafsson
+>
+> R=C3=A1=C3=B0gjafi
+>
+>
+>
+>
+>
+> Allianz =C3=8Dsland hf
+>
+> S=C3=ADmi: 595-3420
+>
+> Gsm: 860-4444
+>
+> http://www.allianz.is
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+> Sent: 14. september 2021 19:16
+> To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson <asgeir@allianz.is<mailto:asgei=
+r@allianz.is>>
+> Subject: Re: Allianz , Life and accident insurance - Josh Klein
+>
+>
+>
+> I=E2=80=99m an Icelandic citizen (with passport and everything!) and am l=
+iving in iceland since June 2020. Does that help?
+>
+>
+>
+> - J
+>
+>
+>
+>
+>
+> On Tue, Sep 14, 2021 at 4:27 PM =C3=81sgeir Magn=C3=BAs =C3=93lafsson <as=
+geir@allianz.is<mailto:asgeir@allianz.is>> wrote:
+>
+> Hello Josh,
+>
+>
+>
+> Allianz=E2=80=99s Life and Accident insurance in Iceland is not suitable =
+for people outside the EEA, as customers must have citizenship within the E=
+EA.
+>
+> An exception is for those who has an indefinite residence permit. How is =
+that in your case?
+>
+>
+>
+> Best regards/Me=C3=B0 kve=C3=B0ju,
+>
+>
+>
+> =C3=81sgeir Magn=C3=BAs =C3=93lafsson
+>
+> R=C3=A1=C3=B0gjafi
+>
+>
+>
+>
+>
+> Allianz =C3=8Dsland hf
+>
+> S=C3=ADmi: 595-3420
+>
+> Gsm: 860-4444
+>
+> http://www.allianz.is
+>
+>
+>
+>
+>
+>
+>
+>
+>
+> Josh Klein.
+>
+> josh@josh.is<mailto:josh@josh.is>
+>
+> Skilabo=C3=B0:
+>
+> I've got a life insurance and accidence insurance policy from the USA (I =
+moved to Iceland June 2020) and need an apples-to-apples comparison with po=
+licies available in Iceland.
+>
+>
+>
+>
+>
+>
+=E1=90=A7
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Previous attachments:
+ - allianz-samantekt (4).pdf (filename: 17d5780edbb49e8e-1-allianz-samantek=
+t__4_.pdf)
+ - image001.png (filename: 17d5780edbb49e8e-0-image001.png)
+
+Information about the change:
+ - Made with:                 Unattach 2.3.0
+ - Date and time:             2022-05-18T11:10:08.643711Z
+ - Download target hostname:  MacBook-Air.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+--_000_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:x=3D"urn:schemas-microsoft-com:office:excel" xmlns:m=3D"http://schema=
+s.microsoft.com/office/2004/12/omml" xmlns=3D"http://www.w3.org/TR/REC-html=
+40">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">=
+=20
+  <meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">=
+=20
+  <!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+  <style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+=09{font-family:"Allianz Neo";}
+@font-face
+=09{font-family:Gadugi;
+=09panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0cm;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+=09{mso-style-priority:99;
+=09color:blue;
+=09text-decoration:underline;}
+span.EmailStyle19
+=09{mso-style-type:personal-compose;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-size:10.0pt;
+=09font-family:"Calibri",sans-serif;
+=09mso-fareast-language:EN-US;}
+@page WordSection1
+=09{size:612.0pt 792.0pt;
+=09margin:70.85pt 70.85pt 70.85pt 70.85pt;}
+div.WordSection1
+=09{page:WordSection1;}
+--></style>
+  <!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]-->
+  <!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->=20
+ </head>=20
+ <body lang=3D"IS" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:break-=
+word">=20
+  <div class=3D"WordSection1">=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">Hi Jos=
+h,
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">Thanks=
+ for the meeting,=20
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">Att. a=
+re new calculations.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">I adde=
+d hospital allowance in accident insurance, <b>Allianz Slysatrygging.</b>
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"mso-fareast-language:EN-US">All=
+ianz Vi=C3=B0b=C3=B3tarl=C3=ADfeyrir</span></b><span style=3D"mso-fareast-l=
+anguage:EN-US"> (Privat pension/Supplementary pension) is paid through a sa=
+lary system similar to a mandatory pension. It must &nbsp;be from an Icelan=
+dic company. I use 1,000,000 ISK monthly salary, if 500,000 then the result=
+s are halved, if 2,000,000 then the results are doubled, and so on.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><a hre=
+f=3D"https://www.allianz.is/sparnadur/vidbotarlifeyrir/">https://www.allian=
+z.is/sparnadur/vidbotarlifeyrir/</a>
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">If it =
+is not an Icelandic company, it is possible to have an <b>Allianz L=C3=ADfe=
+yrisvi=C3=B0auki</b> (extra savings/pension), which is then debited from a =
+bank account or credit card.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><a hre=
+f=3D"https://www.allianz.is/sparnadur/lifeyrisvidauki/">https://www.allianz=
+.is/sparnadur/lifeyrisvidauki/</a>
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">All Al=
+lianz Savings is a secure insurance contract. Savings in EUR, 93% of princi=
+pal guaranteed, return and profit share in 2021 is 3.4%.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">Lets k=
+eep in touch when you have reviewed this as well as other rights you have h=
+ere in Iceland.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">Me=C3=B0 kve=C3=B0ju,
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">R=C3=A1=C3=B0gjafi
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"font-size:7.0pt">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"font-family:&quot;Allianz Neo&quot=
+;"><img border=3D"0" width=3D"196" height=3D"68" style=3D"width:2.0416in;he=
+ight:.7083in" id=3D"Picture_x0020_2" src=3D"cid:image001.png@01D7E202.2315C=
+440"></span>
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"font-size:1.0pt">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal">Allianz =C3=8Dsland hf
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">S=C3=ADmi: 595-3420
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">Gsm: 860-4444
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><a href=3D"http://www.allianz.is/"><span style=3D=
+"color:#0563C1">http://www.allianz.is</span></a>
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0=
+cm 0cm 0cm">=20
+    <p class=3D"MsoNormal"><b><span lang=3D"EN-US">From:</span></b><span la=
+ng=3D"EN-US"> Josh Klein &lt;josh@josh.is&gt; <br> <b>Sent:</b> 25. n=C3=B3=
+vember 2021 13:02<br> <b>To:</b> =C3=81sgeir Magn=C3=BAs =C3=93lafsson &lt;=
+asgeir@allianz.is&gt;<br> <b>Subject:</b> Re: Allianz , Life and accident i=
+nsurance - Josh Klein
+      <o:p></o:p></span></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <p class=3D"MsoNormal">Sorry, I was just looking for the meeting link? =
+You can call my phone (655 3925), but we get poor reception here - I'll sen=
+d a hangouts link in a second.
+     <o:p></o:p></p>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">- J
+      <o:p></o:p></p>=20
+    </div>=20
+   </div>=20
+   <div>=20
+    <p class=3D"MsoNormal"><img border=3D"0" width=3D"1" height=3D"1" style=
+=3D"width:.0069in;height:.0069in" id=3D"_x0000_i1029" src=3D"https://mailfo=
+ogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;gu=
+id=3D6f0e9667-718d-4f98-a343-ac89a84eb046"><span style=3D"font-size:7.5pt;f=
+ont-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7</span>
+     <o:p></o:p></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <div>=20
+     <p class=3D"MsoNormal">On Thu, Nov 25, 2021 at 12:59 PM =C3=81sgeir Ma=
+gn=C3=BAs =C3=93lafsson &lt;<a href=3D"mailto:asgeir@allianz.is">asgeir@all=
+ianz.is</a>&gt; wrote:
+      <o:p></o:p></p>=20
+    </div>=20
+    <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;paddin=
+g:0cm 0cm 0cm 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;mar=
+gin-bottom:5.0pt">=20
+     <div>=20
+      <div>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">Hi Josh,
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">I=E2=80=98m going to call you in few minutes, what is your =
+phonenumber?
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">Me=C3=B0 kve=C3=B0ju,
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">R=C3=A1=C3=B0gjafi
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto"><span style=3D"font-size:7.0pt">&nbsp;</span>
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto"><span style=3D"font-family:&quot;Allianz Neo&quot;"><img bo=
+rder=3D"0" width=3D"196" height=3D"68" style=3D"width:2.0416in;height:.7083=
+in" id=3D"gmail-m_7906302325676250345Picture_x0020_4" src=3D"cid:image001.p=
+ng@01D7E202.2315C440"></span>
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto"><span style=3D"font-size:1.0pt">&nbsp;</span>
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">Allianz =C3=8Dsland hf
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">S=C3=ADmi: 595-3420
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">Gsm: 860-4444
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto"><a href=3D"http://www.allianz.is/" target=3D"_blank"><span =
+style=3D"color:#0563C1">http://www.allianz.is</span></a>
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0=
+pt 0cm 0cm 0cm">=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto"><b><span lang=3D"EN-US">From:</span></b><span lang=3D"EN-U=
+S"> Josh Klein &lt;</span><a href=3D"mailto:josh@josh.is" target=3D"_blank"=
+><span lang=3D"EN-US">josh@josh.is</span></a><span lang=3D"EN-US">&gt; <br>=
+ <b>Sent:</b> 15. n=C3=B3vember 2021 11:55<br> <b>To:</b> =C3=81sgeir Magn=
+=C3=BAs =C3=93lafsson &lt;</span><a href=3D"mailto:asgeir@allianz.is" targe=
+t=3D"_blank"><span lang=3D"EN-US">asgeir@allianz.is</span></a><span lang=3D=
+"EN-US">&gt;<br> <b>Cc:</b> Josh Klein &lt;</span><a href=3D"mailto:josh@jo=
+sh.is" target=3D"_blank"><span lang=3D"EN-US">josh@josh.is</span></a><span =
+lang=3D"EN-US">&gt;<br> <b>Subject:</b> Re: Allianz , Life and accident ins=
+urance - Josh Klein</span>
+         <o:p></o:p></p>=20
+       </div>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <div>=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto">Sounds good. Information below; please let me know when <a=
+ href=3D"http://josh.is/scheduling" target=3D"_blank">here</a> would work f=
+or a brief call regarding.
+         <o:p></o:p></p>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">&nbsp;
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">Much obliged,
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">Josh
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">&nbsp;
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <div>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto">&nbsp;
+           <o:p></o:p></p>=20
+         </div>=20
+         <div>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto"># Disability Insurance
+           <o:p></o:p></p>=20
+         </div>=20
+         <div>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>Benefits start 181 day of disabili=
+ty
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>$6,000 USD per month
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>Max benefit period is 36 months
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>After disabled for 90 days will wa=
+ive any premium for as long as I remain disabled
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>Costs $117.26 USD monthly
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto"># Life Insurance
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>Policy worth $500,000 USD
+           <o:p></o:p></p>=20
+          <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margi=
+n-bottom-alt:auto;margin-left:47.25pt"> <span style=3D"font-size:10.0pt;fon=
+t-family:Symbol">=C2=B7</span><span style=3D"font-size:7.0pt;font-family:&q=
+uot;Times New Roman&quot;,serif"> </span>Costs $130.27 USD every 3 months
+           <o:p></o:p></p>=20
+         </div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">&nbsp;
+          <o:p></o:p></p>=20
+        </div>=20
+       </div>=20
+       <div>=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto"><img border=3D"0" width=3D"1" height=3D"1" style=3D"width:=
+.0069in;height:.0069in" id=3D"_x0000_i1027" src=3D"https://mailfoogae.appsp=
+ot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D173b4=
+2f7-16dd-4e7e-8447-7ba3697e9b79"><span style=3D"font-size:7.5pt;font-family=
+:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7</span>
+         <o:p></o:p></p>=20
+       </div>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <div>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">On Mon, Sep 27, 2021 at 12:46 PM =C3=81sgeir Magn=C3=BAs =
+=C3=93lafsson &lt;<a href=3D"mailto:asgeir@allianz.is" target=3D"_blank">as=
+geir@allianz.is</a>&gt; wrote:
+          <o:p></o:p></p>=20
+        </div>=20
+        <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;pa=
+dding:0cm 0cm 0cm 6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm=
+;margin-bottom:5.0pt">=20
+         <div>=20
+          <div>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">Hi Josh,
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">I should be able to help you with this. We can start by=
+ having a phone call and I explain better the Allianz=E2=80=98s insurance.
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">You can also send me about the insurance you have today=
+ so I can compare it for you.
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">Me=C3=B0 kve=C3=B0ju,
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">=C3=81sgeir Magn=C3=BAs =C3=93lafsson
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">R=C3=A1=C3=B0gjafi
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><span style=3D"font-size:7.0pt">&nbsp;</span>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><span style=3D"font-family:&quot;Allianz Neo&quot;"><im=
+g border=3D"0" width=3D"196" height=3D"68" style=3D"width:2.0416in;height:.=
+7083in" id=3D"gmail-m_7906302325676250345gmail-m_5199512362101147234Picture=
+_x0020_2" src=3D"cid:image001.png@01D7E202.2315C440"></span>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><span style=3D"font-size:1.0pt">&nbsp;</span>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">Allianz =C3=8Dsland hf
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">S=C3=ADmi: 595-3420
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">Gsm: 860-4444
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto"><a href=3D"http://www.allianz.is/" target=3D"_blank"><s=
+pan style=3D"color:#0563C1">http://www.allianz.is</span></a>
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding=
+:3.0pt 0cm 0cm 0cm">=20
+            <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-mar=
+gin-bottom-alt:auto"><b><span lang=3D"EN-US">From:</span></b><span lang=3D"=
+EN-US"> Josh Klein &lt;</span><a href=3D"mailto:josh@josh.is" target=3D"_bl=
+ank"><span lang=3D"EN-US">josh@josh.is</span></a><span lang=3D"EN-US">&gt; =
+<br> <b>Sent:</b> 25. september 2021 10:53<br> <b>To:</b> =C3=81sgeir Magn=
+=C3=BAs =C3=93lafsson &lt;</span><a href=3D"mailto:asgeir@allianz.is" targe=
+t=3D"_blank"><span lang=3D"EN-US">asgeir@allianz.is</span></a><span lang=3D=
+"EN-US">&gt;<br> <b>Cc:</b> Joshua William Klein &lt;</span><a href=3D"mail=
+to:josh@josh.is" target=3D"_blank"><span lang=3D"EN-US">josh@josh.is</span>=
+</a><span lang=3D"EN-US">&gt;<br> <b>Subject:</b> Re: Allianz , Life and ac=
+cident insurance - Josh Klein</span>
+             <o:p></o:p></p>=20
+           </div>=20
+           <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-marg=
+in-bottom-alt:auto">&nbsp;
+            <o:p></o:p></p>=20
+           <div>=20
+            <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-mar=
+gin-bottom-alt:auto">Thanks, =C3=81sgeir. I'm having trouble doing a side-b=
+y-side comparison of prices and features; it's not clear to me what's diffe=
+rent between the plans nor how the pricing really compares. Can you help?
+             <o:p></o:p></p>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">&nbsp;
+              <o:p></o:p></p>=20
+            </div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto">&nbsp;
+              <o:p></o:p></p>=20
+            </div>=20
+            <div>=20
+             <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-ma=
+rgin-bottom-alt:auto"><br> <br> On Thu, Sep 23, 2021 at 2:03 PM =C3=81sgeir=
+ Magn=C3=BAs =C3=93lafsson &lt;<a href=3D"mailto:asgeir@allianz.is" target=
+=3D"_blank">asgeir@allianz.is</a>&gt; wrote:<br> &gt;<br> &gt; Hi Josh,<br>=
+ &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Is there anything you want me to he=
+lp you with regarding the insurance?<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> =
+&gt; I also suggest you to look at Allianz privat pension savings from sala=
+ries and other Allianz savings for adults and children.<br> &gt;<br> &gt; &=
+nbsp;<br> &gt;<br> &gt; Me=C3=B0 kve=C3=B0ju,<br> &gt;<br> &gt; &nbsp;<br> =
+&gt;<br> &gt; =C3=81sgeir Magn=C3=BAs =C3=93lafsson<br> &gt;<br> &gt; R=C3=
+=A1=C3=B0gjafi<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<b=
+r> &gt; Allianz =C3=8Dsland hf<br> &gt;<br> &gt; S=C3=ADmi: 595-3420<br> &g=
+t;<br> &gt; Gsm: 860-4444<br> &gt;<br> &gt; <a href=3D"http://www.allianz.i=
+s" target=3D"_blank">http://www.allianz.is</a><br> &gt;<br> &gt; &nbsp;<br>=
+ &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br>=
+ &gt;<br> &gt; From: =C3=81sgeir Magn=C3=BAs =C3=93lafsson<br> &gt; Sent: 1=
+6. september 2021 15:21<br> &gt; To: Josh Klein &lt;<a href=3D"mailto:josh@=
+josh.is" target=3D"_blank">josh@josh.is</a>&gt;<br> &gt; Subject: RE: Allia=
+nz , Life and accident insurance - Josh Klein<br> &gt;<br> &gt; &nbsp;<br> =
+&gt;<br> &gt; Hello Josh,<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Here a=
+re my calculations. Two versions of life insurance, one valid until the age=
+ of 60 and the other until the age of 65. Premiums remain unchanged through=
+out the contract period.<br> &gt;<br> &gt; The life insurance premium you h=
+ave today probably increases every year and there may be additional benefit=
+s in the Allianz insurance, see: <a href=3D"https://www.allianz.is/liftrygg=
+ingar/l%C3%ADftrygging/" target=3D"_blank"> https://www.allianz.is/liftrygg=
+ingar/l%C3%ADftrygging/</a><br> &gt;<br> &gt;<br> &gt; The Allianz accident=
+ insurance is not the same as you have today. I use a maximum monthly pensi=
+on if +50% disability which is 3,000 EUR. I must also have a minimum disabi=
+lity benefit of EUR 20,000. In addition, I put in emergency benefits (br=C3=
+=A1=C3=B0ab=C3=A6tur) which is an optional factor as well as a few others. =
+This includes rescue costs, costs for plastic surgery after an accident, co=
+sts for aids and immediate care.<br> &gt;<br> &gt; Premiums for accident in=
+surance increase by 5% annually after the age of 55.<br> &gt;<br> &gt;<br> =
+&gt; Please hear from me if you would like more information.<br> &gt;<br> &=
+gt; &nbsp;<br> &gt;<br> &gt; Me=C3=B0 kve=C3=B0ju,<br> &gt;<br> &gt; &nbsp;=
+<br> &gt;<br> &gt; =C3=81sgeir Magn=C3=BAs =C3=93lafsson<br> &gt;<br> &gt; =
+R=C3=A1=C3=B0gjafi<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &g=
+t;<br> &gt; Allianz =C3=8Dsland hf<br> &gt;<br> &gt; S=C3=ADmi: 595-3420<br=
+> &gt;<br> &gt; Gsm: 860-4444<br> &gt;<br> &gt; <a href=3D"http://www.allia=
+nz.is" target=3D"_blank">http://www.allianz.is</a><br> &gt;<br> &gt; &nbsp;=
+<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;=
+<br> &gt;<br> &gt; From: Josh Klein &lt;<a href=3D"mailto:josh@josh.is" tar=
+get=3D"_blank">josh@josh.is</a>&gt;<br> &gt; Sent: 16. september 2021 10:46=
+<br> &gt; To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson &lt;<a href=3D"mailto:a=
+sgeir@allianz.is" target=3D"_blank">asgeir@allianz.is</a>&gt;<br> &gt; Cc: =
+Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">=
+josh@josh.is</a>&gt;<br> &gt; Subject: Re: Allianz , Life and accident insu=
+rance - Josh Klein<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Thanks so muc=
+h, =C3=81sgeir!<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Here's the infor=
+mation you requested:<br> &gt;<br> &gt; ID number: 1510742279<br> &gt; Job =
+title: CEO, Indigometrics.com<br> &gt; Level of education: Masters<br> &gt;=
+<br> &gt; Here's the details on my existing life and disability insurance p=
+olicies:<br> &gt;<br> &gt; # Disability Insurance<br> &gt;<br> &gt; Benefit=
+s start 181 day of disability<br> &gt; $6,000 USD per month<br> &gt; Max be=
+nefit period is 36 months<br> &gt; After disabled for 90 days will waive an=
+y premium for as long as I remain disabled<br> &gt; Costs $117.26 USD month=
+ly<br> &gt;<br> &gt; # Life Insurance<br> &gt;<br> &gt; Policy worth $500,0=
+00 USD<br> &gt; Costs $130.27 USD every 3 months<br> &gt;<br> &gt; Can you =
+please help me compare the above to your policies?<br> &gt;<br> &gt; Many t=
+hanks,<br> &gt; Josh<br> &gt;<br> &gt; <span style=3D"font-family:&quot;Gad=
+ugi&quot;,sans-serif">=E1=90=A7</span><br> &gt;<br> &gt; &nbsp;<br> &gt;<br=
+> &gt; On Wed, Sep 15, 2021 at 11:21 AM =C3=81sgeir Magn=C3=BAs =C3=93lafss=
+on &lt;<a href=3D"mailto:asgeir@allianz.is" target=3D"_blank">asgeir@allian=
+z.is</a>&gt; wrote:<br> &gt;<br> &gt; That is great, then there should be n=
+o problem for you to sign contracts with Allianz. I did not expect that you=
+ could have acquired Icelandic citizenship after just over a year. <br> &gt=
+;<br> &gt; We only have terms in Icelandic and German that are below from o=
+ur website:<br> &gt;<br> &gt; Life insurance:<br> &gt;<br> &gt; <a href=3D"=
+https://allianz.overcastcdn.com/documents/RISLEB_-_2020-%C3%ADslenskir-LC0U=
+Z11.pdf" target=3D"_blank"> https://allianz.overcastcdn.com/documents/RISLE=
+B_-_2020-%C3%ADslenskir-LC0UZ11.pdf</a><br> &gt;<br> &gt; <a href=3D"https:=
+//allianz.overcastcdn.com/documents/RISLEB_-_2020-%C3%BE%C3%BDskir-LC0UZ11.=
+pdf" target=3D"_blank"> https://allianz.overcastcdn.com/documents/RISLEB_-_=
+2020-%C3%BE%C3%BDskir-LC0UZ11.pdf</a><br> &gt;<br> &gt; Life insurance wiht=
+ savings:<br> &gt;<br> &gt; <a href=3D"https://allianz.overcastcdn.com/docu=
+ments/LEBEN_-_2020-%C3%ADslenskir-RSKU2C13.pdf" target=3D"_blank"> https://=
+allianz.overcastcdn.com/documents/LEBEN_-_2020-%C3%ADslenskir-RSKU2C13.pdf<=
+/a><br> &gt;<br> &gt; <a href=3D"https://allianz.overcastcdn.com/documents/=
+RISLEB_-_2020-%C3%BE%C3%BDskir-LC0UZ11.pdf" target=3D"_blank"> https://alli=
+anz.overcastcdn.com/documents/RISLEB_-_2020-%C3%BE%C3%BDskir-LC0UZ11.pdf</a=
+><br> &gt;<br> &gt; Accident insurance:<br> &gt;<br> &gt; <a href=3D"https:=
+//allianz.overcastcdn.com/documents/RIS_-_%C3%ADslenskir_-_2018-PU-7030Z000=
+0.pdf" target=3D"_blank"> https://allianz.overcastcdn.com/documents/RIS_-_%=
+C3%ADslenskir_-_2018-PU-7030Z0000.pdf</a><br> &gt;<br> &gt; <a href=3D"http=
+s://allianz.overcastcdn.com/documents/RIS_-_%C3%BE%C3%BDskir_-_2018-PU-7030=
+Z0000.pdf" target=3D"_blank"> https://allianz.overcastcdn.com/documents/RIS=
+_-_%C3%BE%C3%BDskir_-_2018-PU-7030Z0000.pdf</a><br> &gt;<br> &gt; Maby this=
+ can help:<br> &gt;<br> &gt; <a href=3D"https://www.allianzlife.com/" targe=
+t=3D"_blank">https://www.allianzlife.com/</a><br> &gt;<br> &gt; For compari=
+son it would be best for you to look at calculations from me. Then I need t=
+o have your ID number, what is your job title and level of education. It wo=
+uld also be good to get an idea of life insurance amount you want.<br> &gt;=
+<br> &gt; &nbsp;<br> &gt;<br> &gt; Me=C3=B0 kve=C3=B0ju,<br> &gt;<br> &gt; =
+&nbsp;<br> &gt;<br> &gt; =C3=81sgeir Magn=C3=BAs =C3=93lafsson<br> &gt;<br>=
+ &gt; R=C3=A1=C3=B0gjafi<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<=
+br> &gt;<br> &gt; Allianz =C3=8Dsland hf<br> &gt;<br> &gt; S=C3=ADmi: 595-3=
+420<br> &gt;<br> &gt; Gsm: 860-4444<br> &gt;<br> &gt; <a href=3D"http://www=
+.allianz.is" target=3D"_blank">http://www.allianz.is</a><br> &gt;<br> &gt; =
+&nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; =
+&nbsp;<br> &gt;<br> &gt; From: Josh Klein &lt;<a href=3D"mailto:josh@josh.i=
+s" target=3D"_blank">josh@josh.is</a>&gt;<br> &gt; Sent: 14. september 2021=
+ 19:16<br> &gt; To: =C3=81sgeir Magn=C3=BAs =C3=93lafsson &lt;<a href=3D"ma=
+ilto:asgeir@allianz.is" target=3D"_blank">asgeir@allianz.is</a>&gt;<br> &gt=
+; Subject: Re: Allianz , Life and accident insurance - Josh Klein<br> &gt;<=
+br> &gt; &nbsp;<br> &gt;<br> &gt; I=E2=80=99m an Icelandic citizen (with pa=
+ssport and everything!) and am living in iceland since June 2020. Does that=
+ help?<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; - J<br> &gt;<br> &gt; &nb=
+sp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; On Tue, Sep 14, 2021 at 4:27=
+ PM =C3=81sgeir Magn=C3=BAs =C3=93lafsson &lt;<a href=3D"mailto:asgeir@alli=
+anz.is" target=3D"_blank">asgeir@allianz.is</a>&gt; wrote:<br> &gt;<br> &gt=
+; Hello Josh,<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Allianz=E2=80=99s =
+Life and Accident insurance in Iceland is not suitable for people outside t=
+he EEA, as customers must have citizenship within the EEA.<br> &gt;<br> &gt=
+; An exception is for those who has an indefinite residence permit. How is =
+that in your case?<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Best regards/=
+Me=C3=B0 kve=C3=B0ju,<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; =C3=81sgei=
+r Magn=C3=BAs =C3=93lafsson<br> &gt;<br> &gt; R=C3=A1=C3=B0gjafi<br> &gt;<b=
+r> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Allianz =C3=8Dsla=
+nd hf<br> &gt;<br> &gt; S=C3=ADmi: 595-3420<br> &gt;<br> &gt; Gsm: 860-4444=
+<br> &gt;<br> &gt; <a href=3D"http://www.allianz.is" target=3D"_blank">http=
+://www.allianz.is</a><br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br>=
+ &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; Josh Klein=
+.<br> &gt;<br> &gt; <a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@=
+josh.is</a><br> &gt;<br> &gt; Skilabo=C3=B0:<br> &gt;<br> &gt; I've got a l=
+ife insurance and accidence insurance policy from the USA (I moved to Icela=
+nd June 2020) and need an apples-to-apples comparison with policies availab=
+le in Iceland.<br> &gt;<br> &gt; &nbsp;<br> &gt;<br> &gt; &nbsp;<br> &gt;<b=
+r> &gt; &nbsp;
+              <o:p></o:p></p>=20
+            </div>=20
+           </div>=20
+           <div>=20
+            <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-mar=
+gin-bottom-alt:auto"><img border=3D"0" width=3D"1" height=3D"1" style=3D"wi=
+dth:.0069in;height:.0069in" id=3D"_x0000_i1025" src=3D"https://mailfoogae.a=
+ppspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D4=
+c46742f-aa9d-4f46-a7c0-b5cc7b6f6c96"><span style=3D"font-size:7.5pt;font-fa=
+mily:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7</span>
+             <o:p></o:p></p>=20
+           </div>=20
+          </div>=20
+         </div>=20
+        </blockquote>=20
+       </div>=20
+      </div>=20
+     </div>=20
+    </blockquote>=20
+   </div>=20
+  </div>  =20
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>allianz-samantekt (4).pdf (filename: /Users/josh/Desktop/ATTACHMENTS=
+/17d5780edbb49e8e-1-allianz-samantekt__4_.pdf, <a href=3D"file:////Users/jo=
+sh/Desktop/ATTACHMENTS/17d5780edbb49e8e-1-allianz-samantekt__4_.pdf">local =
+link</a>)</li>=20
+   <li>image001.png (filename: /Users/josh/Desktop/ATTACHMENTS/17d5780edbb4=
+9e8e-0-image001.png, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/17d=
+5780edbb49e8e-0-image001.png">local link</a>)</li>=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.3.0</li>=
+=20
+   <li>Date and time: 2022-05-18T11:10:08.643711Z</li>=20
+   <li>Download target host name: MacBook-Air.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+--_000_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_--
+
+--_005_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_--
+
+--_006_AM6PR02MB5331E9D32090D0FDF082D307B8629AM6PR02MB5331eurp_--

@@ -1,0 +1,509 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1a7:0:0:0:0 with SMTP id c7csp463663ljn;
+        Tue, 9 Feb 2021 03:31:33 -0800 (PST)
+X-Received: by 2002:ac8:2231:: with SMTP id o46mr16517051qto.245.1612870293062;
+        Tue, 09 Feb 2021 03:31:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1612870293; cv=none;
+        d=google.com; s=arc-20160816;
+        b=eHyg3h7x6EkyrBTeBrRjJg05Ss5tyVKPz38ROOQPrLcQmk4Q2KR7GZwcUYki+bpozR
+         1M1QxxWlOjevYCYUPoeJ3OmvHQnX8XjopnxuvCLYrgcCQRlXYyp20IrMJcyAoXsU1qds
+         AOGdwtm86NZBdztOnPdPbTo2RD0wrbr2F6HaIidSFxqgYwFtr3GR2Ue+QtUa9bLvakH0
+         w3uZiqlfLit/RkC8+NhwxIvK9asDIqZC6dTmgUjjx85Y2JdYnykiT6D5IVGUShwLDxfD
+         qJwtJMqC6wMH4bL566m4x6VXgEnB7vCidBpYZC8AiyD+7Eahivu+s4MXHZ3GX6bXR1sz
+         u21g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :dkim-signature;
+        bh=n61QU45r7hBzvB5chNLlKH9ocu5/aEPhFhygA9FlYoQ=;
+        b=tEpZOH5m52CqkVacGRcyz+M6RwhLRRObC1W7hxB1p+cVU3XeZoJroAFXL9TRTuavyi
+         MytaIkqm0BmrfG/kas3fIMt9gpvSoyLdgctXOJm463KojyGINY6XTZoBJGmnslAYPmm3
+         Bui0EklcIH5+lHLAbPlmqMS6zvqMTNW14jXgBjjEF97cY2W4yOKNMsi13DdHTzlCKcKx
+         SLBNnJ1unrEVEZVGf7Z+X9SvpL0U6Sp8gVqM5p7Oq9cLYLbmSMt/S0GscYG29KFpo0N2
+         cq3HhGe0IqxVjoIq/KEA4GPdgIL28mSofxjqdtjXRUPinHWdh6XvBaaKcOMgokYYKhsA
+         3U7w==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@mattdanzico-com.20150623.gappssmtp.com header.s=20150623 header.b=AL9qRL4+;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+Return-Path: <matt@mattdanzico.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id h7sor8488755qkj.148.2021.02.09.03.31.32
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 09 Feb 2021 03:31:32 -0800 (PST)
+Received-SPF: pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@mattdanzico-com.20150623.gappssmtp.com header.s=20150623 header.b=AL9qRL4+;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mattdanzico-com.20150623.gappssmtp.com; s=20150623;
+        h=from:mime-version:subject:date:references:to:in-reply-to:message-id;
+        bh=n61QU45r7hBzvB5chNLlKH9ocu5/aEPhFhygA9FlYoQ=;
+        b=AL9qRL4+pcsuj2cpShtS2v65DXMqqtgcAgZ1bzsG9Uhf3csfoyonkyZXXiTJzRx4jd
+         u0pApvmEbC6QQkDFT0DSp0ukdok7lRoO8cHx5fz2ybfvCLOWD1EfKkSxgE+ZU4uADJhh
+         nbV+Y+EkSAEj0BDd7Yp8sJXbG84ZA7uxATDfSm8cc6ap+D5hwasm/ei2wpW8z1SdrGz6
+         ybg44OzUUDU2Z3BMEVHszAjOPiM2VxfSZ6x/IKRzRCdVGQbhPAifqhExlF6eJMGHNXRN
+         iLpiwQZ54fsMp7u7o4SMiVUG/7uF2zWHmoYDjfa8tXqEPVforEcI7dXje0Dmh6/fLMy/
+         nj0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:subject:date:references:to
+         :in-reply-to:message-id;
+        bh=n61QU45r7hBzvB5chNLlKH9ocu5/aEPhFhygA9FlYoQ=;
+        b=HBOTYibzQDJ1yv6LH2vKdldMu2Gfz2HbM12ErQrBcjb9SU21zN2py7QxSZgXA3WdfR
+         ou4R+pkmCgRVNxq0261uWEhT+FODlmr48Edn2UpNh6FFbB4D4BnXUtV8N9jBJl1C67Wg
+         /kOTcHR0NfgdtEq/goWC+h/+AdcRNy9TS5RDEoHzvA+4AHDQzKrGAc8FXmHnWCA3SWpA
+         LNIpKsxtQnX5+XgBQCiHogPRwHbCqEoa2u0Ymua1TlTIZ21CgiBclQN8nm34UKt6q/Xv
+         GyWsZQGXCrrThyOjy/OaWUX+RmhQzq/sVsUpgEcEjNzUpgV0napcrR/zUvALPPBvhHBn
+         jz+Q==
+X-Gm-Message-State: AOAM5322vinaqM49jTwkMo+djR3Vnk7XTgp+JsxVuwYhzPcs/Tgw7arQ
+	TztKUJ4TozN7Elslx8zpLP5M9UwoBMg/hkl05CXCaA==
+X-Google-Smtp-Source: ABdhPJyUUKuDnhgIJBTP4o1/lOBgehU1VP87v3aJrShpu2RDjWy53wogrn7QMrSzJbQ/11aTDrElvA==
+X-Received: by 2002:a05:620a:b19:: with SMTP id t25mr20257836qkg.59.1612870291949;
+        Tue, 09 Feb 2021 03:31:31 -0800 (PST)
+Return-Path: <matt@mattdanzico.com>
+Received: from [172.18.12.246] ([74.91.0.42])
+        by smtp.gmail.com with ESMTPSA id l22sm17137103qtl.96.2021.02.09.03.31.30
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 09 Feb 2021 03:31:31 -0800 (PST)
+From: Matt Danzico <matt@mattdanzico.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_689E9A77-AD04-4975-AECF-8631E20C2474"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: Convo wrapup
+Date: Tue, 9 Feb 2021 12:31:28 +0100
+References: <CACNgykNVKtz47HNLudgGyJ0PDZmP8S=6F=NjYiurLyCK1yEttg@mail.gmail.com>
+ <71813904-E308-4F57-BDF4-B33BF5411C11@mattdanzico.com>
+ <CACNgykP=_Xb_f0diqRpQFCy5g=ebLTss2LXzhYtifcOy2HHgww@mail.gmail.com>
+ <0D3FD806-05F3-4151-BB84-F0CF56AEDB15@mattdanzico.com>
+ <CACNgykP7ZrqnPwrGXz2Hq+fromi82LnHU4ZFktoDeFaJ+1g4RA@mail.gmail.com>
+ <3A4E65A3-7075-476B-A56A-86122FF6E780@mattdanzico.com>
+ <CACNgykOi1DJ=U_sg_iP=h-R42ApX6wTh9J-2n2S7VZE2ZnaNJg@mail.gmail.com>
+ <DA6C08DB-45B7-41CF-AC76-01595D5344A3@mattdanzico.com>
+ <CACNgykPPdL7pwbdCsOTFFa+vjEW22Gbhs_b+BrAm6MvsnERhYQ@mail.gmail.com>
+ <A143B15B-9345-4066-8E22-3A10B30C9D30@mattdanzico.com>
+ <CACNgykO5p3LTqVad7F_uNqnP7uxifWsaWiUgy6+7cn9Z7PwmNg@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <CACNgykO5p3LTqVad7F_uNqnP7uxifWsaWiUgy6+7cn9Z7PwmNg@mail.gmail.com>
+Message-Id: <22B77E4F-DEE6-4D7C-B529-6A21C8F858F1@mattdanzico.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+
+
+--Apple-Mail=_689E9A77-AD04-4975-AECF-8631E20C2474
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Sounds good. Want to send over an invite? Thanks.
+
+
+
+> On Feb 9, 2021, at 12:25 PM, Josh Klein <josh@josh.is> wrote:
+>=20
+> No worries. I=E2=80=99m booked after 2pm tomorrow but could do 1pm =
+thurs?
+>=20
+> - J
+>=20
+>=20
+> On Tue, Feb 9, 2021 at 11:11 AM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+> Hi Josh,
+>=20
+> I=E2=80=99m afraid something has sprung up today that I can=E2=80=99t =
+avoid. Can we reschedule for tomorrow?
+>=20
+> I=E2=80=99m available between 3-5pm my time or after 7pm. Do any of =
+those times work?
+>=20
+> Thanks!
+> Matt
+>=20
+>=20
+>=20
+>> On Feb 8, 2021, at 1:01 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>=20
+>> Agreed!=20
+>> =E1=90=A7
+>>=20
+>> On Sun, Feb 7, 2021 at 10:52 AM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>> Smart. Yes, I agree.
+>>=20
+>> I mentioned the other day that I think we need a revamped version of =
+the document I put together for BBC3.=20
+>>=20
+>> I spent several days on that, and we should get our money worth on =
+it, as we=E2=80=99re both slammed. There is a storyboard-like page in =
+there already. My advice is that we expand on that and revamp the design =
+and geo-focus.
+>>=20
+>> It=E2=80=99s exciting! Looking forward to it.
+>>=20
+>> Matt
+>>=20
+>>=20
+>>=20
+>>=20
+>>> On Feb 6, 2021, at 9:25 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>=20
+>>> Ok, that=E2=80=99s enormously helpful - and a crazy amount of work. =
+I can see why you suggested we=E2=80=99d need a couple days to put one =
+together.
+>>>=20
+>>> I=E2=80=99m still not convinced that the best next step shouldn=E2=80=99=
+t be a more complete storyboard for Jaron. TBH I=E2=80=99d love to =
+cement his buy-in through building things out more, and suspect that if =
+we got Trevor Noah involved any treatment would be substantially =
+revamped in any case.=20
+>>>=20
+>>> Then again, that could be my overworked brain attempting to excuse =
+itself. Let=E2=80=99s talk Tuesday!
+>>>=20
+>>> - J
+>>>=20
+>>>=20
+>>> On Sat, Feb 6, 2021 at 11:29 AM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>>> Hi Josh,
+>>>=20
+>>> Attached is the Stranger Things treatment. The file name indicates =
+that it=E2=80=99s the show bible. But this is what they used as the =
+treatment as well.
+>>>=20
+>>> I also attached the first page of the News of Doom treatment. =
+That=E2=80=99s my other series. You can see the level of design, detail, =
+and them on both.=20
+>>>=20
+>>> A =E2=80=9Cstoryboard=E2=80=9D isn=E2=80=99t typically something =
+that=E2=80=99s included in a treatment. That=E2=80=99s something that =
+comes a lot later.
+>>>=20
+>>> But we could have one made for C-Side / Another Side. In fact, there =
+is a show breakdown page in the Another Side document already that I =
+created.
+>>>=20
+>>> Matt
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>>> On Feb 5, 2021, at 2:47 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>=20
+>>>> Hit me with that Stranger Things + any other example treatments or =
+storyboards you think are relevant prior to our next call!
+>>>>=20
+>>>> All best,
+>>>> Josh
+>>>>=20
+>>>> =E1=90=A7
+>>>>=20
+>>>> On Tue, Feb 2, 2021 at 11:50 AM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>>>> A very good call.
+>>>>=20
+>>>> M
+>>>>=20
+>>>>> On Feb 2, 2021, at 12:47 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>>=20
+>>>>> Ideal. Also let's not forget Trevor Noah - he's apparently tied =
+into MS (even if only to go play there occasionally) and might respond =
+differently to being pitched the idea directly by Jaron or MS corporate. =
+No?
+>>>>>=20
+>>>>> - J
+>>>>> =E1=90=A7
+>>>>>=20
+>>>>> On Tue, Feb 2, 2021 at 11:25 AM Matt Danzico <matt@mattdanzico.com =
+<mailto:matt@mattdanzico.com>> wrote:
+>>>>> Sounds good. It=E2=80=99s worth noting that there are typically =
+multiple EPs on documentary programs. Sometimes people offer money in =
+exchange for an EP credit. Sometimes people are the =E2=80=9Cshow =
+runners=E2=80=9D but receive the EP credit. Sometimes they are speakers =
+in the doc who editorial input.
+>>>>>=20
+>>>>> This is not a doc, so it=E2=80=99s a bit different. But I =
+wouldn=E2=80=99t worry too much about EP exclusivity. If you look at the =
+list of EPs on docs using IMDB, you=E2=80=99ll see quite a few names. A =
+doc I was researching recently had upwards of 15.
+>>>>>=20
+>>>>> The role of the (production) studio or rather the production =
+company as well as the role of another EP would simply be to ensure the =
+green light=E2=80=94ie to ensure the investment from HBO. Nothing more. =
+Some networks might like a treatment they receive but they demand you =
+work in partnership with a production company they have trust in. Large =
+production companies, EPs, they are simply icing on the cake to help =
+sell the program.
+>>>>>=20
+>>>>> Per Microsoft, yes. We should inquire about funding. We need some =
+funding to jumpstart a larger treatment and to make a teaser. I am =
+putting this money forward for another project and simply don=E2=80=99t =
+have it to invest in anything else. So a Microsoft grant to put together =
+the fuller treatment, design, and teaser would be incredible.
+>>>>>=20
+>>>>> More soon,
+>>>>> Matt
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>=20
+>>>>>> On Feb 1, 2021, at 3:38 PM, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>>>>=20
+>>>>>> Sorry to keep you on the phone overlong.=20
+>>>>>>=20
+>>>>>> Overall I think we're aligned on all points; read from the deck, =
+offer advisory and open the door to further involvement, then consider =
+what/who/how builds the larger deck.
+>>>>>>=20
+>>>>>> Also understood on the value of bringing in another EP - and love =
+the idea of Edward Norton - although I'd want to make sure Jaron didn't =
+have any ego invested and was amiable to the idea first.=20
+>>>>>>=20
+>>>>>> What I'd like to know more on is how bringing in a studio would =
+benefit us. As I understand it, we need to pitch the show to the =
+channel/streamer (or both, in the case of HBO) to get their investment =
+to make the thing. Given that, what's the role of the studio?
+>>>>>>=20
+>>>>>> An alternative is to take some funding from a corporate - and =
+Microsoft seems like a good example. I think we should also check on =
+this as part of the convo w/ Jaron. That could ameliorate a lot of costs =
+and make it much easier for Jaron to justify more time involved.=20
+>>>>>>=20
+>>>>>> Let me know what you think,
+>>>>>> Josh
+>>>>>> =E1=90=A7
+>>>>>=20
+>>>>=20
+>>>=20
+>>=20
+>=20
+
+
+--Apple-Mail=_689E9A77-AD04-4975-AECF-8631E20C2474
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" =
+class=3D"">Sounds good. Want to send over an invite? Thanks.<div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""><div><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Feb =
+9, 2021, at 12:25 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div class=3D""><div dir=3D"auto" =
+class=3D"">No worries. I=E2=80=99m booked after 2pm tomorrow but could =
+do 1pm thurs?</div><div dir=3D"auto" class=3D""><br class=3D""></div><div =
+dir=3D"auto" class=3D"">- J</div><div dir=3D"auto" class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb =
+9, 2021 at 11:11 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px =
+0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1ex;borde=
+r-left-color:rgb(204,204,204)"><div =
+style=3D"word-wrap:break-word;line-break:after-white-space" class=3D"">Hi =
+Josh,<div class=3D""><br class=3D""></div><div class=3D"">I=E2=80=99m =
+afraid something has sprung up today that I can=E2=80=99t avoid. Can we =
+reschedule for tomorrow?</div><div class=3D""><br class=3D""></div><div =
+class=3D"">I=E2=80=99m available between 3-5pm my time or after 7pm. Do =
+any of those times work?</div><div class=3D""><br class=3D""></div><div =
+class=3D"">Thanks!</div></div><div =
+style=3D"word-wrap:break-word;line-break:after-white-space" =
+class=3D""><div class=3D"">Matt</div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""><div class=3D""><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Feb =
+8, 2021, at 1:01 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D"">Agreed!&nbsp;<br =
+class=3D""></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px" =
+class=3D""><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: =
+hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D5ee29c42-dd9e-4fa6-8336-d7b42e515048" =
+class=3D""><font size=3D"1" style=3D"color:rgb(255,255,255)" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sun, Feb =
+7, 2021 at 10:52 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" target=3D"_blank" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px =
+0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1ex;borde=
+r-left-color:rgb(204,204,204)"><div class=3D"">Smart. Yes, I agree.<div =
+class=3D""><br class=3D""></div><div class=3D"">I mentioned the other =
+day that I think we need a revamped version of the document I put =
+together for BBC3.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">I spent several days on that, and we should get our money =
+worth on it, as we=E2=80=99re both slammed. There is a storyboard-like =
+page in there already. My advice is that we expand on that and revamp =
+the design and geo-focus.</div><div class=3D""><br class=3D""></div><div =
+class=3D"">It=E2=80=99s exciting! Looking forward to it.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Matt</div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""><div class=3D""><br class=3D""><blockquote =
+type=3D"cite" class=3D""><div class=3D"">On Feb 6, 2021, at 9:25 PM, =
+Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"auto" class=3D"">Ok, that=E2=80=99s enormously =
+helpful - and a crazy amount of work. I can see why you suggested we=E2=80=
+=99d need a couple days to put one together.</div><div dir=3D"auto" =
+class=3D""><br class=3D""></div><div dir=3D"auto" class=3D"">I=E2=80=99m =
+still not convinced that the best next step shouldn=E2=80=99t be a more =
+complete storyboard for Jaron. TBH I=E2=80=99d love to cement his buy-in =
+through building things out more, and suspect that if we got Trevor Noah =
+involved any treatment would be substantially revamped in any =
+case.&nbsp;</div><div dir=3D"auto" class=3D""><br class=3D""></div><div =
+dir=3D"auto" class=3D"">Then again, that could be my overworked brain =
+attempting to excuse itself. Let=E2=80=99s talk Tuesday!</div><div =
+dir=3D"auto" class=3D""><br class=3D""></div><div dir=3D"auto" =
+class=3D"">- J</div><div dir=3D"auto" class=3D""><br class=3D""></div><div=
+ class=3D""><br class=3D""><div class=3D"gmail_quote"><div dir=3D"ltr" =
+class=3D"gmail_attr">On Sat, Feb 6, 2021 at 11:29 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" target=3D"_blank" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px =
+0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1ex;borde=
+r-left-color:rgb(204,204,204)"><div class=3D"">Hi Josh,<div class=3D""><br=
+ class=3D""></div><div class=3D"">Attached is the Stranger Things =
+treatment. The file name indicates that it=E2=80=99s the show bible. But =
+this is what they used as the treatment as well.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">I also attached the first page of the =
+News of Doom treatment. That=E2=80=99s my other series. You can see the =
+level of design, detail, and them on both.&nbsp;</div><div class=3D""><br =
+class=3D""></div><div class=3D"">A =E2=80=9Cstoryboard=E2=80=9D isn=E2=80=99=
+t typically something that=E2=80=99s included in a treatment. That=E2=80=99=
+s something that comes a lot later.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">But we could have one made for C-Side / =
+Another Side. In fact, there is a show breakdown page in the Another =
+Side document already that I created.</div></div><div class=3D""><div =
+class=3D""><br class=3D""></div><div class=3D"">Matt</div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""></div></div><div =
+class=3D""><div class=3D""></div></div><div class=3D""><div class=3D""><br=
+ class=3D""><div class=3D""><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D"">On Feb 5, 2021, at 2:47 PM, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">Hit me with that Stranger =
+Things&nbsp;+ any other example treatments or storyboards you think are =
+relevant prior to our next call!<div class=3D""><br class=3D""></div><div =
+class=3D"">All best,</div><div class=3D"">Josh</div><div class=3D""><br =
+class=3D""></div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3Db7f8f0be-a6b9-4011-9a6e-d385ea47be9e" =
+class=3D""><font size=3D"1" style=3D"color:rgb(255,255,255)" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb =
+2, 2021 at 11:50 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" target=3D"_blank" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px =
+0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1ex;borde=
+r-left-color:rgb(204,204,204)"><div class=3D"">A very good call.<div =
+class=3D""><br class=3D""></div><div class=3D"">M<br class=3D""><div =
+class=3D""><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On Feb 2, 2021, at 12:47 PM, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br class=3D""><div =
+class=3D""><div dir=3D"ltr" class=3D"">Ideal. Also let's not forget =
+Trevor Noah - he's apparently tied into MS (even if only to go play =
+there occasionally) and might respond differently to being pitched the =
+idea directly&nbsp;by Jaron or MS corporate. No?<div class=3D""><br =
+class=3D""></div><div class=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D""><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D16e9df00-9750-4a02-b013-e9ffebd09a7a" =
+class=3D""><font size=3D"1" style=3D"color:rgb(255,255,255)" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Feb =
+2, 2021 at 11:25 AM Matt Danzico &lt;<a =
+href=3D"mailto:matt@mattdanzico.com" target=3D"_blank" =
+class=3D"">matt@mattdanzico.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px =
+0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1ex;borde=
+r-left-color:rgb(204,204,204)"><div class=3D"">Sounds good. It=E2=80=99s =
+worth noting that there are typically multiple EPs on documentary =
+programs. Sometimes people offer money in exchange for an EP credit. =
+Sometimes people are the =E2=80=9Cshow runners=E2=80=9D but receive the =
+EP credit. Sometimes they are speakers in the doc who editorial =
+input.<div class=3D""><br class=3D""></div><div class=3D"">This is not a =
+doc, so it=E2=80=99s a bit different. But I wouldn=E2=80=99t worry too =
+much about EP exclusivity. If you look at the list of EPs on docs using =
+IMDB, you=E2=80=99ll see quite a few names. A doc I was researching =
+recently had upwards of 15.</div><div class=3D""><br class=3D""></div><div=
+ class=3D"">The role of the (production) studio or rather the production =
+company as well as the role of another EP would simply be to ensure the =
+green light=E2=80=94ie to ensure the investment from HBO. Nothing more. =
+Some networks might like a treatment they receive but they demand you =
+work in partnership with a production company they have trust in. Large =
+production companies, EPs, they are simply icing on the cake to help =
+sell the program.</div><div class=3D""><br class=3D""></div><div =
+class=3D"">Per Microsoft, yes. We should inquire about funding. We need =
+some funding to jumpstart a larger treatment and to make a teaser. I am =
+putting this money forward for another project and simply don=E2=80=99t =
+have it to invest in anything else. So a Microsoft grant to put together =
+the fuller treatment, design, and teaser would be incredible.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">More soon,</div><div =
+class=3D"">Matt</div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D""><div class=3D""><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Feb =
+1, 2021, at 3:38 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D"">Sorry to keep you =
+on the phone overlong.&nbsp;<div class=3D""><br class=3D""></div><div =
+class=3D"">Overall I think we're aligned on all points; read from the =
+deck, offer advisory and open the door to further&nbsp;involvement, then =
+consider what/who/how builds the larger deck.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Also understood on the value of =
+bringing in another EP - and love the idea of Edward Norton - although =
+I'd want to make sure Jaron didn't have any ego invested and was amiable =
+to the idea first.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">What I'd like to know more on is how bringing in a studio =
+would benefit us. As I understand&nbsp;it, we need =
+to&nbsp;pitch&nbsp;the show to the channel/streamer (or both, in the =
+case of HBO) to get their investment to make the thing. Given that, =
+what's the role of the studio?</div><div class=3D""><br =
+class=3D""></div><div class=3D"">An alternative is to take some funding =
+from a corporate - and Microsoft seems like a good example. I think we =
+should also check on this as part of the convo w/ Jaron. That could =
+ameliorate a lot of costs and make it much easier for Jaron to justify =
+more time involved.&nbsp;</div><div class=3D""><br class=3D""></div><div =
+class=3D"">Let me know what you think,</div><div =
+class=3D"">Josh</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D10c10f76-afc7-49b2-8b58-6f1079571907" =
+class=3D""><font size=3D"1" style=3D"color:rgb(255,255,255)" =
+class=3D"">=E1=90=A7</font></div>
+</div></blockquote></div><br class=3D""></div></div></blockquote></div>
+</div></blockquote></div><br class=3D""></div></div></blockquote></div>
+</div></blockquote></div><br =
+class=3D""></div></div></blockquote></div></div>
+</div></blockquote></div><br class=3D""></div></div></blockquote></div>
+</div></blockquote></div><br =
+class=3D""></div></div></blockquote></div></div>
+</div></blockquote></div><br class=3D""></div></body></html>=
+
+--Apple-Mail=_689E9A77-AD04-4975-AECF-8631E20C2474--

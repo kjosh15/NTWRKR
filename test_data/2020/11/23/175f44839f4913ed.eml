@@ -1,0 +1,442 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:501c:0:0:0:0:0 with SMTP id e28csp749511ljb;
+        Mon, 23 Nov 2020 00:46:15 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyg97EMb3T9OSqlBZgC1yZ5OwardeLhPPS1AJDk+nahBLSavgxKP9gjMPlrFJejyLTZuK0T
+X-Received: by 2002:a37:a658:: with SMTP id p85mr6801258qke.263.1606121175577;
+        Mon, 23 Nov 2020 00:46:15 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1606121175; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vltLXc9Ss0XHcsauLYWi+E25+EHUbj1NNi1IvElsovrRif3o+aQuJGk26B4GlwuC/C
+         MdwClVNu+NUNBhU18Rl8QS293lfeDi7FJjK5Uu0Blu9MzhKrYH12mRsyxnmCLrzR4Ykn
+         ABlAsnzrXJFe18pJMrgEEFk9vcehsc39eKhVrXkB1oMg1pt5wgeYrqBf8h8gOSLhtu9f
+         jVPUlHT/fpf2OEU1VO0TAFt9n/n+j+ny1zVBKK5gY+aSfqfyC74+CEXj5vrgkOxozdyO
+         9ZNcNYhV9/vyyM9vKZZBWsOrvECxgxhJ+2p7S9hw+RGXSxszPnx3WQFu7Jy6fLwZiJPw
+         O+PQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from;
+        bh=uLCDJ5P0ifhlMscxN5F87BBFIOJso3ceykxIMWZLspw=;
+        b=ggBWn9CC745R62bohrgXFhvc08LvGqzCCwkvLJc5XN1H7Wcw+4rMKUqnI5e1TVdnj3
+         51QFqLPvilfDhxS1OTet33dQ9YXp6R9HqQfyfB0Ji2lGYlDsvCC1RVZF6tLzKqkHWFMV
+         /21EkcW6nnKiHEl4iJ6QUrgLfVqtBsv1HcqSn4KujeEX4/XPYDJGOaS2sstEUkUhx1hb
+         l73wPuTT1aqAcYbcvAp4wVB1m10yVZ3Gzd5PP7J5RVPFv3++l0OTY9WuyOURtEifI1Q9
+         PcAou9pQcP975kojas7GuW+T00TAhOEPsrF5ohMO5Y96HNn4CYl+gv5tW2vof10u3O6x
+         op/g==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.225.36 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-02.prod.iad2.secureserver.net (a2nlsmtp01-02.prod.iad2.secureserver.net. [198.71.225.36])
+        by mx.google.com with ESMTPS id d27si1381761qtg.305.2020.11.23.00.46.15
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 23 Nov 2020 00:46:15 -0800 (PST)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 198.71.225.36 as permitted sender) client-ip=198.71.225.36;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.225.36 as permitted sender) smtp.mailfrom=chris@indigometrics.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=indigometrics.com
+Received: from mailout01.c01 ([64.207.129.78])
+	by : HOSTING RELAY : with ESMTP
+	id h7TFkt2llAUrrh7TFkQ4hw; Mon, 23 Nov 2020 01:45:13 -0700
+X-CMAE-Analysis: v=2.4 cv=IZ9C5Uma c=1 sm=1 tr=0 ts=5fbb7699
+ a=rHVhcZ7MkiYw9pwnR3G25w==:117 a=FM0zR5x8FjvqzmxfUW9ThQ==:17
+ a=nNwsprhYR40A:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=MGKIFWvDAAAA:8 a=zwvI-rEBAAAA:8
+ a=8aVOOvkAVeYmJRpmJygA:9 a=QEXdDO2ut3YA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8
+ a=JbdnMuWpkU0s5gIm2IIA:9 a=eGSRS8oTV_lsGEg2:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=4D1dU0hVIIbnoyLp9NuI:22 a=OoLSvEA_ic9EetkLKI_r:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl03.gs01.gridserver.com ([64.13.192.12])
+	by mailout01.c01 with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kh7TE-0007Pl-ON
+	for josh@josh.is; Mon, 23 Nov 2020 00:45:13 -0800
+Received: from [2.221.20.105] (port=56029 helo=DESKTOPVL3QK79)
+	by cl03.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kh7TE-0005zw-Av
+	for josh@josh.is; Mon, 23 Nov 2020 00:45:12 -0800
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+References: <CACNgykNum6bs4Nw9U1FB2F5-g+F4NF3TV3t1RdAUY6R052Vzfw@mail.gmail.com>
+In-Reply-To: <CACNgykNum6bs4Nw9U1FB2F5-g+F4NF3TV3t1RdAUY6R052Vzfw@mail.gmail.com>
+Subject: RE: Big
+Date: Mon, 23 Nov 2020 08:45:11 -0000
+Message-ID: <06a301d6c174$f590c140$e0b243c0$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_06A4_01D6C174.F5918490"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQH6lamEv2Yb75rveBzLtlp+2zu4RKmNvRoA
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-CMAE-Envelope: MS4xfLn4oDYVqUwdWrWPU9G/5PeLHiVoM6LLqGIXEGl/EJO9SWUyZSKxqO+YUm/FGq4c08wjsO2+6L0hVA7g3LpihKz9X+yOwGgipGI4EY93CMec+bJYP4ly
+ Y9VtKB11WwQxk68Ic+8GlWSg33R7rwLQTQNUXLY6Ns6HtjYU5hqcr3GteAFOz3bFeqYFTfPOWdzOcA==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_06A4_01D6C174.F5918490
+Content-Type: text/plain;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Awesome opportunity.
+
+I keep coming back to whether we could/should measure just D+I =E2=80=93 =
+rather than D+I as a central  part of organisations=E2=80=99 values.
+
+I worry that when the review request comes in it will say =E2=80=93 =
+=E2=80=9CNow complete your Indigometrics D+I survey where you assess =
+your peers=E2=80=99 actions for their level of D+I adherence=E2=80=9D =
+=E2=80=93 I don=E2=80=99t think it works?
+
+Maybe its just semantics =E2=80=93 we could call it a =
+=E2=80=9CRespect=E2=80=9D solution for example.
+
+I am also struggling a bit with a single definition of D+I, as a basic =
+example, should we ask:
+
+=20
+
+*	Chris treats everyone the same no matter their station in life
+*	Chris treats others how he would like to be treated himself
+
+=20
+
+Or
+
+=20
+
+*	Chris treats everyone how they would like to be treated
+
+=20
+
+I think D+I will be defined differently at different organisations?
+
+=20
+
+C
+
+=20
+
+=20
+
+=20
+
+From: Josh Klein <josh@josh.is>=20
+Sent: 20 November 2020 19:53
+To: Chris at Indigo <chris@indigometrics.com>
+Subject: Big
+
+=20
+
+So here's a thing.
+
+Just got off the phone with World 50's D&I group leads. The D&I group =
+now has 378 members, mostly D&I heads of the equivalent. They've asked =
+me to talk to the member advisory board head about taking a role there, =
+and also requested that I work with them directly to address some of =
+their big challenges.
+
+Those challenges are almost entirely technical. Members are hugely =
+interested in data; privacy, access, bias, etc. and they want actionable =
+insights on what to do about it from within companies that range from =
+mid-size to the biggest.=20
+
+The team has two main goals they want to achieve, technically. The first =
+is a collaboration platform to divide the group up into cohorts =
+attacking specific D&I challenges, so that whatever is learned can be =
+brought back to everyone. The second is some kind of measurement so that =
+everyone who participates can compare notes on where they stand with =
+regards to D&I and measure what's working and how.
+
+World 50 is trying to decide whether it should build its own solution or =
+work with a partner. You mentioned the other day that you had a =
+framework you could drop in for measuring D&I values: what if we offered =
+that framework to W50 members exclusively for a year in exchange for =
+development costs?=20
+
+They expect to have 500 members by Q2 2021. That would be a HUGE client =
+list and access to organizations from the inside, driven by one of the =
+most high-profile issues those companies face today.=20
+
+Hell, we could get BSS to run the marketing, UX, and UI issues and =
+charge W50 to bootstrap the cloud conversion we'd need to meet the =
+scaling costs.=20
+
+There's challenges here; they've got Vivienne Ming giving a talk on Dec =
+3 about a framework she's building to detect and measure bias (so maybe =
+we could collaborate?), and W50 has been notoriously cheap/hesitant to =
+buy tech solutions. But if we can make it cheap and easy for companies =
+to enter an org chart and get some basic, useful metrics on bias... I =
+think we could blow this out of the water.
+
+=20
+
+Let me know what you think - the D&I group heads have asked me to get =
+back to them any time with any ideas and I'd love to follow up.
+
+=20
+
+- Josh
+
+=20
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D17bcfa5a-82fd-4029-b9e6-6154d3208026> =E1=90=A7
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D3164c438-d30b-43e0-a4b7-131846fc38b4> =E1=90=A7
+
+
+------=_NextPart_000_06A4_01D6C174.F5918490
+Content-Type: text/html;
+	charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 15 (filtered medium)"><!--[if =
+!mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Gadugi;
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-priority:34;
+	margin-top:0cm;
+	margin-right:0cm;
+	margin-bottom:0cm;
+	margin-left:36.0pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:330724312;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-74185492 -272854478 134807555 134807557 =
+134807553 134807555 134807557 134807553 134807555 134807557;}
+@list l0:level1
+	{mso-level-start-at:0;
+	mso-level-number-format:bullet;
+	mso-level-text:-;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-font-family:Calibri;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:=EF=82=A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l0:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:=EF=82=B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l0:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:=EF=82=A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+@list l0:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:=EF=82=B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Symbol;}
+@list l0:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:"Courier New";}
+@list l0:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:=EF=82=A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	font-family:Wingdings;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB =
+link=3D"#0563C1" vlink=3D"#954F72" style=3D'word-wrap:break-word'><div =
+class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Awesome =
+opportunity.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>I keep coming back to whether we =
+could/should measure just D+I =E2=80=93 rather than D+I as a =
+central=C2=A0 part of organisations=E2=80=99 =
+values.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>I worry that when the review =
+request comes in it will say =E2=80=93 =E2=80=9CNow complete your =
+Indigometrics D+I survey where you assess your peers=E2=80=99 actions =
+for their level of D+I adherence=E2=80=9D =E2=80=93 I don=E2=80=99t =
+think it works?<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Maybe its just semantics =E2=80=93 =
+we could call it a =E2=80=9CRespect=E2=80=9D solution for =
+example.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>I am also struggling a bit with a =
+single definition of D+I, as a basic example, should we =
+ask:<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><ul =
+style=3D'margin-top:0cm' type=3Ddisc><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo1'><span =
+style=3D'mso-fareast-language:EN-US'>Chris treats everyone the same no =
+matter their station in life<o:p></o:p></span></li><li =
+class=3DMsoListParagraph style=3D'margin-left:0cm;mso-list:l0 level1 =
+lfo1'><span style=3D'mso-fareast-language:EN-US'>Chris treats others how =
+he would like to be treated himself<o:p></o:p></span></li></ul><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Or<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><ul =
+style=3D'margin-top:0cm' type=3Ddisc><li class=3DMsoListParagraph =
+style=3D'margin-left:0cm;mso-list:l0 level1 lfo1'><span =
+style=3D'mso-fareast-language:EN-US'>Chris treats everyone how they =
+would like to be treated<o:p></o:p></span></li></ul><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span style=3D'mso-fareast-language:EN-US'>I think D+I =
+will be defined differently at different =
+organisations?<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>C<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein =
+&lt;josh@josh.is&gt; <br><b>Sent:</b> 20 November 2020 =
+19:53<br><b>To:</b> Chris at Indigo =
+&lt;chris@indigometrics.com&gt;<br><b>Subject:</b> =
+Big<o:p></o:p></span></p></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p class=3DMsoNormal>So =
+here's a thing.<br><br>Just got off the phone with World 50's D&amp;I =
+group leads. The D&amp;I group now has 378 members, mostly D&amp;I heads =
+of the equivalent. They've asked me to talk to the member advisory board =
+head about taking a role there, and also requested that I work with them =
+directly to address some of their big challenges.<br><br>Those =
+challenges are almost entirely technical. Members are hugely interested =
+in data; privacy, access, bias, etc. and they want actionable insights =
+on what to do about it from within companies that range from mid-size to =
+the biggest. <br><br>The team has two main goals they want to achieve, =
+technically. The first is a collaboration platform to divide the group =
+up into cohorts attacking specific D&amp;I challenges, so that whatever =
+is learned can be brought back to everyone. The second is some kind of =
+measurement so that everyone who participates can compare notes on where =
+they stand with regards to D&amp;I and measure what's working and =
+how.<br><br>World 50 is trying to decide whether it should build its own =
+solution or work with a partner. You mentioned the other day that you =
+had a framework you could drop in for measuring D&amp;I values: what if =
+we offered that framework to W50 members exclusively for a year in =
+exchange for development costs? <br><br>They expect to have 500 members =
+by Q2 2021. That would be a HUGE client list and access to organizations =
+from the inside, driven by one of the most high-profile issues those =
+companies face today. <br><br>Hell, we could get BSS to run the =
+marketing, UX, and UI issues and charge W50 to bootstrap the cloud =
+conversion we'd need to meet the scaling costs. <br><br>There's =
+challenges here; they've got Vivienne Ming giving a talk on Dec 3 about =
+a framework she's building to detect and measure bias (so maybe we could =
+collaborate?), and W50 has been notoriously cheap/hesitant to buy tech =
+solutions. But if we can make it cheap and easy for companies to enter =
+an org chart and get some basic, useful metrics on bias... I think we =
+could blow this out of the water.<o:p></o:p></p><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal>Let me know what you think - the D&amp;I group heads =
+have asked me to get back to them any time with any ideas and I'd love =
+to follow up.<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>- =
+Josh<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p =
+class=3DMsoNormal><img width=3D1 height=3D1 =
+style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1026" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D17bcfa5a-82fd-4029-b9e6-6154d3208026"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div></div><div><p class=3DMsoNormal><img =
+width=3D1 height=3D1 style=3D'width:.0104in;height:.0104in' =
+id=3D"_x0000_i1025" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D3164c438-d30b-43e0-a4b7-131846fc38b4"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div></div></body></html>
+------=_NextPart_000_06A4_01D6C174.F5918490--
+

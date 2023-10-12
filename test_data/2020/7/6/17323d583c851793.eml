@@ -1,0 +1,925 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp102926ljh;
+        Mon, 6 Jul 2020 04:14:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzAq311vuyjGxzBo7hjNtmSgzxkDw4luoCrxGY689kPwR/Jd98+K5Y/GqUgi04cNvEfn1bK
+X-Received: by 2002:a17:906:a1c7:: with SMTP id bx7mr37109679ejb.388.1594034062276;
+        Mon, 06 Jul 2020 04:14:22 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1594034062; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=XK3SsVZEJEFxQdiCkR6x1y895vAamHziKD4oKXPJAuJxn784N4viTrJvv+oO61sDhh
+         xuOcXolquPLRlyml5BTs2C0UV2C2z7/P272h30gHpuFmDth+zbmThNSzIu2GL/d00XPI
+         SMJOut8JaMNbDq4humTl44HNWZt/3ZBy0AS4//I2ZvmBfHdU+wU/qOc8ayqBUaKHeKEG
+         O9DzJ+qqZZiB6fBSI2X510gLz/1L2oV3kpIG7dhivlMTzPShY+TKsnIPzyddVR2iab05
+         CN5Iz1EQ4fBBbFeBCUZdQxkk0IMwl+dkIrJxXY1Oz5fWH2YkyLFEKFOp9dyUMXo7d79r
+         vuiw==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:cc:to:from:ironport-sdr
+         :dkim-signature;
+        bh=JmnEHit6rJ+biiPsWOPfi+NeU6ntFIdB6js8ivopEbk=;
+        b=vFdOGD2Il09uXMUjHa521JDL9NGUtihEFCOqTQ+U7uM137YsZ1Kk95TsnvbY01Z/1k
+         oQnaK0L8JJIpclCykVSES7qS5PQwVZsStcVEAkRQcZ8IrtgDdZbwl4hth5P6Asev1KMu
+         KXMbNhAhgGJqXO4TiW3EbncD8SvqtlAQXit/kpsKpcsCRYqYmP6gLF7/sik6Je0ndFJJ
+         fEzskH1gcgV4LlkM0JzmZtKu4Bt6iFo1WsqgrwhXZ/T24GW9qZWRsvs667taHFaz6EZA
+         uXk8ZlNVKvCpMK6+Shs7LjyqXHWFbNP5kDQH+LtboUXC+M5K7ZkHgCaUP25IrEphOIr1
+         BrMQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@kornferry.com header.s=kfdkim header.b=byXrUVXY;
+       arc=pass (i=1 spf=pass spfdomain=kornferry.com dkim=pass dkdomain=kornferry.com dmarc=pass fromdomain=kornferry.com);
+       spf=pass (google.com: domain of martyna.arnold@kornferry.com designates 68.232.135.76 as permitted sender) smtp.mailfrom=Martyna.Arnold@kornferry.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=kornferry.com
+Return-Path: <Martyna.Arnold@kornferry.com>
+Received: from esa4.kornferry.iphmx.com (esa4.kornferry.iphmx.com. [68.232.135.76])
+        by mx.google.com with ESMTPS id a1si13602826edn.58.2020.07.06.04.14.21
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 06 Jul 2020 04:14:22 -0700 (PDT)
+Received-SPF: pass (google.com: domain of martyna.arnold@kornferry.com designates 68.232.135.76 as permitted sender) client-ip=68.232.135.76;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@kornferry.com header.s=kfdkim header.b=byXrUVXY;
+       arc=pass (i=1 spf=pass spfdomain=kornferry.com dkim=pass dkdomain=kornferry.com dmarc=pass fromdomain=kornferry.com);
+       spf=pass (google.com: domain of martyna.arnold@kornferry.com designates 68.232.135.76 as permitted sender) smtp.mailfrom=Martyna.Arnold@kornferry.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=kornferry.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=kornferry.com; q=dns/txt; s=kfdkim; t=1594034061;
+  x=1625570061;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=egvmgejzq1O0giWMABd9Ggarn4o8PjQv6Mwph8A9zmE=;
+  b=byXrUVXYbhuLkilYMvFLdGn5YJXDKbMFn3Xkt0GN58uc80g+kRExhQDb
+   RItqqcA7s+/5zFcht45y8CB38na6kgwzOC1qXSl36W+uu/RYfmuc/cpKf
+   IpCnGhQUKJJI/UW8d8Wy1vgVCvyBoCh+rSX7llIMgJ5rr1gq41t6N7yj3
+   6taorTBcu5V9TC1m9Lfxc603crsTFtBhwu7M3JF8zN9+X0ZZYJ5eqCa8u
+   lRQvxKv5Q8iN9eePGov+mEiZEhW8rj5dIVMBEGl0ij98dSdPdVxoFvrvD
+   HDDrl6Ypr9A52lk8yXWtbemOJOcbzwHYffIvz1uzy3evgZQtwJn4xZVOr
+   w==;
+IronPort-SDR: hSFcosSAqqAG787n5OFNFMHyrwFE/5CdDrUEID/f/ZkgwmFD6zQ1ePUMMDeI5k80OucvvBEyvi
+ CW4ykvKwIWipVq98VJ3ApfQK5QfZkzRkaqOJw1d+7pE6Cjwvcn2ce0bd+Ofp5Jrfq7FyaAxI5X
+ Y3MeRLS3iTqiXt1VHAcuIbP8mUerWFvg/06oj/jODN4gbgnBjJjylp/RAaPXiH6y8eDXhmpCc6
+ zaE4MiU5gX0euE667cnhHU5o+BN67xJr8YOQT08LG4Lp53Uf6ym2aU9vtNxx+Zi93TQVhYANIG
+ 5DE=
+X-IronPort-AV: E=Sophos;i="5.75,318,1589270400"; 
+   d="png'150?scan'150,208,217,150";a="100879395"
+Received: from mail-db8eur05lp2105.outbound.protection.outlook.com (HELO EUR05-DB8-obe.outbound.protection.outlook.com) ([104.47.17.105])
+  by ob1.kornferry.iphmx.com with ESMTP; 06 Jul 2020 03:14:18 -0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TFYVu16Gmy233YLqAspHTwmVhPeNvTzs10hDvsSMYoKsP4WVhkej32LSDT0O1MRXjPdI+U+y6aiTepkM9zDmCxbfuxzw+dGcYTgMLOxXr9MUAYjsVS9LiOKx0PSq9tBZltrRiyK91APqbiw2P1vNkorwD8I++nqpn65+YQUZCYpdugajEfo1rvGBsCxtl4Mkr3Q7+ridV56RBtoeck3oUocvBACFn9iKQRYOg0dkMtT8CopLKN0PMUuD6QNG7yld6zjDU2WzjKO4/myaJzJMNFDJ3zbmHfjeFJzs8khIFfr+rWqkhQ6vBTGqChmynxbdA9JvwmM//pGF5Bk3gfc8Aw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JmnEHit6rJ+biiPsWOPfi+NeU6ntFIdB6js8ivopEbk=;
+ b=M/iEG2VIH09FWBKmaI2Z8peXbgtVa14iqOTC/1vLZlEqp74SSBFvs9weo1SsE3KtivS43N7r4/ipXtAq7wAp5mvIcwKZb1uR26VnzvIRZd7i6+k7KFW6QCMoCKYDe4qPbpKqCAlpWW1Mgb0vQNhR9JyVbHECLcStWBoTMEoxlyN4aGvAUBzSN5zpiV3+/igDBZdRL+5aFnSCAcmW5X1Y2mO2fUBDzxU2h/YgzA+VwrC5iXjSVEndx7M+vk/Qw/Ihq8RR1tPWqdV44NnzI++ub6PZcUJdKw02BDxP1hQJ6osc6/pT2w+2B8ZXVS0WFGS33I8/4abLq7Irjk9VZCBRPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kornferry.com; dmarc=pass action=none
+ header.from=kornferry.com; dkim=pass header.d=kornferry.com; arc=none
+Received: from DB7PR05MB5787.eurprd05.prod.outlook.com (2603:10a6:10:86::14)
+ by DB6PR0502MB2950.eurprd05.prod.outlook.com (2603:10a6:4:96::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3153.29; Mon, 6 Jul
+ 2020 11:14:15 +0000
+Received: from DB7PR05MB5787.eurprd05.prod.outlook.com
+ ([fe80::f1e0:3db7:ddac:5064]) by DB7PR05MB5787.eurprd05.prod.outlook.com
+ ([fe80::f1e0:3db7:ddac:5064%7]) with mapi id 15.20.3153.029; Mon, 6 Jul 2020
+ 11:14:15 +0000
+From: Martyna Arnold <Martyna.Arnold@KornFerry.com>
+To: "Thiruvengadam, Padma" <Padma.thiruvengadam@takeda.com>, Josh Klein
+	<josh@josh.is>
+CC: "Kuno, Riyako" <riyako.kuno@takeda.com>
+Subject: Padma Thiruvengadam/Josh Klein discussion
+Thread-Topic: Padma Thiruvengadam/Josh Klein discussion
+Thread-Index: AdZThfjgQq8qRlICRGqlwZCoM4rEZAAAJj6g
+Date: Mon, 6 Jul 2020 11:14:15 +0000
+Message-ID:
+ <DB7PR05MB5787C06551BB0C7D3008683D9F690@DB7PR05MB5787.eurprd05.prod.outlook.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+authentication-results: takeda.com; dkim=none (message not signed)
+ header.d=none;takeda.com; dmarc=none action=none header.from=KornFerry.com;
+x-ms-exchange-calendar-series-instance-id:
+ BAAAAIIA4AB0xbcQGoLgCAAAAABwo228llPWAQAAAAAAAAAAEAAAAIR7pImIYJxKpd+oSzstbmQ=
+x-originating-ip: [213.86.156.213]
+x-ms-office365-filtering-correlation-id: c43528ee-124a-4ad3-c719-08d8219db7f4
+x-ms-traffictypediagnostic: DB6PR0502MB2950:MeetingMessage
+x-microsoft-antispam-prvs:
+ <DB6PR0502MB2950B3191F1F322D24D706299F690@DB6PR0502MB2950.eurprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1247;
+x-forefront-prvs: 04569283F9
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ m1ifmzL+DCliUzqyv4QslnksQEdHKU5mLozmnw/gGTa9f3Bp2cPiVkPCMNnBABtt+Y5iLMZcHHipaZO3iPgLZOP8kTqI+aZOSeskc1P1QSCFVGHujQw/ZP4w+d4CPuntAevTHPoyuYfWdW2qjO8jQiAB3RiCs7DMJ+aX9jFp+drd9N+JEyXGTp6mYPHxknITipdNegBY4woSCPZRlIkBMHPBke3OCaZHiJF1qTgFUqvAEJyCnb5nOBs3N8T7kfK5GSFFIQlcUvVIesxXkrQ9u5e9K/AWXfzImVKKpOfxKH8lYyduXPjguPPXAEdd2xgvUfuGwZ/O91wrzszpIuoeW1ixaqn1IVso+XKJkhJI23lN82sdW70nfP0wuw02j3pByYGxPfOETqi2dEsAOLIFcbXnm6U7DzZy64P+8B7NJyskZqEFNYgdnyBQlIgAToCtcFnS6wttIF3o2bfasAgrvA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR05MB5787.eurprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(4636009)(396003)(136003)(376002)(366004)(346002)(39850400004)(66446008)(5660300002)(4326008)(99936003)(8676002)(186003)(71200400001)(86362001)(26005)(9686003)(7696005)(8936002)(3480700007)(478600001)(110136005)(2906002)(316002)(55236004)(66556008)(64756008)(66476007)(66616009)(55016002)(52536014)(83380400001)(76116006)(966005)(33656002)(6506007)(66946007)(166002)(85282002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata:
+ 9euQMCG/vDkM/8YMHMxFbBFhwV0Bek+Y8/Xg8dRwTiyl7nY39B+B2m9H1vJ0fworNsUuiHSTxKJy2LkOVhWMxLHuywsM9kJqTsXtI26vhWgGN2vsG7vSUW6PhLaPABICXNqHzmQy+DHFsuKS/WHxz2LUeC87XKtdEmveZmH0ZG3tPV9bdmcs98BM5P5o/+qVhJdtfb5lDK40ZyCSxiR1sElcmb/yNwZ1JTNGSHSMTbzFp5XEyi/UN2dPvQlg6LYf6D66+07gn8PXZXkmTuk15jDV2fmW2FjjpEeHcXtEocmaZw5/mIPPZBZgGwbUkmSSf/aLBlIcr9NXZY8kPXMMb63LH3asfBmS1/ZP42ICcfo3XCq71nlAyyaFzZruh/I+7sFYeaknAtjgA/OMtJvwPR0Y0+A9vzBUYeY1YZk1RJckKujAvqrXT25yPTYqTwtUxW1JmL2RzwHKVqHgFlSibODMsVbj2bgHx2VXesJYu4ZAJhmodJMcb2nlqYicmxV1
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/related;
+	boundary="_005_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: kornferry.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR05MB5787.eurprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c43528ee-124a-4ad3-c719-08d8219db7f4
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 Jul 2020 11:14:15.1810
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e9d21387-43f1-4e06-a253-f9ed9096dc48
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: fYX5rHOgGvOebYGASd0dGJ6AEqJv2sPwyYr2btYyK+gBnWFESTctUgQcJ+jJ7zTZLyQ9XAb/zcCisdBhL94qBiAT7xSfwtqVdGNswt6+2RM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0502MB2950
+
+--_005_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_
+Content-Type: multipart/alternative;
+	boundary="_000_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_"
+
+--_000_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+
+[cid:image001.png@01D65397.554F8450]<http://zoom.us/>
+Hi there,
+Martyna.Arnold@KornFerry.com<mailto:Martyna.Arnold@KornFerry.com> is inviti=
+ng you to a scheduled Zoom meeting.
+Join Zoom Meeting<https://kornferry.zoom.com/j/91146181458?pwd=3DNjJYbnlLMD=
+FkY0RuZzJrT3A4ZngrUT09>
+Password:
+221970
+Phone one-tap:
+United Kingdom: +442080806591,,91146181458#<tel:+442080806591,,91146181458>
++442080806592,,91146181458#<tel:+442080806592,,91146181458>
+Meeting URL:
+https://kornferry.zoom.com/j/91146181458?pwd=3DNjJYbnlLMDFkY0RuZzJrT3A4Zngr=
+UT09
+Join by Telephone
+For higher quality, dial a number based on your current location.
+Dial:
+
+United Kingdom : +44 208 080 6591
++44 208 080 6592
++44 330 088 5830
++44 131 460 1196
++44 203 481 5237
++44 203 481 5240
++44 203 901 7895
+0 800 031 5717 (Toll Free)
+0 800 260 5801 (Toll Free)
+US : +1 408 638 0968
++1 646 876 9923
++1 669 900 6833
++1 253 215 8782
++1 301 715 8592
++1 312 626 6799
++1 346 248 7799
+877 853 5247 (Toll Free)
+888 788 0099 (Toll Free)
+Belgium : +32 1579 5132
++32 2 290 9360
++32 2 585 5574
++32 2 588 4188
++32 2 788 0172
++32 2 788 0173
+0 800 267 88 (Toll Free)
+0 800 294 51 (Toll Free)
+Germany : +49 695 050 2596
++49 69 7104 9922
++49 30 5679 5800
++49 69 3807 9883
+0 800 000 6954 (Toll Free)
+0 800 1800 150 (Toll Free)
+Greece : +30 211 198 4488
++30 231 118 0599
+800 848 1188 (Toll Free)
+Netherlands : +31 20 241 0288
++31 20 794 0854
++31 20 794 6519
++31 20 794 6520
++31 20 794 7345
++31 707 006 526
+0 800 022 1954 (Toll Free)
+0 800 220 0040 (Toll Free)
+Poland : +48 22 306 5342
++48 22 307 3488
++48 22 398 7356
+00 800 112 5171 (Toll Free)
+00 800 321 1464 (Toll Free)
+Ireland : +353 1 240 8941
++353 1 536 9320
++353 1 653 3895
++353 1 653 3897
++353 1 653 3898
++353 6 163 9031
+1800 901 561 (Toll Free)
+1800 949 238 (Toll Free)
+Russian Federation : +7 499 951 6380
++7 812 426 8988
++7 495 283 9788
++7 499 951 6379
+8800 100 6938 (Toll Free)
+8800 301 7427 (Toll Free)
+Spain : +34 84 368 5025
++34 91 787 0058
++34 917 873 431
+800 654 404 (Toll Free)
+900 053 647 (Toll Free)
+France : +33 1 7095 0103
++33 1 7095 0350
++33 1 8699 5831
++33 1 7037 2246
++33 1 7037 9729
+0 800 940 415 (Toll Free)
+0 805 082 588 (Toll Free)
+Meeting ID:
+911 4618 1458
+Password:
+221970
+International numbers<https://kornferry.zoom.com/u/acdwazTMtt>
+Join from an H.323/SIP room system
+H.323:
+162.255.37.11 (US West)
+162.255.36.11 (US East)
+221.122.88.195 (China)
+115.114.131.7 (India Mumbai)
+115.114.115.7 (India Hyderabad)
+213.19.144.110 (EMEA)
+103.122.166.55 (Australia)
+209.9.211.110 (Hong Kong SAR)
+64.211.144.160 (Brazil)
+69.174.57.160 (Canada)
+207.226.132.110 (Japan)
+Meeting ID:
+911 4618 1458
+Password:
+221970
+SIP:
+91146181458@zoomcrc.com<mailto:91146181458@zoomcrc.com>
+Password:
+221970
+
+
+
+
+--_000_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_
+Content-Type: text/html; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Diso-8859-=
+1">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-compose;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-GB" link=3D"#0563C1" vlink=3D"#954F72">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div align=3D"center">
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" width=3D"100%" style=3D"width:100.0%;background:#F4F5F9">
+<tbody>
+<tr>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<div align=3D"center">
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" width=3D"592" style=3D"width:444.0pt">
+<tbody>
+<tr>
+<td valign=3D"top" style=3D"padding:0in 0in 0in 0in">
+<div align=3D"center">
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" width=3D"100%" style=3D"width:100.0%;background:white">
+<tbody>
+<tr>
+<td style=3D"background:#F4F5F9;padding:22.5pt 0in 7.5pt 0in">
+<p class=3D"MsoNormal"><a name=3D"zD323B"></a><a href=3D"http://zoom.us/"><=
+span style=3D"mso-bookmark:zD323B"><span style=3D"color:blue;text-decoratio=
+n:none"><img border=3D"0" width=3D"172" height=3D"35" style=3D"width:1.7916=
+in;height:.3645in" id=3D"Picture_x0020_1" src=3D"cid:image001.png@01D65397.=
+554F8450"></span></span><span style=3D"mso-bookmark:zD323B"></span></a><spa=
+n style=3D"mso-bookmark:zD323B"><o:p></o:p></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td style=3D"padding:0in 21.0pt 27.75pt 21.0pt">
+<div align=3D"center">
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" width=3D"100%" style=3D"width:100.0%">
+<tbody>
+<tr>
+<td colspan=3D"2" valign=3D"top" style=3D"padding:42.75pt 0in 7.5pt 0in">
+<p class=3D"MsoNormal"><span style=3D"mso-bookmark:zD323B"><span style=3D"f=
+ont-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#39394D">Hi =
+there,<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" valign=3D"top" style=3D"padding:0in 0in 0in 0in">
+<p class=3D"MsoNormal" style=3D"line-height:18.75pt"><span style=3D"mso-boo=
+kmark:zD323B"></span><a href=3D"mailto:Martyna.Arnold@KornFerry.com"><span =
+style=3D"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&=
+quot;Arial&quot;,sans-serif">Martyna.Arnold@KornFerry.com</span></span><spa=
+n style=3D"mso-bookmark:zD323B"></span></a><span style=3D"mso-bookmark:zD32=
+3B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-seri=
+f;color:#39394D">
+ is inviting you to a scheduled Zoom meeting. <o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" style=3D"background:white;padding:15.0pt 0in 6.0pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:25.5pt"><span style=3D"mso-book=
+mark:zD323B"></span><a href=3D"https://kornferry.zoom.com/j/91146181458?pwd=
+=3DNjJYbnlLMDFkY0RuZzJrT3A4ZngrUT09" target=3D"_blank"><span style=3D"mso-b=
+ookmark:zD323B"><span style=3D"font-size:19.0pt;font-family:&quot;Arial&quo=
+t;,sans-serif;color:#2D8CFF">Join
+ Zoom Meeting</span></span><span style=3D"mso-bookmark:zD323B"></span></a><=
+span style=3D"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-fam=
+ily:&quot;Arial&quot;,sans-serif;color:#39394D">
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr style=3D"height:13.5pt">
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in;height:13.5pt">
+<p class=3D"MsoNormal"><span style=3D"mso-bookmark:zD323B"><span style=3D"f=
+ont-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#39394D">Pas=
+sword:<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 0in 0in;height:13.5pt">
+<p class=3D"MsoNormal"><span style=3D"mso-bookmark:zD323B"><span style=3D"f=
+ont-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#39394D">221=
+970<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr style=3D"height:13.5pt">
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in;height:13.5pt">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Phone one-tap:<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in;height:13.5pt">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">United Kingdom:
+</span></span><a href=3D"tel:&#43;442080806591,,91146181458"><span style=3D=
+"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Ari=
+al&quot;,sans-serif">&#43;442080806591,,91146181458#</span></span><span sty=
+le=3D"mso-bookmark:zD323B"></span></a><span style=3D"mso-bookmark:zD323B"><=
+span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;col=
+or:#39394D">
+<br>
+</span></span><a href=3D"tel:&#43;442080806592,,91146181458"><span style=3D=
+"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Ari=
+al&quot;,sans-serif">&#43;442080806592,,91146181458#</span></span><span sty=
+le=3D"mso-bookmark:zD323B"></span></a><span style=3D"mso-bookmark:zD323B"><=
+span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;col=
+or:#39394D">
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr style=3D"height:13.5pt">
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in;height:13.5pt">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Meeting URL:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 0in 0in;height:13.5pt">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"></span><a href=3D"https://kornferry.zoom.com/j/91146181458?pwd=
+=3DNjJYbnlLMDFkY0RuZzJrT3A4ZngrUT09" target=3D"_blank"><span style=3D"mso-b=
+ookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quo=
+t;,sans-serif;color:#39394D">https://kornferry.zoom.com/j/91146181458?pwd=
+=3DNjJYbnlLMDFkY0RuZzJrT3A4ZngrUT09</span></span><span style=3D"mso-bookmar=
+k:zD323B"></span></a><span style=3D"mso-bookmark:zD323B"><span style=3D"fon=
+t-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#39394D"><o:p>=
+</o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" style=3D"padding:15.0pt 0in 6.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:18.75pt"><span style=3D"mso-boo=
+kmark:zD323B"><b><span style=3D"font-size:12.0pt;font-family:&quot;Arial&qu=
+ot;,sans-serif;color:#39394D">Join by Telephone
+<o:p></o:p></span></b></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" valign=3D"top" style=3D"padding:0in 0in 0in 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">For higher quality, dial a number based on your c=
+urrent location.
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Dial:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D"><br>
+United Kingdom : &#43;44 208 080 6591 <br>
+&#43;44 208 080 6592 <br>
+&#43;44 330 088 5830 <br>
+&#43;44 131 460 1196 <br>
+&#43;44 203 481 5237 <br>
+&#43;44 203 481 5240 <br>
+&#43;44 203 901 7895 <br>
+0 800 031 5717 (Toll Free) <br>
+0 800 260 5801 (Toll Free) <br>
+US : &#43;1 408 638 0968 <br>
+&#43;1 646 876 9923 <br>
+&#43;1 669 900 6833 <br>
+&#43;1 253 215 8782 <br>
+&#43;1 301 715 8592 <br>
+&#43;1 312 626 6799 <br>
+&#43;1 346 248 7799 <br>
+877 853 5247 (Toll Free) <br>
+888 788 0099 (Toll Free) <br>
+Belgium : &#43;32 1579 5132 <br>
+&#43;32 2 290 9360 <br>
+&#43;32 2 585 5574 <br>
+&#43;32 2 588 4188 <br>
+&#43;32 2 788 0172 <br>
+&#43;32 2 788 0173 <br>
+0 800 267 88 (Toll Free) <br>
+0 800 294 51 (Toll Free) <br>
+Germany : &#43;49 695 050 2596 <br>
+&#43;49 69 7104 9922 <br>
+&#43;49 30 5679 5800 <br>
+&#43;49 69 3807 9883 <br>
+0 800 000 6954 (Toll Free) <br>
+0 800 1800 150 (Toll Free) <br>
+Greece : &#43;30 211 198 4488 <br>
+&#43;30 231 118 0599 <br>
+800 848 1188 (Toll Free) <br>
+Netherlands : &#43;31 20 241 0288 <br>
+&#43;31 20 794 0854 <br>
+&#43;31 20 794 6519 <br>
+&#43;31 20 794 6520 <br>
+&#43;31 20 794 7345 <br>
+&#43;31 707 006 526 <br>
+0 800 022 1954 (Toll Free) <br>
+0 800 220 0040 (Toll Free) <br>
+Poland : &#43;48 22 306 5342 <br>
+&#43;48 22 307 3488 <br>
+&#43;48 22 398 7356 <br>
+00 800 112 5171 (Toll Free) <br>
+00 800 321 1464 (Toll Free) <br>
+Ireland : &#43;353 1 240 8941 <br>
+&#43;353 1 536 9320 <br>
+&#43;353 1 653 3895 <br>
+&#43;353 1 653 3897 <br>
+&#43;353 1 653 3898 <br>
+&#43;353 6 163 9031 <br>
+1800 901 561 (Toll Free) <br>
+1800 949 238 (Toll Free) <br>
+Russian Federation : &#43;7 499 951 6380 <br>
+&#43;7 812 426 8988 <br>
+&#43;7 495 283 9788 <br>
+&#43;7 499 951 6379 <br>
+8800 100 6938 (Toll Free) <br>
+8800 301 7427 (Toll Free) <br>
+Spain : &#43;34 84 368 5025 <br>
+&#43;34 91 787 0058 <br>
+&#43;34 917 873 431 <br>
+800 654 404 (Toll Free) <br>
+900 053 647 (Toll Free) <br>
+France : &#43;33 1 7095 0103 <br>
+&#43;33 1 7095 0350 <br>
+&#43;33 1 8699 5831 <br>
+&#43;33 1 7037 2246 <br>
+&#43;33 1 7037 9729 <br>
+0 800 940 415 (Toll Free) <br>
+0 805 082 588 (Toll Free) <o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Meeting ID:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">911 4618 1458<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Password:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">221970<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" valign=3D"top" style=3D"padding:0in 0in 0in 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"></span><a href=3D"https://kornferry.zoom.com/u/acdwazTMtt" tar=
+get=3D"_blank"><span style=3D"mso-bookmark:zD323B"><span style=3D"font-size=
+:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#39394D">Internation=
+al
+ numbers</span></span><span style=3D"mso-bookmark:zD323B"></span></a><span =
+style=3D"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&=
+quot;Arial&quot;,sans-serif;color:#39394D"><o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td colspan=3D"2" style=3D"padding:15.0pt 0in 6.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:18.75pt"><span style=3D"mso-boo=
+kmark:zD323B"><b><span style=3D"font-size:12.0pt;font-family:&quot;Arial&qu=
+ot;,sans-serif;color:#39394D">Join from an H.323/SIP room system
+<o:p></o:p></span></b></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">H.323:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">162.255.37.11 (US West)<br>
+162.255.36.11 (US East)<br>
+221.122.88.195 (China)<br>
+115.114.131.7 (India Mumbai)<br>
+115.114.115.7 (India Hyderabad)<br>
+213.19.144.110 (EMEA)<br>
+103.122.166.55 (Australia)<br>
+209.9.211.110 (Hong Kong SAR)<br>
+64.211.144.160 (Brazil)<br>
+69.174.57.160 (Canada)<br>
+207.226.132.110 (Japan)<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Meeting ID:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">911 4618 1458<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Password:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">221970<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">SIP:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"></span><a href=3D"mailto:91146181458@zoomcrc.com"><span style=
+=3D"mso-bookmark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;=
+Arial&quot;,sans-serif">91146181458@zoomcrc.com</span></span><span style=3D=
+"mso-bookmark:zD323B"></span></a><span style=3D"mso-bookmark:zD323B"><span =
+style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#3=
+9394D">
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+<tr>
+<td width=3D"22%" valign=3D"top" style=3D"width:22.0%;padding:0in 0in 0in 0=
+in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">Password:
+<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+<td valign=3D"top" style=3D"padding:0in 0in 3.75pt 0in">
+<p class=3D"MsoNormal" style=3D"line-height:15.0pt"><span style=3D"mso-book=
+mark:zD323B"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,=
+sans-serif;color:#39394D">221970<o:p></o:p></span></span></p>
+</td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+</tbody>
+</table>
+</div>
+<span style=3D"mso-bookmark:zD323B"></span></td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+</tbody>
+</table>
+</div>
+<span style=3D"mso-bookmark:zD323B"></span></td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+</tbody>
+</table>
+</div>
+<span style=3D"mso-bookmark:zD323B"></span></td>
+<span style=3D"mso-bookmark:zD323B"></span>
+</tr>
+</tbody>
+</table>
+</div>
+<p class=3D"MsoNormal"><span style=3D"mso-bookmark:zD323B"><o:p>&nbsp;</o:p=
+></span></p>
+<span style=3D"mso-bookmark:zD323B"></span>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body>
+</html>
+
+--_000_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_
+Content-Type: text/calendar; charset="utf-8"; method=REQUEST
+Content-Transfer-Encoding: base64
+
+QkVHSU46VkNBTEVOREFSDQpNRVRIT0Q6UkVRVUVTVA0KUFJPRElEOk1pY3Jvc29mdCBFeGNoYW5n
+ZSBTZXJ2ZXIgMjAxMA0KVkVSU0lPTjoyLjANCkJFR0lOOlZUSU1FWk9ORQ0KVFpJRDpXLiBFdXJv
+cGUgU3RhbmRhcmQgVGltZQ0KQkVHSU46U1RBTkRBUkQNCkRUU1RBUlQ6MTYwMTAxMDFUMDMwMDAw
+DQpUWk9GRlNFVEZST006KzAyMDANClRaT0ZGU0VUVE86KzAxMDANClJSVUxFOkZSRVE9WUVBUkxZ
+O0lOVEVSVkFMPTE7QllEQVk9LTFTVTtCWU1PTlRIPTEwDQpFTkQ6U1RBTkRBUkQNCkJFR0lOOkRB
+WUxJR0hUDQpEVFNUQVJUOjE2MDEwMTAxVDAyMDAwMA0KVFpPRkZTRVRGUk9NOiswMTAwDQpUWk9G
+RlNFVFRPOiswMjAwDQpSUlVMRTpGUkVRPVlFQVJMWTtJTlRFUlZBTD0xO0JZREFZPS0xU1U7QllN
+T05USD0zDQpFTkQ6REFZTElHSFQNCkVORDpWVElNRVpPTkUNCkJFR0lOOlZFVkVOVA0KT1JHQU5J
+WkVSO0NOPU1hcnR5bmEgQXJub2xkOm1haWx0bzpNYXJ0eW5hLkFybm9sZEBLb3JuRmVycnkuY29t
+DQpBVFRFTkRFRTtST0xFPVJFUS1QQVJUSUNJUEFOVDtQQVJUU1RBVD1ORUVEUy1BQ1RJT047UlNW
+UD1UUlVFO0NOPSJUaGlydXZlbmdhDQogZGFtLCBQYWRtYSI6bWFpbHRvOlBhZG1hLnRoaXJ1dmVu
+Z2FkYW1AdGFrZWRhLmNvbQ0KQVRURU5ERUU7Uk9MRT1SRVEtUEFSVElDSVBBTlQ7UEFSVFNUQVQ9
+TkVFRFMtQUNUSU9OO1JTVlA9VFJVRTtDTj1Kb3NoIEtsZWluDQogOm1haWx0bzpqb3NoQGpvc2gu
+aXMNCkFUVEVOREVFO1JPTEU9T1BULVBBUlRJQ0lQQU5UO1BBUlRTVEFUPU5FRURTLUFDVElPTjtS
+U1ZQPVRSVUU7Q049Ikt1bm8sIFJpeWENCiBrbyI6bWFpbHRvOnJpeWFrby5rdW5vQHRha2VkYS5j
+b20NCkFUVEFDSDpDSUQ6aW1hZ2UwMDEucG5nQDAxRDY1Mzk3LjU1NEY4NDUwDQpERVNDUklQVElP
+TjtMQU5HVUFHRT1lbi1VUzpcbltjaWQ6aW1hZ2UwMDEucG5nQDAxRDY1Mzk3LjU1NEY4NDUwXTxo
+dHRwOi8vem8NCiBvbS51cy8+XG5IaSB0aGVyZVwsXG5NYXJ0eW5hLkFybm9sZEBLb3JuRmVycnku
+Y29tPG1haWx0bzpNYXJ0eW5hLkFybm9sZEBLbw0KIHJuRmVycnkuY29tPiBpcyBpbnZpdGluZyB5
+b3UgdG8gYSBzY2hlZHVsZWQgWm9vbSBtZWV0aW5nLlxuSm9pbiBab29tIE1lZXRpDQogbmc8aHR0
+cHM6Ly9rb3JuZmVycnkuem9vbS5jb20vai85MTE0NjE4MTQ1OD9wd2Q9TmpKWWJubExNREZrWTBS
+dVp6SnJUM0E0Wm4NCiBnclVUMDk+XG5QYXNzd29yZDpcbjIyMTk3MFxuUGhvbmUgb25lLXRhcDpc
+blVuaXRlZCBLaW5nZG9tOiArNDQyMDgwODA2NTkxXA0KICxcLDkxMTQ2MTgxNDU4Izx0ZWw6KzQ0
+MjA4MDgwNjU5MVwsXCw5MTE0NjE4MTQ1OD5cbis0NDIwODA4MDY1OTJcLFwsOTExNDYxDQogODE0
+NTgjPHRlbDorNDQyMDgwODA2NTkyXCxcLDkxMTQ2MTgxNDU4PlxuTWVldGluZyBVUkw6XG5odHRw
+czovL2tvcm5mZXJyeS4NCiB6b29tLmNvbS9qLzkxMTQ2MTgxNDU4P3B3ZD1OakpZYm5sTE1ERmtZ
+MFJ1WnpKclQzQTRabmdyVVQwOVxuSm9pbiBieSBUZWxlcA0KIGhvbmVcbkZvciBoaWdoZXIgcXVh
+bGl0eVwsIGRpYWwgYSBudW1iZXIgYmFzZWQgb24geW91ciBjdXJyZW50IGxvY2F0aW9uLlxuDQog
+RGlhbDpcblxuVW5pdGVkIEtpbmdkb20gOiArNDQgMjA4IDA4MCA2NTkxXG4rNDQgMjA4IDA4MCA2
+NTkyXG4rNDQgMzMwIDA4OCANCiA1ODMwXG4rNDQgMTMxIDQ2MCAxMTk2XG4rNDQgMjAzIDQ4MSA1
+MjM3XG4rNDQgMjAzIDQ4MSA1MjQwXG4rNDQgMjAzIDkwMSA3OA0KIDk1XG4wIDgwMCAwMzEgNTcx
+NyAoVG9sbCBGcmVlKVxuMCA4MDAgMjYwIDU4MDEgKFRvbGwgRnJlZSlcblVTIDogKzEgNDA4IDYz
+DQogOCAwOTY4XG4rMSA2NDYgODc2IDk5MjNcbisxIDY2OSA5MDAgNjgzM1xuKzEgMjUzIDIxNSA4
+NzgyXG4rMSAzMDEgNzE1IDg1OTINCiBcbisxIDMxMiA2MjYgNjc5OVxuKzEgMzQ2IDI0OCA3Nzk5
+XG44NzcgODUzIDUyNDcgKFRvbGwgRnJlZSlcbjg4OCA3ODggMDA5OQ0KICAoVG9sbCBGcmVlKVxu
+QmVsZ2l1bSA6ICszMiAxNTc5IDUxMzJcbiszMiAyIDI5MCA5MzYwXG4rMzIgMiA1ODUgNTU3NFxu
+KzMyDQogIDIgNTg4IDQxODhcbiszMiAyIDc4OCAwMTcyXG4rMzIgMiA3ODggMDE3M1xuMCA4MDAg
+MjY3IDg4IChUb2xsIEZyZWUpXG4wIDgNCiAwMCAyOTQgNTEgKFRvbGwgRnJlZSlcbkdlcm1hbnkg
+OiArNDkgNjk1IDA1MCAyNTk2XG4rNDkgNjkgNzEwNCA5OTIyXG4rNDkgMw0KIDAgNTY3OSA1ODAw
+XG4rNDkgNjkgMzgwNyA5ODgzXG4wIDgwMCAwMDAgNjk1NCAoVG9sbCBGcmVlKVxuMCA4MDAgMTgw
+MCAxNTAgDQogKFRvbGwgRnJlZSlcbkdyZWVjZSA6ICszMCAyMTEgMTk4IDQ0ODhcbiszMCAyMzEg
+MTE4IDA1OTlcbjgwMCA4NDggMTE4OCAoVG8NCiBsbCBGcmVlKVxuTmV0aGVybGFuZHMgOiArMzEg
+MjAgMjQxIDAyODhcbiszMSAyMCA3OTQgMDg1NFxuKzMxIDIwIDc5NCA2NTE5XA0KIG4rMzEgMjAg
+Nzk0IDY1MjBcbiszMSAyMCA3OTQgNzM0NVxuKzMxIDcwNyAwMDYgNTI2XG4wIDgwMCAwMjIgMTk1
+NCAoVG9sbCBGDQogcmVlKVxuMCA4MDAgMjIwIDAwNDAgKFRvbGwgRnJlZSlcblBvbGFuZCA6ICs0
+OCAyMiAzMDYgNTM0MlxuKzQ4IDIyIDMwNyAzNDgNCiA4XG4rNDggMjIgMzk4IDczNTZcbjAwIDgw
+MCAxMTIgNTE3MSAoVG9sbCBGcmVlKVxuMDAgODAwIDMyMSAxNDY0IChUb2xsIEZyZQ0KIGUpXG5J
+cmVsYW5kIDogKzM1MyAxIDI0MCA4OTQxXG4rMzUzIDEgNTM2IDkzMjBcbiszNTMgMSA2NTMgMzg5
+NVxuKzM1MyAxIDY1DQogMyAzODk3XG4rMzUzIDEgNjUzIDM4OThcbiszNTMgNiAxNjMgOTAzMVxu
+MTgwMCA5MDEgNTYxIChUb2xsIEZyZWUpXG4xODAwIDkNCiA0OSAyMzggKFRvbGwgRnJlZSlcblJ1
+c3NpYW4gRmVkZXJhdGlvbiA6ICs3IDQ5OSA5NTEgNjM4MFxuKzcgODEyIDQyNiA4OTg4XA0KIG4r
+NyA0OTUgMjgzIDk3ODhcbis3IDQ5OSA5NTEgNjM3OVxuODgwMCAxMDAgNjkzOCAoVG9sbCBGcmVl
+KVxuODgwMCAzMDEgNzQyDQogNyAoVG9sbCBGcmVlKVxuU3BhaW4gOiArMzQgODQgMzY4IDUwMjVc
+biszNCA5MSA3ODcgMDA1OFxuKzM0IDkxNyA4NzMgNDMxXG4NCiA4MDAgNjU0IDQwNCAoVG9sbCBG
+cmVlKVxuOTAwIDA1MyA2NDcgKFRvbGwgRnJlZSlcbkZyYW5jZSA6ICszMyAxIDcwOTUgMDEwMw0K
+IFxuKzMzIDEgNzA5NSAwMzUwXG4rMzMgMSA4Njk5IDU4MzFcbiszMyAxIDcwMzcgMjI0NlxuKzMz
+IDEgNzAzNyA5NzI5XG4wIDgwDQogMCA5NDAgNDE1IChUb2xsIEZyZWUpXG4wIDgwNSAwODIgNTg4
+IChUb2xsIEZyZWUpXG5NZWV0aW5nIElEOlxuOTExIDQ2MTggMTQNCiA1OFxuUGFzc3dvcmQ6XG4y
+MjE5NzBcbkludGVybmF0aW9uYWwgbnVtYmVyczxodHRwczovL2tvcm5mZXJyeS56b29tLmNvbS91
+Lw0KIGFjZHdhelRNdHQ+XG5Kb2luIGZyb20gYW4gSC4zMjMvU0lQIHJvb20gc3lzdGVtXG5ILjMy
+MzpcbjE2Mi4yNTUuMzcuMTEgKFVTDQogIFdlc3QpXG4xNjIuMjU1LjM2LjExIChVUyBFYXN0KVxu
+MjIxLjEyMi44OC4xOTUgKENoaW5hKVxuMTE1LjExNC4xMzEuNyAoSW4NCiBkaWEgTXVtYmFpKVxu
+MTE1LjExNC4xMTUuNyAoSW5kaWEgSHlkZXJhYmFkKVxuMjEzLjE5LjE0NC4xMTAgKEVNRUEpXG4x
+MDMuMQ0KIDIyLjE2Ni41NSAoQXVzdHJhbGlhKVxuMjA5LjkuMjExLjExMCAoSG9uZyBLb25nIFNB
+UilcbjY0LjIxMS4xNDQuMTYwIChCcmF6DQogaWwpXG42OS4xNzQuNTcuMTYwIChDYW5hZGEpXG4y
+MDcuMjI2LjEzMi4xMTAgKEphcGFuKVxuTWVldGluZyBJRDpcbjkxMSA0NjENCiA4IDE0NThcblBh
+c3N3b3JkOlxuMjIxOTcwXG5TSVA6XG45MTE0NjE4MTQ1OEB6b29tY3JjLmNvbTxtYWlsdG86OTEx
+NDYxODE0NQ0KIDhAem9vbWNyYy5jb20+XG5QYXNzd29yZDpcbjIyMTk3MFxuXG5cblxuDQpVSUQ6
+MDQwMDAwMDA4MjAwRTAwMDc0QzVCNzEwMUE4MkUwMDgwMDAwMDAwMDcwQTM2REJDOTY1M0Q2MDEw
+MDAwMDAwMDAwMDAwMDANCiAwMTAwMDAwMDA4NDdCQTQ4OTg4NjA5QzRBQTVERkE4NEIzQjJENkU2
+NA0KU1VNTUFSWTtMQU5HVUFHRT1lbi1VUzpQYWRtYSBUaGlydXZlbmdhZGFtL0pvc2ggS2xlaW4g
+ZGlzY3Vzc2lvbg0KRFRTVEFSVDtUWklEPVcuIEV1cm9wZSBTdGFuZGFyZCBUaW1lOjIwMjAwNzIw
+VDIwMzAwMA0KRFRFTkQ7VFpJRD1XLiBFdXJvcGUgU3RhbmRhcmQgVGltZToyMDIwMDcyMFQyMTE1
+MDANCkNMQVNTOlBVQkxJQw0KUFJJT1JJVFk6NQ0KRFRTVEFNUDoyMDIwMDcwNlQxMTE0MDlaDQpU
+UkFOU1A6T1BBUVVFDQpTVEFUVVM6Q09ORklSTUVEDQpTRVFVRU5DRTowDQpMT0NBVElPTjtMQU5H
+VUFHRT1lbi1VUzpodHRwczovL2tvcm5mZXJyeS56b29tLmNvbS9qLzkxMTQ2MTgxNDU4P3B3ZD1O
+akpZYm4NCiBsTE1ERmtZMFJ1WnpKclQzQTRabmdyVVQwOQ0KWC1NSUNST1NPRlQtQ0RPLUFQUFQt
+U0VRVUVOQ0U6MA0KWC1NSUNST1NPRlQtQ0RPLU9XTkVSQVBQVElEOjEzMzAwMTgyNzYNClgtTUlD
+Uk9TT0ZULUNETy1CVVNZU1RBVFVTOlRFTlRBVElWRQ0KWC1NSUNST1NPRlQtQ0RPLUlOVEVOREVE
+U1RBVFVTOkJVU1kNClgtTUlDUk9TT0ZULUNETy1BTExEQVlFVkVOVDpGQUxTRQ0KWC1NSUNST1NP
+RlQtQ0RPLUlNUE9SVEFOQ0U6MQ0KWC1NSUNST1NPRlQtQ0RPLUlOU1RUWVBFOjANClgtTUlDUk9T
+T0ZULURPTk9URk9SV0FSRE1FRVRJTkc6RkFMU0UNClgtTUlDUk9TT0ZULURJU0FMTE9XLUNPVU5U
+RVI6RkFMU0UNClgtTUlDUk9TT0ZULUxPQ0FUSU9OUzpbIHsgIkRpc3BsYXlOYW1lIiA6ICJodHRw
+czovL2tvcm5mZXJyeS56b29tLmNvbS9qLzkxMQ0KIDQ2MTgxNDU4P3B3ZD1OakpZYm5sTE1ERmtZ
+MFJ1WnpKclQzQTRabmdyVVQwOSJcLCAiTG9jYXRpb25Bbm5vdGF0aW9uIiA6ICIiDQogXCwgIkxv
+Y2F0aW9uU291cmNlIiA6IDBcLCAiVW5yZXNvbHZlZCIgOiBmYWxzZVwsICJMb2NhdGlvblVyaSIg
+OiAiIiB9IF0NCkJFR0lOOlZBTEFSTQ0KREVTQ1JJUFRJT046UkVNSU5ERVINClRSSUdHRVI7UkVM
+QVRFRD1TVEFSVDotUFQxNU0NCkFDVElPTjpESVNQTEFZDQpFTkQ6VkFMQVJNDQpFTkQ6VkVWRU5U
+DQpFTkQ6VkNBTEVOREFSDQo=
+
+--_000_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_--
+
+--_005_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_
+Content-Type: image/png; name="image001.png"
+Content-Description: image001.png
+Content-Disposition: attachment; filename="image001.png"; size=4265;
+	creation-date="Mon, 06 Jul 2020 11:14:12 GMT";
+	modification-date="Mon, 06 Jul 2020 11:14:12 GMT"
+Content-ID: <image001.png@01D65397.554F8450>
+Content-Transfer-Encoding: base64
+
+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
+
+--_005_DB7PR05MB5787C06551BB0C7D3008683D9F690DB7PR05MB5787eurp_--

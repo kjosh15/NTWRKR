@@ -1,0 +1,1832 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9d41:0:0:0:0:0 with SMTP id y1csp1700091ljj;
+        Sun, 14 Feb 2021 11:07:29 -0800 (PST)
+X-Received: by 2002:ac8:6899:: with SMTP id m25mr11743931qtq.254.1613329649518;
+        Sun, 14 Feb 2021 11:07:29 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1613329649; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vox9Aaa9tFFvE419kSIica4soGFewAAmhY16ubtJqTy0/ZXIgQo+k0E9vgyo72iAx3
+         4jllm3l4Et+H/rRpzzgkL8Y4q2p9gMPNiyOX8PM66EqT6jPDsUavXPon03MgMWq87rPP
+         BPaqLj0Ck2aRNNsw2N8p5TEsiND0/v7tLdOiDMsH3/ujthlDlhzxMUzlDCiq/GHFYIW7
+         ISBffKi5OHD2QszS4xgtdSB1jAmlqtJNlguL0zb4x5E2MBu82E0rqktE0cOfKg9Z9yXo
+         iR4smaQQBKBDuMt0bmomwCST+epvfBARrrynMth+GxxTsaRo5XQf8z9/vlFkF4LlzXf1
+         QkSg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :dkim-signature;
+        bh=asBsP/ax1nx3VmASIQ3OaWzBkEqbppIlbcLMYtfYjFM=;
+        b=lu1SJydFNeSTrfjKw6fjG8QaJq1fKNO8lKweMpHLArpt2cMMfKzrVWPngovUTtKmcw
+         JHxsMuUEsIjx0MH/ubamDSalqVwQuOWFBcjEhKKePeFg2K0J93Co6/gdjVnm8YOdjA1o
+         G3XKxwtuaMAz3ZKukIQR63LmjGoP6eDALOfb7CDifSlld3qM2USizWfSioT7W42GsYuq
+         jn4ak7/dujelaQIR688Edt5ft01GJIOk4nRzhhunyC/4ghDtHrv/LgIGknybspO04L8I
+         sqNBhnNGjNx8TBSTI3W7tkf1Q4mHzEDvFX4H47k78lq3gYZ5l9OT/NjRW4qsNmwvgH33
+         JOQw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@mattdanzico-com.20150623.gappssmtp.com header.s=20150623 header.b=zEOUu0Jz;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+Return-Path: <matt@mattdanzico.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id e15sor5397233qkl.154.2021.02.14.11.07.29
+        for <josh@josh.is>
+        (Google Transport Security);
+        Sun, 14 Feb 2021 11:07:29 -0800 (PST)
+Received-SPF: pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@mattdanzico-com.20150623.gappssmtp.com header.s=20150623 header.b=zEOUu0Jz;
+       spf=pass (google.com: domain of matt@mattdanzico.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=matt@mattdanzico.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mattdanzico-com.20150623.gappssmtp.com; s=20150623;
+        h=from:mime-version:subject:date:references:to:in-reply-to:message-id;
+        bh=asBsP/ax1nx3VmASIQ3OaWzBkEqbppIlbcLMYtfYjFM=;
+        b=zEOUu0JzeDR3ksetprxL0TK8I9zkCeoibsJ0iSu82cq+yN+zkykvxPv0K3OmFQEBnr
+         r4rziMlBYPLGugB4a11IzMMeUmk6gXHQVhrf1bnyxsgPaSkEDm5pElEd+FsU/uCqzzeG
+         3DlGx0aGVZSUI+OCJCYdDksW0XQsW1fSEizKygfqMDwoTpHKvPK231qKtivQ30n/HOHe
+         UP6r1b+PzEpj1m6HcM64gQHx6wNMQ9m3PtXvL27qvr5Gaua/qfOHPFMe66Q+8q08XBtL
+         H4/Jax/l4ac47x5F9eOI62GnnilUo6+Q3v3NPfx9zGj6LKJrd5chv1fiJc4SUm6XA4bc
+         UfQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:subject:date:references:to
+         :in-reply-to:message-id;
+        bh=asBsP/ax1nx3VmASIQ3OaWzBkEqbppIlbcLMYtfYjFM=;
+        b=aEMMMZpJqVGHTVWPUL8i6GGtcBvdUJuWgITyF1dcVG5dVeS5dt68tTFkJNjOYXdbCm
+         D3NUp/CWB8aNFUSel7Nk5JavLsncUYsdSnbu0oURKt1HqHlsav3aryiuqObPQ7y5tTVE
+         GzzGs1ULvu+yL7DBSSPZUfgfBF2nEeDqdAU+nBTaZrGkrtXjHcUbnLxqJctG5bJ6to+N
+         9dovWt+jAQrggaMc0GmwBHtMfujFS223HSgB1Trew87N6SS+Z04MwuzycF8MZx7t6sWz
+         JsA5pH+3MDJAoZV0yrAdNZ+Vroeq5cIwM14UGczmSmd0ShLTe0mnl0TX/bJfyu/q8xz0
+         QwFw==
+X-Gm-Message-State: AOAM533MKmhT1hOCMyLqOqh/QJ09zbTdWv4fW5ZzT/sDdErdCjzRkCyR
+	Etle1bu4/EjtHj5FFQlrVJMksRKsREul8zxfzdXrdw==
+X-Google-Smtp-Source: ABdhPJyyxX0kkNwDQRDHWkzolTnkPJa17BeE6M6qBoVaNS9AOtIkI5phu8C/yxxE/fjnIcSjVOFi+A==
+X-Received: by 2002:a37:c17:: with SMTP id 23mr3655979qkm.282.1613329648207;
+        Sun, 14 Feb 2021 11:07:28 -0800 (PST)
+Return-Path: <matt@mattdanzico.com>
+Received: from [172.18.11.14] ([74.91.0.69])
+        by smtp.gmail.com with ESMTPSA id x64sm4197879qte.45.2021.02.14.11.07.26
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 14 Feb 2021 11:07:27 -0800 (PST)
+From: Matt Danzico <matt@mattdanzico.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_B4D1E9DF-63B5-4CCE-BB07-9B61425DA5CF"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: Microsoft Teams bot reads expressions / AI rewards dogs for
+ tricks / Valentine's Day card AI bot
+Date: Sun, 14 Feb 2021 20:07:25 +0100
+References: <l3ffypVtSPyhvMkOpnJDMQ@ismtpd0001p1sjc2.sendgrid.net>
+ <CACNgykNHqfid6RUC07gKeBkhUc5VZ1jCaRfLq+YrpL+gYOGDDg@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <CACNgykNHqfid6RUC07gKeBkhUc5VZ1jCaRfLq+YrpL+gYOGDDg@mail.gmail.com>
+Message-Id: <543087D0-8A44-4C77-9D38-AD14D4821F4C@mattdanzico.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
+
+
+--Apple-Mail=_B4D1E9DF-63B5-4CCE-BB07-9B61425DA5CF
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Hi,
+
+Wow. I like it=E2=80=94but maybe version 2.0 of the program? Feels a bit =
+invasive, no?
+
+What do you think?
+
+Matt
+
+
+
+> On Feb 12, 2021, at 11:04 AM, Josh Klein <josh@josh.is> wrote:
+>=20
+> Food for thought - we could have the chatbot use the participant's =
+cameras and measure their facial expressions to add to the learning =
+curve.=20
+>=20
+> So fucking crazy the tools available to this project... I spoke with a =
+friend at one of the intelligence agencies who suggested in all =
+seriousness that this could save the world.=20
+>=20
+> - J
+>=20
+>=20
+> ---------- Forwarded message ---------
+> From: Inside AI <ai@inside.com <mailto:ai@inside.com>>
+> Date: Thu, Feb 11, 2021 at 9:42 PM
+> Subject: Microsoft Teams bot reads expressions / AI rewards dogs for =
+tricks / Valentine's Day card AI bot
+> To: <josh@josh.is <mailto:josh@josh.is>>
+>=20
+>=20
+> Inside.com
+> PART OF    <https://inside.com/> NETWORK
+>=20
+> FEBRUARY 11, 2021 =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNs8UFTtbUWiOp2M4LdlYpw0s78OEmkre1icICPnrYrX0/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h72/OzC9eGKjoaKkD6qoK2oaTq2wbTxM81mBRrl5hCsx1O4>=
+
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeM-mIUlAGF5km0K=
+9bVIJ1f-8yef82Cb8rfgbQJeznK5SRQUPPiNVN6763KExoFDRow/39c/3y--mZGLT-aAL2ZHkG=
+bY6g/h73/pyPVJEcpTQUulkNsqOdIZnyIjEWHxt2e6oDgG21tbA4>
+> PRESENTED BY
+>=20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG4=
+9Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKrBiQxMtU=
+z2Sql99FgXfpgTjgglfHzUC6PO2ojQMf6hUJNb_1ZMCfxWI3Hc3dqlGp5gLB4GwHIlSErWK0wL=
+TusGNUeXD9RzXMUPEHgY8LZa1QbyARqynzJhfqqg9DCnESF16jZ0/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h74/-Sxt_fQiejIftSZTOXUSb11o29KzOk11-0L9rbKwySs>
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNZ5XTT3mD0pExGFgyCe8rN-FF5dK9Q00kI4Yz_wP0eg8sy=
+frxXHXm-_DspMu7d2PGKirvlEhFCZjeh9_ouHtKcw/39c/3y--mZGLT-aAL2ZHkGbY6g/h75/L=
+iKE5bEG8vwZn4ustw5ScfhT6CwyegorWSYBXfthZVs>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZY5WpYbXsGWXQtju61lOIItidghcVqxWwYeqI98-qDOQCKQaxzslcaPRYAznF05w5aS=
+XT8VNPFjpf4ALaTIUWt5SbT4_PsVht9WPXCVEfLbjanEYKJQ9qgV8o7bAn1E0hethfjG9zFnXs=
+Omtggy_zh18FzzwHig8m_f0JJZEJSlkv2vaBsOkDZ0531mdwHHiUl1B85nxme6yXz8sIpuMhKP=
+PeUnLj30cRt2jApPw92Fw/39c/3y--mZGLT-aAL2ZHkGbY6g/h76/M3DnLWfjdxt1eQhIzpDdX=
+X2c4Ja3iOntVXRlKNUAYcg>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHfGNTX7IWk8mE4W2l0aNFAYwiNnWlkDwGnmlvJy3GWln0eNRLaX7OSoA=
+uYpNce22bk0N_a_yibF5XW0Qut4i7jA/39c/3y--mZGLT-aAL2ZHkGbY6g/h77/Lb40_tPMtcJ=
+dW7nI1wM1YDHsbb89npzmhpWWzL_JHBk>    =
+<mailto:?subject=3DAI+for+Teams+reads+facial+expressions&body=3Dhttp%3A%2F=
+%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fai-for-teams-read=
+s-facial-expressions-224632>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNZ5XTT3mD0pExGFgyCe8rN-FF5dK9Q00kI4Yz_wP0eg8sy=
+frxXHXm-_DspMu7d2PGKirvlEhFCZjeh9_ouHtKcw/39c/3y--mZGLT-aAL2ZHkGbY6g/h78/K=
+FLHxAh01KpJNLAGXi1-G-s5nFoTHZ3Z5CZcF6wT3EE>=20
+> Microsoft researchers developed an AI system they say can read =
+people's facial expressions and movements during video meetings, =
+highlighting the most positive responses for better feedback. The =
+Microsoft Teams bot uses a neural network to classify people's =
+expressions into emotions, like happy, sad, or confused, and rates each =
+person's expression every 15 seconds based on their positivity.
+>=20
+> More:
+>=20
+> Highlighting positive responses "makes the presenter more aware of =
+their audience" and achieves "a communicative feedback loop," a =
+Microsoft Research spokesperson told New Scientist =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgRtPAp34r4PQnaJ=
+HLngaY308O4NEaWhtVPl9tKYDPTVAPb8g1fO8t1RUwcdTKliVcHbd6RQ-qwyYR69xTQa7T_Xxc=
+XU_VHsC-3CGddGkJDFSZrw1B_2S8U3FccxAvtkPqSU5x0PpUqa8o3vqs5sOF0o/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h79/Tsr0ovj1VilICwv6NUl7DI7eCUyvLSf7qGkaOLBgTqQ>.
+> The researchers did a survey where they found that nearly 85% of video =
+presenters often miss important audience feedback, especially non-verbal =
+social cues, in online presentations.
+> In a research paper =
+<https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfIMPpjXvC_bGMcS=
+AX1FktLTL6kVn8TUdxKhVenIeyjSZ/39c/3y--mZGLT-aAL2ZHkGbY6g/h80/TTU7OQ2tuG7C8=
+bUoCA7QpVhhCHKHSoZ827waUtwFNFU>, the team describes how the system, =
+called AffectiveSpotlight, made speakers "significantly more aware" of =
+audience members. They were able to speak longer and assess "the quality =
+of their talk" as though they were a participant compared to controls.
+> The categories for emotions included anger, surprise, happiness, =
+disgust, fear, sadness, and neutral. It also purports to detect eyebrow =
+movements, nodding, and head shaking.
+> Lisa Feldman Barrett, professor of psychology at Northeastern =
+University, has warned =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgWusXi1s4hZn5VS=
+cKN5MFfVbPAhuLLHAjHL_rwbJNiJZSPui2RkVi-LGL2y5ugfUOn1EFr2ch8eieHBUYeh5s5HNc=
+3QBbqlS_HYqWwZPEKMXtSLucf3E8sfWUXm7blCHp5Kfp9HuEWSBJgFbMsptOSI/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h81/_tceCZrwmoqbvwDqDgHchyldsAkyFJadJxAZ8zcYje0> that AI =
+systems claiming to read facial expressions are unreliable "outdated =
+science" and could lead to discrimination.
+> WINDOWS CENTRAL  =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXZIj4jO-qlYBnd=
+lUfcsKkfC2pXNsTMSbOMkPL65pJKf7d5_0uzFEwQZG6m1Uwyf9-AKb0zSiy984fHGC0eM_JvKA=
+J99jQDv_3cErpRNpRFuEdoPLa7FdwLtxjvIAbt_Xw/39c/3y--mZGLT-aAL2ZHkGbY6g/h82/u=
+7xxDm6XyQKRMjADXLfEIv9WD11befl4Uc5vHa64Ah4>
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjN7yt--00PG2h-t2MkffkWWJ5zKHqSldmZ49Tn2YQlrzQbu=
+9tGPwM2_PlrwbDmSNGc/39c/3y--mZGLT-aAL2ZHkGbY6g/h83/gZJNujo90Y76zEm7AmPMkHb=
+UC5tJMX-DDNJO8O91pNM>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZY5WpYbXsGWXQtju61lOII23BOPFYzu6oRTST_TfqenXwWUpuzrkeq5Wx-JCUiRvuHS=
+ZVbr7DYjLHixd_p3otomGS8VMfmePTpq2YFBmkz9YveX01zGKBuJNyAVADL-2nzBc-rsEJ1cRH=
+hTb4fWaQ4qGFqX0PKEx8xtn3voXbsCg/39c/3y--mZGLT-aAL2ZHkGbY6g/h84/nNoYMmD9jxy=
+QQtHBjcSZK_2PMvUud64wVi-cjjK77dI>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HH2WT-zxE4R-Hkw-SY36Cp9gOqF9bp7JO4wfBW70rXwj0/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h85/JDSrGWLRvCMns5L_9hN9iwPIrT3ay1wgTEgAY9df7kc>    =
+<mailto:?subject=3DAI+trains+dogs&body=3Dhttp%3A%2F%2Finside.com%2Fcampaig=
+ns%2Finside-ai-26547%2Fsections%2Fai-trains-dogs-224643>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjN7yt--00PG2h-t2MkffkWWJ5zKHqSldmZ49Tn2YQlrzQbu=
+9tGPwM2_PlrwbDmSNGc/39c/3y--mZGLT-aAL2ZHkGbY6g/h86/YpARsmdooTnVAmUbGNNPAt3=
+3hZLvbrJRlDMiRyF7XTY>=20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/aam8vyNd9XFzW-WKZB42uCNPFVjuiE9MPRf=
+G4yeRerWBeWI4SiVMekhfLUJVV2YdXtZJj4FAGRxceQRgxLqNyrPrqNZHSWyINsGgNONMFRcUE=
+ZvSeTCfQS8ooLFizP8g/39c/3y--mZGLT-aAL2ZHkGbY6g/h87/zO54TTUqZ4sDVLHhe0kZ4nn=
+Ad8nPZn8evH0SW8oTnx0>
+> Colorado State University researchers created an AI machine system =
+that rewards dogs for successfully doing tricks. Computer science grad =
+students Jason Stock and Tom Cavey trained an image classification model =
+to identify whether a dog is sitting, standing, or lying down. Upon =
+command, dogs that adopt the right posture are rewarded with a treat =
+from a servo motor.
+>=20
+> More:
+>=20
+> In the research paper =
+<https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfIMPpjXvC_bGMcS=
+AX1FktLSew7ieWjKuy_Jpi4veuX0j/39c/3y--mZGLT-aAL2ZHkGbY6g/h88/kGB1RvrgINxRz=
+r54HjUbteDBLtFfkF9YQcqcqny1zTo>, Stock and Cavey describe how they used =
+Nvidia's Jetson edge AI platform to create the system, which was trained =
+on more than 20,000 labeled images of dogs from Stanford Dogs data sets.
+> The training process was sped up using two 24 GB Nvidia RTX 6000 GPUs. =
+Nvidia=E2=80=99s Jetpack SDK and Nvidia TensorRT libraries optimized the =
+process.
+> In tests using Cavey=E2=80=99s Aussie Shepherd Henry, the system =
+reached an accuracy rate of 92%.
+> Stock said their research shows the potential for a future =
+dog-training product that's based on their system. Nvidia said =
+<https://u5080173.ct.sendgrid.net/ss/c/A7Ta93w3fdusSS1IBHvH_jmFP_2Gw_Gy2XM=
+pkXC5aW4F0jMQUKtx_csn3xZGqlVKDUYy-fO24We4GYhB6GU29NZQtwi6WI3WpySqWU8oZ2aVF=
+tQ0HtTM_P3mVIa8Qeslae4q5_0Vt-Myv8pF16-yaAug75-d6lB7UkWaoGcU6mU/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h89/NgnDDGGSRThbPbwzsSQJhx-TrP7SgJ9lfKxdeswiBJA> the =
+researchers perceive "many possible applications but haven=E2=80=99t =
+committed to anything yet.=E2=80=9D
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/6fy45Ksw58iAg6Qrr8CuSEE8NpfV4EmcMQF=
+gUFLkyjKtRczCbnT7evVzRmcP3J-4/39c/3y--mZGLT-aAL2ZHkGbY6g/h90/omRTm0LtR9k7F=
+sb2agnfU0CHG_kndw9grsZ_81yUC_0>
+> VENTUREBEAT  =
+<https://u5080173.ct.sendgrid.net/ss/c/A7Ta93w3fdusSS1IBHvH_jmFP_2Gw_Gy2XM=
+pkXC5aW4F0jMQUKtx_csn3xZGqlVKDUYy-fO24We4GYhB6GU29NZQtwi6WI3WpySqWU8oZ2aVF=
+tQ0HtTM_P3mVIa8Qeslae4q5_0Vt-Myv8pF16-yaAug75-d6lB7UkWaoGcU6mU/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h91/YoVGyLe_2yASeSQqWSxihmaRfgVqv3nBHKegwE59Yrw>
+>  =20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG4=
+9Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o6RupRaxrrzxqFntDAKTm9X7l=
+PinKS3yoV3sZQvEXkueHXjCnn7Cku0ouzyqoGt8iWUpMCg8HZzRopgAyCOy6NigB9GEFJh2CKD=
+eoobOUxjP4s_Np5fd59Yym4IvjnRNSwhk14yyMtcy6N665_oYvHU/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h92/3N0FFiSHJevrkb-f8NH0Kmp--UmY6WDAgslIBeI0CJI>
+> A MESSAGE FROM TURING
+>=20
+> How do engineering Leaders from Facebook, Google, Uber, and Stanford =
+Hire Remote Teams?
+>=20
+> Learn how at Turing Boundaryless: #BuildfromAnywhere =
+<https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhT=
+pw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29hNTqUrCR=
+KeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wAYvud1_q=
+MWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h93/wFGPc5K9sF_8FY8vFibVZ_VcQ_857cGqcWG14wnM-HY>, a virtual event =
+for engineering leaders on February 18th from 11-2 p.m. PT.
+>=20
+> Speakers include:
+>=20
+> Pravin Desale, SVP of SDS and Appliances, Veritas
+>=20
+> Suneela Joshi, Senior Director of Engineering at Abbott Laboratories
+>=20
+> Darren Murph, Head of Remote at GitLab
+>=20
+> Chris Herd, CEO of Firstbase
+>=20
+> For more information, including the agenda, please visit the Turing =
+Boundaryless: #BuildfromAnywhere Event Page =
+<https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhT=
+pw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29hNTqUrCR=
+KeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wAYvud1_q=
+MWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h94/ZlVXPDJA___MueE6Y2pM6VdIDHcPCtAX9SI212USlIg>.
+>=20
+> Sponsored by Turing.com =
+<https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhT=
+pw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29hNTqUrCR=
+KeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wAYvud1_q=
+MWw5Z5-CPc-d25GfWFXblXr70u_-8Pk5VZUd3EP0PW377-ws5EyQ/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h95/tYXf7cWNKkhGes9iJ8w_l7wS_iH4WNyFx6BOr46lwJ4>, an automated =
+platform that lets companies hire Silicon Valley caliber, remote =
+developers, at the touch of a button.
+>=20
+> REGISTER HERE =
+<https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhT=
+pw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29hNTqUrCR=
+KeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wAYvud1_q=
+MWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h96/BakF54mNPAIKViKJZY3KXcQgQkUBm_AR0oOksJkX_dY>
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNDGohdOSPDsFHDEcbmI_LZcCDL1Bkhex6qzIgzfeo2H7vw=
+HW61R5lW6nmdbCZxB7RYz4G4agO_-BRbtMzup-DAw/39c/3y--mZGLT-aAL2ZHkGbY6g/h97/U=
+57M-vV7FyPnW8KWFfI4utDXa4T0MfFtEN_5gi5KSCI>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZSfouNqp4lBT44JdgrWye8nfIZorlxDqmRHFTU1wDSbHBQCnkZ8y_L59uh57lG8G-Mc=
+F0QPoLiIKdIW3sHSXRBUlbe79uLjtUXMSwrJR85zAvR0crKGt8E-qsSyKIi8kDjPB0bJ9EnGTz=
+Gu1hHaN5CUmyq_TSTAuUGf0UpWySHl7DZ2oE_pS6g44I3Sthdq21_E91YRYsD8epG1yq3FQR-/=
+39c/3y--mZGLT-aAL2ZHkGbY6g/h98/KZsJ6JEOFMiMsiHiVRWZ1gxqtW5oCdC8A2RbazcgOJ8=
+>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHLg_8nAMYoBDfFsOGbmUBCzkr2-8tcyEyaEx-f2myKX5xA1pJWWnG-9b=
+jUFC0WZm-/39c/3y--mZGLT-aAL2ZHkGbY6g/h99/uTTIr7E3WjR3B2_6p0IZ4-UVaVkTSP8tc=
+xFR63HY2Sc>    =
+<mailto:?subject=3DNeuReality+emerges+from+stealth&body=3Dhttp%3A%2F%2Fins=
+ide.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fneureality-emerges-from=
+-stealth-224648>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNDGohdOSPDsFHDEcbmI_LZcCDL1Bkhex6qzIgzfeo2H7vw=
+HW61R5lW6nmdbCZxB7RYz4G4agO_-BRbtMzup-DAw/39c/3y--mZGLT-aAL2ZHkGbY6g/h100/=
+v5BUEektAF3GDY7NpLO5khSb_JiBgkn8Ub40Ieyzias>=20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgaTqd6j1YnHauGP=
+7E2LzeTwBVbWnrO_jO-5lkKh9-rwSIqg9N7UQS29OdVUdz705zfwoYMiQ2m65UgI5z6IsGKoUN=
+214WbC0W6A2sXNzi32Z8bNQXhyaK1HKIV7lu5YfvE8OK9o3KsCxp9MF-8o3B7U/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h101/iWuKO_LfrYGcfxdBBqLdEFp6zqF1HVEEvvLmdcjeRf0>
+> Israeli AI hardware startup NeuReality has emerged from stealth with =
+an $8M funding round. The startup is developing a novel approach for =
+"improving AI inferencing platforms by doing away with the current =
+CPU-centric model."
+>=20
+> More:
+>=20
+> In a TechCrunch interview =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVV0ri9mrtbMb8If=
+BejUbHpyYKZHKDNCe8DIvVKO6TJdaEVDJLsS893yRPn-xIIwX4uO_aRFfxhbyFjwgdJjYUqy8F=
+im7oyK8f1fWciLPJNZYxr2gvKC-kQo4JtYy8xc2QQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h102/=
+t9MoXbMCUfU2BNaAfuf4Ra6b8N5nNBsUMKq67T1iOGE>, CEO Moshe Tanach explained =
+how the general goal is to develop a platform allowing "hyperscale =
+clouds and other data center owners to offload their ML models to a far =
+more performant architecture where the CPU doesn=E2=80=99t become a =
+bottleneck." He described it as "the next evolution of AI computer =
+engines.=E2=80=9D
+> The $8M funding will help NeuReality launch its initial AI hardware =
+product later this year. The company would only share that the cost of =
+ownership in its future AI compute service would be "an order of =
+magnitude" more efficient than current solutions.
+> The funding round, NeuReality's first public investment, was led by =
+Cardumen Capital, OurCrowd, and Varana Capital. The startup also =
+announced that Naveen Rao, GM of Intel=E2=80=99s AI Products Group, will =
+join the company=E2=80=99s board of directors.
+> TECHCRUNCH  =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVV0ri9mrtbMb8If=
+BejUbHpyYKZHKDNCe8DIvVKO6TJdaEVDJLsS893yRPn-xIIwX4uO_aRFfxhbyFjwgdJjYUqy8F=
+im7oyK8f1fWciLPJNZYxr2gvKC-kQo4JtYy8xc2QQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h103/=
+0xY_AlnzRGhpuWAC3S3h6Oyd7OLsUqcpDDmBQjDizY8>
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNR9o09tvpDMq8fIp3v_dc3sXQjtBXqGpZxNMDf3veLMM_e=
+bQi-T5nEwjZZ4hbWLWF/39c/3y--mZGLT-aAL2ZHkGbY6g/h104/XaRnoS5ugrA-fhdYwwXvwD=
+8X6_7E713fLIamUELnepI>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZY5WpYbXsGWXQtju61lOIIuE2tG_kQBPeetnmB6KVUdH56xqGofeTtzq-8ETcsdF8Hf=
+IxsKeSArnCNh5KYMMcCZ8Vj27_S5u30SIAzHC0c4MDxs-qdVmwHGOUGSO6t0lOH9-x-6MFkdDY=
+VSTFl3_5N9NMWgxYtQi7slOrrC6UR56jjnjoIbdBVegQTqCweWUuBE6EaffYT6JFX31pJGr-D/=
+39c/3y--mZGLT-aAL2ZHkGbY6g/h105/BhEcUANlOGYERQ8Ldo4zKt6FHgAU6522mVH-Uc87Ot=
+g>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HH_GBNbJ2PUcyhW8L8tyqpZNA3NCnlVf2umGVENI9R6Si4HWoozgdVgjC=
+ZO3fs1EuB/39c/3y--mZGLT-aAL2ZHkGbY6g/h106/__qSqvL5J8X1Dc1b7zyHSa6CAu3qTWCu=
+ZfU0ZbwLAHE>    =
+<mailto:?subject=3DAI+writes+Valentine%27s+cards&body=3Dhttp%3A%2F%2Finsid=
+e.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fai-writes-valentine-s-car=
+ds-224655>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNR9o09tvpDMq8fIp3v_dc3sXQjtBXqGpZxNMDf3veLMM_e=
+bQi-T5nEwjZZ4hbWLWF/39c/3y--mZGLT-aAL2ZHkGbY6g/h107/xRkzbwE3qPOR-HH0aKm2H2=
+5DANfTwQEzmCvFFUY2s1M>=20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgd2yQZKWh-HjYVX=
+hgRl7e_3dzdLFDEmPWGirrTM5VLNVNSehDhgug4r5zk2oxLV7Cp3vKm5hrkV-6xh0eu-k3v01v=
+LWa0qHUJV9_5rVvEg2w4nJbgUemWLqQAWT1M4J5tRlCRM4XHksrC7szlwjKRu4SDTIFypZ3PsK=
+PiCO5tbTI/39c/3y--mZGLT-aAL2ZHkGbY6g/h108/BSUpnpsX27F8zFA6If6zJH6L8ZHbSce5=
+2_rgYYoBR7I>
+> AI copywriting startup CopyAI created a Valentine's Day bot that can =
+write letters based on user inputs. The AI bot is based on the language =
+model GPT-3.
+>=20
+> More:
+>=20
+> The free bot is available at www.valentinesday.ai =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgZf7Sd_Z3bqPPwc=
+aWPTk-QZ5t42XKJ56DRKSZqjs9spj/39c/3y--mZGLT-aAL2ZHkGbY6g/h109/xN5ZU4lfkZkG=
+3VDMn7OFXIVj6gx8yIhW9BvQ7qtnT58>. Type in a recipient and partner =
+attributes and it will generate a Valentine=E2=80=99s Day card based on =
+those attributes.
+> CopyAI developed an AI-powered assistant for writing and brainstorming =
+marketing copy. Here's a list of other copywriting tools based on GPT-3 =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVaznIHnWN63L9Ms=
+u7KrNgQ2xbG3h6D1rDLrHAXPddrnjfrPvjDUTz4Us9-Gapnxc5FH6MCx97id4Mo2Ygmsisz0/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h110/cTXOzKo8r6aF7Uyf9vWnyIpjFCiIuVciwL9EHpXPSmQ=
+>.
+> In other Valentine's news, AI researcher and "AI Weirdness =
+<https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfI2nv3DqOwvHpXa=
+vw5VJ038/39c/3y--mZGLT-aAL2ZHkGbY6g/h111/A8qvhHPGh8kpmFnsMV7UQ3WRAkVJsVhed=
+CKmZdtcLx0>" blogger Janelle Shane used machine learning to generate =
+images of candy hearts, which look disturbingly "out of focus, =
+shriveled, and misshapen," according to Fast Company =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgflDEPbLKJ06l5-=
+wG2mG6WelYHAMHWLGrK0Dy08MILG1vvluz9fYXF1Dpx7ExteJsTvq0wuLWCl1zPd5EVJX_uf4E=
+TO2tOPxXZAafiCwDW5SQFseH1tAzzuI73dNr9p-9A/39c/3y--mZGLT-aAL2ZHkGbY6g/h112/=
+fkcTz2mzDfOX15hJDrCuNF97m3OVHr683kCSN8gcpdU>.
+> KULTURE HUB  =
+<https://u5080173.ct.sendgrid.net/ss/c/PKuLz4JRmw99uhkqbttosjZxlipM5-JZu4L=
+Wfa7sdrVAwddix9TRjCLgQYQ2_hqe-RiX_4kV52pmR81Vvd9_gkyMLBzIWmok_uEIqyLUpik/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h113/X2a5UxZw4lXqSJo5VIoGmRJaVT5fHgZorpTCl9yUzkg=
+>
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjN8Qzfpp08xJQEFuDrLLdjAyfn_ThF4p1ee2DvCM5k_QWNV=
+axpGjH2Q6vonWjxlF_ktZYI7OTxFaRWoEvWi3tj2w/39c/3y--mZGLT-aAL2ZHkGbY6g/h114/=
+iELP9KL6Rpd5W63b0IMxbVEW6V_640R9lY2A7O3JKNU>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWa5XoRInu7p3wzIYGZMdqbdz3qoVRXxF1BuQxBmbVhZ7VoDHv4FmECMvxR7oRcU9cVCR=
+-5p79exVKA4GSVDsGpy1Iqv_GS1iE6oGoL8gb-SLup4heMn_wp_rZxQKIcmEsBYMVhBCkEgGJZ=
+3a4-3vm5qEaSC9AQFFlbIgyaxDRjwrgpn32DNYvcJ1P6fovciNFLL57dx8e3EB5hPoojaY4jmh=
+FdRw-303aVsjyOMqIkh-w/39c/3y--mZGLT-aAL2ZHkGbY6g/h115/u2VTqG2AousbtcNv21py=
+GU9BOGZBPU__TfD9M_UXqKA>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHllYQg8Hg2zUHznBI7aN_AI92sffQNz_-qZdemYgqiY8iBO8F5UcJQYs=
+8o5O8JsFNxyWRs7UXV9akt0geaPYu8Q/39c/3y--mZGLT-aAL2ZHkGbY6g/h116/rBXBMojFYn=
+UVYMqF84Il0IcXzLKAiOVz61ld5-uaYmg>    =
+<mailto:?subject=3DVolkswagen+AVs+to+use+Microsoft+cloud&body=3Dhttp%3A%2F=
+%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fvolkswagen-avs-to=
+-use-microsoft-cloud-224634>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjN8Qzfpp08xJQEFuDrLLdjAyfn_ThF4p1ee2DvCM5k_QWNV=
+axpGjH2Q6vonWjxlF_ktZYI7OTxFaRWoEvWi3tj2w/39c/3y--mZGLT-aAL2ZHkGbY6g/h117/=
+Cpq-uq1kJOqNxWtrryWCajwTjcis14hfBABaW1eIsYM>=20
+> Volkswagen announced it will use Microsoft's cloud computing services =
+to accelerate the software development of its autonomous vehicles =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgfrh4xMbrl1zRD_=
+WY6qsnXVk7d_ZIrS0Wghx2PzZpB0XwcBTNyWBvZo8uYwpIq7YjOSy--qpEMhK-jOBXwKkGQmW9=
+PE4OtN37n0kvqO2kz2LSR9floWqWfRecv4bC9ZlJHjVij8jpVTcKSjWtjfhrCU/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h118/17-yHog928Cwb7HHmyHCBbd8CTGIIAuj7_PAMAC4sEM>. =
+Volkswagen's software division will work with Microsoft to build a =
+cloud-based platform to streamline development processes and ensure =
+faster integration into its cars.
+>=20
+> More:
+>=20
+> Volkswagen owns several brands =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdzKcfRpEVWoPj7=
+rrYiMfGmgRd5pQwIaCg-tZYZolGTLG5yCF6vAnChK9yQgOvWy_3U37XNT94a4_iiR_r9PpB7Ml=
+-jgBjpHFBrd2Kl1HgHOdudx-DJowf7vDNM-V6AAjrKblCIrnaq54ELynDkhX9icI3ACYlLgS0u=
+vGizI5dL6/39c/3y--mZGLT-aAL2ZHkGbY6g/h119/YeOT-XehjlEprDK9JxeCzaQNcqVE2tHJ=
+r9lidLRzphs> such as Audi and Porsche that are developing their own =
+self-driving technology.
+> Last year, it consolidated certain brands into a single subsidiary =
+called Car.Software.
+> The various brands within the subsidiary used different systems to =
+develop their software, however, all of them will now use Microsoft.
+> This will make it easier to issue software updates =
+<https://u5080173.ct.sendgrid.net/ss/c/Kvd6VZZVgvZ78-6GurA_Rcuc7u6exVNLZ3c=
+1N4bGLQb55Ai9--npnKgj7PnQ7GpbxUSzeUDjnKxkT34Hir8TB3WiPd-ZqDfOFVT3iojRwAw/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h120/6T1m4MQs-WGzOVReG0D9xjh3WLnjhrLYHrMp9EFy_2M=
+> for new features.
+> A version of this story first appeared in Inside Transportation =
+<https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RasUE9fmEOtYgYaj=
+c-FbL8SWLM4sXS0BFABvaNMBXDWeQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h121/uEL-LdvfmZdj=
+18mCC_Tt_vhm_2zbnjafKKl5hV8ShnQ>.
+>=20
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNgCf_9-bkPgAAN2cqZ0IFwWmmH4BkGHlGwcIosHHN-n0ZG=
+ZH-sw94oLcL-G_5an_A/39c/3y--mZGLT-aAL2ZHkGbY6g/h122/im9ClwhgREK8RY8SIkCc7s=
+ww1B-Nss6PWyNRq5dn2ko>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWanuE9rtpXJIBmCwvN8WDWDiUVTKembXWkrUBt3PoZ3R9TSB3hiBQ1OUiv37W_XtYvD5=
+ga3kY7iFtKwPswHIEZBftlFtxz7LofvDIP65uU7jC5syxILgD6-e5ZvWnOH9bE8IkiRWtgW-U3=
+V9a7iCVqNoxltdCV5LTPla0GlwJfzDFkudHA7J575d1Lo5T6usog/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h123/PYKR5iEcrhKcL6FQVBkAD9FKXfmpjhy9t6ji0n0JvMs>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHyaUSU4Yo0uK9xLqMFs0Re277U8X9ulHYfvx6oBUBOIqY9SrlQq5ALpy=
+YMAmsuZI4/39c/3y--mZGLT-aAL2ZHkGbY6g/h124/fDjDaMIuNFdvpIWWDvsnO8CKDbm8kCWw=
+lycrEhcAzLc>    =
+<mailto:?subject=3DNew+job+postings+in+AI%2FML%3A&body=3Dhttp%3A%2F%2Finsi=
+de.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fnew-job-postings-in-ai-m=
+l-224589>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNgCf_9-bkPgAAN2cqZ0IFwWmmH4BkGHlGwcIosHHN-n0ZG=
+ZH-sw94oLcL-G_5an_A/39c/3y--mZGLT-aAL2ZHkGbY6g/h125/osGp6uwpsRgfHw6cCmNkXG=
+MGbTVq1_7m01II1at4q9g>=20
+> New job postings in AI:
+>=20
+> Senior Developer - AI =
+<https://u5080173.ct.sendgrid.net/ss/c/Avn0VrkYq4kxIgxXHy6sGY8t68jB5Sf8r0_=
+ZndXTHIw-sFmMtsiqBcX1C9rGhJuSwvKANDrXtHj30YsHzPA_HL0_0cTJ3KA0NeTCc_0t-XGqk=
+YPHuqF2IDGMAwH9XJANxjZCLSIYkeIR2GtBsLomgw/39c/3y--mZGLT-aAL2ZHkGbY6g/h126/=
+7VMSguQcURPDH4GeRpVmz1tVBuO-TY_L_Skzyckwxmc>
+> Ally Financial Inc. | Charlotte, NC
+>=20
+> Staff Machine Learning Infrastructure Architect =
+<https://u5080173.ct.sendgrid.net/ss/c/70pOOIdk_MOYkkaXSvnuy8vrX1IQB2xL29e=
+euigzvrWNgrr7U0VbYJMteSScl1NQiYThyv-9q-O6eGi1qkVNvSvkrwduYphpX278EKsxgMwj9=
+OC-ZPX-t2exg3Wy5uTw0hlLJuBzPSb7Yznb_mMdlQUgJsbMb1Gi6LjhwXHxsonGQCFSUjynPWo=
+mRA0gwVEqkTsInAmHQPBHh_3A51jrku_EFt3UrmVofe7xD46f3h9njC-4IBqZdYIjOBpNFZ8oj=
+VfeJ0qVS4oZ7rSbrUUThMlLoJuqORqWOdw5ywu-d1HTth32zUbGrsRhgUwAmwk7cIZwA7V41L2=
+pwqE0tHaPEA/39c/3y--mZGLT-aAL2ZHkGbY6g/h127/MqRTxWCfrDrc-ALzi23IBikANmnpuQ=
+2vFNdAWBtkXdY>
+> Intuit | Mountain View, Calif...
+>=20
+> To gain access to the full list (and receive a new one each week), =
+click here to upgrade to premium! =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeCx62VjrzUQjOhI=
+LXHo3Cj2f7r2usdT-Lg7W5NQD2s3FwrF3B-44zidCn3KD1rxwZVtlOJTtIPV16p_FiWhwwzz6w=
+7VR0_t8p_al6QxH5qDd4A4k1flWUwXKxEdHaAl36YNZ1qeB9S-wF9GdE3041PEx8JRHsQY7YTu=
+c630LG0Kl_lv7zqC_DQciAxS1ESzjlQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h128/wlE901ZNAa=
+0KF4INQ0u-2IUVm1mJZB-MSi1CNG-j7vU>
+> SUBSCRIBE TO INSIDE AI PREMIUM  =
+<https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RaqXbD3qNJ3I6jnu=
+Ak0k0syPkMgzMz9zbCzPJiJUSWOxuIXHtcWGSK2sth6OlTUUhUx8RDhAs6mfD9dS-VBvtiHcfG=
+u7LBfm6DPA5By8adab6KGUTQNeSg3xVJSU9bjN1IB_NJ8F4NZL2Ov7ED74CMUwrSt5N9EfG8e8=
+gUt77yIgK/39c/3y--mZGLT-aAL2ZHkGbY6g/h129/u3VYBszu3T_W3kR5MttLXp1Nq6Klvh1z=
+9v_-K1RIICE> =20
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNw1o3J0X_K4RKSwULM26Z3VhzvsGc1XF2tywBrLNxkDk/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h130/txI42EPG9zi3TiHfz5TBIsXzQEosp13tfITKsvubDmo=
+>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZiGZcOhUMFZAmBo3fAgHb6tmse7tYvkI07aXBSuUmOExxQb4Y_qZfcvoleRpnufwHgV=
+agR7LseU90fbogRgcenocGOuAlDRhURsBIH4cT9Buns03QMjdlyiRtFgPziQ-KueUgnVA_Fuy2=
+MSBQkZqCv/39c/3y--mZGLT-aAL2ZHkGbY6g/h131/wt6QkF7KTadw22Oaf8DjB7dRnQqI21sh=
+HEIXgk6gKZM>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHkLziM4R0QmA3xJc3Ht_lc2Fs33DFstevL_kLLC5HETE/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h132/WUB5avIbjFBlAYabqQ6aEB-Kgyl4Uw8dBPL4WqW9A6E>    =
+<mailto:?subject=3DQuick+Hits&body=3Dhttp%3A%2F%2Finside.com%2Fcampaigns%2=
+Finside-ai-26547%2Fsections%2Fquick-hits-224584>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNw1o3J0X_K4RKSwULM26Z3VhzvsGc1XF2tywBrLNxkDk/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h133/mGbzlpR-MPPzcekHUkQKxJjnI0FuEb1FsyXB1vbAN2k=
+>=20
+> QUICK HITS:
+>=20
+> How do engineering Leaders from Facebook, Google, Uber, Stanford, etc. =
+manage remote developer hiring to solve for speed and quality -- at =
+scale? Join us for Turing Boundaryless: #BuildfromAnywhere=C2=A0 =
+<https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RanptJrWpiALcEFE=
+QKrOvoeg/39c/3y--mZGLT-aAL2ZHkGbY6g/h134/QuPqgz0pQdv7VyW7YfF-AJ5Rs9t-Sdr1O=
+xp79HFAt2U>on February 18th, from 11-2 p.m. PT to learn how.*
+> Humana will roll out IBM's Watson conversational AI assistant to =
+employer plan members to help them better understand their health =
+benefits =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgfQ3pCOqehHWwHS=
+95M-ME6l8YcGTM6wMvKYmmLc85wynq3wxQymFwcUQUkYIgjH4usZb7Z__I7M60-ujw-2OJScuz=
+xzBFQsN3ZDxGMjGxHwF2_PibANVXAq3Dyi34qaIu7OrG4pvukf6rfyuspV9HVU/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h135/jIUrhQ37EtbiRSVFEHGhxaLyA872rdU50awyOp-OMIk>.
+> AilixPartners is estimating that the automotive industry will lose =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgbzSO4qTm4KkCfy=
+bDJciXfcJwiVbI3BfuJhaJTLUxXf7F_5DyVITCNHpQQcUAiH_-FdRIH4OIWVJ0c11QjLfU-hRd=
+DYyhd7UZhh56OFCR6Bl2MqXrbfwf5fXxJztGfqP7A/39c/3y--mZGLT-aAL2ZHkGbY6g/h136/=
+9ZKQ62Bcea9kAg8v23tNMgIWWWubkEDJtfsZrXgQQjc> $60B in sales this year due =
+to the global chip shortage. The shortage affects numerous industries; =
+in the automotive sector, semiconductors are required for the =
+infotainment system, power steering, braking, and autonomous driving =
+<https://u5080173.ct.sendgrid.net/ss/c/Kvd6VZZVgvZ78-6GurA_RUZvWScKPqt-2Mt=
+9V6ERqcw6SU97se4UxAWW4Gm8jxO2LqT0LLS7huzvUzWACAyLpGh6Rvd7F14-7wNjqpEUIps3x=
+CtUTJ6X_Vh1SNymGYc8rIxloyD2ZM-qLyfz2GfOiSXqq_yzHmZidUkhIb_d3DU/39c/3y--mZG=
+LT-aAL2ZHkGbY6g/h137/no0VYkNN7ux4SnCLNFhD5AODZVUs8Bwp-RSi75Oybq0>.
+> Canon launched an app =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdlJ8psqIlq0ar6=
+l-eyXlmvckgoyxUZME78UqinwP9MpO2bEMNaeSez3B9C4F141_mvpv98YgrRFsH6IAUUl9qA76=
+tgc5uoTEKFVtoX7jTMvwQ8b57Eh5PIGcqBLZlUpAA/39c/3y--mZGLT-aAL2ZHkGbY6g/h138/=
+Tu-XZFIVZcQp8NSkVMg6PTJwKJtEH7B9kuDSrtWJwLc> =E2=80=94 based on its =
+computer vision AI engine PHIL =E2=80=94 that suggests which photos to =
+delete according to criteria like sharpness, closed eyes, and noise.
+> Qinxuan Pan, an MIT researcher in AI and computer science, has been =
+identified as a person of interest =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgVPxV9zglEKDNnQ=
+SoTCjN9DekroBDOoDNjs4O0EvCQKUkojCNj4eYIaltIoxr6gMO-wCfs0ZxcN4x2d1KhmjnX1pZ=
+_PRgikKByBX2r-yCJ5sujgwARt4uEi9MTyEqLp84g/39c/3y--mZGLT-aAL2ZHkGbY6g/h139/=
+5I8KGCVR0ki8JH80IVF_vHHVH9-hn8v4mGI6XzjObmQ> in Saturday's fatal =
+shooting of Yale University graduate student Kevin Jiang.
+> Streaming intent is the ultimate competitive advantage for ABM =
+strategies. Learn 7 ways to shorten the sales cycle =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeGsB1YCDUu6pA_c=
+B-iAhxdw/39c/3y--mZGLT-aAL2ZHkGbY6g/h140/X3xeQ9qlq6UFhROC-WuDcopdMiRksY-10=
+f6MS2I3JG4> by utilizing real-time intent data.*
+> *This is a sponsored post.
+>=20
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNEXFB4GyXajYdLH9eQvX5NdXrvoIqVUldJnv02ZMat0ZVS=
+-JJRT4-PvN5-WdvB1v6/39c/3y--mZGLT-aAL2ZHkGbY6g/h141/Dy528h8RXZS77AomvCaTRW=
+ZgYA7I_FEpgv7HfkWlTXc>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWa1UtCLcWTP9DsYzLKFmq2vHK-uI4mhObOqumD2zu8CAchc48m_M2IwsZT56pk8VE62g=
+vmgV9UfS7jLLacw39Cnm4klF9IWleTK0GgsWX9mLSmIC2CFes33-GHms71_sGWAFDp8yKtyZGl=
+1cnyOS5w4cUqhLAbaBjWImBWMG-Cyeg/39c/3y--mZGLT-aAL2ZHkGbY6g/h142/2xRRw6BPmW=
+zlWDgYILnNtisEvQXCTnTNpZFda9-C7AU>    =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWlY=
+cIg2uFiN1TRT6FLh7HHgR5hpsXMbCARpwyb-DHKtOocBW2U75ovFb5tCy01WCTon1AFxU_3VcE=
+KCK14BaAG/39c/3y--mZGLT-aAL2ZHkGbY6g/h143/VQiIQ3RAxYTj2pCyolT6xJ4YHISsQ5LQ=
+73sCz4PHbyU>    =
+<mailto:?subject=3DTweet+of+the+Day%3A&body=3Dhttp%3A%2F%2Finside.com%2Fca=
+mpaigns%2Finside-ai-26547%2Fsections%2Ftweet-of-the-day-224638>    =
+<https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5amTKqDmBP62eNV-RAojrkjNEXFB4GyXajYdLH9eQvX5NdXrvoIqVUldJnv02ZMat0ZVS=
+-JJRT4-PvN5-WdvB1v6/39c/3y--mZGLT-aAL2ZHkGbY6g/h144/C5f2GLCltgXnXvNXVcmJzN=
+lSfmlC2glzxetk33ZJcM0>=20
+> 10 years ago this week, IBM researcher Noam Slonim =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MVesjb1fF=
+OevoTwiSYrLB27lmOh3aXwxBptv2I/39c/3y--mZGLT-aAL2ZHkGbY6g/h145/FRyFgxZv2xzb=
+aju1lPGdpd--ubU4zvHbWEEIB9QW7Tk> first proposed the idea behind Project =
+Debater, the AI system that can debate humans on complex topics. The IBM =
+software held its first debate in 2018 =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgeTMLbtrn1DheFb=
+If71bLIaBlMtYDjM0ixiNCGvWxIzs3LY-cqi95Hd6Vp2pcUQQbQ/39c/3y--mZGLT-aAL2ZHkG=
+bY6g/h146/0AxkKbbAzqF4MNxOmc_ABe24QAcp30JdcwvHjtdyezI> against two human =
+champions, who debated subsidizing space exploration and the use of =
+telemedicine =
+<https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdwuiiDIeWMAr_y=
+ZTF4urSc5MjzTDF4PDwcWKV5sc28HSx0UivvROCHYpwuAn-1OkHgtaMf5THooek2bZiN9hOc/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h147/7oiI5tGLCS5IKCYBkCpRq3XXvWCXejbmWs-vHd63Kvk=
+>. Yesterday, Slonim tweeted =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MVesjb1fF=
+OevoTwiSWrqLILFRCkinNSXHbTyIsGwUHle6YTufkgy8Tvy0zRid6WCnW6qvj-M3yDrXb46Q/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h148/f_VByMaoHjtnmfpYQMMvHNx0edLrnm3X0hhW6pO6SIg=
+> that a "corresponding paper is now in press."
+>=20
+>  =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MVesjb1fF=
+OevoTwiSWrqLILFRCkinNSXHbTyIsGwUHle6YTufkgy8Tvy0zRid6WCnW6qvj-M3yDrXb46Q/3=
+9c/3y--mZGLT-aAL2ZHkGbY6g/h149/eKD2_mFjbDZxVk6rFdktpnbo6BhVwophzmTl3cRikrg=
+>
+>=20
+>=20
+> Beth is a former investigative reporter for The Arizona Republic who =
+authored a book about the U.S. solar industry. A graduate of the Walter =
+Cronkite School of Journalism, she won a First Amendment Award and a =
+Pulitzer Prize nomination for her co-reporting on the rising costs of =
+Arizona's taxpayer-funded pension systems.
+>=20
+> =20
+>    =
+<https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVeo7MAY8dgB0wh_=
+SKlGWPBWMYVh59QG30dw1ZC1P8nEQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h150/zWm9VPYf4Mte=
+GrKM4JRhUmWAgarhgH9JG0IgKVwYzAE>  =
+<https://u5080173.ct.sendgrid.net/ss/c/lQk7vBloXJgp4Oi7NFVdWAkK5H28JDHHGez=
+cguPWn468DDbokRZ7P50odlZ1F94m4cLxhZlCiMHxHrQ0lSz3dPM9i_V4GKhD_jkuAtDxzz439=
+Xun5U59MmE9weHjFOiU/39c/3y--mZGLT-aAL2ZHkGbY6g/h151/YceVVn49oCOADUVPx41xrZ=
+ffliR45y7l-txpNKw-c2Y>
+> EDITOR
+> Charlotte Hayes-Clemens is an editor and writer based in Vancouver. =
+She has dabbled in both the fiction and non-fiction world, having worked =
+at HarperCollins Publishers and more recently as a writing coach for new =
+and self-published authors. Proper semi-colon usage is her hill to die =
+on.
+>=20
+>   =
+<https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG4=
+9Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKrBiQxMtU=
+z2Sql99FgXfpgTjgglfPMifSDvkUlgoEu5SaY3IbDnFCvzARMvDfPCIhhBy_z-87Ew7omCMY3S=
+k2H_hzWukVFoHbq3F8hjb7PbhWkxIrq2e49MUGEdn0aamQoMXIx4/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h152/8Uk94ZbmMa7rG1S3JQMkWusZZYaRJmFMydfNCiQJak4>
+> Hire senior pre-vetted remote developers that are affordable, have =
+strong technical and communication skills, and work in your timezone. =
+Hire elite engineers now. =
+<https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG4=
+9Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKrBiQxMtU=
+z2Sql99FgXfpgTjgglfPMifSDvkUlgoEu5SaY3IbDnFCvzARMvDfPCIhhBy_z-87Ew7omCMY3S=
+k2H_hzWukVFoHbq3F8hjb7PbhWkxIrq2e49MUGEdn0aamQoMXIx4/39c/3y--mZGLT-aAL2ZHk=
+GbY6g/h153/uphj2s6sWI2w6z-TgfG_RajHJJptLhlmYCQvRBP04yM>
+>   <https://twitter.com/inside> 	  =
+<https://www.linkedin.com/company/inside-com/>=20
+> 767 Bryant St. #203, San Francisco, CA 94107=20
+> Copyright =C2=A9 2021 Inside.com
+> Did someone forward this email to you? Head over to inside.com =
+<https://inside.com/> to get your very own free subscription!=20
+> You received this email because you subscribed to Inside AI =
+<http://inside.com/ai?token=3Dh6tjzrRkwBOrnvn4jDQekw>. Click here =
+<https://inside.com/lists/unsubscribe/lArS9zE1BofEVd4IRHiCug?list=3D65> =
+to unsubscribe from Inside AI list or manage your subscriptions =
+<https://inside.com/subscriptions/manage/h6tjzrRkwBOrnvn4jDQekw>.
+>=20
+>=20
+> =E1=90=A7
+
+
+--Apple-Mail=_B4D1E9DF-63B5-4CCE-BB07-9B61425DA5CF
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" =
+class=3D"">Hi,<div class=3D""><br class=3D""></div><div class=3D"">Wow. =
+I like it=E2=80=94but maybe version 2.0 of the program? Feels a bit =
+invasive, no?</div><div class=3D""><br class=3D""></div><div =
+class=3D"">What do you think?</div><div class=3D""><br =
+class=3D""></div><div class=3D"">Matt</div><div class=3D""><br =
+class=3D""></div><div class=3D""><br class=3D""><div><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On Feb =
+12, 2021, at 11:04 AM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D"Apple-interchange-newline"><div class=3D""><div dir=3D"ltr" =
+class=3D"">Food for thought - we could&nbsp;have the chatbot use the =
+participant's cameras and measure their facial expressions to add to the =
+learning curve.&nbsp;<div class=3D""><br class=3D""></div><div =
+class=3D"">So fucking crazy the tools available to this project... I =
+spoke with a friend at one of the intelligence agencies who suggested in =
+all seriousness that this could save the world.&nbsp;</div><div =
+class=3D""><br class=3D""></div><div class=3D"">- J</div><div =
+class=3D""><br class=3D""><br class=3D""><div class=3D"gmail_quote"><div =
+dir=3D"ltr" class=3D"gmail_attr">---------- Forwarded message =
+---------<br class=3D"">From: <strong class=3D"gmail_sendername" =
+dir=3D"auto">Inside AI</strong> <span dir=3D"auto" class=3D"">&lt;<a =
+href=3D"mailto:ai@inside.com" class=3D"">ai@inside.com</a>&gt;</span><br =
+class=3D"">Date: Thu, Feb 11, 2021 at 9:42 PM<br class=3D"">Subject: =
+Microsoft Teams bot reads expressions / AI rewards dogs for tricks / =
+Valentine's Day card AI bot<br class=3D"">To:  &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt;<br =
+class=3D""></div><br class=3D""><br class=3D""><u class=3D""></u>        =
+          <div style=3D"margin:0;padding:0!important;line-height:.8" =
+id=3D"m_-3010385149085029693body" class=3D""> <center style=3D"width:100%"=
+ class=3D"">  <div =
+style=3D"display:none;font-size:1px;line-height:1px;max-height:0;max-width=
+:0;opacity:0;overflow:hidden;font-family:sans-serif" class=3D""> Plus: =
+AI hardware startup NeuReality emerged from stealth. <img =
+src=3D"https://pixel.inside.com/pixel/open?campaign_id=3D26547&amp;outboun=
+d_id=3D541886282" class=3D""> </div> <table cellspacing=3D"0" =
+cellpadding=3D"0" border=3D"0" =
+style=3D"background-color:#0a0300;width:100%" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td align=3D"ccenter" class=3D""> <div =
+style=3D"font-size:0;max-width:640px;margin:0 auto;line-height:2" =
+class=3D""> <div class=3D"m_-3010385149085029693hidden-column"> <table =
+cellspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%" =
+class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"font-size:0;line-height:0" class=3D""><a =
+href=3D"http://Inside.com" class=3D"">Inside.com</a></td> </tr> =
+</tbody></table> </div> <div =
+class=3D"m_-3010385149085029693network-column"> <table cellspacing=3D"0" =
+cellpadding=3D"0" border=3D"0" style=3D"width:100%;height:50px" =
+class=3D""> <tbody class=3D""><tr class=3D""> <td class=3D""><p =
+style=3D"color:#fff;text-align:center;text-transform:uppercase;font-size:1=
+2px;letter-spacing:1px;font-family:Open Sans,Segoe UI,sans-serif" =
+class=3D"">Part of&nbsp;<a href=3D"https://inside.com/" style=3D"margin:0 =
+4px;text-decoration:none" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/il.png" width=3D"57" =
+style=3D"vertical-align:text-top;height:auto" class=3D""> =
+</a>&nbsp;Network</p> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693date-column"> <table cellspacing=3D"0" =
+cellpadding=3D"0" border=3D"0" style=3D"width:100%;height:50px" =
+class=3D""> <tbody class=3D""><tr class=3D""> <td class=3D""><p =
+style=3D"font-size:12px;text-align:center;color:#fff;text-transform:upperc=
+ase;letter-spacing:1px;font-family:Open Sans,Segoe UI,sans-serif" =
+class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNs8UFTtbUWiOp2M4LdlYpw0s78OEmkre1icICPn=
+rYrX0/39c/3y--mZGLT-aAL2ZHkGbY6g/h72/OzC9eGKjoaKkD6qoK2oaTq2wbTxM81mBRrl5h=
+Csx1O4" style=3D"color:#fff!important" target=3D"_blank" =
+class=3D"">February 11, 2021</a> </p> </td> </tr> </tbody></table> =
+</div> </div> </td> </tr> </tbody></table> <div =
+style=3D"max-width:680px;margin:0 auto" class=3D"">  <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:70px 0 50px" =
+align=3D"center" class=3D""> <h1 style=3D"text-align:center;margin:0" =
+class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeM-mIUlA=
+GF5km0K9bVIJ1f-8yef82Cb8rfgbQJeznK5SRQUPPiNVN6763KExoFDRow/39c/3y--mZGLT-a=
+AL2ZHkGbY6g/h73/pyPVJEcpTQUulkNsqOdIZnyIjEWHxt2e6oDgG21tbA4" =
+style=3D"text-decoration:none" target=3D"_blank" class=3D""> <img alt=3D""=
+ =
+src=3D"https://e.insd.io/lists/logos/000/000/065/original_ai.png?158351427=
+9" border=3D"0" height=3D"43" style=3D"width:auto" =
+class=3D"m_-3010385149085029693logo"> </a> </h1> <u class=3D""></u>   =
+<div class=3D""><p =
+style=3D"text-transform:uppercase;font-size:12px;letter-spacing:1px;font-f=
+amily:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-weight:normal;color:#82758a;margin:35px 0 =
+20px" align=3D"center" class=3D""> Presented by </p><div style=3D"margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXw=
+vZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKr=
+BiQxMtUz2Sql99FgXfpgTjgglfHzUC6PO2ojQMf6hUJNb_1ZMCfxWI3Hc3dqlGp5gLB4GwHIlS=
+ErWK0wLTusGNUeXD9RzXMUPEHgY8LZa1QbyARqynzJhfqqg9DCnESF16jZ0/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h74/-Sxt_fQiejIftSZTOXUSb11o29KzOk11-0L9rbKwySs" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/a/h/676_x2.png" border=3D"0" width=3D"150" =
+class=3D""> </a> </div> </div>  </td> </tr> </tbody></table> <table =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"max-width:680px"=
+ class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"vertical-align:top;padding:0 10px 40px;font-size:0" class=3D""> =
+<div style=3D"max-width:660px;margin:0 auto" class=3D""> <div =
+class=3D"m_-3010385149085029693column-share"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" =
+class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNZ5XTT3mD0pExGFgyCe8rN-FF5dK9Q00kI4Yz_w=
+P0eg8syfrxXHXm-_DspMu7d2PGKirvlEhFCZjeh9_ouHtKcw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h75/LiKE5bEG8vwZn4ustw5ScfhT6CwyegorWSYBXfthZVs" target=3D"_blank" =
+class=3D""><img alt=3D"" src=3D"https://e.insd.io/e/1.png" width=3D"35" =
+height=3D"35" class=3D""></a> </p><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWZY5WpYbXsGWXQtju61lOIItidghcVqxWwYeqI98-qDOQCKQaxzslcaPRYAzn=
+F05w5aSXT8VNPFjpf4ALaTIUWt5SbT4_PsVht9WPXCVEfLbjanEYKJQ9qgV8o7bAn1E0hethfj=
+G9zFnXsOmtggy_zh18FzzwHig8m_f0JJZEJSlkv2vaBsOkDZ0531mdwHHiUl1B85nxme6yXz8s=
+IpuMhKPPeUnLj30cRt2jApPw92Fw/39c/3y--mZGLT-aAL2ZHkGbY6g/h76/M3DnLWfjdxt1eQ=
+hIzpDdXX2c4Ja3iOntVXRlKNUAYcg" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHfGNTX7IWk8mE4W2l0aNFAYwiNnWlkDwGnmlvJy3GWln0eNRL=
+aX7OSoAuYpNce22bk0N_a_yibF5XW0Qut4i7jA/39c/3y--mZGLT-aAL2ZHkGbY6g/h77/Lb40=
+_tPMtcJdW7nI1wM1YDHsbb89npzmhpWWzL_JHBk" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DAI+for+Teams+reads+facial+expressions&amp;body=3D=
+http%3A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fai-for-=
+teams-reads-facial-expressions-224632" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" =
+height=3D"37" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNZ5XTT3mD0pExGFgyCe8rN-FF5dK9Q00kI4Yz_w=
+P0eg8syfrxXHXm-_DspMu7d2PGKirvlEhFCZjeh9_ouHtKcw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h78/KFLHxAh01KpJNLAGXi1-G-s5nFoTHZ3Z5CZcF6wT3EE" target=3D"_blank" =
+class=3D""> <img alt=3D"" src=3D"https://e.insd.io/e/ki-o.png" =
+width=3D"35" height=3D"38" class=3D""> </a> </div> </td> </tr> =
+</tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">Microsoft researchers developed an AI system they say can =
+read people's facial expressions and movements during video meetings, =
+highlighting the most positive responses for better feedback.</strong> =
+The Microsoft Teams bot uses a neural network to classify people's =
+expressions into emotions, like happy, sad, or confused, and rates each =
+person's expression every 15 seconds based on their positivity.</p><p =
+class=3D""><strong class=3D"">More:</strong></p> <ul class=3D""> <li =
+class=3D"">Highlighting positive responses "makes the presenter more =
+aware of their audience" and achieves "a communicative feedback loop," a =
+Microsoft Research spokesperson told <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgRtPAp34=
+r4PQnaJHLngaY308O4NEaWhtVPl9tKYDPTVAPb8g1fO8t1RUwcdTKliVcHbd6RQ-qwyYR69xTQ=
+a7T_XxcXU_VHsC-3CGddGkJDFSZrw1B_2S8U3FccxAvtkPqSU5x0PpUqa8o3vqs5sOF0o/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h79/Tsr0ovj1VilICwv6NUl7DI7eCUyvLSf7qGkaOLBgTqQ" =
+target=3D"_blank" class=3D"">New Scientist</a>.</li> <li class=3D"">The =
+researchers did a survey where they found that nearly 85% of video =
+presenters often miss important audience feedback, especially non-verbal =
+social cues, in online presentations.</li> <li class=3D"">In a <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfIMPpjXv=
+C_bGMcSAX1FktLTL6kVn8TUdxKhVenIeyjSZ/39c/3y--mZGLT-aAL2ZHkGbY6g/h80/TTU7OQ=
+2tuG7C8bUoCA7QpVhhCHKHSoZ827waUtwFNFU" target=3D"_blank" =
+class=3D"">research paper</a>, the team describes how the system, called =
+AffectiveSpotlight, made speakers "significantly more aware" of audience =
+members. They were able to speak longer and assess "the quality of their =
+talk" as though they were a participant compared to controls.</li> <li =
+class=3D"">The categories for emotions included anger, surprise, =
+happiness, disgust, fear, sadness, and neutral. It also purports to =
+detect eyebrow movements, nodding, and head shaking.</li> <li =
+class=3D"">Lisa Feldman Barrett, professor of psychology at Northeastern =
+University, <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgWusXi1s=
+4hZn5VScKN5MFfVbPAhuLLHAjHL_rwbJNiJZSPui2RkVi-LGL2y5ugfUOn1EFr2ch8eieHBUYe=
+h5s5HNc3QBbqlS_HYqWwZPEKMXtSLucf3E8sfWUXm7blCHp5Kfp9HuEWSBJgFbMsptOSI/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h81/_tceCZrwmoqbvwDqDgHchyldsAkyFJadJxAZ8zcYje0" =
+target=3D"_blank" class=3D"">has warned</a> that AI systems claiming to =
+read facial expressions are unreliable "outdated science" and could lead =
+to discrimination.</li> </ul> </div><div style=3D"padding-top: 10px; =
+color: rgb(0, 7, 23); margin: 0px; text-transform: uppercase; font-size: =
+14px; font-family: &quot;Open Sans&quot;, &quot;Segoe UI&quot;, Tahoma, =
+sans-serif;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXZIj4jO=
+-qlYBndlUfcsKkfC2pXNsTMSbOMkPL65pJKf7d5_0uzFEwQZG6m1Uwyf9-AKb0zSiy984fHGC0=
+eM_JvKAJ99jQDv_3cErpRNpRFuEdoPLa7FdwLtxjvIAbt_Xw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h82/u7xxDm6XyQKRMjADXLfEIv9WD11befl4Uc5vHa64Ah4" =
+style=3D"color:#ff5d16;text-decoration:none" target=3D"_blank" =
+class=3D"">WINDOWS CENTRAL <img alt=3D"" =
+src=3D"https://e.insd.io/e/oi-o.png" width=3D"13" height=3D"13" =
+class=3D""> </a> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td style=3D"vertical-align:top;padding:0 10px =
+40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjN7yt--00PG2h-t2MkffkWWJ5zKHqSldmZ49Tn2Y=
+QlrzQbu9tGPwM2_PlrwbDmSNGc/39c/3y--mZGLT-aAL2ZHkGbY6g/h83/gZJNujo90Y76zEm7=
+AmPMkHbUC5tJMX-DDNJO8O91pNM" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://e.insd.io/e/2.png" width=3D"35" height=3D"35" =
+class=3D""></a> </p><div style=3D"float: right; margin: 0px;" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWZY5WpYbXsGWXQtju61lOII23BOPFYzu6oRTST_TfqenXwWUpuzrkeq5Wx-JC=
+UiRvuHSZVbr7DYjLHixd_p3otomGS8VMfmePTpq2YFBmkz9YveX01zGKBuJNyAVADL-2nzBc-r=
+sEJ1cRHhTb4fWaQ4qGFqX0PKEx8xtn3voXbsCg/39c/3y--mZGLT-aAL2ZHkGbY6g/h84/nNoY=
+MmD9jxyQQtHBjcSZK_2PMvUud64wVi-cjjK77dI" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HH2WT-zxE4R-Hkw-SY36Cp9gOqF9bp7JO4wfBW70rXwj0/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h85/JDSrGWLRvCMns5L_9hN9iwPIrT3ay1wgTEgAY9df7kc" =
+target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/fi-o.png" =
+alt=3D"Facebook" width=3D"35" height=3D"38" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DAI+trains+dogs&amp;body=3Dhttp%3A%2F%2Finside.co=
+m%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fai-trains-dogs-224643" =
+target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/fwdi-o.png" =
+alt=3D"Forward" width=3D"35" height=3D"37" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjN7yt--00PG2h-t2MkffkWWJ5zKHqSldmZ49Tn2Y=
+QlrzQbu9tGPwM2_PlrwbDmSNGc/39c/3y--mZGLT-aAL2ZHkGbY6g/h86/YpARsmdooTnVAmUb=
+GNNPAt33hZLvbrJRlDMiRyF7XTY" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/ki-o.png" width=3D"35" height=3D"38" =
+class=3D""> </a> </div> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/aam8vyNd9XFzW-WKZB42uCNPFVju=
+iE9MPRfG4yeRerWBeWI4SiVMekhfLUJVV2YdXtZJj4FAGRxceQRgxLqNyrPrqNZHSWyINsGgNO=
+NMFRcUEZvSeTCfQS8ooLFizP8g/39c/3y--mZGLT-aAL2ZHkGbY6g/h87/zO54TTUqZ4sDVLHh=
+e0kZ4nnAd8nPZn8evH0SW8oTnx0" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/s/p/224643_x2.PNG?1613074294" border=3D"0" =
+width=3D"585" =
+style=3D"Margin-bottom:10px;max-width:100%;border-radius:5px" class=3D""> =
+</a> <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">Colorado State University researchers created an AI machine =
+system that rewards dogs for successfully doing tricks.</strong> =
+Computer science grad students Jason Stock and Tom Cavey trained an =
+image classification model to identify whether a dog is sitting, =
+standing, or lying down. Upon command, dogs that adopt the right posture =
+are rewarded with a treat from a servo motor.</p><p class=3D""><strong =
+class=3D"">More:</strong></p> <ul class=3D""> <li class=3D"">In the <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfIMPpjXv=
+C_bGMcSAX1FktLSew7ieWjKuy_Jpi4veuX0j/39c/3y--mZGLT-aAL2ZHkGbY6g/h88/kGB1Rv=
+rgINxRzr54HjUbteDBLtFfkF9YQcqcqny1zTo" target=3D"_blank" =
+class=3D"">research paper</a>, Stock and Cavey describe how they used =
+Nvidia's Jetson edge AI platform to create the system, which was trained =
+on more than 20,000 labeled images of dogs from Stanford Dogs data =
+sets.</li> <li class=3D"">The training process was sped up using two 24 =
+GB Nvidia RTX 6000 GPUs. Nvidia=E2=80=99s Jetpack SDK and Nvidia =
+TensorRT libraries optimized the process.</li> <li class=3D"">In tests =
+using Cavey=E2=80=99s Aussie Shepherd Henry, the system reached an =
+accuracy rate of 92%.</li> <li class=3D"">Stock said their research =
+shows the potential for a future dog-training product that's based on =
+their system. Nvidia <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/A7Ta93w3fdusSS1IBHvH_jmFP_2G=
+w_Gy2XMpkXC5aW4F0jMQUKtx_csn3xZGqlVKDUYy-fO24We4GYhB6GU29NZQtwi6WI3WpySqWU=
+8oZ2aVFtQ0HtTM_P3mVIa8Qeslae4q5_0Vt-Myv8pF16-yaAug75-d6lB7UkWaoGcU6mU/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h89/NgnDDGGSRThbPbwzsSQJhx-TrP7SgJ9lfKxdeswiBJA" =
+target=3D"_blank" class=3D"">said</a> the researchers perceive "many =
+possible applications but haven=E2=80=99t committed to anything =
+yet.=E2=80=9D</li> </ul><p class=3D""><a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/6fy45Ksw58iAg6Qrr8CuSEE8NpfV=
+4EmcMQFgUFLkyjKtRczCbnT7evVzRmcP3J-4/39c/3y--mZGLT-aAL2ZHkGbY6g/h90/omRTm0=
+LtR9k7Fsb2agnfU0CHG_kndw9grsZ_81yUC_0" target=3D"_blank" class=3D""><img =
+alt=3D"" src=3D"https://j.gifs.com/WLZ6mX.gif" =
+style=3D"max-height:100%;max-width:100%" class=3D""></a></p> </div><div =
+style=3D"padding-top: 10px; color: rgb(0, 7, 23); margin: 0px; =
+text-transform: uppercase; font-size: 14px; font-family: &quot;Open =
+Sans&quot;, &quot;Segoe UI&quot;, Tahoma, sans-serif;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/A7Ta93w3fdusSS1IBHvH_jmFP_2G=
+w_Gy2XMpkXC5aW4F0jMQUKtx_csn3xZGqlVKDUYy-fO24We4GYhB6GU29NZQtwi6WI3WpySqWU=
+8oZ2aVFtQ0HtTM_P3mVIa8Qeslae4q5_0Vt-Myv8pF16-yaAug75-d6lB7UkWaoGcU6mU/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h91/YoVGyLe_2yASeSQqWSxihmaRfgVqv3nBHKegwE59Yrw" =
+style=3D"color:#ff5d16;text-decoration:none" target=3D"_blank" =
+class=3D"">VENTUREBEAT <img alt=3D"" src=3D"https://e.insd.io/e/oi-o.png" =
+width=3D"13" height=3D"13" class=3D""> </a> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""><td class=3D""><u class=3D""></u>  </td></tr><tr =
+class=3D""> <td style=3D"font-size:0;padding:0 10px 40px" valign=3D"top" =
+class=3D""> <div style=3D"max-width:660px;margin:0 auto" class=3D""> =
+<div class=3D"m_-3010385149085029693column-share"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" =
+class=3D""><p =
+style=3D"float:left;border-radius:5px;background-color:#ff5d16;width:35px;=
+margin:0 0 10px" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/ai.png" width=3D"35" height=3D"35" class=3D""> =
+</p> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXw=
+vZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o6RupRaxrrzxqFntDA=
+KTm9X7lPinKS3yoV3sZQvEXkueHXjCnn7Cku0ouzyqoGt8iWUpMCg8HZzRopgAyCOy6NigB9GE=
+FJh2CKDeoobOUxjP4s_Np5fd59Yym4IvjnRNSwhk14yyMtcy6N665_oYvHU/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h92/3N0FFiSHJevrkb-f8NH0Kmp--UmY6WDAgslIBeI0CJI" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/a/n/1560_e2.gif?1612289778" width=3D"585" =
+border=3D"0" style=3D"height:auto;max-width:100%;margin:0 auto" =
+class=3D""> </a><p =
+style=3D"text-transform:uppercase;font-size:12px;letter-spacing:1px;font-f=
+amily:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-weight:normal;color:#82758a;margin:10px 0" =
+class=3D"m_-3010385149085029693text-left" align=3D"center"> A message =
+from TURING </p> <div style=3D"font-family:Open Sans,Segoe =
+UI,sans-serif;font-size:16px;line-height:28px;margin:0 0 10px" =
+align=3D"center" class=3D"m_-3010385149085029693text-left"><p =
+style=3D"margin-top:0" class=3D""><strong class=3D"">How do engineering =
+Leaders from Facebook, Google, Uber, and Stanford Hire Remote =
+Teams?</strong></p><p style=3D"margin-top:0" class=3D"">Learn how at <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIr=
+urB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29h=
+NTqUrCRKeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wA=
+Yvud1_qMWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h93/wFGPc5K9sF_8FY8vFibVZ_VcQ_857cGqcWG14wnM-HY" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D"">Turing Boundaryless: =
+#BuildfromAnywhere</a>, a virtual event for engineering leaders =
+on&nbsp;<strong class=3D"">February 18th&nbsp;from 11-2 p.m. =
+PT</strong>.</p><p style=3D"margin-top:0" class=3D"">Speakers =
+include:</p> <ul class=3D""> <li class=3D""><p style=3D"margin-top:0" =
+class=3D"">Pravin Desale, SVP of SDS and Appliances, Veritas</p> </li> =
+<li class=3D""><p style=3D"margin-top:0" class=3D"">Suneela Joshi, =
+Senior Director of Engineering at Abbott Laboratories</p> </li> <li =
+class=3D""><p style=3D"margin-top:0" class=3D"">Darren Murph, Head of =
+Remote at GitLab</p> </li> <li class=3D""><p style=3D"margin-top:0" =
+class=3D"">Chris Herd, CEO of Firstbase</p> </li> </ul><p =
+style=3D"margin-top:0" class=3D"">For more information, including the =
+agenda, please visit the Turing Boundaryless: #BuildfromAnywhere <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIr=
+urB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29h=
+NTqUrCRKeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wA=
+Yvud1_qMWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h94/ZlVXPDJA___MueE6Y2pM6VdIDHcPCtAX9SI212USlIg" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D"">Event Page</a>.</p><p style=3D"margin-top:0" =
+class=3D"">Sponsored by <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIr=
+urB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29h=
+NTqUrCRKeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wA=
+Yvud1_qMWw5Z5-CPc-d25GfWFXblXr70u_-8Pk5VZUd3EP0PW377-ws5EyQ/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h95/tYXf7cWNKkhGes9iJ8w_l7wS_iH4WNyFx6BOr46lwJ4" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D"">Turing.com</a>, an automated platform that =
+lets companies hire Silicon Valley caliber, remote developers, at the =
+touch of a button.</p><p style=3D"margin-top:0" class=3D""><a =
+class=3D"m_-3010385149085029693template-button" =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIr=
+urB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN7PkM8B4nue2zjV29h=
+NTqUrCRKeZ9JmeOBPfYwoldtamF9rGQ3_NStquWZioS4q4UsxlsRYe015V6mPAqBoJ7dQ2E9wA=
+Yvud1_qMWw5Z5-CPgK-1TwuDFx27TEJG0caWC3WeSLXjIA3sZ7bmJWivg3I/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h96/BakF54mNPAIKViKJZY3KXcQgQkUBm_AR0oOksJkX_dY" =
+style=3D"background-color:#ff5d16!important;border-radius:5px!important;fo=
+nt-weight:700!important;text-transform:uppercase!important;letter-spacing:=
+1px!important;color:#fff!important;margin-left:0!important;font-size:12px!=
+important;line-height:12px!important;text-decoration:none!important;paddin=
+g:12px 10px" target=3D"_blank">Register Here</a></p> </div> <hr =
+style=3D"margin-top:40px;height:12px;color:#f8f8f8;background:#f8f8f8 =
+url('https://e.insd.io/e/hr.png') 0 0/4px;border:0" class=3D""> </td> =
+</tr> </tbody></table> </div> </div> </td> </tr> <tr class=3D""> <td =
+style=3D"vertical-align:top;padding:0 10px 40px;font-size:0" class=3D""> =
+<div style=3D"max-width:660px;margin:0 auto" class=3D""> <div =
+class=3D"m_-3010385149085029693column-share"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" =
+class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNDGohdOSPDsFHDEcbmI_LZcCDL1Bkhex6qzIgzf=
+eo2H7vwHW61R5lW6nmdbCZxB7RYz4G4agO_-BRbtMzup-DAw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h97/U57M-vV7FyPnW8KWFfI4utDXa4T0MfFtEN_5gi5KSCI" target=3D"_blank" =
+class=3D""><img alt=3D"" src=3D"https://e.insd.io/e/3.png" width=3D"35" =
+height=3D"35" class=3D""></a> </p><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWZSfouNqp4lBT44JdgrWye8nfIZorlxDqmRHFTU1wDSbHBQCnkZ8y_L59uh57=
+lG8G-McF0QPoLiIKdIW3sHSXRBUlbe79uLjtUXMSwrJR85zAvR0crKGt8E-qsSyKIi8kDjPB0b=
+J9EnGTzGu1hHaN5CUmyq_TSTAuUGf0UpWySHl7DZ2oE_pS6g44I3Sthdq21_E91YRYsD8epG1y=
+q3FQR-/39c/3y--mZGLT-aAL2ZHkGbY6g/h98/KZsJ6JEOFMiMsiHiVRWZ1gxqtW5oCdC8A2Rb=
+azcgOJ8" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHLg_8nAMYoBDfFsOGbmUBCzkr2-8tcyEyaEx-f2myKX5xA1pJ=
+WWnG-9bjUFC0WZm-/39c/3y--mZGLT-aAL2ZHkGbY6g/h99/uTTIr7E3WjR3B2_6p0IZ4-UVaV=
+kTSP8tcxFR63HY2Sc" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DNeuReality+emerges+from+stealth&amp;body=3Dhttp%=
+3A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fneureality-e=
+merges-from-stealth-224648" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" =
+height=3D"37" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNDGohdOSPDsFHDEcbmI_LZcCDL1Bkhex6qzIgzf=
+eo2H7vwHW61R5lW6nmdbCZxB7RYz4G4agO_-BRbtMzup-DAw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h100/v5BUEektAF3GDY7NpLO5khSb_JiBgkn8Ub40Ieyzias" target=3D"_blank" =
+class=3D""> <img alt=3D"" src=3D"https://e.insd.io/e/ki-o.png" =
+width=3D"35" height=3D"38" class=3D""> </a> </div> </td> </tr> =
+</tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgaTqd6j1=
+YnHauGP7E2LzeTwBVbWnrO_jO-5lkKh9-rwSIqg9N7UQS29OdVUdz705zfwoYMiQ2m65UgI5z6=
+IsGKoUN214WbC0W6A2sXNzi32Z8bNQXhyaK1HKIV7lu5YfvE8OK9o3KsCxp9MF-8o3B7U/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h101/iWuKO_LfrYGcfxdBBqLdEFp6zqF1HVEEvvLmdcjeRf0" =
+target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/s/p/224648_x2.jpg?1613076577" border=3D"0" =
+width=3D"585" =
+style=3D"Margin-bottom:10px;max-width:100%;border-radius:5px" class=3D""> =
+</a> <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">Israeli AI hardware startup NeuReality has emerged from =
+stealth with an $8M funding round.</strong> The startup is developing a =
+novel approach for "improving AI inferencing platforms by doing away =
+with the current CPU-centric model."</p><p class=3D""><strong =
+class=3D"">More:</strong></p> <ul class=3D""> <li class=3D"">In a <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVV0ri9mr=
+tbMb8IfBejUbHpyYKZHKDNCe8DIvVKO6TJdaEVDJLsS893yRPn-xIIwX4uO_aRFfxhbyFjwgdJ=
+jYUqy8Fim7oyK8f1fWciLPJNZYxr2gvKC-kQo4JtYy8xc2QQ/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h102/t9MoXbMCUfU2BNaAfuf4Ra6b8N5nNBsUMKq67T1iOGE" target=3D"_blank" =
+class=3D"">TechCrunch interview</a>, CEO Moshe Tanach explained how the =
+general goal is to develop a platform allowing "hyperscale clouds and =
+other data center owners to offload their ML models to a far more =
+performant architecture where the CPU doesn=E2=80=99t become a =
+bottleneck." He described it as "the next evolution of AI computer =
+engines.=E2=80=9D</li> <li class=3D"">The $8M funding will help =
+NeuReality launch its initial AI hardware product later this year. The =
+company&nbsp;would only share that the cost of ownership in its future =
+AI compute service would be "an order of magnitude" more efficient than =
+current solutions.</li> <li class=3D"">The funding round, NeuReality's =
+first public investment, was led by Cardumen Capital, OurCrowd, and =
+Varana Capital.&nbsp;The startup also announced that Naveen Rao, GM of =
+Intel=E2=80=99s AI Products Group, will join the company=E2=80=99s board =
+of directors.</li> </ul> </div><div style=3D"padding-top: 10px; color: =
+rgb(0, 7, 23); margin: 0px; text-transform: uppercase; font-size: 14px; =
+font-family: &quot;Open Sans&quot;, &quot;Segoe UI&quot;, Tahoma, =
+sans-serif;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVV0ri9mr=
+tbMb8IfBejUbHpyYKZHKDNCe8DIvVKO6TJdaEVDJLsS893yRPn-xIIwX4uO_aRFfxhbyFjwgdJ=
+jYUqy8Fim7oyK8f1fWciLPJNZYxr2gvKC-kQo4JtYy8xc2QQ/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h103/0xY_AlnzRGhpuWAC3S3h6Oyd7OLsUqcpDDmBQjDizY8" =
+style=3D"color:#ff5d16;text-decoration:none" target=3D"_blank" =
+class=3D"">TECHCRUNCH <img alt=3D"" src=3D"https://e.insd.io/e/oi-o.png" =
+width=3D"13" height=3D"13" class=3D""> </a> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td style=3D"vertical-align:top;padding:0 10px =
+40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNR9o09tvpDMq8fIp3v_dc3sXQjtBXqGpZxNMDf3=
+veLMM_ebQi-T5nEwjZZ4hbWLWF/39c/3y--mZGLT-aAL2ZHkGbY6g/h104/XaRnoS5ugrA-fhd=
+YwwXvwD8X6_7E713fLIamUELnepI" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://e.insd.io/e/4.png" width=3D"35" height=3D"35" =
+class=3D""></a> </p><div style=3D"float: right; margin: 0px;" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWZY5WpYbXsGWXQtju61lOIIuE2tG_kQBPeetnmB6KVUdH56xqGofeTtzq-8ET=
+csdF8HfIxsKeSArnCNh5KYMMcCZ8Vj27_S5u30SIAzHC0c4MDxs-qdVmwHGOUGSO6t0lOH9-x-=
+6MFkdDYVSTFl3_5N9NMWgxYtQi7slOrrC6UR56jjnjoIbdBVegQTqCweWUuBE6EaffYT6JFX31=
+pJGr-D/39c/3y--mZGLT-aAL2ZHkGbY6g/h105/BhEcUANlOGYERQ8Ldo4zKt6FHgAU6522mVH=
+-Uc87Otg" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HH_GBNbJ2PUcyhW8L8tyqpZNA3NCnlVf2umGVENI9R6Si4HWoo=
+zgdVgjCZO3fs1EuB/39c/3y--mZGLT-aAL2ZHkGbY6g/h106/__qSqvL5J8X1Dc1b7zyHSa6CA=
+u3qTWCuZfU0ZbwLAHE" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DAI+writes+Valentine%27s+cards&amp;body=3Dhttp%3A=
+%2F%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fai-writes-vale=
+ntine-s-cards-224655" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" =
+height=3D"37" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNR9o09tvpDMq8fIp3v_dc3sXQjtBXqGpZxNMDf3=
+veLMM_ebQi-T5nEwjZZ4hbWLWF/39c/3y--mZGLT-aAL2ZHkGbY6g/h107/xRkzbwE3qPOR-HH=
+0aKm2H25DANfTwQEzmCvFFUY2s1M" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/ki-o.png" width=3D"35" height=3D"38" =
+class=3D""> </a> </div> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgd2yQZKW=
+h-HjYVXhgRl7e_3dzdLFDEmPWGirrTM5VLNVNSehDhgug4r5zk2oxLV7Cp3vKm5hrkV-6xh0eu=
+-k3v01vLWa0qHUJV9_5rVvEg2w4nJbgUemWLqQAWT1M4J5tRlCRM4XHksrC7szlwjKRu4SDTIF=
+ypZ3PsKPiCO5tbTI/39c/3y--mZGLT-aAL2ZHkGbY6g/h108/BSUpnpsX27F8zFA6If6zJH6L8=
+ZHbSce52_rgYYoBR7I" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/s/p/224655_x2.jpg?1613074524" border=3D"0" =
+width=3D"585" =
+style=3D"Margin-bottom:10px;max-width:100%;border-radius:5px" class=3D""> =
+</a> <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">AI copywriting startup CopyAI created a Valentine's Day bot =
+that can write letters based on user inputs.</strong> The AI bot is =
+based on the language model GPT-3.</p><p class=3D""><strong =
+class=3D"">More:</strong></p> <ul class=3D""> <li class=3D"">The free =
+bot is available at <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgZf7Sd_Z=
+3bqPPwcaWPTk-QZ5t42XKJ56DRKSZqjs9spj/39c/3y--mZGLT-aAL2ZHkGbY6g/h109/xN5ZU=
+4lfkZkG3VDMn7OFXIVj6gx8yIhW9BvQ7qtnT58" target=3D"_blank" =
+class=3D"">www.valentinesday.ai</a>. Type in a recipient and partner =
+attributes and it will generate a Valentine=E2=80=99s Day card based on =
+those attributes.</li> <li class=3D""><span class=3D"">CopyAI developed =
+an AI-powered assistant for writing and brainstorming marketing copy. =
+Here's a list of other <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVaznIHnW=
+N63L9Msu7KrNgQ2xbG3h6D1rDLrHAXPddrnjfrPvjDUTz4Us9-Gapnxc5FH6MCx97id4Mo2Ygm=
+sisz0/39c/3y--mZGLT-aAL2ZHkGbY6g/h110/cTXOzKo8r6aF7Uyf9vWnyIpjFCiIuVciwL9E=
+HpXPSmQ" target=3D"_blank" class=3D"">copywriting tools based on =
+GPT-3</a>.</span></li> <li class=3D"">In other Valentine's news, AI =
+researcher and "<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/lq5tnwXekpm_o6wsUCRFfI2nv3Dq=
+OwvHpXavw5VJ038/39c/3y--mZGLT-aAL2ZHkGbY6g/h111/A8qvhHPGh8kpmFnsMV7UQ3WRAk=
+VJsVhedCKmZdtcLx0" target=3D"_blank" class=3D"">AI Weirdness</a>" =
+blogger Janelle Shane used machine learning to generate images of candy =
+hearts, which look disturbingly "out of focus, shriveled, and =
+misshapen," according to <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgflDEPbL=
+KJ06l5-wG2mG6WelYHAMHWLGrK0Dy08MILG1vvluz9fYXF1Dpx7ExteJsTvq0wuLWCl1zPd5EV=
+JX_uf4ETO2tOPxXZAafiCwDW5SQFseH1tAzzuI73dNr9p-9A/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h112/fkcTz2mzDfOX15hJDrCuNF97m3OVHr683kCSN8gcpdU" target=3D"_blank" =
+class=3D"">Fast Company</a>.</li> </ul> </div><div style=3D"padding-top: =
+10px; color: rgb(0, 7, 23); margin: 0px; text-transform: uppercase; =
+font-size: 14px; font-family: &quot;Open Sans&quot;, &quot;Segoe =
+UI&quot;, Tahoma, sans-serif;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/PKuLz4JRmw99uhkqbttosjZxlipM=
+5-JZu4LWfa7sdrVAwddix9TRjCLgQYQ2_hqe-RiX_4kV52pmR81Vvd9_gkyMLBzIWmok_uEIqy=
+LUpik/39c/3y--mZGLT-aAL2ZHkGbY6g/h113/X2a5UxZw4lXqSJo5VIoGmRJaVT5fHgZorpTC=
+l9yUzkg" style=3D"color:#ff5d16;text-decoration:none" target=3D"_blank" =
+class=3D"">KULTURE HUB <img alt=3D"" src=3D"https://e.insd.io/e/oi-o.png" =
+width=3D"13" height=3D"13" class=3D""> </a> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td style=3D"vertical-align:top;padding:0 10px =
+40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjN8Qzfpp08xJQEFuDrLLdjAyfn_ThF4p1ee2DvCM=
+5k_QWNVaxpGjH2Q6vonWjxlF_ktZYI7OTxFaRWoEvWi3tj2w/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h114/iELP9KL6Rpd5W63b0IMxbVEW6V_640R9lY2A7O3JKNU" target=3D"_blank" =
+class=3D""><img alt=3D"" src=3D"https://e.insd.io/e/5.png" width=3D"35" =
+height=3D"35" class=3D""></a> </p><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWa5XoRInu7p3wzIYGZMdqbdz3qoVRXxF1BuQxBmbVhZ7VoDHv4FmECMvxR7oR=
+cU9cVCR-5p79exVKA4GSVDsGpy1Iqv_GS1iE6oGoL8gb-SLup4heMn_wp_rZxQKIcmEsBYMVhB=
+CkEgGJZ3a4-3vm5qEaSC9AQFFlbIgyaxDRjwrgpn32DNYvcJ1P6fovciNFLL57dx8e3EB5hPoo=
+jaY4jmhFdRw-303aVsjyOMqIkh-w/39c/3y--mZGLT-aAL2ZHkGbY6g/h115/u2VTqG2Aousbt=
+cNv21pyGU9BOGZBPU__TfD9M_UXqKA" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHllYQg8Hg2zUHznBI7aN_AI92sffQNz_-qZdemYgqiY8iBO8F=
+5UcJQYs8o5O8JsFNxyWRs7UXV9akt0geaPYu8Q/39c/3y--mZGLT-aAL2ZHkGbY6g/h116/rBX=
+BMojFYnUVYMqF84Il0IcXzLKAiOVz61ld5-uaYmg" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DVolkswagen+AVs+to+use+Microsoft+cloud&amp;body=3D=
+http%3A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fvolkswa=
+gen-avs-to-use-microsoft-cloud-224634" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" =
+height=3D"37" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjN8Qzfpp08xJQEFuDrLLdjAyfn_ThF4p1ee2DvCM=
+5k_QWNVaxpGjH2Q6vonWjxlF_ktZYI7OTxFaRWoEvWi3tj2w/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h117/Cpq-uq1kJOqNxWtrryWCajwTjcis14hfBABaW1eIsYM" target=3D"_blank" =
+class=3D""> <img alt=3D"" src=3D"https://e.insd.io/e/ki-o.png" =
+width=3D"35" height=3D"38" class=3D""> </a> </div> </td> </tr> =
+</tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">Volkswagen announced it will use Microsoft's cloud computing =
+services to accelerate the software development of its <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgfrh4xMb=
+rl1zRD_WY6qsnXVk7d_ZIrS0Wghx2PzZpB0XwcBTNyWBvZo8uYwpIq7YjOSy--qpEMhK-jOBXw=
+KkGQmW9PE4OtN37n0kvqO2kz2LSR9floWqWfRecv4bC9ZlJHjVij8jpVTcKSjWtjfhrCU/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h118/17-yHog928Cwb7HHmyHCBbd8CTGIIAuj7_PAMAC4sEM" =
+target=3D"_blank" class=3D"">autonomous =
+vehicles</a>.&nbsp;</strong>Volkswagen's software division will work =
+with Microsoft to build a cloud-based platform to streamline development =
+processes and ensure faster integration into its cars.</p><p =
+class=3D""><strong class=3D"">More:</strong></p> <ul class=3D""> <li =
+class=3D"">Volkswagen owns <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdzKcfRp=
+EVWoPj7rrYiMfGmgRd5pQwIaCg-tZYZolGTLG5yCF6vAnChK9yQgOvWy_3U37XNT94a4_iiR_r=
+9PpB7Ml-jgBjpHFBrd2Kl1HgHOdudx-DJowf7vDNM-V6AAjrKblCIrnaq54ELynDkhX9icI3AC=
+YlLgS0uvGizI5dL6/39c/3y--mZGLT-aAL2ZHkGbY6g/h119/YeOT-XehjlEprDK9JxeCzaQNc=
+qVE2tHJr9lidLRzphs" target=3D"_blank" class=3D"">several brands</a> such =
+as Audi and Porsche that are developing their own self-driving =
+technology.</li> <li class=3D"">Last year, it consolidated certain =
+brands into a single subsidiary called&nbsp;Car.Software.</li> <li =
+class=3D"">The various brands within the subsidiary used different =
+systems to develop their software, however, all of them will now use =
+Microsoft.</li> <li class=3D"">This will make it easier to <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/Kvd6VZZVgvZ78-6GurA_Rcuc7u6e=
+xVNLZ3c1N4bGLQb55Ai9--npnKgj7PnQ7GpbxUSzeUDjnKxkT34Hir8TB3WiPd-ZqDfOFVT3io=
+jRwAw/39c/3y--mZGLT-aAL2ZHkGbY6g/h120/6T1m4MQs-WGzOVReG0D9xjh3WLnjhrLYHrMp=
+9EFy_2M" target=3D"_blank" class=3D"">issue software updates</a> for new =
+features.</li> </ul><p class=3D""><em class=3D"">A version of this story =
+first appeared in <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RasUE9fmE=
+OtYgYajc-FbL8SWLM4sXS0BFABvaNMBXDWeQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h121/uEL-L=
+dvfmZdj18mCC_Tt_vhm_2zbnjafKKl5hV8ShnQ" target=3D"_blank" =
+class=3D"">Inside Transportation</a>.</em></p> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td style=3D"vertical-align:top;padding:0 10px =
+40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNgCf_9-bkPgAAN2cqZ0IFwWmmH4BkGHlGwcIosH=
+HN-n0ZGZH-sw94oLcL-G_5an_A/39c/3y--mZGLT-aAL2ZHkGbY6g/h122/im9ClwhgREK8RY8=
+SIkCc7sww1B-Nss6PWyNRq5dn2ko" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://e.insd.io/e/6.png" width=3D"35" height=3D"35" =
+class=3D""></a> </p><div style=3D"float: right; margin: 0px;" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWanuE9rtpXJIBmCwvN8WDWDiUVTKembXWkrUBt3PoZ3R9TSB3hiBQ1OUiv37W=
+_XtYvD5ga3kY7iFtKwPswHIEZBftlFtxz7LofvDIP65uU7jC5syxILgD6-e5ZvWnOH9bE8IkiR=
+WtgW-U3V9a7iCVqNoxltdCV5LTPla0GlwJfzDFkudHA7J575d1Lo5T6usog/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h123/PYKR5iEcrhKcL6FQVBkAD9FKXfmpjhy9t6ji0n0JvMs" =
+target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/ti-o.png" =
+alt=3D"Twitter" width=3D"35" height=3D"35" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHyaUSU4Yo0uK9xLqMFs0Re277U8X9ulHYfvx6oBUBOIqY9Srl=
+Qq5ALpyYMAmsuZI4/39c/3y--mZGLT-aAL2ZHkGbY6g/h124/fDjDaMIuNFdvpIWWDvsnO8CKD=
+bm8kCWwlycrEhcAzLc" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DNew+job+postings+in+AI%2FML%3A&amp;body=3Dhttp%3=
+A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Fnew-job-posti=
+ngs-in-ai-ml-224589" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" =
+height=3D"37" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNgCf_9-bkPgAAN2cqZ0IFwWmmH4BkGHlGwcIosH=
+HN-n0ZGZH-sw94oLcL-G_5an_A/39c/3y--mZGLT-aAL2ZHkGbY6g/h125/osGp6uwpsRgfHw6=
+cCmNkXGMGbTVq1_7m01II1at4q9g" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ki-o.png" alt=3D"Link" width=3D"35" =
+height=3D"38" class=3D""> </a> </div> </td> </tr> </tbody></table> =
+</div> <div class=3D"m_-3010385149085029693column-content"> <table =
+border=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" =
+class=3D""> <tbody class=3D""><tr class=3D""> <td style=3D"padding:0 =
+10px" class=3D""> <div style=3D"margin:0 0 16px;font-family:Open =
+Sans,Segoe UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><u =
+class=3D""><strong class=3D"">New job postings in AI:</strong></u></p><p =
+class=3D""><a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/Avn0VrkYq4kxIgxXHy6sGY8t68jB=
+5Sf8r0_ZndXTHIw-sFmMtsiqBcX1C9rGhJuSwvKANDrXtHj30YsHzPA_HL0_0cTJ3KA0NeTCc_=
+0t-XGqkYPHuqF2IDGMAwH9XJANxjZCLSIYkeIR2GtBsLomgw/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h126/7VMSguQcURPDH4GeRpVmz1tVBuO-TY_L_Skzyckwxmc" target=3D"_blank" =
+class=3D"">Senior Developer - AI</a><br class=3D""> Ally Financial Inc. =
+| Charlotte, NC</p><p class=3D""><a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/70pOOIdk_MOYkkaXSvnuy8vrX1IQ=
+B2xL29eeuigzvrWNgrr7U0VbYJMteSScl1NQiYThyv-9q-O6eGi1qkVNvSvkrwduYphpX278EK=
+sxgMwj9OC-ZPX-t2exg3Wy5uTw0hlLJuBzPSb7Yznb_mMdlQUgJsbMb1Gi6LjhwXHxsonGQCFS=
+UjynPWomRA0gwVEqkTsInAmHQPBHh_3A51jrku_EFt3UrmVofe7xD46f3h9njC-4IBqZdYIjOB=
+pNFZ8ojVfeJ0qVS4oZ7rSbrUUThMlLoJuqORqWOdw5ywu-d1HTth32zUbGrsRhgUwAmwk7cIZw=
+A7V41L2pwqE0tHaPEA/39c/3y--mZGLT-aAL2ZHkGbY6g/h127/MqRTxWCfrDrc-ALzi23IBik=
+ANmnpuQ2vFNdAWBtkXdY" target=3D"_blank" class=3D"">Staff Machine =
+Learning Infrastructure Architect</a><br class=3D""> Intuit | Mountain =
+View, Calif...</p> </div> <div =
+style=3D"display:inline-block;vertical-align:top;width:100%;overflow:visib=
+le!important" class=3D""> <table border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0" style=3D"width:100%" class=3D""> <tbody class=3D""><tr =
+class=3D""> <td class=3D""> <table border=3D"0" cellpadding=3D"0" =
+cellspacing=3D"0" align=3D"center" style=3D"width:100%;margin:0 =
+auto;background-color:#fff7f1;border-radius:5px" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td style=3D"padding:40px =
+50px;vertical-align:top" class=3D"m_-3010385149085029693sm-p"> <div =
+style=3D"font-family:'Open Sans','Segoe =
+UI',sans-serif;font-size:16px;line-height:32px" class=3D""><p =
+class=3D"">To gain access to the full list (and receive a new one each =
+week), <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeCx62Vjr=
+zUQjOhILXHo3Cj2f7r2usdT-Lg7W5NQD2s3FwrF3B-44zidCn3KD1rxwZVtlOJTtIPV16p_FiW=
+hwwzz6w7VR0_t8p_al6QxH5qDd4A4k1flWUwXKxEdHaAl36YNZ1qeB9S-wF9GdE3041PEx8JRH=
+sQY7YTuc630LG0Kl_lv7zqC_DQciAxS1ESzjlQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h128/wlE=
+901ZNAa0KF4INQ0u-2IUVm1mJZB-MSi1CNG-j7vU" target=3D"_blank" =
+class=3D"">click here to upgrade to premium!</a></p> </div><p =
+style=3D"margin-top:25px" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RaqXbD3qN=
+J3I6jnuAk0k0syPkMgzMz9zbCzPJiJUSWOxuIXHtcWGSK2sth6OlTUUhUx8RDhAs6mfD9dS-VB=
+vtiHcfGu7LBfm6DPA5By8adab6KGUTQNeSg3xVJSU9bjN1IB_NJ8F4NZL2Ov7ED74CMUwrSt5N=
+9EfG8e8gUt77yIgK/39c/3y--mZGLT-aAL2ZHkGbY6g/h129/u3VYBszu3T_W3kR5MttLXp1Nq=
+6Klvh1z9v_-K1RIICE" =
+style=3D"background:#ff5d16;border-radius:5px;font-family:'Open =
+Sans','Segoe =
+UI',sans-serif;font-weight:700;text-transform:uppercase;letter-spacing:1px=
+;font-size:12px;line-height:12px;text-decoration:none;padding:12px =
+10px;color:#fff!important;display:inline-block" target=3D"_blank" =
+class=3D"">Subscribe to Inside AI Premium <img =
+src=3D"https://e.insd.io/e/bi.png" width=3D"16" height=3D"8" =
+class=3D""></a> </p> </td> </tr> </tbody></table> </td> </tr> =
+</tbody></table> </div>  </td> </tr> </tbody></table> </div> </div> =
+</td> </tr> <tr class=3D""> <td style=3D"vertical-align:top;padding:0 =
+10px 40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNw1o3J0X_K4RKSwULM26Z3VhzvsGc1XF2tywBrL=
+NxkDk/39c/3y--mZGLT-aAL2ZHkGbY6g/h130/txI42EPG9zi3TiHfz5TBIsXzQEosp13tfITK=
+svubDmo" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://e.insd.io/e/7.png" width=3D"35" height=3D"35" =
+class=3D""></a> </p><div style=3D"float: right; margin: 0px;" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWZiGZcOhUMFZAmBo3fAgHb6tmse7tYvkI07aXBSuUmOExxQb4Y_qZfcvoleRp=
+nufwHgVagR7LseU90fbogRgcenocGOuAlDRhURsBIH4cT9Buns03QMjdlyiRtFgPziQ-KueUgn=
+VA_Fuy2MSBQkZqCv/39c/3y--mZGLT-aAL2ZHkGbY6g/h131/wt6QkF7KTadw22Oaf8DjB7dRn=
+QqI21shHEIXgk6gKZM" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHkLziM4R0QmA3xJc3Ht_lc2Fs33DFstevL_kLLC5HETE/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h132/WUB5avIbjFBlAYabqQ6aEB-Kgyl4Uw8dBPL4WqW9A6E" =
+target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/fi-o.png" =
+alt=3D"Facebook" width=3D"35" height=3D"38" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DQuick+Hits&amp;body=3Dhttp%3A%2F%2Finside.com%2F=
+campaigns%2Finside-ai-26547%2Fsections%2Fquick-hits-224584" =
+target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/fwdi-o.png" =
+alt=3D"Forward" width=3D"35" height=3D"37" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNw1o3J0X_K4RKSwULM26Z3VhzvsGc1XF2tywBrL=
+NxkDk/39c/3y--mZGLT-aAL2ZHkGbY6g/h133/mGbzlpR-MPPzcekHUkQKxJjnI0FuEb1FsyXB=
+1vbAN2k" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/ki-o.png" width=3D"35" height=3D"38" =
+class=3D""> </a> </div> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">QUICK HITS:</strong></p> <ul class=3D""> <li class=3D"">How =
+do engineering Leaders from Facebook, Google, Uber, Stanford, etc. =
+manage remote developer hiring to solve for speed and quality -- at =
+scale? Join us for&nbsp;<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RanptJrWp=
+iALcEFEQKrOvoeg/39c/3y--mZGLT-aAL2ZHkGbY6g/h134/QuPqgz0pQdv7VyW7YfF-AJ5Rs9=
+t-Sdr1Oxp79HFAt2U" target=3D"_blank" class=3D"">Turing Boundaryless: =
+#BuildfromAnywhere&nbsp;</a>on February 18th, from 11-2 p.m. PT to learn =
+how.*</li> <li class=3D"">Humana will roll out IBM's Watson =
+conversational AI assistant to employer plan members to help them <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgfQ3pCOq=
+ehHWwHS95M-ME6l8YcGTM6wMvKYmmLc85wynq3wxQymFwcUQUkYIgjH4usZb7Z__I7M60-ujw-=
+2OJScuzxzBFQsN3ZDxGMjGxHwF2_PibANVXAq3Dyi34qaIu7OrG4pvukf6rfyuspV9HVU/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h135/jIUrhQ37EtbiRSVFEHGhxaLyA872rdU50awyOp-OMIk" =
+target=3D"_blank" class=3D"">better understand their health =
+benefits</a>.</li> <li class=3D"">AilixPartners is estimating that <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgbzSO4qT=
+m4KkCfybDJciXfcJwiVbI3BfuJhaJTLUxXf7F_5DyVITCNHpQQcUAiH_-FdRIH4OIWVJ0c11Qj=
+LfU-hRdDYyhd7UZhh56OFCR6Bl2MqXrbfwf5fXxJztGfqP7A/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h136/9ZKQ62Bcea9kAg8v23tNMgIWWWubkEDJtfsZrXgQQjc" target=3D"_blank" =
+class=3D"">the automotive industry will lose</a> $60B in sales this year =
+due to the global chip shortage.&nbsp;The shortage affects numerous =
+industries; in the automotive sector, semiconductors are required for =
+the infotainment system, power steering, braking, and <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/Kvd6VZZVgvZ78-6GurA_RUZvWScK=
+Pqt-2Mt9V6ERqcw6SU97se4UxAWW4Gm8jxO2LqT0LLS7huzvUzWACAyLpGh6Rvd7F14-7wNjqp=
+EUIps3xCtUTJ6X_Vh1SNymGYc8rIxloyD2ZM-qLyfz2GfOiSXqq_yzHmZidUkhIb_d3DU/39c/=
+3y--mZGLT-aAL2ZHkGbY6g/h137/no0VYkNN7ux4SnCLNFhD5AODZVUs8Bwp-RSi75Oybq0" =
+target=3D"_blank" class=3D"">autonomous driving</a>.</li> <li =
+class=3D"">Canon <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdlJ8psq=
+Ilq0ar6l-eyXlmvckgoyxUZME78UqinwP9MpO2bEMNaeSez3B9C4F141_mvpv98YgrRFsH6IAU=
+Ul9qA76tgc5uoTEKFVtoX7jTMvwQ8b57Eh5PIGcqBLZlUpAA/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h138/Tu-XZFIVZcQp8NSkVMg6PTJwKJtEH7B9kuDSrtWJwLc" target=3D"_blank" =
+class=3D"">launched an app</a>&nbsp;=E2=80=94 based on its&nbsp;computer =
+vision AI engine PHIL&nbsp;=E2=80=94 that suggests which photos to =
+delete according to criteria like sharpness, closed eyes, and =
+noise.</li> <li class=3D"">Qinxuan Pan, an MIT researcher in AI and =
+computer science, has been identified as a <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgVPxV9zg=
+lEKDNnQSoTCjN9DekroBDOoDNjs4O0EvCQKUkojCNj4eYIaltIoxr6gMO-wCfs0ZxcN4x2d1Kh=
+mjnX1pZ_PRgikKByBX2r-yCJ5sujgwARt4uEi9MTyEqLp84g/39c/3y--mZGLT-aAL2ZHkGbY6=
+g/h139/5I8KGCVR0ki8JH80IVF_vHHVH9-hn8v4mGI6XzjObmQ" target=3D"_blank" =
+class=3D"">person of interest</a> in Saturday's fatal shooting of Yale =
+University graduate student Kevin Jiang.</li> <li class=3D"">Streaming =
+intent is the ultimate competitive advantage for ABM strategies. =
+Learn&nbsp;<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeGsB1YCD=
+Uu6pA_cB-iAhxdw/39c/3y--mZGLT-aAL2ZHkGbY6g/h140/X3xeQ9qlq6UFhROC-WuDcopdMi=
+RksY-10f6MS2I3JG4" target=3D"_blank" class=3D"">7 ways to shorten the =
+sales cycle</a>&nbsp;by utilizing real-time intent data.*</li> </ul><p =
+class=3D""><em class=3D"">*This is a sponsored post.</em></p> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td style=3D"vertical-align:top;padding:0 10px =
+40px;font-size:0" class=3D""> <div style=3D"max-width:660px;margin:0 =
+auto" class=3D""> <div class=3D"m_-3010385149085029693column-share"> =
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"padding:0 10px" class=3D""><p style=3D"float:left;margin:0 0 =
+10px;border-radius:5px;background-color:#ff5d16;width:35px" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNEXFB4GyXajYdLH9eQvX5NdXrvoIqVUldJnv02Z=
+Mat0ZVS-JJRT4-PvN5-WdvB1v6/39c/3y--mZGLT-aAL2ZHkGbY6g/h141/Dy528h8RXZS77Ao=
+mvCaTRWZgYA7I_FEpgv7HfkWlTXc" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://e.insd.io/e/8.png" width=3D"35" height=3D"35" =
+class=3D""></a> </p><div style=3D"float: right; margin: 0px;" class=3D""> =
+<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2=
+d4ay13KfGqJjUWa1UtCLcWTP9DsYzLKFmq2vHK-uI4mhObOqumD2zu8CAchc48m_M2IwsZT56p=
+k8VE62gvmgV9UfS7jLLacw39Cnm4klF9IWleTK0GgsWX9mLSmIC2CFes33-GHms71_sGWAFDp8=
+yKtyZGl1cnyOS5w4cUqhLAbaBjWImBWMG-Cyeg/39c/3y--mZGLT-aAL2ZHkGbY6g/h142/2xR=
+Rw6BPmWzlWDgYILnNtisEvQXCTnTNpZFda9-C7AU" target=3D"_blank" class=3D""> =
+<img src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitter" width=3D"35" =
+height=3D"35" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n=
+1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51i=
+NQeUWlYcIg2uFiN1TRT6FLh7HHgR5hpsXMbCARpwyb-DHKtOocBW2U75ovFb5tCy01WCTon1AF=
+xU_3VcEKCK14BaAG/39c/3y--mZGLT-aAL2ZHkGbY6g/h143/VQiIQ3RAxYTj2pCyolT6xJ4YH=
+ISsQ5LQ73sCz4PHbyU" target=3D"_blank" class=3D""> <img =
+src=3D"https://e.insd.io/e/fi-o.png" alt=3D"Facebook" width=3D"35" =
+height=3D"38" class=3D""> </a> </div><div style=3D"float: right; margin: =
+0px;" class=3D""> <a =
+href=3D"mailto:?subject=3DTweet+of+the+Day%3A&amp;body=3Dhttp%3A%2F%2Finsi=
+de.com%2Fcampaigns%2Finside-ai-26547%2Fsections%2Ftweet-of-the-day-224638"=
+ target=3D"_blank" class=3D""> <img src=3D"https://e.insd.io/e/fwdi-o.png"=
+ alt=3D"Forward" width=3D"35" height=3D"37" class=3D""> </a> </div><div =
+style=3D"float: right; margin: 0px;" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6ud=
+x9HM-sykQuEX5amTKqDmBP62eNV-RAojrkjNEXFB4GyXajYdLH9eQvX5NdXrvoIqVUldJnv02Z=
+Mat0ZVS-JJRT4-PvN5-WdvB1v6/39c/3y--mZGLT-aAL2ZHkGbY6g/h144/C5f2GLCltgXnXvN=
+XVcmJzNlSfmlC2glzxetk33ZJcM0" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/ki-o.png" width=3D"35" height=3D"38" =
+class=3D""> </a> </div> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693column-content"> <table border=3D"0" =
+cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%" class=3D""> =
+<tbody class=3D""><tr class=3D""> <td style=3D"padding:0 10px" class=3D"">=
+ <div style=3D"margin:0 0 16px;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:16px;line-height:28px" =
+class=3D"m_-3010385149085029693story-body"><p class=3D""><strong =
+class=3D"">10 years ago this week, IBM researcher&nbsp;<a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MV=
+esjb1fFOevoTwiSYrLB27lmOh3aXwxBptv2I/39c/3y--mZGLT-aAL2ZHkGbY6g/h145/FRyFg=
+xZv2xzbaju1lPGdpd--ubU4zvHbWEEIB9QW7Tk" target=3D"_blank" class=3D"">Noam =
+Slonim</a> first proposed the idea behind Project Debater, the AI system =
+that can debate humans on complex topics.</strong> The IBM software held =
+its first debate <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgeTMLbtr=
+n1DheFbIf71bLIaBlMtYDjM0ixiNCGvWxIzs3LY-cqi95Hd6Vp2pcUQQbQ/39c/3y--mZGLT-a=
+AL2ZHkGbY6g/h146/0AxkKbbAzqF4MNxOmc_ABe24QAcp30JdcwvHjtdyezI" =
+target=3D"_blank" class=3D"">in 2018</a> against two human champions, =
+who debated <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdwuiiDI=
+eWMAr_yZTF4urSc5MjzTDF4PDwcWKV5sc28HSx0UivvROCHYpwuAn-1OkHgtaMf5THooek2bZi=
+N9hOc/39c/3y--mZGLT-aAL2ZHkGbY6g/h147/7oiI5tGLCS5IKCYBkCpRq3XXvWCXejbmWs-v=
+Hd63Kvk" target=3D"_blank" class=3D"">subsidizing space exploration and =
+the use of telemedicine</a>. Yesterday, Slonim <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MV=
+esjb1fFOevoTwiSWrqLILFRCkinNSXHbTyIsGwUHle6YTufkgy8Tvy0zRid6WCnW6qvj-M3yDr=
+Xb46Q/39c/3y--mZGLT-aAL2ZHkGbY6g/h148/f_VByMaoHjtnmfpYQMMvHNx0edLrnm3X0hhW=
+6pO6SIg" target=3D"_blank" class=3D"">tweeted</a> that a "corresponding =
+paper is now in press."</p><p class=3D""><a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVfzpy-MV=
+esjb1fFOevoTwiSWrqLILFRCkinNSXHbTyIsGwUHle6YTufkgy8Tvy0zRid6WCnW6qvj-M3yDr=
+Xb46Q/39c/3y--mZGLT-aAL2ZHkGbY6g/h149/eKD2_mFjbDZxVk6rFdktpnbo6BhVwophzmTl=
+3cRikrg" target=3D"_blank" class=3D""><img alt=3D"" =
+src=3D"https://i.imgur.com/ABaAitA.png" =
+style=3D"max-height:100%;max-width:100%" class=3D""></a></p> </div> <hr =
+style=3D"margin-top:40px;height:12px;background-color:#f8f8f8;background:u=
+rl('https://e.insd.io/e/hr.png');background-size:4px;color:#f8f8f8;border:=
+0" class=3D""> </td> </tr> </tbody></table> </div> </div> </td> </tr> =
+<tr class=3D""> <td align=3D"center" =
+class=3D"m_-3010385149085029693sm-px10" =
+style=3D"padding-bottom:40px;width:100%;margin:0 auto"> <table =
+align=3D"center" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" =
+style=3D"width:100%;vertical-align:top;font-size:0" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td =
+style=3D"display:block;padding-top:35px;margin:0 auto" align=3D"center" =
+class=3D""> <img alt=3D"" src=3D"https://e.insd.io/e/bt-o.png" =
+width=3D"123" height=3D"13" border=3D"0" class=3D""> </td> </tr> <tr =
+class=3D""> <td style=3D"padding-top:30px;display:block;margin:0 auto" =
+align=3D"center" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/u/a/33_x2.jpg?1584457773" width=3D"90" =
+height=3D"90" border=3D"0" style=3D"border-radius:50%" class=3D""> </td> =
+</tr> <tr class=3D""> <td style=3D"padding-top:20px;display:block;margin:0=
+ auto" align=3D"center" class=3D""> <div =
+style=3D"text-align:center;width:78%;margin:0;font-family:Open =
+Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:14px;line-height:25px;color:#1f0a00" =
+class=3D""><p class=3D"">Beth is a former investigative reporter for The =
+Arizona Republic who authored a book about the U.S. solar industry. A =
+graduate of the Walter Cronkite School of Journalism, she won a First =
+Amendment Award and a Pulitzer Prize nomination for her co-reporting on =
+the rising costs of Arizona's taxpayer-funded pension systems.</p><div =
+class=3D"">&nbsp;<br class=3D"webkit-block-placeholder"></div> </div> =
+</td> </tr> <tr class=3D""> <td style=3D"padding:10px 0 =
+30px;display:block;margin:0 auto" align=3D"center" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVeo7MAY8=
+dgB0wh_SKlGWPBWMYVh59QG30dw1ZC1P8nEQ/39c/3y--mZGLT-aAL2ZHkGbY6g/h150/zWm9V=
+PYf4MteGrKM4JRhUmWAgarhgH9JG0IgKVwYzAE" target=3D"_blank" class=3D""> =
+<img alt=3D"" src=3D"https://e.insd.io/e/ti-os.png" =
+style=3D"padding-right:10px" border=3D"0" height=3D"16" width=3D"15" =
+class=3D""> </a> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/lQk7vBloXJgp4Oi7NFVdWAkK5H28=
+JDHHGezcguPWn468DDbokRZ7P50odlZ1F94m4cLxhZlCiMHxHrQ0lSz3dPM9i_V4GKhD_jkuAt=
+Dxzz439Xun5U59MmE9weHjFOiU/39c/3y--mZGLT-aAL2ZHkGbY6g/h151/YceVVn49oCOADUV=
+Px41xrZffliR45y7l-txpNKw-c2Y" target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/inki-o.png" style=3D"padding-left:10px" =
+border=3D"0" height=3D"14" width=3D"14" class=3D""> </a> </td> </tr> <tr =
+class=3D""> <td style=3D"display:block;margin:0 auto" align=3D"center" =
+class=3D""><div style=3D"text-transform: uppercase; font-size: 12px; =
+letter-spacing: 1px; font-family: &quot;Open Sans&quot;, &quot;Segoe =
+UI&quot;, sans-serif; font-weight: normal; margin: 0px; color: rgb(130, =
+117, 138);" class=3D""> Editor </div> </td> </tr> <tr class=3D""> <td =
+style=3D"padding-top:10px;display:block;margin:0 auto" align=3D"center" =
+class=3D""> <div style=3D"width:78%;margin:0;font-family:Open Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:14px;line-height:25px;color:#000717" =
+class=3D""><p class=3D"">Charlotte Hayes-Clemens is an editor and writer =
+based in Vancouver. She has dabbled in both the fiction and non-fiction =
+world, having worked at HarperCollins Publishers and more recently as a =
+writing coach for new and self-published authors. Proper semi-colon =
+usage is her hill to die on.</p> </div> </td> </tr> </tbody></table> =
+</td> </tr> <tr class=3D""><td class=3D""><u class=3D""></u>  =
+</td></tr><tr class=3D""> <td style=3D"padding-bottom:40px;font-size:0" =
+class=3D"m_-3010385149085029693sm-px10" align=3D"center" valign=3D"top"> =
+<div style=3D"border-radius:5px;border:1px solid #d8dbdf" class=3D""> =
+<div class=3D"m_-3010385149085029693ad-image"> <table cellspacing=3D"0" =
+cellpadding=3D"0" border=3D"0" style=3D"width:100%" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td style=3D"padding:30px 10px 30px 20px" =
+align=3D"center" class=3D""> <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXw=
+vZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKr=
+BiQxMtUz2Sql99FgXfpgTjgglfPMifSDvkUlgoEu5SaY3IbDnFCvzARMvDfPCIhhBy_z-87Ew7=
+omCMY3Sk2H_hzWukVFoHbq3F8hjb7PbhWkxIrq2e49MUGEdn0aamQoMXIx4/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h152/8Uk94ZbmMa7rG1S3JQMkWusZZYaRJmFMydfNCiQJak4" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/a/f/676_x2.png" width=3D"150" =
+style=3D"max-width:100%;margin:0 auto" class=3D""> </a> </td> </tr> =
+</tbody></table> </div> <div class=3D"m_-3010385149085029693ad-body"> =
+<table cellspacing=3D"0" cellpadding=3D"0" border=3D"0" =
+style=3D"width:100%" class=3D""> <tbody class=3D""><tr class=3D""> <td =
+style=3D"color:#1f0a00;padding:30px 20px 30px 10px" =
+class=3D"m_-3010385149085029693sm-p"> <div style=3D"font-family:Open =
+Sans,Segoe =
+UI,Tahoma,sans-serif;font-size:14px;line-height:25px;margin:0" =
+class=3D"m_-3010385149085029693text-left" align=3D"center"><p =
+style=3D"margin-top:0" class=3D"">Hire senior pre-vetted remote =
+developers that are affordable, have strong technical and communication =
+skills, and work in your timezone. <a =
+href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXw=
+vZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o8GQcCREUlbd6PmTKr=
+BiQxMtUz2Sql99FgXfpgTjgglfPMifSDvkUlgoEu5SaY3IbDnFCvzARMvDfPCIhhBy_z-87Ew7=
+omCMY3Sk2H_hzWukVFoHbq3F8hjb7PbhWkxIrq2e49MUGEdn0aamQoMXIx4/39c/3y--mZGLT-=
+aAL2ZHkGbY6g/h153/uphj2s6sWI2w6z-TgfG_RajHJJptLhlmYCQvRBP04yM" =
+style=3D"color:#ff5d16;text-decoration:none;font-weight:400" =
+target=3D"_blank" class=3D"">Hire elite engineers now.</a></p> </div> =
+</td> </tr> </tbody></table> </div> </div> </td> </tr> </tbody></table> =
+</div> <table cellspacing=3D"0" cellpadding=3D"0" border=3D"0" =
+style=3D"background-color:#0a0300;width:100%" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td style=3D"padding:20px" class=3D""> <div =
+style=3D"font-size:0;max-width:640px;margin:0 auto" class=3D""> <div =
+class=3D"m_-3010385149085029693social-column"> <table cellspacing=3D"0" =
+cellpadding=3D"0" border=3D"0" align=3D"left" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td class=3D""> <a =
+href=3D"https://twitter.com/inside" =
+style=3D"box-sizing:content-box;display:inline-block;width:35px;height:35p=
+x;border:1px solid #fff7f1;Margin:10px 16px 10px =
+0;text-align:center;border-radius:50%" target=3D"_blank" class=3D""> =
+<img alt=3D"" src=3D"https://e.insd.io/e/ti-wo.png" border=3D"0" =
+height=3D"35" width=3D"35" class=3D""> </a> </td> <td class=3D""> <a =
+href=3D"https://www.linkedin.com/company/inside-com/" =
+style=3D"box-sizing:content-box;display:inline-block;width:35px;height:35p=
+x;border:1px solid #fff7f1;text-align:center;border-radius:50%" =
+target=3D"_blank" class=3D""> <img alt=3D"" =
+src=3D"https://e.insd.io/e/inki-wo.png" border=3D"0" height=3D"35" =
+width=3D"35" class=3D""> </a> </td> </tr> </tbody></table> </div> <div =
+class=3D"m_-3010385149085029693copyright-column"> <table cellspacing=3D"0"=
+ cellpadding=3D"0" border=3D"0" style=3D"width:100%" class=3D""> <tbody =
+class=3D""><tr class=3D""> <td class=3D""><div style=3D"color: rgb(255, =
+247, 241); margin: 0px; font-size: 12px; font-family: &quot;Open =
+Sans&quot;, &quot;Segoe UI&quot;, sans-serif; line-height: 28px;" =
+class=3D""> 767 Bryant St. #203, San Francisco, CA 94107 <br class=3D""> =
+Copyright =C2=A9 2021 <a href=3D"http://Inside.com" =
+class=3D"">Inside.com</a> </div> </td> </tr> </tbody></table> </div> =
+</div> </td> </tr> <tr class=3D""> <td =
+style=3D"padding:20px;border-top:1px solid #200a00" class=3D""> <div =
+style=3D"max-width:640px;margin:0 auto" class=3D""> <table =
+cellspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%" =
+class=3D""> <tbody class=3D""><tr class=3D""> <td class=3D""><p =
+style=3D"color:#fff7f1;font-size:12px;font-family:Open Sans,Segoe =
+UI,sans-serif;line-height:24px" class=3D""> Did someone forward this =
+email to you? <a href=3D"https://inside.com/" =
+style=3D"color:#fff7f1;text-decoration:underline" target=3D"_blank" =
+class=3D"">Head over to inside.com</a> to get your very own free =
+subscription! <br class=3D""> You received this email because you =
+subscribed to <a =
+href=3D"http://inside.com/ai?token=3Dh6tjzrRkwBOrnvn4jDQekw" =
+style=3D"color:#fff7f1;text-decoration:underline" target=3D"_blank" =
+class=3D"">Inside AI</a>. <a =
+href=3D"https://inside.com/lists/unsubscribe/lArS9zE1BofEVd4IRHiCug?list=3D=
+65" style=3D"color:#fff7f1;text-decoration:underline" target=3D"_blank" =
+class=3D"">Click here</a> to unsubscribe from Inside AI list or <a =
+href=3D"https://inside.com/subscriptions/manage/h6tjzrRkwBOrnvn4jDQekw" =
+style=3D"color:#fff7f1;text-decoration:underline" target=3D"_blank" =
+class=3D"">manage your subscriptions</a>. </p> </td> </tr> =
+</tbody></table> </div> </td> </tr> </tbody></table> <div =
+style=3D"display:none;white-space:nowrap;font:15px =
+courier;line-height:0" class=3D""> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; =
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; =
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; =
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </div> </center> <img =
+src=3D"https://u5080173.ct.sendgrid.net/ss/o/RXMiRW23918i1vfyr3pnlQ/39c/3y=
+--mZGLT-aAL2ZHkGbY6g/ho.gif" alt=3D"" width=3D"1" height=3D"1" =
+border=3D"0" =
+style=3D"height:1px!important;width:1px!important;border-width:0!important=
+;margin-top:0!important;margin-bottom:0!important;margin-right:0!important=
+;margin-left:0!important;padding-top:0!important;padding-bottom:0!importan=
+t;padding-right:0!important;padding-left:0!important" class=3D""></div> =
+</div></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px" =
+class=3D""><img alt=3D"" =
+style=3D"width:0px;max-height:0px;overflow:hidden" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D1399d5ea-65d4-4d3e-82a2-7528a59b2213" =
+class=3D""><font color=3D"#ffffff" size=3D"1" class=3D"">=E1=90=A7</font><=
+/div>
+</div></blockquote></div><br class=3D""></div></body></html>=
+
+--Apple-Mail=_B4D1E9DF-63B5-4CCE-BB07-9B61425DA5CF--

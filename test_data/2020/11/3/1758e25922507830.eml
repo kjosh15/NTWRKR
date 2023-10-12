@@ -1,0 +1,589 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1041:0:0:0:0 with SMTP id x1csp4726922ljm;
+        Tue, 3 Nov 2020 04:47:08 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJx2/Tg0IPaqVcBExJM8ccSddbANiiGeUVf2C191fVyCRJCOvNHRiggWf1KT69aApBhHyUnn
+X-Received: by 2002:a17:90a:7d16:: with SMTP id g22mr3687367pjl.135.1604407628530;
+        Tue, 03 Nov 2020 04:47:08 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1604407628; cv=none;
+        d=google.com; s=arc-20160816;
+        b=jg/F24TKkk1ao3DpnfQOIgGUmOamRADXtE/C5RAeA6ZfrFBVX5pER56VcrZ08sulVg
+         V/QLjEaD4qNsNuXs26ZROgWVIWAH0d4WVYAlyzghV9EFstFZR5UCksFhPyxGhO4R+pAi
+         SNLil7YqPBUGHxWMxnlo67K4xlCamvWfaN6jgTRDMj8cm7M1RcyDCxZzvMhJe5JlI7Qn
+         xQdr5PUWnw0Kj1MaMMEbTtUsMQ/nOfbp6NeqLjai1Rfh2Y1gkTOyYKAJoA6rcC0UOqy1
+         JuSryxMWelwICeBWK2vmmxclZykQ5cgcdPL6/ON8YVgjiQm2/eX9gTCceosPVWZ7262v
+         Dv4w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from;
+        bh=fTCh6TfDIr2GN9EQKt5BCrAzGtqTPMUU+t6D5phAcKc=;
+        b=sPEYP7CuAiqz6LO5tKHu+KGAjngjilyhrQ0Kez/BHWiJybTOIWOVlsopqiP2yggjQg
+         PIoNvygigAoP0iDAEcfHG01WXzdN1zOMnuWtBo1Tf5qqGkU+ueAua47fGtCORzKK7/E8
+         aBwlMZB7Nu0KNd3D/SMy1kJ+bp88fHJXqkTIyvoo3RBHUun7bKSyRJr4nKU8UZI18VIV
+         5dnCFU7R2FE8h5Onj+IybJJ+sWvxXVTljmOwco9NjqjVdr/2p/8kUa6L2s6vCViVsEY+
+         vT+4qTAuSjQAYkG41pVbtOWPKoE84jKAv4bGc+eURQNShw80vZdOC3fgIccKAuZ2IOK3
+         Gqzg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 184.168.200.140 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from p3nlsmtpcp01-02.prod.phx3.secureserver.net (p3nlsmtpcp01-02.prod.phx3.secureserver.net. [184.168.200.140])
+        by mx.google.com with ESMTPS id m66si17730113pfm.200.2020.11.03.04.47.08
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 03 Nov 2020 04:47:08 -0800 (PST)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 184.168.200.140 as permitted sender) client-ip=184.168.200.140;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 184.168.200.140 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Received: from mailout01.c01 ([64.207.129.78])
+	by : HOSTING RELAY : with ESMTP
+	id ZvhPkFTANsFA9ZvhPkKupv; Tue, 03 Nov 2020 05:46:07 -0700
+X-CMAE-Analysis: v=2.4 cv=Xu4/hXJ9 c=1 sm=1 tr=0 ts=5fa1510f
+ a=rHVhcZ7MkiYw9pwnR3G25w==:117 a=BQBvI/9UF4TT99eqlTxu+g==:17
+ a=nNwsprhYR40A:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=MGKIFWvDAAAA:8 a=2Gfy8yuIAAAA:8
+ a=QXhRXOM3AAAA:8 a=3KUoxB9FAAAA:8 a=zwvI-rEBAAAA:8 a=J8g6QfwgOCcYGUvvkjAA:9
+ a=QEXdDO2ut3YA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8 a=77ne1Y9BAAAA:8
+ a=N2vgjIDXaqAuUUvhsKAA:9 a=iO5UpYCJf_P0I5a7:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=4D1dU0hVIIbnoyLp9NuI:22 a=uTj3vtqPofZ6pkjGgmuM:22 a=PLULhHS3xM9y_cBD06OH:22
+ a=OoLSvEA_ic9EetkLKI_r:22 a=rVyo1ci8dzqFYOeZ8LKt:22 a=lBSzxv56ROI68igeSP42:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl09.gs01.gridserver.com ([64.13.192.18])
+	by mailout01.c01 with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kZvhN-000289-CE
+	for josh@josh.is; Tue, 03 Nov 2020 04:46:07 -0800
+Received: from [2.221.21.11] (port=49528 helo=DESKTOPVL3QK79)
+	by cl09.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kZvhA-0004Wx-0N
+	for josh@josh.is; Tue, 03 Nov 2020 04:46:05 -0800
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+References: <1134939164572.1134318287345.1681493269.0.220939JL.2002@scheduler.constantcontact.com> <CACNgykPLkt92Gwiq1UCcYmaUWeH-BRO2QaoOM9aRQj1eGB12pw@mail.gmail.com>
+In-Reply-To: <CACNgykPLkt92Gwiq1UCcYmaUWeH-BRO2QaoOM9aRQj1eGB12pw@mail.gmail.com>
+Subject: RE: My new Harvard Business Review Article on Sapient Leadership
+Date: Tue, 3 Nov 2020 12:45:50 -0000
+Message-ID: <059201d6b1df$43954e10$cabfea30$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0593_01D6B1DF.43965F80"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIFWq4gib0ESoOkqEBcRS9J1uAtigCyDjE8qVN4QLA=
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=4.7 tests=ALL_TRUSTED, HTML_FONT_LOW_CONTRAST, HTML_MESSAGE,
+	URIBL_BLOCKED, URI_NOVOWEL version=3.4.2 cmae=_CMAETAG_"
+X-Spam-Level: ****
+X-Spam_score: 4.7
+X-Spam_score_int: 47
+X-CMAE-Envelope: MS4xfNZkESt1zGIxZ3WdpDiwCEZ3ojagxPhxIFYkql1EsS5U83Y0Fb50I9KOB1GJ0eP9qwUCvLc6Pfsgycv+8pgFzF6wIEZcVrEgUwrBC6qOfN/UeHGzAnGv
+ XOZRXXmABekYXaODGU8BCjg/twa+cStn/blSCt40GL1UtZGSzXE24XmwQNIOgIuIRFJcNqk6N75p0w==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_0593_01D6B1DF.43965F80
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Think we need to target the raise/acquisition =E2=80=93 and anything =
+that would help with that =E2=80=93 and defocus the academic stuff for a =
+while =E2=80=93 google didn=E2=80=99t need an academic paper to buy =
+Urchin=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.
+
+=20
+
+From: Josh Klein <josh@josh.is>=20
+Sent: 03 November 2020 12:19
+To: Chris at Indigo <chris@indigometrics.com>
+Subject: Fwd: My new Harvard Business Review Article on Sapient =
+Leadership
+
+=20
+
+This guy could be a good academic connection - wanted to get your =
+feedback on if you think it's worth pursuing far out leads like this =
+given our targeting on the raise/acquisition. I.e., happy to drop these =
+if you agree they're not likely to add much atm.
+
+=20
+
+- J
+
+=20
+
+---------- Forwarded message ---------
+From: Ron Gutman <rgutman@givelovegethelp.org =
+<mailto:rgutman@givelovegethelp.org> >
+Date: Fri, Oct 30, 2020 at 1:39 PM
+Subject: My new Harvard Business Review Article on Sapient Leadership
+To: <josh@josh.is <mailto:josh@josh.is> >
+
+=20
+
+
+  =
+<http://r20.rs6.net/on.jsp?ca=3D51fbcee7-c644-4422-b019-b9082c834d53&a=3D=
+1134318287345&c=3Ddee57b6e-a731-11ea-9353-d4ae52a2c97b&ch=3Ddef7925e-a731=
+-11ea-9353-d4ae52a2c97b>=20
+
+
+
+
+
+
+
+
+Hi Joshua,
+
+=20
+
+=20
+
+I'm delighted to share with you =
+<http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q111BFC3fV=
+jdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVrajZAvU7e=
+cfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4GJBjs-CN=
+jSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&c=3DXNzC6t1dZ-nIaf80U76KuCRhZrX65=
+mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&ch=3DzaIhyhAq7CNKU4DElOCws4fQmQgXrnTeXu3_=
+gssX92EZiUYFvBkD6A=3D=3D>   =
+<http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q111BFC3fV=
+jdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVrajZAvU7e=
+cfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4GJBjs-CN=
+jSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&c=3DXNzC6t1dZ-nIaf80U76KuCRhZrX65=
+mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&ch=3DzaIhyhAq7CNKU4DElOCws4fQmQgXrnTeXu3_=
+gssX92EZiUYFvBkD6A=3D=3D> my newly published Harvard Business Review =
+article. It's based on the Stanford class I'm teaching, and the new =
+leadership framework (Sapient Leadership) I developed with Aneel Chima =
+(the Director of Health and Human performance at Stanford) to help =
+leaders navigate and thrive in our new reality of change that's =
+exponential, pervasive, and perpetual (3-D Change). =20
+
+=20
+
+While developing our new Sapient Leadership framework during our =
+Stanford lecture series this past Spring, we had the pleasure to host =
+and learn from captains of industry, such as Doug McMillon, President =
+and CEO of Walmart, and Chairman of the Business Roundtable; innovators =
+in health care such as Toby Cosgrove, former CEO of the Cleveland =
+Clinic, heart surgeon, and White House advisor; global social =
+change-makers such as Hala Tomasdottir, CEO of The B Team, Investor, and =
+co-founder of Reykjavik University; and leading-edge technologists and =
+innovators such as Bret Taylor, President and COO of Salesforce, =
+co-creator of Google Maps and the =E2=80=9CLike=E2=80=9D button, and =
+board member of Twitter; and others, all of whom make world-wide impact =
+while being committed to leadership for human well-being and =
+flourishing.=20
+
+=20
+
+Feel free to =
+<http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q111BFC3fV=
+jdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVrajZAvU7e=
+cfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4GJBjs-CN=
+jSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&c=3DXNzC6t1dZ-nIaf80U76KuCRhZrX65=
+mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&ch=3DzaIhyhAq7CNKU4DElOCws4fQmQgXrnTeXu3_=
+gssX92EZiUYFvBkD6A=3D=3D>   =
+<http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q111BFC3fV=
+jdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVrajZAvU7e=
+cfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4GJBjs-CN=
+jSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&c=3DXNzC6t1dZ-nIaf80U76KuCRhZrX65=
+mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&ch=3DzaIhyhAq7CNKU4DElOCws4fQmQgXrnTeXu3_=
+gssX92EZiUYFvBkD6A=3D=3D> share this HBR article with anyone who can =
+benefit from it, and please send me your feedback and any questions you =
+may have. If you're interested in participating in our current endeavor =
+to further develop our Sapient Leadership framework (based on technology =
+extenders), or if you'd like to recommend additional luminaries, =
+leaders, and changemakers to participate in our future classes and/or =
+research - please respond to this email and let=E2=80=99s chat! =20
+
+=20
+
+Stay well and take good care,
+
+RjG
+
+--
+
+Ron Gutman
+
+Smile :)
+
+=09
+
+=20
+
+
+
+
+GiveLoveGetHelp | 550 Battery St., San Francisco, CA 94111=20
+
+
+
+ =
+<https://visitor.constantcontact.com/do?p=3Dun&m=3D0012zViukD5HNv8F7XFkxC=
+6oQ%3D&ch=3Ddef7925e-a731-11ea-9353-d4ae52a2c97b&ca=3D51fbcee7-c644-4422-=
+b019-b9082c834d53> Unsubscribe josh@josh.is=20
+
+
+ =
+<https://visitor.constantcontact.com/do?p=3Doo&m=3D0012zViukD5HNv8F7XFkxC=
+6oQ%3D&ch=3Ddef7925e-a731-11ea-9353-d4ae52a2c97b&ca=3D51fbcee7-c644-4422-=
+b019-b9082c834d53> Update Profile |  =
+<http://www.constantcontact.com/legal/service-provider?cc=3Dabout-service=
+-provider> About our service provider=20
+
+
+Sent by  <mailto:rgutman@givelovegethelp.org> =
+rgutman@givelovegethelp.org powered by=20
+
+
+ <http://www.constantcontact.com/index.jsp?cc=3Dnge&rmc=3DVF19_3GE>=20
+
+ <http://www.constantcontact.com/index.jsp?cc=3Dnge&rmc=3DVF19_3GE> Try =
+email marketing for free today!=20
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D1f6c316f-a034-4b68-ac47-0a0503a6c4c2> =E1=90=A7
+
+
+------=_NextPart_000_0593_01D6B1DF.43965F80
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:x=3D"urn:schemas-microsoft-com:office:excel" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 15 (filtered medium)"><!--[if =
+!mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Verdana;
+	panose-1:2 11 6 4 3 5 4 4 2 4;}
+@font-face
+	{font-family:Gadugi;
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{font-family:Georgia;
+	panose-1:2 4 5 2 5 4 5 2 3 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.m-7450847929758270132footer-column
+	{mso-style-name:m_-7450847929758270132footer-column;}
+span.m-7450847929758270132footer-mobile-hidden
+	{mso-style-name:m_-7450847929758270132footer-mobile-hidden;}
+span.EmailStyle21
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue =
+vlink=3Dpurple style=3D'word-wrap:break-word'><div =
+class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Think we need to target the =
+raise/acquisition =E2=80=93 and anything that would help with that =
+=E2=80=93 and defocus the academic stuff for a while =E2=80=93 google =
+didn=E2=80=99t need an academic paper to buy =
+Urchin=E2=80=A6=E2=80=A6=E2=80=A6=E2=80=A6.<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein =
+&lt;josh@josh.is&gt; <br><b>Sent:</b> 03 November 2020 =
+12:19<br><b>To:</b> Chris at Indigo =
+&lt;chris@indigometrics.com&gt;<br><b>Subject:</b> Fwd: My new Harvard =
+Business Review Article on Sapient =
+Leadership<o:p></o:p></span></p></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p class=3DMsoNormal>This =
+guy could be a good academic connection - wanted to get your feedback on =
+if you think it's worth pursuing far out leads like this given our =
+targeting on the raise/acquisition. I.e., happy to drop these if you =
+agree they're not likely to add much atm.<o:p></o:p></p><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>- =
+J<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div><div><p =
+class=3DMsoNormal>---------- Forwarded message ---------<br>From: =
+<strong><span style=3D'font-family:"Calibri",sans-serif'>Ron =
+Gutman</span></strong> &lt;<a =
+href=3D"mailto:rgutman@givelovegethelp.org">rgutman@givelovegethelp.org</=
+a>&gt;<br>Date: Fri, Oct 30, 2020 at 1:39 PM<br>Subject: My new Harvard =
+Business Review Article on Sapient Leadership<br>To: &lt;<a =
+href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;<o:p></o:p></p></div><p =
+class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;min-width:100%'><tr><td style=3D'padding:0cm 0cm =
+0cm 0cm'><div><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center'><img border=3D0 width=3D1 height=3D1 =
+style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1027" =
+src=3D"http://r20.rs6.net/on.jsp?ca=3D51fbcee7-c644-4422-b019-b9082c834d5=
+3&amp;a=3D1134318287345&amp;c=3Ddee57b6e-a731-11ea-9353-d4ae52a2c97b&amp;=
+ch=3Ddef7925e-a731-11ea-9353-d4ae52a2c97b"><o:p></o:p></p></div></td></tr=
+><tr><td style=3D'padding:0cm 0cm 0cm 0cm'><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D"100%" =
+style=3D'width:100.0%;background:#E6E6E6;min-width:100%'><tr><td =
+style=3D'padding:0cm 0cm 0cm 0cm'><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 cellpadding=3D0 =
+width=3D612 style=3D'width:459.0pt;min-width:100%'><tr><td valign=3Dtop =
+style=3D'padding:11.25pt 3.75pt 11.25pt 3.75pt'><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+valign=3Dtop style=3D'background:#869198;padding:.75pt .75pt .75pt =
+.75pt'><div align=3Dcenter><table class=3DMsoNormalTable border=3D0 =
+cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:#869198'><tr><td valign=3Dtop =
+style=3D'background:white;padding:0cm 0cm 0cm 0cm'><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+width=3D"100%" valign=3Dtop style=3D'width:100.0%;padding:0cm 0cm 0cm =
+0cm'><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" style=3D'width:100.0%'><tr><td =
+valign=3Dtop style=3D'padding:7.5pt 15.0pt 7.5pt =
+15.0pt'><div><div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:#070707'>Hi =
+Joshua,</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p>&nbsp;</o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p>&nbsp;</o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>I'm =
+delighted to share with you</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><a=
+ =
+href=3D"http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q11=
+1BFC3fVjdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVra=
+jZAvU7ecfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4G=
+JBjs-CNjSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&amp;c=3DXNzC6t1dZ-nIaf80U7=
+6KuCRhZrX65mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&amp;ch=3DzaIhyhAq7CNKU4DElOCws=
+4fQmQgXrnTeXu3_gssX92EZiUYFvBkD6A=3D=3D" target=3D"_blank"><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black;text-de=
+coration:none'> </span></a><a =
+href=3D"http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q11=
+1BFC3fVjdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVra=
+jZAvU7ecfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4G=
+JBjs-CNjSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&amp;c=3DXNzC6t1dZ-nIaf80U7=
+6KuCRhZrX65mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&amp;ch=3DzaIhyhAq7CNKU4DElOCws=
+4fQmQgXrnTeXu3_gssX92EZiUYFvBkD6A=3D=3D" target=3D"_blank"><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:#1155CC;text-=
+decoration:none'>my newly published Harvard Business Review =
+article</span></a></span><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>. =
+It's based on the Stanford class I'm teaching, and the new leadership =
+framework (<i>Sapient Leadership</i>) I developed with Aneel Chima (the =
+Director of Health and Human performance at Stanford) to help leaders =
+navigate and thrive in our new reality of change that's exponential, =
+pervasive, and perpetual (<i>3-D Change</i>).&nbsp;</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'> =
+<o:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>&nbsp;=
+</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>While =
+developing our new <i>Sapient Leadership</i> framework during our =
+Stanford lecture series this past Spring, we had the pleasure to host =
+and learn from captains of industry, such as Doug McMillon, President =
+and CEO of Walmart, and Chairman of the Business Roundtable; innovators =
+in health care such as Toby Cosgrove, former CEO of the Cleveland =
+Clinic, heart surgeon, and White House advisor; global social =
+change-makers such as Hala Tomasdottir, CEO of The B Team, Investor, and =
+co-founder of Reykjavik University; and leading-edge technologists and =
+innovators such as Bret Taylor, President and COO of Salesforce, =
+co-creator of Google Maps and the =E2=80=9CLike=E2=80=9D button, and =
+board member of Twitter; and others, all of whom make world-wide impact =
+while being committed to leadership for human well-being and =
+flourishing.</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'> =
+<o:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>&nbsp;=
+</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>Feel =
+free to</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><a=
+ =
+href=3D"http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q11=
+1BFC3fVjdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVra=
+jZAvU7ecfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4G=
+JBjs-CNjSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&amp;c=3DXNzC6t1dZ-nIaf80U7=
+6KuCRhZrX65mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&amp;ch=3DzaIhyhAq7CNKU4DElOCws=
+4fQmQgXrnTeXu3_gssX92EZiUYFvBkD6A=3D=3D" target=3D"_blank"><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black;text-de=
+coration:none'> </span></a><a =
+href=3D"http://r20.rs6.net/tn.jsp?f=3D001a6SWTbr6sOq7sRMadR4LU9tEHdvY3q11=
+1BFC3fVjdSciDPQBvhc0uQhYRx4Hq-QmGgty98V1ynO-KwncnL1XaEhuSc82ts221gagbcVra=
+jZAvU7ecfPC9dIUENOcJ2xd0bL9Zs-lwmUbBOr4St2W_hW0andJkuH0BeKsrpCA0qSScF9u4G=
+JBjs-CNjSZ3hbb8Us6yJj6HGUc92hmW8qCi6gLUUNymvuL&amp;c=3DXNzC6t1dZ-nIaf80U7=
+6KuCRhZrX65mNwq2OxEgnztG3qNmrSVQ2FdA=3D=3D&amp;ch=3DzaIhyhAq7CNKU4DElOCws=
+4fQmQgXrnTeXu3_gssX92EZiUYFvBkD6A=3D=3D" target=3D"_blank"><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:#1155CC;text-=
+decoration:none'>share this HBR article with anyone who can benefit from =
+it</span></a></span><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>, and =
+please send me your feedback and any questions you may have. If you're =
+interested in participating in our current endeavor to further develop =
+our Sapient Leadership framework (based on technology extenders), or if =
+you'd like to recommend additional luminaries, leaders, and changemakers =
+to participate in our future classes and/or research - please respond to =
+this email and let=E2=80=99s chat!&nbsp;</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'> =
+<o:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>&nbsp;=
+</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>Stay =
+well and take good care,</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:12.0pt;font-family:"Georgia",serif;color:black'>RjG</s=
+pan><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Georgia",serif;color:black'>--</sp=
+an><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Georgia",serif;color:black'>Ron =
+Gutman</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div><div><p class=3DMsoNormal><span =
+style=3D'font-size:10.0pt;font-family:"Georgia",serif;color:black'>Smile =
+:)</span><span =
+style=3D'font-size:9.0pt;font-family:"Arial",sans-serif;color:#403F42'><o=
+:p></o:p></span></p></div></div></div></td></tr></table></td></tr></table=
+></div></td></tr></table></div></td></tr></table></div></td></tr></table>=
+</div></td></tr></table></div></td></tr><tr><td style=3D'padding:0cm 0cm =
+0cm 0cm'></td></tr></table></div><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center;background:#E6E6E6'><o:p>&nbsp;</o:p></p><div =
+align=3Dcenter><table class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%;background:white;table-layout:auto!important'><tr><=
+td width=3D"100%" valign=3Dtop style=3D'width:100.0%;padding:0cm 0cm 0cm =
+0cm'><div align=3Dcenter><table class=3DMsoNormalTable border=3D0 =
+cellspacing=3D0 cellpadding=3D0 width=3D"100%" =
+style=3D'width:100.0%'><tr><td valign=3Dtop style=3D'padding:12.0pt 0cm =
+12.0pt 0cm'><div align=3Dcenter><table class=3DMsoNormalTable border=3D0 =
+cellspacing=3D0 cellpadding=3D0 width=3D580 =
+style=3D'width:435.0pt'><tr><td valign=3Dtop style=3D'padding:3.0pt 0cm =
+3.0pt 0cm'><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center'><span =
+class=3Dm-7450847929758270132footer-column><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+GiveLoveGetHelp</span></span><span =
+class=3Dm-7450847929758270132footer-mobile-hidden><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+ | </span></span><span class=3Dm-7450847929758270132footer-column><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+550 Battery St.</span></span><span =
+class=3Dm-7450847929758270132footer-mobile-hidden><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+, </span></span><span class=3Dm-7450847929758270132footer-column><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+San Francisco, CA 94111</span></span><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+ <o:p></o:p></span></p></td></tr><tr><td valign=3Dtop =
+style=3D'padding:7.5pt 0cm 7.5pt 0cm'><div align=3Dcenter><table =
+class=3DMsoNormalTable border=3D0 cellspacing=3D0 =
+cellpadding=3D0><tr><td valign=3Dtop style=3D'padding:3.0pt 0cm 3.0pt =
+0cm'><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center'><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+<a =
+href=3D"https://visitor.constantcontact.com/do?p=3Dun&amp;m=3D0012zViukD5=
+HNv8F7XFkxC6oQ%3D&amp;ch=3Ddef7925e-a731-11ea-9353-d4ae52a2c97b&amp;ca=3D=
+51fbcee7-c644-4422-b019-b9082c834d53" target=3D"_blank"><span =
+style=3D'color:#5D5D5D'>Unsubscribe josh@josh.is</span></a> =
+<o:p></o:p></span></p></td></tr><tr><td valign=3Dtop =
+style=3D'padding:3.0pt 0cm 3.0pt 0cm'><p class=3DMsoNormal =
+align=3Dcenter style=3D'text-align:center'><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+<a =
+href=3D"https://visitor.constantcontact.com/do?p=3Doo&amp;m=3D0012zViukD5=
+HNv8F7XFkxC6oQ%3D&amp;ch=3Ddef7925e-a731-11ea-9353-d4ae52a2c97b&amp;ca=3D=
+51fbcee7-c644-4422-b019-b9082c834d53" target=3D"_blank"><span =
+style=3D'color:#5D5D5D'>Update Profile</span></a> | <a =
+href=3D"http://www.constantcontact.com/legal/service-provider?cc=3Dabout-=
+service-provider" target=3D"_blank"><span style=3D'color:#5D5D5D'>About =
+our service provider</span></a> <o:p></o:p></span></p></td></tr><tr><td =
+valign=3Dtop style=3D'padding:3.0pt 0cm 3.0pt 0cm'><p class=3DMsoNormal =
+align=3Dcenter style=3D'text-align:center'><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+Sent by <a href=3D"mailto:rgutman@givelovegethelp.org" =
+target=3D"_blank"><span =
+style=3D'color:#5D5D5D;text-decoration:none'>rgutman@givelovegethelp.org<=
+/span></a> <span class=3Dm-7450847929758270132footer-column>powered =
+by</span> =
+<o:p></o:p></span></p></td></tr></table></div></td></tr><tr><td =
+valign=3Dtop style=3D'padding:3.0pt 0cm 3.0pt 0cm'><p class=3DMsoNormal =
+align=3Dcenter style=3D'text-align:center'><a =
+href=3D"http://www.constantcontact.com/index.jsp?cc=3Dnge&amp;rmc=3DVF19_=
+3GE" target=3D"_blank"><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D;t=
+ext-decoration:none'><img border=3D0 width=3D160 height=3D46 =
+style=3D'width:1.6666in;height:.4791in' id=3D"_x0000_i1026" =
+src=3D"https://static.ctctcdn.com/letters/images/CTCTFooter/Logo_Blue_Ora=
+nge.png" alt=3D"Trusted Email from Constant Contact - Try it FREE =
+today."></span></a><span =
+style=3D'font-size:9.0pt;font-family:"Verdana",sans-serif;color:#5D5D5D'>=
+<o:p></o:p></span></p><div><p class=3DMsoNormal align=3Dcenter =
+style=3D'text-align:center;line-height:200%'><span =
+style=3D'font-size:7.0pt;line-height:200%;font-family:"Verdana",sans-seri=
+f;color:#5D5D5D'><a =
+href=3D"http://www.constantcontact.com/index.jsp?cc=3Dnge&amp;rmc=3DVF19_=
+3GE" target=3D"_blank"><span =
+style=3D'color:#5D5D5D;text-decoration:none'>Try email marketing for =
+free today!</span></a> =
+<o:p></o:p></span></p></div></td></tr></table></div></td></tr></table></d=
+iv></td></tr></table></div></div></div></div><div><p =
+class=3DMsoNormal><img border=3D0 width=3D1 height=3D1 =
+style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1025" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D1f6c316f-a034-4b68-ac47-0a0503a6c4c2"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div></div></body></html>
+------=_NextPart_000_0593_01D6B1DF.43965F80--
+

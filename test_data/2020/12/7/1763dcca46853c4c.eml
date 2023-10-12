@@ -1,0 +1,645 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:501c:0:0:0:0:0 with SMTP id e28csp2753069ljb;
+        Mon, 7 Dec 2020 07:23:10 -0800 (PST)
+X-Received: by 2002:a25:c009:: with SMTP id c9mr23928083ybf.345.1607354590406;
+        Mon, 07 Dec 2020 07:23:10 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1607354590; cv=none;
+        d=google.com; s=arc-20160816;
+        b=MIBsh9LNv0/Tt5Yv/Olu1HbYPvuv9hcsqCuh95XEFxZoyTHWBMzvTRzGG5DlNSaUKS
+         0+0CJkTZAMVKINqVDViD0fPkkN65KG3E4LbbY5D5LN8cG4CwygbjYXf8m/cPwyEiuREk
+         a7mu1Yi57b6Wts1BDXREP7uoBnqr9pfO3Am+6ANK63vjSD7jsQETZG55uBy5ik6pntYs
+         7CHG9/1ksU+ySp//ktnHzcjr44D82OoyIFDWxc3hUH3JKEQa9OAdXSs0JIzmWA3xkkjD
+         Fdj/SPal6xcdWLrnbdAEqr7OjKaeThYTkRDe8wAbCcMYF7cQkq76zVItUDIcTKUuOhuL
+         ozrA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=PTD5b66A+K8QsuCkM3jjEFgT8/1ZVk05VS5eAq8lCAg=;
+        b=GyzhLTlODnZQ7RxZ4zy2EfqZOMSdPNw54UJX4hi9bHYuN92pe0wESMBX5gIxiUfnW7
+         Y4YXNxxArRTHLS/bL23ZUZwFjlvvw30HlXCG5gY2baItDfV5u/avG0LF6MBc0Kabe1gG
+         k8cmodxkQZdMIyL8QHoCD7CE+te8PLxCqqZhi3GsN0jLTlpf1HVp0SEsv7wA6ESg35ka
+         /xSdXojtk7PU0rbgfnVJsNejX3Ez54wnUipUt4t4HZ3HsAed4ezY6lYGQKrjbX0f3QHf
+         cvNiZfWZLXXgQTiCXljEmgOZzBLJlgVMDwejZn2+m/bk1Kf7bmVm0iSfgZFmvQdSI1P4
+         tTLA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@averydennison.com header.s=google header.b="Cti/AWTl";
+       spf=pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=frederick.bleckmann@averydennison.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=averydennison.com
+Return-Path: <frederick.bleckmann@averydennison.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id o67sor3051969ybc.57.2020.12.07.07.23.10
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 07 Dec 2020 07:23:10 -0800 (PST)
+Received-SPF: pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@averydennison.com header.s=google header.b="Cti/AWTl";
+       spf=pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=frederick.bleckmann@averydennison.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=averydennison.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=averydennison.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=PTD5b66A+K8QsuCkM3jjEFgT8/1ZVk05VS5eAq8lCAg=;
+        b=Cti/AWTl9kqHdkyDO4vQmpj/L+2LZ5YzyEFcpWDprmV5uifc5CWc3hxrIPJTV8mRER
+         2iIFi/pmjLiFzxz058uCKKHtKnaB/J17PAj9A0NwzUQ9k6twB9H9rjYy7gcIpuNyEEUs
+         COv5bVG9zTcxT3py844e+5Jb8rkSVCRZWa9D4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=PTD5b66A+K8QsuCkM3jjEFgT8/1ZVk05VS5eAq8lCAg=;
+        b=nsQDS4JEmGlycMeJB3Dbu3IfeKCarztNRrHLnj/mL8Csfzq1FqHMXX0MLfs6kUKvZE
+         29aGiu+fg/UGdCBfKnwbHJ0wl3bd21qFc0TpSdyLKKDnj4ycLXJjSzJFlNItlTxP2tHa
+         rFs0cHzEC731cDNmiZawGb9JhhSz8FjOtVumQQpYgh5/xVTosuLiqi8hJQwz0kcYTAJR
+         2TDbeULywXxu4qSDxUZ3NJIR9vvPL5TapvAma7s+2TgYi2wlqxPxRG2t6sylINUSzUOe
+         xgl4mGnJEoFeabr+Ps8CDdz64zDdXUsZjbqaNwZGXbvEw5EvrEbmyqnyso57gB8updAH
+         ZWFg==
+X-Gm-Message-State: AOAM5322+Gtu7L3Ibtm+UlP2GR347t91le+2AN04m8xfwI03HfRk5m8d
+	A9StWGIGWYZ/lhA0HsVtSCKsIPv2ZMyHTfBcqpsn4NBw23/SDaH65Ls5va1Gp1namL8UE3nG/7a
+	Lp8aOqwjrPpHq+SAtYQ==
+X-Google-Smtp-Source: ABdhPJxQlgbJVLZNj+HZPd6lze5JXtgbRb11YLaxP06bDIPOevx8IlBT8z5SjBdlPwcG0hcHDmNWd4YZKCpsJWJ47Zw=
+X-Received: by 2002:a25:f512:: with SMTP id a18mr24593660ybe.159.1607354589588;
+ Mon, 07 Dec 2020 07:23:09 -0800 (PST)
+MIME-Version: 1.0
+References: <CACNgykNt-PdFdAmCqk_LwzFoZGXk1zm1UNs-uB+J2Zuyj8E7WQ@mail.gmail.com>
+ <CAO77uvn=wTcB3U2NoKQf5AwV6HUXCbmH0QeBQDjcppkxi=xFNA@mail.gmail.com>
+ <CACNgykNnqMFNA6JwUtGNFFRaRJz1u8-ybT4xOPHf_aJrJjgt0w@mail.gmail.com>
+ <CAO77uv==2O-b+_=qDbyoaks09S=h0AdJCSy6vGeUpVubpvGv3g@mail.gmail.com>
+ <CACNgykOx1hskQ9xADRGydecf3Mqe8NE+es6YPUaXE2GA1c+kqA@mail.gmail.com>
+ <CAO77uv=6+BHZ3b3jkSQVH=4YQYfQvAYoKP6w9EYLJxK-oAUuvw@mail.gmail.com>
+ <CACNgykM=FfPeegN0kONCaKJoTGkSixC7Wa1mrgANa1w=Qcve4w@mail.gmail.com>
+ <CACNgykMpLGDih_KRWwDHFWYYS3Tmm+uguksrD4OD07rq84FOMg@mail.gmail.com>
+ <CAO77uvki=tvukK_SfEYmrOCOGuPFxmWJ35FNEpS95LAeqskEHg@mail.gmail.com>
+ <CACNgykMmSB77C6DXTpf1vYu8bR+Qv-cSfLV4GwDFb2JhnKDPPw@mail.gmail.com> <CACNgykOCHvcpiow2aOzp6skOjZVYGX9=fPYymOyMBiVUKRfF6w@mail.gmail.com>
+In-Reply-To: <CACNgykOCHvcpiow2aOzp6skOjZVYGX9=fPYymOyMBiVUKRfF6w@mail.gmail.com>
+From: Frederick Bleckmann <frederick.bleckmann@averydennison.com>
+Date: Mon, 7 Dec 2020 10:22:58 -0500
+Message-ID: <CAO77uv=vFC+QC0fTO+2VO0XcAzh7+srpyuRdJS7kDQf2NH4RSg@mail.gmail.com>
+Subject: Re: Estee
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="0000000000005754ff05b5e1675d"
+
+--0000000000005754ff05b5e1675d
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+we are behind and owe you some case studies - I will check to see what is
+holding that up.... I tactfully handed it off
+
+On Mon, Dec 7, 2020 at 9:20 AM Josh Klein <josh@josh.is> wrote:
+
+> Just following up - let me know if I can provide any further info.
+>
+> best,
+> Josh
+> =E1=90=A7
+>
+> On Mon, Nov 23, 2020 at 5:32 PM Josh Klein <josh@josh.is> wrote:
+>
+>> Sounds good! Keep me posted.
+>>
+>> - J
+>> =E1=90=A7
+>>
+>> On Mon, Nov 23, 2020 at 5:23 PM Frederick Bleckmann <
+>> frederick.bleckmann@averydennison.com> wrote:
+>>
+>>> Josh,
+>>> Had some positive conversations internally, I need to map out a few
+>>> things with some internal people and likely look to get you on the phon=
+e
+>>> with Jeremy -  Thanks for your patience, the holiday schedules are a bi=
+t
+>>> tough to navigate right now as expected.
+>>>
+>>> On Mon, Nov 23, 2020 at 11:54 AM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> Just following up - let me know if I can provide any further info on
+>>>> Estee and/or doing work for AD directly.
+>>>>
+>>>> best,
+>>>> Josh
+>>>> =E1=90=A7
+>>>>
+>>>> On Fri, Nov 13, 2020 at 3:34 PM Josh Klein <josh@josh.is> wrote:
+>>>>
+>>>>> I'd do a split - give him something now to facilitate (and remind)
+>>>>> about connecting to the new head of retail, and then another couple s=
+lides
+>>>>> in Dec. predicating the new head of digital.
+>>>>>
+>>>>> - J
+>>>>> =E1=90=A7
+>>>>>
+>>>>> On Fri, Nov 13, 2020 at 2:57 PM Frederick Bleckmann <
+>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>
+>>>>>> I'll take your lead on timing - but sounds like mid December might
+>>>>>> work best to keep it fairly fresh and top of mind for Jan.
+>>>>>>
+>>>>>> On Fri, Nov 13, 2020 at 9:53 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>
+>>>>>>> Sounds good to me; as noted, I don't think Carl is looking to make =
+a
+>>>>>>> big push this quarter, but that there is strategic opportunity to a=
+im for
+>>>>>>> Jan.
+>>>>>>>
+>>>>>>> Thanks!
+>>>>>>> Josh
+>>>>>>> =E1=90=A7
+>>>>>>>
+>>>>>>> On Fri, Nov 13, 2020 at 2:44 PM Frederick Bleckmann <
+>>>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>>>
+>>>>>>>> Josh,
+>>>>>>>> This sounds great, I will get with our team and start putting some
+>>>>>>>> materials together -
+>>>>>>>> From a timing perspective do you think a post Thanksgiving week
+>>>>>>>> delivery on slides is the right timing?
+>>>>>>>>
+>>>>>>>> On Fri, Nov 13, 2020 at 9:36 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>
+>>>>>>>>> Spoke to Carl;
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>    1. Their demand system is being upgraded right now, which is
+>>>>>>>>>    (possibly) why momentum on RFID is slow
+>>>>>>>>>    2. He'll reach out to the former CEO of Oakly, now their new
+>>>>>>>>>    head of retail in US, about his take on RFID and how to bring =
+it forward
+>>>>>>>>>    from the back-end supply chain.
+>>>>>>>>>    3. He asked for some slides on case studies of the value of
+>>>>>>>>>    RFID through the front of the house
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> He also wanted to keep in touch about new tech developments more
+>>>>>>>>> generally. My take was that he'll do a little outreach but doesn'=
+t want to
+>>>>>>>>> rock the boat as they have a new head of digital coming in Januar=
+y and he
+>>>>>>>>> wants to have all his cards in hand when they do. I'd suggest we =
+get him
+>>>>>>>>> 4-5 slides on case studies for RFID that'll arm him / entice him =
+to the
+>>>>>>>>> full-stack data chain AD can provide to push on it in the
+>>>>>>>>> background (possibly through an alliance with said new head of re=
+tail)
+>>>>>>>>> before then.
+>>>>>>>>>
+>>>>>>>>> Let me know what you think,
+>>>>>>>>> Josh
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> =E1=90=A7
+>>>>>>>>>
+>>>>>>>>> On Wed, Nov 11, 2020 at 2:03 PM Frederick Bleckmann <
+>>>>>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>>>>>
+>>>>>>>>>> =F0=9F=91=8D
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> On Wed, Nov 11, 2020 at 5:49 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Carl just confirmed our Friday call. Will keep you posted.
+>>>>>>>>>>>
+>>>>>>>>>>> - J
+>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> --
+>>>>>>>>>> Frederick Bleckmann
+>>>>>>>>>> Ecosystems Market Development Director
+>>>>>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>>>>>> 646.901.4071
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> ----------------------------------------------------------------=
+---------------------------------------------
+>>>>>>>>>> The information transmitted is intended only for the person or
+>>>>>>>>>> entity to which it is addressed and may contain confidential and=
+/or
+>>>>>>>>>> privileged material. Any review, retransmission, dissemination o=
+r other use
+>>>>>>>>>> of, or taking of any action in reliance upon, this information b=
+y persons
+>>>>>>>>>> or entities other than the intended recipient is prohibited. If =
+you
+>>>>>>>>>> received this in error, please contact the sender and delete the=
+ material
+>>>>>>>>>> from any device.
+>>>>>>>>>>
+>>>>>>>>>> For details about the personal information we process and why,
+>>>>>>>>>> please see our Privacy Notice
+>>>>>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices=
+.html>
+>>>>>>>>>>
+>>>>>>>>>> ----------------------------------------------------------------=
+---------------------------------------------
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>
+>>>>>>>> --
+>>>>>>>> Frederick Bleckmann
+>>>>>>>> Ecosystems Market Development Director
+>>>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>>>> 646.901.4071
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> ------------------------------------------------------------------=
+-------------------------------------------
+>>>>>>>> The information transmitted is intended only for the person or
+>>>>>>>> entity to which it is addressed and may contain confidential and/o=
+r
+>>>>>>>> privileged material. Any review, retransmission, dissemination or =
+other use
+>>>>>>>> of, or taking of any action in reliance upon, this information by =
+persons
+>>>>>>>> or entities other than the intended recipient is prohibited. If yo=
+u
+>>>>>>>> received this in error, please contact the sender and delete the m=
+aterial
+>>>>>>>> from any device.
+>>>>>>>>
+>>>>>>>> For details about the personal information we process and why,
+>>>>>>>> please see our Privacy Notice
+>>>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.h=
+tml>
+>>>>>>>>
+>>>>>>>> ------------------------------------------------------------------=
+-------------------------------------------
+>>>>>>>>
+>>>>>>>>
+>>>>>>
+>>>>>> --
+>>>>>> Frederick Bleckmann
+>>>>>> Ecosystems Market Development Director
+>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>> 646.901.4071
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> --------------------------------------------------------------------=
+-----------------------------------------
+>>>>>> The information transmitted is intended only for the person or entit=
+y
+>>>>>> to which it is addressed and may contain confidential and/or privile=
+ged
+>>>>>> material. Any review, retransmission, dissemination or other use of,=
+ or
+>>>>>> taking of any action in reliance upon, this information by persons o=
+r
+>>>>>> entities other than the intended recipient is prohibited. If you rec=
+eived
+>>>>>> this in error, please contact the sender and delete the material fro=
+m any
+>>>>>> device.
+>>>>>>
+>>>>>> For details about the personal information we process and why, pleas=
+e
+>>>>>> see our Privacy Notice
+>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.htm=
+l>
+>>>>>>
+>>>>>> --------------------------------------------------------------------=
+-----------------------------------------
+>>>>>>
+>>>>>>
+>>>
+>>> --
+>>> Frederick Bleckmann
+>>> Ecosystems Market Development Director
+>>> RFID / Intelligent Labels, Avery Dennison
+>>> 646.901.4071
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> -----------------------------------------------------------------------=
+--------------------------------------
+>>> The information transmitted is intended only for the person or entity t=
+o
+>>> which it is addressed and may contain confidential and/or privileged
+>>> material. Any review, retransmission, dissemination or other use of, or
+>>> taking of any action in reliance upon, this information by persons or
+>>> entities other than the intended recipient is prohibited. If you receiv=
+ed
+>>> this in error, please contact the sender and delete the material from a=
+ny
+>>> device.
+>>>
+>>> For details about the personal information we process and why, please
+>>> see our Privacy Notice
+>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.html>
+>>>
+>>> -----------------------------------------------------------------------=
+--------------------------------------
+>>>
+>>>
+
+--=20
+Frederick Bleckmann
+Ecosystems Market Development Director
+RFID / Intelligent Labels, Avery Dennison
+646.901.4071
+
+--=20
+
+
+---------------------------------------------------------------------------=
+----------------------------------
+The information transmitted is intended only for the person or entity to=20
+which it is addressed and may contain confidential and/or privileged=20
+material. Any review, retransmission, dissemination or other use of, or=20
+taking of any action in reliance upon, this information by persons or=20
+entities other than the intended recipient is prohibited. If you received=
+=20
+this in error, please contact the sender and delete the material from any=
+=20
+device.
+
+
+For details about the personal information we process and why,=20
+please see our=C2=A0Privacy Notice=20
+<https://www.averydennison.com/en/home/legal-and-privacy-notices.html>
+
+---------------------------------------------------------------------------=
+----------------------------------
+
+--0000000000005754ff05b5e1675d
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">we are behind and owe you some case studies - I will check=
+ to see what is holding that up.... I tactfully handed it off</div><br><div=
+ class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Dec 7,=
+ 2020 at 9:20 AM Josh Klein &lt;<a href=3D"mailto:josh@josh.is">josh@josh.i=
+s</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div dir=3D"ltr">Just following up - let me know if I can provide any furt=
+her info.<br>
+
+<br>
+
+best,<br>
+
+Josh<br></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D6fdc79c3-2164-4629-9c2e-6ece3a6054b0"><font color=3D"#ffff=
+ff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div di=
+r=3D"ltr" class=3D"gmail_attr">On Mon, Nov 23, 2020 at 5:32 PM Josh Klein &=
+lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; w=
+rote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Sounds good! Keep me posted.<div><br></div><div>- J</div></div><di=
+v hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D=
+"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+1095c0ee-8c99-46ac-9ff1-ab48d37d5df8"><font color=3D"#ffffff" size=3D"1">=
+=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Mon, Nov 23, 2020 at 5:23 PM Frederick Bleckmann &lt;<a =
+href=3D"mailto:frederick.bleckmann@averydennison.com" target=3D"_blank">fre=
+derick.bleckmann@averydennison.com</a>&gt; wrote:<br></div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Josh,<br><div>Had some p=
+ositive=C2=A0conversations internally, I need to map out a few things with =
+some internal people and likely=C2=A0look to get you on the phone with Jere=
+my -=C2=A0 Thanks for your patience, the holiday schedules are a bit tough =
+to navigate right now as expected.</div></div><br><div class=3D"gmail_quote=
+"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Nov 23, 2020 at 11:54 AM Jo=
+sh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is=
+</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:=
+0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">=
+<div dir=3D"ltr">Just following up - let me know if I can provide any furth=
+er info on Estee and/or doing work for AD directly.<br>
+
+<br>
+
+best,<br>
+
+Josh<br></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img =
+alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D401d2430-0e58-41ff-82ae-9ca51b997572"><font color=3D"#ffff=
+ff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div di=
+r=3D"ltr" class=3D"gmail_attr">On Fri, Nov 13, 2020 at 3:34 PM Josh Klein &=
+lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; w=
+rote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0p=
+x 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">I&#39;d do a split - give him something now to facilitate (and rem=
+ind) about connecting to the new head of retail, and then another couple sl=
+ides in Dec. predicating the new head of digital.=C2=A0<div><br></div><div>=
+- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img=
+ alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"h=
+ttps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroc=
+ontent&amp;guid=3D26d5ae67-f75a-4219-b575-fb676be8e100"><font color=3D"#fff=
+fff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Fri, Nov 13, 2020 at 2:57 PM Frederick B=
+leckmann &lt;<a href=3D"mailto:frederick.bleckmann@averydennison.com" targe=
+t=3D"_blank">frederick.bleckmann@averydennison.com</a>&gt; wrote:<br></div>=
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">I&#39;ll=
+ take your lead on timing - but sounds like mid December might work best to=
+ keep it fairly fresh and top of mind for Jan.</div><br><div class=3D"gmail=
+_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Nov 13, 2020 at 9:53 =
+AM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@jo=
+sh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:=
+1ex"><div dir=3D"ltr">Sounds good to me; as noted, I don&#39;t think Carl i=
+s looking to make a big push this quarter, but that there is strategic oppo=
+rtunity to aim for Jan.=C2=A0<br><div><br></div><div>Thanks!<br>Josh</div><=
+/div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mai=
+lfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp=
+;guid=3D77bd9002-5aeb-4f24-9cfa-c83b7d1d1b06"><font color=3D"#ffffff" size=
+=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr=
+" class=3D"gmail_attr">On Fri, Nov 13, 2020 at 2:44 PM Frederick Bleckmann =
+&lt;<a href=3D"mailto:frederick.bleckmann@averydennison.com" target=3D"_bla=
+nk">frederick.bleckmann@averydennison.com</a>&gt; wrote:<br></div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px =
+solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Josh,<div>This so=
+unds great, I will get with our team and start putting some materials toget=
+her -=C2=A0</div><div>From a timing perspective do you think a post Thanksg=
+iving week delivery on slides is the right timing?</div></div><br><div clas=
+s=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Nov 13, 202=
+0 at 9:36 AM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blan=
+k">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" s=
+tyle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pad=
+ding-left:1ex"><div dir=3D"ltr">Spoke to Carl;=C2=A0<div><br></div><div><ol=
+><li>Their demand system is being upgraded right now, which is (possibly) w=
+hy momentum on RFID is slow</li><li>He&#39;ll reach out to the former CEO o=
+f Oakly, now their new head of retail in US, about his take on RFID and how=
+ to bring it forward from the back-end supply chain.</li><li>He asked for s=
+ome slides on case studies of the value of RFID through the front of the ho=
+use</li></ol></div><div><br></div><div>He also wanted to keep in touch abou=
+t new tech developments more generally. My take was that he&#39;ll do a lit=
+tle outreach but doesn&#39;t want to rock the boat as they have a new head =
+of digital coming in January and he wants to have all his cards in hand whe=
+n they do. I&#39;d suggest we get him 4-5 slides on case studies for RFID t=
+hat&#39;ll arm him / entice him to the full-stack data chain AD can provide=
+ to push on it in the background=C2=A0(possibly through an alliance with sa=
+id new head of retail) before then.</div><div><br></div><div>Let me know wh=
+at you think,</div><div>Josh</div><div><br></div><div><br></div><div><br></=
+div><div><br></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height=
+:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;=
+" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D052f5db6-d3fc-430b-ade1-0e1da5ebef54"><font col=
+or=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quo=
+te"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Nov 11, 2020 at 2:03 PM F=
+rederick Bleckmann &lt;<a href=3D"mailto:frederick.bleckmann@averydennison.=
+com" target=3D"_blank">frederick.bleckmann@averydennison.com</a>&gt; wrote:=
+<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr=
+">=F0=9F=91=8D<br><div><br></div></div><br><div class=3D"gmail_quote"><div =
+dir=3D"ltr" class=3D"gmail_attr">On Wed, Nov 11, 2020 at 5:49 AM Josh Klein=
+ &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt;=
+ wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px =
+0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Carl just confirmed our Friday call. Will keep you=C2=A0posted.<di=
+v><br></div><div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max=
+-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: =
+hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz=
+&amp;type=3Dzerocontent&amp;guid=3D1dbddd7b-8662-4c35-bce5-b5a5cd2d64b7"><f=
+ont color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif">The information transmitted is =
+intended only for the person or entity to which it is addressed and may con=
+tain confidential and/or privileged material. Any review, retransmission, d=
+issemination or other use of, or taking of any action in reliance upon, thi=
+s information by persons or entities other than the intended recipient is p=
+rohibited. If you received this in error, please contact the sender and del=
+ete the material from any device.</font></div><div><font face=3D"Arial, Hel=
+vetica, sans-serif"><br></font></div><div><font face=3D"Arial, Helvetica, s=
+ans-serif">For details about the personal information we process and why, p=
+lease see our=C2=A0<a href=3D"https://www.averydennison.com/en/home/legal-a=
+nd-privacy-notices.html" target=3D"_blank">Privacy Notice</a></font></div><=
+/div><div>-----------------------------------------------------------------=
+--------------------------------------------</div></div><div><br></div></bl=
+ockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif">The information transmitted is =
+intended only for the person or entity to which it is addressed and may con=
+tain confidential and/or privileged material. Any review, retransmission, d=
+issemination or other use of, or taking of any action in reliance upon, thi=
+s information by persons or entities other than the intended recipient is p=
+rohibited. If you received this in error, please contact the sender and del=
+ete the material from any device.</font></div><div><font face=3D"Arial, Hel=
+vetica, sans-serif"><br></font></div><div><font face=3D"Arial, Helvetica, s=
+ans-serif">For details about the personal information we process and why, p=
+lease see our=C2=A0<a href=3D"https://www.averydennison.com/en/home/legal-a=
+nd-privacy-notices.html" target=3D"_blank">Privacy Notice</a></font></div><=
+/div><div>-----------------------------------------------------------------=
+--------------------------------------------</div></div><div><br></div></bl=
+ockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif">The information transmitted is =
+intended only for the person or entity to which it is addressed and may con=
+tain confidential and/or privileged material. Any review, retransmission, d=
+issemination or other use of, or taking of any action in reliance upon, thi=
+s information by persons or entities other than the intended recipient is p=
+rohibited. If you received this in error, please contact the sender and del=
+ete the material from any device.</font></div><div><font face=3D"Arial, Hel=
+vetica, sans-serif"><br></font></div><div><font face=3D"Arial, Helvetica, s=
+ans-serif">For details about the personal information we process and why, p=
+lease see our=C2=A0<a href=3D"https://www.averydennison.com/en/home/legal-a=
+nd-privacy-notices.html" target=3D"_blank">Privacy Notice</a></font></div><=
+/div><div>-----------------------------------------------------------------=
+--------------------------------------------</div></div><div><br></div></bl=
+ockquote></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif">The information transmitted is =
+intended only for the person or entity to which it is addressed and may con=
+tain confidential and/or privileged material. Any review, retransmission, d=
+issemination or other use of, or taking of any action in reliance upon, thi=
+s information by persons or entities other than the intended recipient is p=
+rohibited. If you received this in error, please contact the sender and del=
+ete the material from any device.</font></div><div><font face=3D"Arial, Hel=
+vetica, sans-serif"><br></font></div><div><font face=3D"Arial, Helvetica, s=
+ans-serif">For details about the personal information we process and why, p=
+lease see our=C2=A0<a href=3D"https://www.averydennison.com/en/home/legal-a=
+nd-privacy-notices.html" target=3D"_blank">Privacy Notice</a></font></div><=
+/div><div>-----------------------------------------------------------------=
+--------------------------------------------</div></div><div><br></div></bl=
+ockquote></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr">Frederick Bleckmann<br></div><div dir=
+=3D"ltr"><div>Ecosystems Market Development Director</div><div>RFID / Intel=
+ligent Labels, Avery Dennison</div><div>646.901.4071<br></div><div><br></di=
+v><div><br></div></div></div></div></div></div></div></div></div></div></di=
+v></div>
+
+<br>
+<div><br></div><div><div>------------------------------<wbr>---------------=
+---------------<wbr>------------------------------<wbr>-------------------<=
+/div><div><div><font face=3D"Arial, Helvetica, sans-serif">The information =
+transmitted is intended only for the person or entity to which it is addres=
+sed and may contain confidential and/or privileged material. Any review, re=
+transmission, dissemination or other use of, or taking of any action in rel=
+iance upon, this information by persons or entities other than the intended=
+ recipient is prohibited. If you received this in error, please contact the=
+ sender and delete the material from any device.</font></div><div><font fac=
+e=3D"Arial, Helvetica, sans-serif"><br></font></div><div><font face=3D"Aria=
+l, Helvetica, sans-serif">For details about the personal information we pro=
+cess and why, please see our=C2=A0<a href=3D"https://www.averydennison.com/=
+en/home/legal-and-privacy-notices.html" target=3D"_blank">Privacy Notice</a=
+></font></div></div><div>------------------------------<wbr>---------------=
+---------------<wbr>------------------------------<wbr>-------------------<=
+/div></div><div><br></div>
+--0000000000005754ff05b5e1675d--

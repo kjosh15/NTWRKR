@@ -1,0 +1,835 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:28a:0:0:0:0 with SMTP id b10csp1903770ljo;
+        Fri, 2 Jul 2021 13:31:32 -0700 (PDT)
+X-Received: by 2002:a05:622a:1389:: with SMTP id o9mr1540109qtk.52.1625257892718;
+        Fri, 02 Jul 2021 13:31:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1625257892; cv=none;
+        d=google.com; s=arc-20160816;
+        b=UhwtdXZeoRzPf9WKYiCVtpXkTtXICbJkjQJdnwJm9EBttwm1ZYsUgWZcXetrCo6Th1
+         I5o0hdC99vQUpG9f/xTDcyjTlu693E5a0FyvYX6Pd3ZHZeUE7BYtMcZGly4DRHiRJHUW
+         Br2ebWTmJbWSBOdgjnwIfXWs79cM42CPNkR+/Gc2QJIHYQMq/ho+JyClp4FB2HTN8/fr
+         /m8VtheKg7/3UJlvtud/auBixkF+PKgxcChPSeCoENQd0YUyJUfRX8cJU9pZLjhkbkBx
+         DRvpwFUHYnclNExC6RRPnXfQI/z8M4tBkS/UteyECZmU3KZSpsg7by8TG9f0mLZNzRyP
+         qClg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:date:message-id:subject:references:in-reply-to:cc:to
+         :from:dkim-signature;
+        bh=cKJcqarIA84fxXC5ZdllxoRyYJpqDAVD+gy67z3avkU=;
+        b=NcyxAGNcxJj7mxiLLaEr4y3d+SGuhsN7D9nt8zgjp872tkAPggsqYejQxYFNzJXX/j
+         jDl/P1l6DDUtmQA0NTwxKbOfDIa4iK6CRjga6wGMc00adSKMDqsHKxcBeKWEb/DPP2pw
+         fEPHFUsUmkRvSOXOZdXoFO24hDPRn4AAPhTjK/PwYqgwIYyhNiAZqQphXO4pi0+q92+u
+         yNZswg04vuBlnMrUwg7q66SpNvSvIX4cLNrma6w0MNLkc55Pw5hItGrhbZhVjuPpsfth
+         xf/VkJbb+9KAEEaRrszftkWcZs/cmzzctyqSCiMM6csQAYbDRmQNNbo9/AJ+vODK475x
+         O+8Q==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@bigspaceship.com header.s=google header.b=RC4wUU6J;
+       spf=pass (google.com: domain of m.lebowitz@bigspaceship.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=m.lebowitz@bigspaceship.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=bigspaceship.com
+Return-Path: <m.lebowitz@bigspaceship.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id 123sor1417421qkd.34.2021.07.02.13.31.32
+        for <josh@josh.is>
+        (Google Transport Security);
+        Fri, 02 Jul 2021 13:31:32 -0700 (PDT)
+Received-SPF: pass (google.com: domain of m.lebowitz@bigspaceship.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@bigspaceship.com header.s=google header.b=RC4wUU6J;
+       spf=pass (google.com: domain of m.lebowitz@bigspaceship.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=m.lebowitz@bigspaceship.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=bigspaceship.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bigspaceship.com; s=google;
+        h=from:to:cc:in-reply-to:references:subject:message-id:date
+         :mime-version;
+        bh=cKJcqarIA84fxXC5ZdllxoRyYJpqDAVD+gy67z3avkU=;
+        b=RC4wUU6JFO/ifEbj4Kvh5CFFAIJczx8iwy3VSF9WaE88LN7zYXeLHK1dqo2JeBJ0AL
+         m6xCKKS2xsldhDAJ/7pUVDNZMIbwAb0HRUaNf/QVX9cfnnqj1BqyWFV2oAVpAvdLBiBt
+         Oask/miXZCY8P9lomc7d3SWtZphOI98UY4xfKmUyLr7LgFB1AsEQbVXurcfmYDpVGhJz
+         to7w3FoxUin/4RQMVu1p+JAl5FmFeJEPM3viWdURbCHErXlgh5iaD77AijX6NGozAkrE
+         v8s1AdC3bCX8+2rnGDBALbuFP1iWMrzhJ1YvNEhc1wuSamKrcDPN04uQE4oN+mYvtcfJ
+         qAkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject
+         :message-id:date:mime-version;
+        bh=cKJcqarIA84fxXC5ZdllxoRyYJpqDAVD+gy67z3avkU=;
+        b=s/ZnOG/wfob7BZEmGscayVpCDRqDO4JhvXlgWy5ArneJmd2vdW4iFWN/QnzIyehExp
+         rEHcx8UwyhJDgmbROMLTCowdo4C9bzdktiyB8Nz1XGJWY5S6QyILSpFPHqGgIbRepjFO
+         5y982PAgcHDuatCP2hB1Q2rFAphFlCjrBo5kROhARdFlz4UruBFOEQQWQhvEqS32ogtg
+         mDIGuXqmgPLy8G2jkHxY5mCSYHQYe9JdD69ylnnot2Wx0F+s+997zkn4oREkCCGIELUw
+         qMmMo5W4UzRR9DirGzFCgbHyk9TFoEZaGPRM3uiTXtPbQyE14r6PLfMbvuCY1nGjMIEH
+         0g1w==
+X-Gm-Message-State: AOAM5339ni3aLM7UTKo2fs0UIo4gesbtGR2LsT0a+Tx5CFDQxQNFarQ0
+	rU9zh1sdTXlWYs2FTi/3CgWye1722ftdZA==
+X-Google-Smtp-Source: ABdhPJzgIVRjZXHv0jhBESTBWouHaFcXj0YXOmb3CP4bI+naJXot89Ebp/pc1sa3vp49ShTcJCQRPw==
+X-Received: by 2002:ae9:dd06:: with SMTP id r6mr1720091qkf.74.1625257892021;
+        Fri, 02 Jul 2021 13:31:32 -0700 (PDT)
+Return-Path: <m.lebowitz@bigspaceship.com>
+Received: from [127.0.0.1] (ec2-44-194-187-47.compute-1.amazonaws.com. [44.194.187.47])
+        by smtp.gmail.com with ESMTPSA id u15sm1821564qku.33.2021.07.02.13.31.31
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 02 Jul 2021 13:31:31 -0700 (PDT)
+Content-Type: multipart/alternative;
+ boundary="----sinikael-?=_1-16252578916620.6036414275673663"
+From: Michael Lebowitz <m.lebowitz@bigspaceship.com>
+To: Josh Klein <josh@josh.is>
+Cc: Joshua William Klein <josh@josh.is>
+In-Reply-To:
+ <CACNgykOcNW01e5HoNz_Cv9UnrhTjBXHHARYj7ZmH8NLSvavM-A@mail.gmail.com>
+References:
+ <CACNgykMPbXLtEuAYHugADMrj5sEqQp2B5ex-ex-8+MS8Bq5LYw@mail.gmail.com>
+ <CACNgykPDzLWamOkXQKz53fryvWDpTmGtd5yqMMv2_TxhiDv70g@mail.gmail.com>
+ <CAOyb_0SUXBnfKizOwbhWwfyQuB4_o74L5x=3Fy88B1rBarOr_w@mail.gmail.com>
+ <CACNgykO3btBm9YSSL1xksQ8KcNN=sX6RrCNgBJHn3bHujDF-Sw@mail.gmail.com>
+ <CACNgykMcPFthr5E6HrMgiCqX5P0-4Ky_7Euoa_1dj6fH_YAHQQ@mail.gmail.com>
+ <CACNgykNv6quDqP+Ez8foZMnWOSyoJATw-ay6C2v6TL2Jv8xZdw@mail.gmail.com>
+ <CACNgykOMuWj-Hn1Yk68e3_A7CMAMcw0BZM8-U_9ExEumqZnisg@mail.gmail.com>
+ <CAOyb_0RT866p9M6jHj-S5NioqL9ESgBOvSaxKMQMfhLceH4+Bw@mail.gmail.com>
+ <CACNgykNw6BXOOD10GHUZ0ah-a_q-DrMWnDmSGAG=PbU7asoXkA@mail.gmail.com>
+ <CACNgykO0H-hWsH1Xv5tDw_HNPv=mUK=ptwe=OxZYtQzyfxzFJQ@mail.gmail.com>
+ <CAOyb_0QG5TKXpT8Hy92XQUp5Lx61sXAyhCYg=Bupvuk0h9yeWQ@mail.gmail.com>
+ <CACNgykNNmhoH=MPSexuvWO35aqXYmzsHh2KpzC9CSpTav1jN5A@mail.gmail.com>
+ <CACNgykOcNW01e5HoNz_Cv9UnrhTjBXHHARYj7ZmH8NLSvavM-A@mail.gmail.com>
+Subject: Re: visual modeling
+Message-Id: <470f2de5-792c-4809-a84d-1233ba117bcf@bigspaceship.com>
+Date: Fri, 02 Jul 2021 16:31:12 -0400
+X-Cm-Message-Id:
+ 16252578725951389ec99c52b135cc756ed42cd909e0cdce60df779091508751520243
+X-Cm-Draft-Id: WyJhIiwyLCJkcmFmdF9pZCIsIjE2MjUyNTc4NzIzNjkiLCJ2IiwxXQ==
+X-Cm-Draft-Gmail-Message-Id: 1704201005414776642
+X-Cm-Tracking-Code:
+ 2.0/1625257872/473b162b8c2d5b2442b7c9bc03e15935/2/ede6d34c7fc5adf0e328d78aaf316e5d/7d4443aaf89ac900528ca68e6c5bfc28/ffbf0914d1a03ab4b492958d680bf85a
+X-Mailer: Newton
+MIME-Version: 1.0
+
+------sinikael-?=_1-16252578916620.6036414275673663
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto"> <div dir=3D"ltr" style=3D"">Hey hey -</div><div =
+dir=3D"ltr" style=3D""><br style=3D""></div><div dir=3D"ltr" =
+style=3D"">Sorry for radio silence. A lot happening on multiple fronts. =
+&nbsp;<br style=3D""><div style=3D""><br style=3D""></div><div =
+style=3D"">I'm travelling until the week of 7/18. Catch up then?</div><div =
+style=3D""><br style=3D""></div><div style=3D"">M<br clear=3D"all" =
+style=3D""><div style=3D""><div dir=3D"ltr" data-smartmail=3D"gmail_signatu=
+re" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div=
+ dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><br =
+style=3D""></div><div dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" =
+style=3D""><br style=3D""><table cellspacing=3D"0" cellpadding=3D"2" =
+border=3D"0" style=3D"vertical-align: top; font-size: 11px; font-family: =
+helvetica, arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(234, 66, 53);">Michael Lebowitz</span>&nbsp;<span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(0, 0, 0);">|</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">Founder &amp; CEO</span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-weight: 800; font-family: helvetica, arial; color: =
+rgb(0, 0, 0);">big spaceship<br style=3D""></span></td></tr><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><a =
+href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191027-44310d8e-ea94-0c52-51b8-3474fce60be6/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttp://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank"><b style=3D"">bigspaceship.com</b></a><br style=3D""><br =
+style=3D"">I use he/him/his/himself<br style=3D""></td></tr></tbody></table=
+></div></div></div></div></div></div><div style=3D""><br =
+style=3D""></div></div></div><div class=3D"gmail_quote" style=3D"overflow: =
+visible;"><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Mon, Jun 21, =
+2021 at 1:09 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" style=3D"">josh@josh.is</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D"">Just checking in. Let me know if it's worth a chat to catch up!=
+<div style=3D""><br style=3D""></div><div style=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/rVKIJyCgyFMULvQlTjasQYgoGip8TcUl61UHK3qxS-dnQs=
+udvVQHSKDRSV6q52eJ_KxvB0VrxOg0-5qDie0trRvncLs0VzLllqdO0wYC1Q4tQ4CniXEz7WKs6=
+EmCW7qsU3fEzHOqFuquuAw8oZMnwJUcy_AbaU8kSSE22lj_uVhijfLZOsPD=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3Df041f541-77a3-40db-92ba-0e9385a833bf"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, May 31, 2021 at 11:52 AM Josh Klein=
+ &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh=
+.is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Looping back around. =
+Curious to hear about the farm property and your current docket of work.=
+&nbsp;Let me know if any times <a href=3D"https://tr.cloudmagic.=
+com/h/v6/link-track/1.0/1625257890191045-8f6f54d3-fb7d-f453-ff26-acd661a468=
+a9/1625257872/473b162b8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5b=
+fc28/5a752002293149826344ab98ab631746?redirect_uri=3Dhttp://josh.=
+is/scheduling" target=3D"_blank" style=3D"">here </a>work, or suggest =
+something that works for you GMT.<br style=3D""><br style=3D"">All best,<br=
+ style=3D"">Josh</div><div hspace=3D"streak-pt-mark" style=3D"max-height: =
+1px;"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: =
+hidden;" src=3D"https://ci5.googleusercontent.com/proxy/f56r8Fe5rOTcC5n3asa=
+MfAtYCC-DQKQNxvm9Y6XFefVYNZ5nlD6q2yRBezeyrD3NAELHRRWgo8GSJy-38agMm-whDnWmGp=
+inntUAxlVlbmoXhnJx7diQuSzvIoluLQ8qi5F5IWkQgWfDKnieS5IyYTeVeAguCpAhSCDa-zjUT=
+kPXDqM6ZsR5=3Ds0-d-e1-ft#https://mailfoogae.appspot.com/t?=
+sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D521c7886-c2b8-=
+4e76-a122-b00c373b9cf7"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Mon, May 17, 2021 at 3:50 PM Michael Lebowitz &lt;<a =
+href=3D"mailto:m.lebowitz@bigspaceship.com" target=3D"_blank" style=3D"">m.=
+lebowitz@bigspaceship.com</a>&gt; wrote:<br style=3D""></div><blockquote =
+class=3D"gmail_quote" style=3D"margin: 0px 0px 0px 0.8ex; =
+border-left-width: 1px; border-left-style: solid; border-left-color: =
+rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Sounds =
+like you're having a good time! Things are pretty wild here as well. More =
+work&nbsp;than we know what to do with and I'm in the midst of trying to =
+close on a farm property upstate.<div style=3D""><br style=3D""></div><div =
+style=3D"">Lets&nbsp;catch up in a couple of weeks.</div><div =
+style=3D""><br style=3D""></div><div style=3D"">Best,</div><div =
+style=3D"">M<br clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><br =
+style=3D""></div><div dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" =
+style=3D""><br style=3D""><table cellspacing=3D"0" cellpadding=3D"2" =
+border=3D"0" style=3D"vertical-align: top; font-size: 11px; font-family: =
+helvetica, arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(234, 66, 53);">Michael Lebowitz</span>&nbsp;<span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(0, 0, 0);">|</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">Founder &amp; CEO</span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-weight: 800; font-family: helvetica, arial; color: =
+rgb(0, 0, 0);">Big Spaceship<br style=3D""><br style=3D""></span></td></tr>=
+<tr style=3D""><td style=3D"font-family: arial, sans-serif;"><a =
+href=3D"tel:7182220281" target=3D"_blank" rel=3D"noopener noreferrer">718.=
+222.0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Mon, May 3, 2021 at 8:08 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just checking back in - =
+it's been a crazy few weeks. Helped a big-name artist with NFTs, consulting=
+ to the US Intelligence Community about some big tech, and launched =
+Accenture's <a href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191052-78932b22-9f43-3399-be94-711213f57670/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttps://accntu.re/3ttSJek" target=3D"_blank"=
+ style=3D"">Built for Change</a> podcast. And that's *outside* of Indigo...=
+<div style=3D""><br style=3D""></div><div style=3D"">Let me know what's new=
+ with you and if a short call to discuss potential collaboration would be =
+useful. Hope all's well on your end!</div><div style=3D""><br =
+style=3D""></div><div style=3D"">All best,</div><div =
+style=3D"">Josh</div><div style=3D""><br style=3D""></div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci6=
+.googleusercontent.com/proxy/JwtDJH6lLstmhNBw0lk37KBw4cwNI7l9Ptlgw4LISTWAVT=
+UsMAHUCaKVcjA7vlwulVDFWv4nh7AiDNIJ3uyZ8QBbO3vajZYSRknXeKy28YF7QwlQ-jifl3Tq_=
+oS2celPMJs6c5cXokWtwh9nKwmlftbgolaaQx9TpaFQY0Y8_I8GH5okovEp=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3De4459fe3-df0f-4c65-8699-51669011279c"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Apr 6, 2021 at 8:52 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Absolutely understood; =
+thanks for the heads up and godspeed! I'll check back in a couple weeks to =
+see if you're surfacing for air.&nbsp;<div style=3D""><br =
+style=3D""></div><div style=3D"">Let me know if I can help in the meantime =
+- it sounds like it'll soon be a great time for refocusing strategy!<div =
+style=3D""><br style=3D""></div><div style=3D"">- J</div></div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci3=
+.googleusercontent.com/proxy/1qwDnz5OqqakLPWPGUwtLFDND2-rL0542WYeG4BBAPow3F=
+pGbb_D2zdTP5qV0yCVoMq7hCaO-RaVVdpaDfwdk01Hdlw5HvG98b2QM40NbWqtawr_XQRpzdaUU=
+LnVOQiYcBcT0vGpKVjIsNKX90GlXZ24XNQC2_RtpuiAi9Rf27In7KwHytgU=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D2fec5521-ac8f-4dc5-9d92-b63fd93eecae"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Apr 6, 2021 at 3:24 AM Michael =
+Lebowitz &lt;<a href=3D"mailto:m.lebowitz@bigspaceship.com" =
+target=3D"_blank" style=3D"">m.lebowitz@bigspaceship.com</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D"">Hey -<div style=3D""><br style=3D""></div><div =
+style=3D"">Apologies for the radio silence. We took off to Costa Rica to =
+unwind for a bit.</div><div style=3D""><br style=3D""></div><div =
+style=3D"">I've had a few major things pop in the past few weeks - needing =
+to hire a new CFO and CSO at the same time, needing to vacate our old =
+office, and landing a bunch of new work. So I'm on hold on this stuff until=
+ we can get some new folks in place. I still want to keep the conversation =
+open if you do... I just can't give it the focus it deserves at the moment.=
+</div><div style=3D""><br style=3D""></div><div style=3D"">Hope you're well=
+.</div><div style=3D""><br style=3D""></div><div style=3D"">M<br =
+clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><br style=3D""></div><div =
+dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" style=3D""><br =
+style=3D""><table cellspacing=3D"0" cellpadding=3D"2" border=3D"0" =
+style=3D"vertical-align: top; font-size: 11px; font-family: helvetica, =
+arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-family: helvetica, arial; color: rgb(234, 66, =
+53);">Michael Lebowitz</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">|</span>&nbsp;<span style=3D"margin-right: 5px; font-size: 15px; =
+font-family: helvetica, arial; color: rgb(0, 0, 0);">Founder &amp; =
+CEO</span></td></tr><tr style=3D""><td style=3D"font-family: arial, =
+sans-serif;"><span style=3D"margin-right: 5px; font-size: 15px; =
+font-weight: 800; font-family: helvetica, arial; color: rgb(0, 0, 0);">Big =
+Spaceship<br style=3D""><br style=3D""></span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><a href=3D"tel:7182220281" =
+target=3D"_blank" rel=3D"noopener noreferrer">718.222.=
+0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Wed, Mar 24, 2021 at 1:59 PM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Don't want to spam your =
+inbox - let me know if we should schedule a catch up!<div style=3D""><br =
+style=3D""></div><div style=3D"">All best,<br style=3D"">Josh</div></div><d=
+iv hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/eZ3EcNamExOmQkQNXOtTnnV6wx8_kLNUE8Ams9TVbwOVmS=
+1ju7nKmFssfpY1VnZ3Zmz75rA2C71o_Ms6u6EZ7ppgKHZ4xTKgALcXD9sDSDIwG22sE5ksGBnlh=
+jCc8ttrNhD2WQE3ZF7aaiZVM-_HjG5rWrwTTyxkicKrELsYmNBc55xBCmLZ=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3De9d26895-9f4f-4d42-93a6-151d19770881"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, Mar 15, 2021 at 1:57 PM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just following up - let me =
+know if I can provide any further info.<br style=3D"">
+
+<br style=3D"">
+
+best,<br style=3D"">
+
+Josh<br style=3D""></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/gZBKwoJAoLP9kqMIEpFB3oXJsgG1o5fg7_7M1IXlsi3hAk=
+1vyGIQ89GdHWUJlS0kYxySeAB79y2JP7jmZTn-0b16uSN2YpY3gexTEWegDjHqrk8FNiF63Jbr7=
+PHWE7QszCG36amRhEt2mll2B-ZU4D1adlIf1Pr5r9mrFcU2e8QoAeaFsyK8=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D42a7e3c5-baf6-4d34-8f93-9ce50f30e44d"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, Mar 8, 2021 at 11:52 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just keeping in your inbox =
+- hit me if you want to make time this week.<div style=3D""><br =
+style=3D""></div><div style=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/4wYu27CYPXZjdAtEJNpF4Ib2eJ3lEafdIpv2SMANu6UuZi=
+nC0lnAJ3_aXAmenjlina_qXZkTAvjN-9V1P_TiZEz7dn_jOIDbAESVlrU-IwNFjHeyYh_fRJ3MZ=
+2nMfq3VaS2kpJ5gsBeRLCn0bj46kvozVZiV2HRXvt_U-aj36BX47BVZ1CMd=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D0c7ccd98-6ab4-4192-b6ef-2491d6f081d1"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Mar 2, 2021 at 11:39 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just looping back around. =
+Let me know if there's something there to discuss!<div style=3D""><br =
+style=3D""></div><div style=3D"">All best,</div><div =
+style=3D"">Josh</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci3.googleusercontent.=
+com/proxy/XsQ4NZm0ocMauiH8SvonY93LAK2GWSKAtmb23FS5mt3ZYTSszk3wZeNi5grlbLa1w=
+07m51gDfo1a1SOvR2ecaItSvZ1KPlpJO4KAr7gdEjig08SYstae-AzQElrwPNJAqaSAgdN0EnRY=
+FyBWShDyOGmdAHVTEP1hkEx4mDUNIjecQQA_H1yc=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+c8a319e5-c532-4c53-8a43-434b3874587d"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><div class=3D"gmail_quote" =
+style=3D""><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Fri, Feb 19,=
+ 2021 at 9:26 PM Michael Lebowitz &lt;<a href=3D"mailto:m.=
+lebowitz@bigspaceship.com" target=3D"_blank" style=3D"">m.=
+lebowitz@bigspaceship.com</a>&gt; wrote:<br style=3D""></div><blockquote =
+class=3D"gmail_quote" style=3D"margin: 0px 0px 0px 0.8ex; =
+border-left-width: 1px; border-left-style: solid; border-left-color: =
+rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Yes! I =
+got it. Just jammed up due to the short week here. Back to you soon!<br =
+clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><br style=3D""></div><div =
+dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" style=3D""><br =
+style=3D""><table cellspacing=3D"0" cellpadding=3D"2" border=3D"0" =
+style=3D"vertical-align: top; font-size: 11px; font-family: helvetica, =
+arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-family: helvetica, arial; color: rgb(234, 66, =
+53);">Michael Lebowitz</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">|</span>&nbsp;<span style=3D"margin-right: 5px; font-size: 15px; =
+font-family: helvetica, arial; color: rgb(0, 0, 0);">Founder &amp; =
+CEO</span></td></tr><tr style=3D""><td style=3D"font-family: arial, =
+sans-serif;"><span style=3D"margin-right: 5px; font-size: 15px; =
+font-weight: 800; font-family: helvetica, arial; color: rgb(0, 0, 0);">Big =
+Spaceship<br style=3D""><br style=3D""></span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><a href=3D"tel:7182220281" =
+target=3D"_blank" rel=3D"noopener noreferrer">718.222.=
+0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Thu, Feb 18, 2021 at 7:08 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just making sure this came =
+through. I'm still keen to find a way to work together; let me know if any =
+of the attached straw men hold promise or if you have additive/alternative =
+suggestions.<div style=3D""><br style=3D""></div><div style=3D"">All best,=
+</div><div style=3D"">Josh</div><div style=3D""><br style=3D""></div><div =
+style=3D""><br style=3D""></div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci3.googleusercontent.=
+com/proxy/jAJ87tmRcW_V_5GRGy-tDK3h4dWi7Fz_LHFvWQvxAbwKmdUw_wHIanCgS3NO5Ty-b=
+2rdZ86HLRxLwAjpjOjLJPrrnp74A5SSC3Jpl6WFQIxvHlD_rR9qrTXTIwsqiKEPiTxfq-4fYby5=
+B_MXeyG1ni4JZUFD1yt08eXpYiNamisy1D1o7KFz=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+a68ba079-8b3c-4faf-bb3a-4af4e59b56d6"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><div class=3D"gmail_quote" =
+style=3D""><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Thu, Feb 11,=
+ 2021 at 1:46 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" style=3D"">josh@josh.is</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D""><a href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191062-f9cb4082-b0dc-7f9e-23af-ccbe881898a0/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttps://boingboing.net/2021/02/10/rocket-lea=
+gue-introduces-a-ford-f-150.html" target=3D"_blank" =
+style=3D"">https://boingboing.net/2021/02/10/rocket-league-introduces-a-for=
+d-f-150.html</a><br style=3D""><div style=3D""><br style=3D""></div><div =
+style=3D"">If you can model a Ford F-150 to create new content WTF not a =
+staple of every-single-piece-of-marketing-material-you-will-ever-create =
+like Starbuck's&nbsp;cups??</div><div style=3D""><br style=3D""></div><div =
+style=3D"">- J</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci4.googleusercontent.=
+com/proxy/w6nCY0-drFwByStC6xRo5lXOVVlIQXL0HdaU3F3NtroiwnwkTNoGia1b5N8W4Dn4z=
+-8eb1K1TIakSaYpTH9zRSrRMZ2z7wB5U7HooxT417SvhfNahKIJPVk97iOfvKbPZNM3MNUT0JnL=
+kAJHtFF3CSG6miaTibLSF5QrWPGK4PHnecxqx4q4=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+f4de2694-7c33-4cc0-b883-661df0c7dde0"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</div>
+------sinikael-?=_1-16252578916620.6036414275673663
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"auto"> <div dir=3D"ltr" style=3D"">Hey hey -</div><div =
+dir=3D"ltr" style=3D""><br style=3D""></div><div dir=3D"ltr" =
+style=3D"">Sorry for radio silence. A lot happening on multiple fronts. =
+&nbsp;<br style=3D""><div style=3D""><br style=3D""></div><div =
+style=3D"">I'm travelling until the week of 7/18. Catch up then?</div><div =
+style=3D""><br style=3D""></div><div style=3D"">M<br clear=3D"all" =
+style=3D""><div style=3D""><div dir=3D"ltr" data-smartmail=3D"gmail_signatu=
+re" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div=
+ dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><br =
+style=3D""></div><div dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" =
+style=3D""><br style=3D""><table cellspacing=3D"0" cellpadding=3D"2" =
+border=3D"0" style=3D"vertical-align: top; font-size: 11px; font-family: =
+helvetica, arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(234, 66, 53);">Michael Lebowitz</span>&nbsp;<span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(0, 0, 0);">|</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">Founder &amp; CEO</span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-weight: 800; font-family: helvetica, arial; color: =
+rgb(0, 0, 0);">big spaceship<br style=3D""></span></td></tr><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><a =
+href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191027-44310d8e-ea94-0c52-51b8-3474fce60be6/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttp://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank"><b style=3D"">bigspaceship.com</b></a><br style=3D""><br =
+style=3D"">I use he/him/his/himself<br style=3D""></td></tr></tbody></table=
+></div></div></div></div></div></div><div style=3D""><br =
+style=3D""></div></div></div><div class=3D"gmail_quote" style=3D"overflow: =
+visible;"><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Mon, Jun 21, =
+2021 at 1:09 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" style=3D"">josh@josh.is</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D"">Just checking in. Let me know if it's worth a chat to catch up!=
+<div style=3D""><br style=3D""></div><div style=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/rVKIJyCgyFMULvQlTjasQYgoGip8TcUl61UHK3qxS-dnQs=
+udvVQHSKDRSV6q52eJ_KxvB0VrxOg0-5qDie0trRvncLs0VzLllqdO0wYC1Q4tQ4CniXEz7WKs6=
+EmCW7qsU3fEzHOqFuquuAw8oZMnwJUcy_AbaU8kSSE22lj_uVhijfLZOsPD=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3Df041f541-77a3-40db-92ba-0e9385a833bf"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, May 31, 2021 at 11:52 AM Josh Klein=
+ &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh=
+.is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Looping back around. =
+Curious to hear about the farm property and your current docket of work.=
+&nbsp;Let me know if any times <a href=3D"https://tr.cloudmagic.=
+com/h/v6/link-track/1.0/1625257890191045-8f6f54d3-fb7d-f453-ff26-acd661a468=
+a9/1625257872/473b162b8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5b=
+fc28/5a752002293149826344ab98ab631746?redirect_uri=3Dhttp://josh.=
+is/scheduling" target=3D"_blank" style=3D"">here </a>work, or suggest =
+something that works for you GMT.<br style=3D""><br style=3D"">All best,<br=
+ style=3D"">Josh</div><div hspace=3D"streak-pt-mark" style=3D"max-height: =
+1px;"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: =
+hidden;" src=3D"https://ci5.googleusercontent.com/proxy/f56r8Fe5rOTcC5n3asa=
+MfAtYCC-DQKQNxvm9Y6XFefVYNZ5nlD6q2yRBezeyrD3NAELHRRWgo8GSJy-38agMm-whDnWmGp=
+inntUAxlVlbmoXhnJx7diQuSzvIoluLQ8qi5F5IWkQgWfDKnieS5IyYTeVeAguCpAhSCDa-zjUT=
+kPXDqM6ZsR5=3Ds0-d-e1-ft#https://mailfoogae.appspot.com/t?=
+sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D521c7886-c2b8-=
+4e76-a122-b00c373b9cf7"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Mon, May 17, 2021 at 3:50 PM Michael Lebowitz &lt;<a =
+href=3D"mailto:m.lebowitz@bigspaceship.com" target=3D"_blank" style=3D"">m.=
+lebowitz@bigspaceship.com</a>&gt; wrote:<br style=3D""></div><blockquote =
+class=3D"gmail_quote" style=3D"margin: 0px 0px 0px 0.8ex; =
+border-left-width: 1px; border-left-style: solid; border-left-color: =
+rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Sounds =
+like you're having a good time! Things are pretty wild here as well. More =
+work&nbsp;than we know what to do with and I'm in the midst of trying to =
+close on a farm property upstate.<div style=3D""><br style=3D""></div><div =
+style=3D"">Lets&nbsp;catch up in a couple of weeks.</div><div =
+style=3D""><br style=3D""></div><div style=3D"">Best,</div><div =
+style=3D"">M<br clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><br =
+style=3D""></div><div dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" =
+style=3D""><br style=3D""><table cellspacing=3D"0" cellpadding=3D"2" =
+border=3D"0" style=3D"vertical-align: top; font-size: 11px; font-family: =
+helvetica, arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr =
+style=3D""><td style=3D"font-family: arial, sans-serif;"><span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(234, 66, 53);">Michael Lebowitz</span>&nbsp;<span =
+style=3D"margin-right: 5px; font-size: 15px; font-family: helvetica, arial;=
+ color: rgb(0, 0, 0);">|</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">Founder &amp; CEO</span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-weight: 800; font-family: helvetica, arial; color: =
+rgb(0, 0, 0);">Big Spaceship<br style=3D""><br style=3D""></span></td></tr>=
+<tr style=3D""><td style=3D"font-family: arial, sans-serif;"><a =
+href=3D"tel:7182220281" target=3D"_blank" rel=3D"noopener noreferrer">718.=
+222.0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Mon, May 3, 2021 at 8:08 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just checking back in - =
+it's been a crazy few weeks. Helped a big-name artist with NFTs, consulting=
+ to the US Intelligence Community about some big tech, and launched =
+Accenture's <a href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191052-78932b22-9f43-3399-be94-711213f57670/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttps://accntu.re/3ttSJek" target=3D"_blank"=
+ style=3D"">Built for Change</a> podcast. And that's *outside* of Indigo...=
+<div style=3D""><br style=3D""></div><div style=3D"">Let me know what's new=
+ with you and if a short call to discuss potential collaboration would be =
+useful. Hope all's well on your end!</div><div style=3D""><br =
+style=3D""></div><div style=3D"">All best,</div><div =
+style=3D"">Josh</div><div style=3D""><br style=3D""></div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci6=
+.googleusercontent.com/proxy/JwtDJH6lLstmhNBw0lk37KBw4cwNI7l9Ptlgw4LISTWAVT=
+UsMAHUCaKVcjA7vlwulVDFWv4nh7AiDNIJ3uyZ8QBbO3vajZYSRknXeKy28YF7QwlQ-jifl3Tq_=
+oS2celPMJs6c5cXokWtwh9nKwmlftbgolaaQx9TpaFQY0Y8_I8GH5okovEp=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3De4459fe3-df0f-4c65-8699-51669011279c"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Apr 6, 2021 at 8:52 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Absolutely understood; =
+thanks for the heads up and godspeed! I'll check back in a couple weeks to =
+see if you're surfacing for air.&nbsp;<div style=3D""><br =
+style=3D""></div><div style=3D"">Let me know if I can help in the meantime =
+- it sounds like it'll soon be a great time for refocusing strategy!<div =
+style=3D""><br style=3D""></div><div style=3D"">- J</div></div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci3=
+.googleusercontent.com/proxy/1qwDnz5OqqakLPWPGUwtLFDND2-rL0542WYeG4BBAPow3F=
+pGbb_D2zdTP5qV0yCVoMq7hCaO-RaVVdpaDfwdk01Hdlw5HvG98b2QM40NbWqtawr_XQRpzdaUU=
+LnVOQiYcBcT0vGpKVjIsNKX90GlXZ24XNQC2_RtpuiAi9Rf27In7KwHytgU=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D2fec5521-ac8f-4dc5-9d92-b63fd93eecae"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Apr 6, 2021 at 3:24 AM Michael =
+Lebowitz &lt;<a href=3D"mailto:m.lebowitz@bigspaceship.com" =
+target=3D"_blank" style=3D"">m.lebowitz@bigspaceship.com</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D"">Hey -<div style=3D""><br style=3D""></div><div =
+style=3D"">Apologies for the radio silence. We took off to Costa Rica to =
+unwind for a bit.</div><div style=3D""><br style=3D""></div><div =
+style=3D"">I've had a few major things pop in the past few weeks - needing =
+to hire a new CFO and CSO at the same time, needing to vacate our old =
+office, and landing a bunch of new work. So I'm on hold on this stuff until=
+ we can get some new folks in place. I still want to keep the conversation =
+open if you do... I just can't give it the focus it deserves at the moment.=
+</div><div style=3D""><br style=3D""></div><div style=3D"">Hope you're well=
+.</div><div style=3D""><br style=3D""></div><div style=3D"">M<br =
+clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><br style=3D""></div><div =
+dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" style=3D""><br =
+style=3D""><table cellspacing=3D"0" cellpadding=3D"2" border=3D"0" =
+style=3D"vertical-align: top; font-size: 11px; font-family: helvetica, =
+arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-family: helvetica, arial; color: rgb(234, 66, =
+53);">Michael Lebowitz</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">|</span>&nbsp;<span style=3D"margin-right: 5px; font-size: 15px; =
+font-family: helvetica, arial; color: rgb(0, 0, 0);">Founder &amp; =
+CEO</span></td></tr><tr style=3D""><td style=3D"font-family: arial, =
+sans-serif;"><span style=3D"margin-right: 5px; font-size: 15px; =
+font-weight: 800; font-family: helvetica, arial; color: rgb(0, 0, 0);">Big =
+Spaceship<br style=3D""><br style=3D""></span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><a href=3D"tel:7182220281" =
+target=3D"_blank" rel=3D"noopener noreferrer">718.222.=
+0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Wed, Mar 24, 2021 at 1:59 PM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Don't want to spam your =
+inbox - let me know if we should schedule a catch up!<div style=3D""><br =
+style=3D""></div><div style=3D"">All best,<br style=3D"">Josh</div></div><d=
+iv hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/eZ3EcNamExOmQkQNXOtTnnV6wx8_kLNUE8Ams9TVbwOVmS=
+1ju7nKmFssfpY1VnZ3Zmz75rA2C71o_Ms6u6EZ7ppgKHZ4xTKgALcXD9sDSDIwG22sE5ksGBnlh=
+jCc8ttrNhD2WQE3ZF7aaiZVM-_HjG5rWrwTTyxkicKrELsYmNBc55xBCmLZ=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3De9d26895-9f4f-4d42-93a6-151d19770881"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, Mar 15, 2021 at 1:57 PM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just following up - let me =
+know if I can provide any further info.<br style=3D"">
+
+<br style=3D"">
+
+best,<br style=3D"">
+
+Josh<br style=3D""></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/gZBKwoJAoLP9kqMIEpFB3oXJsgG1o5fg7_7M1IXlsi3hAk=
+1vyGIQ89GdHWUJlS0kYxySeAB79y2JP7jmZTn-0b16uSN2YpY3gexTEWegDjHqrk8FNiF63Jbr7=
+PHWE7QszCG36amRhEt2mll2B-ZU4D1adlIf1Pr5r9mrFcU2e8QoAeaFsyK8=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D42a7e3c5-baf6-4d34-8f93-9ce50f30e44d"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Mon, Mar 8, 2021 at 11:52 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just keeping in your inbox =
+- hit me if you want to make time this week.<div style=3D""><br =
+style=3D""></div><div style=3D"">- J</div></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height: 1px;"><img alt=3D"" =
+style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci5=
+.googleusercontent.com/proxy/4wYu27CYPXZjdAtEJNpF4Ib2eJ3lEafdIpv2SMANu6UuZi=
+nC0lnAJ3_aXAmenjlina_qXZkTAvjN-9V1P_TiZEz7dn_jOIDbAESVlrU-IwNFjHeyYh_fRJ3MZ=
+2nMfq3VaS2kpJ5gsBeRLCn0bj46kvozVZiV2HRXvt_U-aj36BX47BVZ1CMd=3Ds0-d-e1-ft#ht=
+tps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzeroco=
+ntent&amp;guid=3D0c7ccd98-6ab4-4192-b6ef-2491d6f081d1"><font =
+color=3D"#ffffff" size=3D"1" style=3D"">=E1=90=A7</font></div><br =
+style=3D""><div class=3D"gmail_quote" style=3D""><div dir=3D"ltr" =
+class=3D"gmail_attr" style=3D"">On Tue, Mar 2, 2021 at 11:39 AM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just looping back around. =
+Let me know if there's something there to discuss!<div style=3D""><br =
+style=3D""></div><div style=3D"">All best,</div><div =
+style=3D"">Josh</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci3.googleusercontent.=
+com/proxy/XsQ4NZm0ocMauiH8SvonY93LAK2GWSKAtmb23FS5mt3ZYTSszk3wZeNi5grlbLa1w=
+07m51gDfo1a1SOvR2ecaItSvZ1KPlpJO4KAr7gdEjig08SYstae-AzQElrwPNJAqaSAgdN0EnRY=
+FyBWShDyOGmdAHVTEP1hkEx4mDUNIjecQQA_H1yc=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+c8a319e5-c532-4c53-8a43-434b3874587d"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><div class=3D"gmail_quote" =
+style=3D""><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Fri, Feb 19,=
+ 2021 at 9:26 PM Michael Lebowitz &lt;<a href=3D"mailto:m.=
+lebowitz@bigspaceship.com" target=3D"_blank" style=3D"">m.=
+lebowitz@bigspaceship.com</a>&gt; wrote:<br style=3D""></div><blockquote =
+class=3D"gmail_quote" style=3D"margin: 0px 0px 0px 0.8ex; =
+border-left-width: 1px; border-left-style: solid; border-left-color: =
+rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Yes! I =
+got it. Just jammed up due to the short week here. Back to you soon!<br =
+clear=3D"all" style=3D""><div style=3D""><div dir=3D"ltr" style=3D""><div =
+dir=3D"ltr" style=3D""><div dir=3D"ltr" style=3D""><div dir=3D"ltr" =
+style=3D""><div dir=3D"ltr" style=3D""><br style=3D""></div><div =
+dir=3D"ltr" style=3D"">--</div><div dir=3D"ltr" style=3D""><br =
+style=3D""><table cellspacing=3D"0" cellpadding=3D"2" border=3D"0" =
+style=3D"vertical-align: top; font-size: 11px; font-family: helvetica, =
+arial; color: rgb(102, 102, 102);"><tbody style=3D""><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><span style=3D"margin-right: 5px;=
+ font-size: 15px; font-family: helvetica, arial; color: rgb(234, 66, =
+53);">Michael Lebowitz</span>&nbsp;<span style=3D"margin-right: 5px; =
+font-size: 15px; font-family: helvetica, arial; color: rgb(0, 0, =
+0);">|</span>&nbsp;<span style=3D"margin-right: 5px; font-size: 15px; =
+font-family: helvetica, arial; color: rgb(0, 0, 0);">Founder &amp; =
+CEO</span></td></tr><tr style=3D""><td style=3D"font-family: arial, =
+sans-serif;"><span style=3D"margin-right: 5px; font-size: 15px; =
+font-weight: 800; font-family: helvetica, arial; color: rgb(0, 0, 0);">Big =
+Spaceship<br style=3D""><br style=3D""></span></td></tr><tr style=3D""><td =
+style=3D"font-family: arial, sans-serif;"><a href=3D"tel:7182220281" =
+target=3D"_blank" rel=3D"noopener noreferrer">718.222.=
+0281</a>&nbsp;=E2=80=A2&nbsp;<a href=3D"http://bigspaceship.com/" =
+style=3D"font-family: helvetica, arial; color: rgb(102, 102, 102);" =
+target=3D"_blank">bigspaceship.com</a><br style=3D"">I use =
+he/him/his/himself<br style=3D""></td></tr></tbody></table></div></div></di=
+v></div></div></div><br style=3D""></div><br style=3D""><div =
+class=3D"gmail_quote" style=3D""><div dir=3D"ltr" class=3D"gmail_attr" =
+style=3D"">On Thu, Feb 18, 2021 at 7:08 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank" style=3D"">josh@josh.=
+is</a>&gt; wrote:<br style=3D""></div><blockquote class=3D"gmail_quote" =
+style=3D"margin: 0px 0px 0px 0.8ex; border-left-width: 1px; =
+border-left-style: solid; border-left-color: rgb(204, 204, 204); =
+padding-left: 1ex;"><div dir=3D"ltr" style=3D"">Just making sure this came =
+through. I'm still keen to find a way to work together; let me know if any =
+of the attached straw men hold promise or if you have additive/alternative =
+suggestions.<div style=3D""><br style=3D""></div><div style=3D"">All best,=
+</div><div style=3D"">Josh</div><div style=3D""><br style=3D""></div><div =
+style=3D""><br style=3D""></div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci3.googleusercontent.=
+com/proxy/jAJ87tmRcW_V_5GRGy-tDK3h4dWi7Fz_LHFvWQvxAbwKmdUw_wHIanCgS3NO5Ty-b=
+2rdZ86HLRxLwAjpjOjLJPrrnp74A5SSC3Jpl6WFQIxvHlD_rR9qrTXTIwsqiKEPiTxfq-4fYby5=
+B_MXeyG1ni4JZUFD1yt08eXpYiNamisy1D1o7KFz=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+a68ba079-8b3c-4faf-bb3a-4af4e59b56d6"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div><br style=3D""><div class=3D"gmail_quote" =
+style=3D""><div dir=3D"ltr" class=3D"gmail_attr" style=3D"">On Thu, Feb 11,=
+ 2021 at 1:46 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" style=3D"">josh@josh.is</a>&gt; wrote:<br =
+style=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin: 0px 0px=
+ 0px 0.8ex; border-left-width: 1px; border-left-style: solid; =
+border-left-color: rgb(204, 204, 204); padding-left: 1ex;"><div dir=3D"ltr"=
+ style=3D""><a href=3D"https://tr.cloudmagic.com/h/v6/link-track/1.=
+0/1625257890191062-f9cb4082-b0dc-7f9e-23af-ccbe881898a0/1625257872/473b162b=
+8c2d5b2442b7c9bc03e15935/7d4443aaf89ac900528ca68e6c5bfc28/5a752002293149826=
+344ab98ab631746?redirect_uri=3Dhttps://boingboing.net/2021/02/10/rocket-lea=
+gue-introduces-a-ford-f-150.html" target=3D"_blank" =
+style=3D"">https://boingboing.net/2021/02/10/rocket-league-introduces-a-for=
+d-f-150.html</a><br style=3D""><div style=3D""><br style=3D""></div><div =
+style=3D"">If you can model a Ford F-150 to create new content WTF not a =
+staple of every-single-piece-of-marketing-material-you-will-ever-create =
+like Starbuck's&nbsp;cups??</div><div style=3D""><br style=3D""></div><div =
+style=3D"">- J</div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height: 1px;"><img alt=3D"" style=3D"width: 0px; max-height: =
+0px; overflow: hidden;" src=3D"https://ci4.googleusercontent.=
+com/proxy/w6nCY0-drFwByStC6xRo5lXOVVlIQXL0HdaU3F3NtroiwnwkTNoGia1b5N8W4Dn4z=
+-8eb1K1TIakSaYpTH9zRSrRMZ2z7wB5U7HooxT417SvhfNahKIJPVk97iOfvKbPZNM3MNUT0JnL=
+kAJHtFF3CSG6miaTibLSF5QrWPGK4PHnecxqx4q4=3Ds0-d-e1-ft#https://mailfoogae.=
+appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D=
+f4de2694-7c33-4cc0-b883-661df0c7dde0"><font color=3D"#ffffff" size=3D"1" =
+style=3D"">=E1=90=A7</font></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</blockquote></div>
+</div>
+------sinikael-?=_1-16252578916620.6036414275673663--

@@ -1,0 +1,519 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b54b:0:0:0:0:0 with SMTP id a11csp5508713ljn;
+        Tue, 11 Feb 2020 09:40:36 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyeBTY3LiT8mi3Qd5OSvsmC8m3KimTyKVP9opdhrCGJjm7BBUcPSlsPgbNMdsIxrmzAGQmH
+X-Received: by 2002:aa7:df11:: with SMTP id c17mr6736321edy.326.1581442836804;
+        Tue, 11 Feb 2020 09:40:36 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1581442836; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vIGv5PJsXU47ghsVYPLD1/KZTjST+1OKr9c8UVRfnmtL24kJOWvnRIfVQ89K8nOF4Q
+         8GffoPCzmqTE22xT7FI5rO5IjHpHjBQooPASafCF1X4euNJmvSm9aC/7AQw0Sfy/PPi9
+         KkDjmp5A0nepYt2W8S87tG9VnJB+Czf/edSS8Xhip2oQ3wT0x621Uoy200PL3GmQQ+tA
+         0SwrhBpretM+N5taAjwVdvVBHO/aDPDnJThP3ArTe3KKE3hNDjLe66DCOpeHPx3FAUc9
+         LNb2q6J+VPZkGUjePvVlJsVKDNnSuLRaN/EYlcabjOo+FhlbSbZ3ESMUu4hX9fJNBWlW
+         ov5A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:to:from:ironport-sdr:ironport-sdr
+         :dkim-signature;
+        bh=bnLxhjubQBIPWjcfVS2GJBqLGGSQhhVjcZDX0xvBkZU=;
+        b=WELBA123Pr4hrAjJrRNmfrLtXd4FYZm2OKlRB5fCM1W4bJsAQ8Tmg7XWjQHyhluLcV
+         b0LrTWy8sG1Edal5tV22ud/H3YolJXGXK9nsWMahEYfqDl6j8yArRca7EaP7sGy8ibTy
+         1SB2gtdCKJv8K/0+YcGTUpOhnXODMbQgKlevrypBVFWNrvE2OB1r+PnRNGJKQjAAckHG
+         RE4ul07xo54noGhardVlyWNO0w6VBDaWj4xITUcttIE3J7q5/+Pvqql5+rHF3IQiFnWD
+         RRTgz3Qh1umVqtkj9kR8TN71xO+6D4F1VZmGkUvkHe6pnAg4cMzE3+Vo649hHBnRKif6
+         y+jA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@seic.com header.s=seic-iphmx-102018 header.b=dOtbAzAg;
+       spf=pass (google.com: domain of sguiles@seic.com designates 68.232.135.36 as permitted sender) smtp.mailfrom=Sguiles@seic.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=seic.com
+Return-Path: <Sguiles@seic.com>
+Received: from esa2.seic.iphmx.com (esa2.seic.iphmx.com. [68.232.135.36])
+        by mx.google.com with ESMTPS id oq23si2419451ejb.406.2020.02.11.09.40.35
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Feb 2020 09:40:36 -0800 (PST)
+Received-SPF: pass (google.com: domain of sguiles@seic.com designates 68.232.135.36 as permitted sender) client-ip=68.232.135.36;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@seic.com header.s=seic-iphmx-102018 header.b=dOtbAzAg;
+       spf=pass (google.com: domain of sguiles@seic.com designates 68.232.135.36 as permitted sender) smtp.mailfrom=Sguiles@seic.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=seic.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=seic.com; i=@seic.com; l=15234; q=dns/txt;
+  s=seic-iphmx-102018; t=1581442836; x=1612978836;
+  h=from:to:subject:date:message-id:mime-version;
+  bh=bnLxhjubQBIPWjcfVS2GJBqLGGSQhhVjcZDX0xvBkZU=;
+  b=dOtbAzAgINFovAnXtrIWPZZPa/NYcyIlh8ovuWeWdj7mCPggYNk9i51l
+   fGeEndpQdY9J3J3SOobOCLilrkOrZhrIRKzViVOm0BKVtSHAfKmaIafry
+   T9PFVBm3xHZonxdye5NAp1gSyFXslt7NnA8mxsFoxi7B3i8ciDaCcP1bX
+   IdGOLC4VTmBSQsobZL+FyBSjMwmUBu4Xz1EdqjNOuM6rlgRNpfdOFj5q5
+   guW9w5JNS1nTrD1N4H6HxRuWq1ed5+8fwgB/UeF+mbgbGIy3ENz1rzKfM
+   jw/n3O95dkbr6QbmJzrFAG+jB8WmYMYEQdrdftkHvUXeJW+F8EuPPtLxw
+   g==;
+IronPort-SDR: JIha/p1ZsT+czzOAr5EwKbeJzjKMCz69xNSzu4wtWdo8Tij3lFdqiCrJs1A3puXfXzVbp1Znee
+ 8ke8jPrc4Kmkl+mltBHoZn/1qSaepVp7BysT1SeQNOXmwmHhRTBfK6kzhaCCOVyGHq+mCfCw2e
+ BJmAh9KFtMFDHXYBAy3+piB4w1OIVqAsHLpOyP1+0AX9ijaGqSBqW9zvfgbm0+vb9FrJ6FcP1a
+ hVowFqo45qf67oIlZgb2v2FN4Emc1TBI/TTg5hTRAED1HzDwDUqqFEKDGAwSegxKXRO7VKlB7X
+ XVI=
+X-IronPort-AV: E=Sophos;i="5.70,428,1574139600"; 
+   d="scan'208,217";a="14242306"
+Received: from unknown (HELO ip-mail-2.seic.com) ([12.20.48.226])
+  by esa2.seic.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2020 12:40:34 -0500
+IronPort-SDR: J46lFAUyqHJ02ZDifPhB+/vx569baIr6LSfYIyTDvIWy3Bks6HrQZA9r0CQ0naGKwc2OPI99fT
+ 0i+c/TfrPQHhB5uzk6JmkKog8j+SSRoQDvpaandt2mp7B90e4j+i6jJzgl4WJaUcICiTeAa78H
+ kxVKVURG6FMsEa+NTrU7jlaJrujKWC/YcKRLRgt2hXL2Qva704ih8HKJaFA2D5m/SFguepzZDv
+ uD7O0NfWN9ubSkNajphb3btQS8HDECvOOy38GjGxS4Xvehwsz4S3k5mcB3tWpRot/I35706888
+ UDg=
+From: "Guiles, Stacy A." <Sguiles@seic.com>
+To: Josh Klein <josh@josh.is>
+Subject: Travel for SEI Executive Conference  - 4/5 
+Thread-Topic: Travel for SEI Executive Conference  - 4/5 
+Thread-Index: AdXhAlse9d2W5Gs5TnGSvGZdiNprJQ==
+Date: Tue, 11 Feb 2020 17:40:32 +0000
+Message-ID: <e196933fd4734a2d90271672493edc05@seic.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-originating-ip: [10.50.10.9]
+x-tm-snts-smtp: 1DCEF54019A8C1A19E1A32FA7CE917B7ED4C5466A27CB6A07A8C27BA8928DE5C2000:8
+x-exclaimer-md-config: b69d9827-0e5e-40b7-abc4-2a8507f2b8da
+Content-Type: multipart/alternative;
+	boundary="_000_e196933fd4734a2d90271672493edc05seiccom_"
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+
+--_000_e196933fd4734a2d90271672493edc05seiccom_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+Please let me know if the following flight times work for you.
+
+LGA - SAV   9:35am - 12:07 pm   4/5
+SAV - LGA   1:11pm - 3:30pm      4/8
+
+
+If you could supply the information below...that would be helpful too.
+
+*       Full legal name as it appears on your Government issued ID / Passpo=
+rt
+
+*       Date of Birth
+
+*       Contact Phone (preferably mobile)
+
+*       Frequent flyer number with Delta
+
+
+Thanks so much,
+ Stacy
+
+Stacy Guiles
+Events & Experience
+SEI Global Marketing
+
+
+SEI  New ways. New answers.
+1 Freedom Valley Drive, Oaks, PA 19456   T 610-676-1335   F 484-676-1335   =
+www.seic.com<https://www.seic.com/>
+
+Disclaimer:
+This e-mail and any files transmitted with it are confidential and intended=
+ solely for the use of the recipient(s) to whom they are addressed, even if=
+ addressed incorrectly.  If you are not the intended recipient you should n=
+ot disseminate, distribute or copy this e-mail.  Please notify the sender i=
+mmediately by e-mail if you have received this by mistake and delete this e=
+-mail from your system.  SEI may archive and review outgoing and incoming e=
+mail and may produce any email at the request of regulators.
+
+
+
+--_000_e196933fd4734a2d90271672493edc05seiccom_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:#954F72;
+	text-decoration:underline;}
+p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
+	{mso-style-priority:34;
+	margin-top:0in;
+	margin-right:0in;
+	margin-bottom:0in;
+	margin-left:.5in;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle17
+	{mso-style-type:personal-compose;
+	font-family:"Arial",sans-serif;
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:489832348;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-320323358 67698689 67698691 67698693 67698689 67698=
+691 67698693 67698689 67698691 67698693;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l0:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l0:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l0:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l0:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l0:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l0:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l0:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l1
+	{mso-list-id:724598287;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-1188659464 67698689 67698691 67698693 67698689 6769=
+8691 67698693 67698689 67698691 67698693;}
+@list l1:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l1:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l1:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l1:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l1:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l1:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l1:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l2
+	{mso-list-id:1076785569;
+	mso-list-type:hybrid;
+	mso-list-template-ids:-2042966652 1196737528 67698691 67698693 67698689 67=
+698691 67698693 67698689 67698691 67698693;}
+@list l2:level1
+	{mso-level-start-at:0;
+	mso-level-number-format:bullet;
+	mso-level-text:\2022;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	margin-left:56.0pt;
+	text-indent:-38.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-font-family:Calibri;}
+@list l2:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l2:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l2:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+@list l2:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Symbol;}
+@list l2:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:"Courier New";}
+@list l2:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7;
+	mso-level-tab-stop:none;
+	mso-level-number-position:left;
+	text-indent:-.25in;
+	font-family:Wingdings;}
+ol
+	{margin-bottom:0in;}
+ul
+	{margin-bottom:0in;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">Hi Josh,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">Please let me know if the following flight times work=
+ for you.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">LGA &#8211; SAV &nbsp;&nbsp;9:35am &#8211; 12:07 pm &=
+nbsp;&nbsp;4/5
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">SAV &#8211; LGA &nbsp;&nbsp;1:11pm &#8211; 3:30pm &nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;4/8
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">If you could supply the information below&#8230;that =
+would be helpful too.
+<o:p></o:p></span></p>
+<p class=3D"MsoListParagraph" style=3D"text-indent:-.25in;mso-list:l0 level=
+1 lfo2"><![if !supportLists]><span style=3D"font-family:Symbol"><span style=
+=3D"mso-list:Ignore">&middot;<span style=3D"font:7.0pt &quot;Times New Roma=
+n&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>Full legal name as it appears on your Govern=
+ment issued ID / Passport<o:p></o:p></p>
+<p class=3D"MsoListParagraph" style=3D"text-indent:-.25in;mso-list:l0 level=
+1 lfo2"><![if !supportLists]><span style=3D"font-family:Symbol"><span style=
+=3D"mso-list:Ignore">&middot;<span style=3D"font:7.0pt &quot;Times New Roma=
+n&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>Date of Birth<o:p></o:p></p>
+<p class=3D"MsoListParagraph" style=3D"text-indent:-.25in;mso-list:l0 level=
+1 lfo2"><![if !supportLists]><span style=3D"font-family:Symbol"><span style=
+=3D"mso-list:Ignore">&middot;<span style=3D"font:7.0pt &quot;Times New Roma=
+n&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>Contact Phone (preferably mobile)<o:p></o:p>=
+</p>
+<p class=3D"MsoListParagraph" style=3D"text-indent:-.25in;mso-list:l0 level=
+1 lfo2"><![if !supportLists]><span style=3D"font-family:Symbol"><span style=
+=3D"mso-list:Ignore">&middot;<span style=3D"font:7.0pt &quot;Times New Roma=
+n&quot;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><![endif]>Frequent flyer number with Delta <o:p></o:p>=
+</p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">Thanks so much,
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif">&nbsp;Stacy
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal" style=3D"margin-top:24.0pt"><b><span style=3D"font-s=
+ize:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:black">Stacy Guil=
+es
+</span></b><span style=3D"font-size:12.0pt"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black">Events &amp; Experience
+</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black">SEI Global Marketing
+<br>
+<br>
+<br>
+</span><b><span style=3D"font-family:&quot;Arial&quot;,sans-serif;color:#03=
+7EA6">SEI</span></b><span style=3D"font-family:&quot;Arial&quot;,sans-serif=
+;color:black">&nbsp; New ways. New answers.<br>
+</span><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:black">1 Freedom Valley Drive, Oaks, PA 19456</span><b><span sty=
+le=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#6666=
+66">&nbsp;&nbsp; T
+</span></b><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sa=
+ns-serif;color:black">610-676-1335</span><b><span style=3D"font-size:10.0pt=
+;font-family:&quot;Arial&quot;,sans-serif;color:#666666">&nbsp;&nbsp; F
+</span></b><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sa=
+ns-serif;color:black">484-676-1335&nbsp;&nbsp;
+<a href=3D"https://www.seic.com/" title=3D"SEI Home Page"><span style=3D"co=
+lor:black">www.seic.com</span></a></span><span style=3D"font-size:8.0pt;fon=
+t-family:&quot;Arial&quot;,sans-serif;color:gray"><br>
+<br>
+Disclaimer:</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"text-align:justify"><span style=3D"font-siz=
+e:8.0pt;font-family:&quot;Arial&quot;,sans-serif;color:gray">This e-mail an=
+d any files transmitted with it are confidential and intended solely for th=
+e use of the recipient(s) to whom they are addressed,
+ even if addressed incorrectly.&nbsp; If you are not the intended recipient=
+ you should not disseminate, distribute or copy this e-mail.&nbsp; Please n=
+otify the sender immediately by e-mail if you have received this by mistake=
+ and delete this e-mail from your system.&nbsp;
+ SEI may archive and review outgoing and incoming email and may produce any=
+ email at the request of regulators.</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:8.0pt;font-family:&quot;Ari=
+al&quot;,sans-serif;color:gray">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</body>
+</html>
+
+--_000_e196933fd4734a2d90271672493edc05seiccom_--

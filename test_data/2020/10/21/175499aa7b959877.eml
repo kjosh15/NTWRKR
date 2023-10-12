@@ -1,0 +1,614 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1041:0:0:0:0 with SMTP id x1csp5195081ljm;
+        Tue, 20 Oct 2020 22:21:13 -0700 (PDT)
+X-Received: by 2002:a5d:8487:: with SMTP id t7mr1367215iom.35.1603257673414;
+        Tue, 20 Oct 2020 22:21:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1603257673; cv=none;
+        d=google.com; s=arc-20160816;
+        b=qchK00L54twlx2xkM3ip/7kT8xdJxObysLsepX79jqo7+tU+qehNrHN7htU7yF1+7m
+         xpS0N3fWvW+WNjWU0o3v/+s3IBDcWdh2ASEO6jewsKMOcmdHfQjLnk4uecT8LLk4rGg9
+         Jxk+sB6Cp5MqUh2Wt2pFqezhczOmOaVNqzCcKCWSDYfNHPXZgjfcV8pQQdIVvt9umVp4
+         VFF/S88Ni5bGovztLYOOr7mYXoaz9bMsYOpQ7kNfBXNscWjGfpwMksTM3xY77e/cyRWz
+         ulgGRNqK+YT9cHTxsJd3dlg6mJHx2OSYTMPCboL7Ay3P4obUkymJjZP5dJ0HIHVy0gOq
+         IyKQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:date:message-id:auto-submitted:reply-to
+         :mime-version:dkim-signature;
+        bh=XftcaJndVLW1X9InRE38zGokAZQ/q4D+PjrMEwBUcXQ=;
+        b=ShBycgVUCJo1H0KD8+hA0OftSoOf4nLYaAN6ZxQzAnzmOn/p4njQTDedWYQ1dNoG6q
+         F5Y1LcAOJsspqzDIbUb84bnp5pYWqILiEUVULmj0QFZG9ZM/6kYgKsy7KoP0rTiUVA7c
+         AGGmJC02hP5aetrWBQMJEzdi1uRK/CAygVa255DQUEiId0QHh6213BF+D92hsw+XRsjF
+         Kzq/73nwBuFwEyX3PEy4dHnlKXa1R4AanTdPCVrN85Wtj8pRReQhoBSn3xiLC7vE3qnF
+         LwpUC9p/KwLo9qLILZzWqDRzcqufs8gctb/vryIb9b9FEGfOpuvzvXN8mXVrsi44xFC8
+         ybbw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=nrVBb6OP;
+       spf=pass (google.com: domain of 3smwpxwqhbbu49d249d2.3d49d249d2.3d@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=3SMWPXwQHBBU49D249D2.3D49D249D2.3D@calendar-server.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=google.com
+Return-Path: <3SMWPXwQHBBU49D249D2.3D49D249D2.3D@calendar-server.bounces.google.com>
+Received: from mail-sor-f73.google.com (mail-sor-f73.google.com. [209.85.220.73])
+        by mx.google.com with SMTPS id 11sor614834ilt.52.2020.10.20.22.21.13
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 20 Oct 2020 22:21:13 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 3smwpxwqhbbu49d249d2.3d49d249d2.3d@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) client-ip=209.85.220.73;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=nrVBb6OP;
+       spf=pass (google.com: domain of 3smwpxwqhbbu49d249d2.3d49d249d2.3d@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=3SMWPXwQHBBU49D249D2.3D49D249D2.3D@calendar-server.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=google.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:reply-to:auto-submitted:message-id:date:subject:from
+         :to;
+        bh=XftcaJndVLW1X9InRE38zGokAZQ/q4D+PjrMEwBUcXQ=;
+        b=nrVBb6OPmECAaeki8IQKiwuINxTpmTFYkQud707EA6HtyDIykAJR+O6oM8SmU/1Pmr
+         Z4+gZ4o7Gsv1o6I7bJaiMX1atcmTfdHVhTzurCvImSXPTXxys6mcgcoKZ7umnZ2r73TB
+         vX/y3wWkr4rBssh3RoSEiLiNj79MP6XVEy+slC7nWR4TmvjsJ0FXegiIVKUd7yODQHZ4
+         F4LQo5eqYDDXXjV9IRPFm4fk+HRLmGljT9o1Kb7DsxjB/CmfSIr5kbO0ksot2uTBZHAY
+         9BHWEE60f/n7OibdFUasYfj4z7f+Ynvg/D8tTgh3PxHjPvy75CpoSZNzCtMIMGQzEUaS
+         oPvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:auto-submitted:message-id
+         :date:subject:from:to;
+        bh=XftcaJndVLW1X9InRE38zGokAZQ/q4D+PjrMEwBUcXQ=;
+        b=ldWo6nmJoLcZqeBtO4ziNNOhqWOBiKYuDW8kXCTHC89djFgF8JgYnO8PL14iJ95Xnl
+         UV/8Ai7f1MdPi0ItiDgMgKjNomUu7UFDr5i+55DevuEKV2ik9bO8QbCMuxkUPMIEcJvd
+         nICpFk4/8xGFKdti/WE+q2G7MK5m5yNWGD6YqQm8DNIOR/f6a0a9SumgXg+abHys5ywe
+         vTd7ZaqBDUBn/HLoh9jqHk2IaCSNYbLtXl6Kc7wmXVk/8XB4x1zivl75y5PWLKAWzS31
+         C9iU5KfZ6l9k9jgpgL7Htd50wM2qKcuVP5nbl8jYu/yDI6GQ5UwGPw2XkVex4xNVZ83n
+         50ow==
+X-Gm-Message-State: AOAM531yfvldoCM3XtUqw3pbqNABgkByLDWe9iO5LKZ5kAZFf0siY5A+
+	eFL2nCybn/23GQHkZ5rfTcjsbC3eX5YNmUdogrJ+9qk=
+X-Google-Smtp-Source: ABdhPJxYfYWB8pkrL6XrI/CPSfnJukISzaMR+/rSwIN10hJLvncSYMn0/1+35vvtEl68Qnb30SblHGp+UpEF0S9Y7ipu
+MIME-Version: 1.0
+X-Received: by 2002:a92:dd0f:: with SMTP id n15mr1206183ilm.227.1603257672673;
+ Tue, 20 Oct 2020 22:21:12 -0700 (PDT)
+Reply-To: Josh Klein <josh@josh.is>
+Auto-Submitted: auto-generated
+Message-ID: <00000000000010494b05b2278450@google.com>
+Date: Wed, 21 Oct 2020 05:21:12 +0000
+Subject: Daily Agenda for Josh Klein as of 5am
+From: Google Calendar <calendar-notification@google.com>
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="00000000000010493c05b227844d"
+
+--00000000000010493c05b227844d
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+
+am9zaEBqb3NoLmlzLCBoZXJlIGlzIHlvdXIgc2NoZWR1bGUgZm9yIFdlZCBPY3QgMjEsIDIwMjAN
+Cg0KMTBhbSDigJMgMTFhbQlJbmRpZ29NZXRyaWNzIFBlbmV0cmF0aW9uIFRlc3RpbmcgTWVldGlu
+ZyBNaWNyb3NvZnQgVGVhbXMgIA0KTWVldGluZwlKb3NoDQoxMWFtIOKAkyAxMnBtCUluZmx1ZW56
+YSBzaG90CUh1bGRhIGFuZCBKb3NoDQoxMjozMHBtIOKAkyAxOjMwcG0JTW9ybmluZyBtZWV0aW5n
+IDIvMwlIdWxkYSBhbmQgSm9zaA0KMTozMHBtIOKAkyAyOjMwcG0JVVBLIG1vcm5pbmcgbWVldGlu
+ZwlIdWxkYSBhbmQgSm9zaA0KMTozMHBtIOKAkyAyOjMwcG0JTWF0aCBvciBsaXRlcmFjeSAyLzMJ
+SHVsZGEgYW5kIEpvc2gNCjI6MzBwbSDigJMgMzozMHBtCXNtYWxsIGdyb3VwIFVQSwlIdWxkYSBh
+bmQgSm9zaA0KMjozMHBtIOKAkyAzOjMwcG0JTWF0aCBvciBsaXRlcmFjeSAyLzMJSHVsZGEgYW5k
+IEpvc2gNCjNwbSDigJMgNHBtCUVtcGxveWVlIE1lbnRhbCBIZWFsdGggd2l0aCBEci4gQWx0aGEg
+U3Rld2FydCwgUGFydCBUd28gOjogQSAgDQpXb3JsZCA1MCBFbmdhZ2UgQ2FsbCB6b29tIGRldGFp
+bHMgZW5jbG9zZWQJSm9zaA0KNHBtIOKAkyA0OjQ1cG0JQ2FzZXkgUmllZGVyIGFuZCBKb3NoIEts
+ZWluICANCmh0dHBzOi8vem9vbS51cy9qLzkxMDkxNjE0NzM3P3B3ZD1Zbko0VTFORmFsZzNOVE5F
+VERSWGJqUkNVRTlpWnowOQlKb3NoDQo1cG0g4oCTIDZwbQlXaG9sZSBncm91cCBtZWV0aW5nIDIv
+MwlIdWxkYSBhbmQgSm9zaA0KDQoNClZpZXcgeW91ciBjYWxlbmRhciBhdCBodHRwczovL3d3dy5n
+b29nbGUuY29tL2NhbGVuZGFyLw0KDQpZb3UgYXJlIHJlY2VpdmluZyB0aGlzIGVtYWlsIGF0IHRo
+ZSBhY2NvdW50IGpvc2hAam9zaC5pcyBiZWNhdXNlIHlvdSBhcmUgIA0Kc3Vic2NyaWJlZCB0byBy
+ZWNlaXZlIGRhaWx5IGFnZW5kYXMgZm9yIHRoZSBmb2xsb3dpbmcgY2FsZW5kYXJzOiBIdWxkYSBh
+bmQgIA0KSm9zaCwgSm9zaC4NCg0KVG8gY2hhbmdlIHdoaWNoIGNhbGVuZGFycyB5b3UgcmVjZWl2
+ZSBkYWlseSBhZ2VuZGFzIGZvciwgcGxlYXNlIGxvZyBpbiB0byAgDQpodHRwczovL3d3dy5nb29n
+bGUuY29tL2NhbGVuZGFyLyBhbmQgY2hhbmdlIHlvdXIgbm90aWZpY2F0aW9uIHNldHRpbmdzIGZv
+ciAgDQplYWNoIGNhbGVuZGFyLg0K
+--00000000000010493c05b227844d
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div style=3D"padding:10px 7px;font-size:14px;line-height:1.4;font-family:A=
+rial,Sans-serif;text-align:left;bgcolor=3D#ffffff"><a href=3D"https://www.g=
+oogle.com/calendar"><img alt=3D"Google Calendar" src=3D"https://calendar.go=
+ogle.com/googlecalendar/images/calendarlogo/calendar_logo_en_41px_1x_r1.png=
+"></a>
+<p style=3D"margin:0;color:#0">josh@josh.is,&nbsp;here is your schedule for=
+:
+<h2 style=3D"margin:5px 0;font-size:18px;line-height:1.4;color:#0">Wed Oct =
+21, 2020</h2></p>
+<table cellspacing=3D"0" cellpadding=3D"0" style=3D"font-size:14px;line-hei=
+ght:1.4;font-family:Arial,Sans-serif;text-align:left;"><tr style=3D"line-he=
+ight:1.4;"><td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"In=
+digoMetrics Penetration Testing Meeting (Microsoft Teams Meeting)"><a href=
+=3D"https://www.google.com/calendar/r?eid=3DXzYwcTMwYzFnNjBvMzBlMWk2MG80YWM=
+xZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2NG80Y2hhNTZrcms0Yz=
+ltODRyNDhkaGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzEwamlkY=
+TU2a3I0OGRxNDcwcTQ0ZTFrODkwa2FncG44OHE0YWgyMjg5MmsyaDIzNnQyMCBqb3NoQGpvc2gu=
+aXM" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">10am &ndash; 11am</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DXzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5Zz=
+YwczMwYzFnNjBvMzBjMWc2NG80Y2hhNTZrcms0YzltODRyNDhkaGc2NG8zMGMxZzYwbzMwYzFnN=
+jBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzEwamlkYTU2a3I0OGRxNDcwcTQ0ZTFrODkwa2FncG44=
+OHE0YWgyMjg5MmsyaDIzNnQyMCBqb3NoQGpvc2guaXM" style=3D"color:#373AD7;text-de=
+coration:none;">IndigoMetrics Penetration Testing Meeting (Microsoft Teams =
+Meeting)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#9A9CFF" title=
+=3D"IndigoMetrics Penetration Testing Meeting (Microsoft Teams Meeting)"><a=
+ href=3D"https://www.google.com/calendar/r?eid=3DXzYwcTMwYzFnNjBvMzBlMWk2MG=
+80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2NG80Y2hhNTZrc=
+ms0YzltODRyNDhkaGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzEw=
+amlkYTU2a3I0OGRxNDcwcTQ0ZTFrODkwa2FncG44OHE0YWgyMjg5MmsyaDIzNnQyMCBqb3NoQGp=
+vc2guaXM" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"IndigoMetrics=
+ Penetration Testing Meeting (Microsoft Teams Meeting)"><a href=3D"https://=
+www.google.com/calendar/r?eid=3DXzYwcTMwYzFnNjBvMzBlMWk2MG80YWMxZzYwcmo4Z3B=
+sODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2NG80Y2hhNTZrcms0YzltODRyNDhkaG=
+c2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzEwamlkYTU2a3I0OGRxN=
+DcwcTQ0ZTFrODkwa2FncG44OHE0YWgyMjg5MmsyaDIzNnQyMCBqb3NoQGpvc2guaXM" style=
+=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"IndigoMetrics Penetration Testing Meeting (Microsoft Teams Meeting)"><a=
+ href=3D"https://www.google.com/calendar/r?eid=3DXzYwcTMwYzFnNjBvMzBlMWk2MG=
+80YWMxZzYwcmo4Z3BsODhyajJjMWg4NHMzNGg5ZzYwczMwYzFnNjBvMzBjMWc2NG80Y2hhNTZrc=
+ms0YzltODRyNDhkaGc2NG8zMGMxZzYwbzMwYzFnNjBvMzBjMWc2MG8zMmMxZzYwbzMwYzFnNzEw=
+amlkYTU2a3I0OGRxNDcwcTQ0ZTFrODkwa2FncG44OHE0YWgyMjg5MmsyaDIzNnQyMCBqb3NoQGp=
+vc2guaXM" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Influenza sho=
+t"><a href=3D"https://www.google.com/calendar/r?eid=3DMGdxa3Y0bGNyYXZvYWtuY=
+jJhc3B2ZTIyaWUgN3EyZDZwdmEwdGlpNjhtbTkzbGwydTFhNGdAZw" style=3D"text-decora=
+tion:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">11am &ndash; 12pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DMGdxa3Y0bGNyYXZvYWtuYjJhc3B2ZTIyaWUgN3EyZDZwdmEwdGlpNjhtbTkzbGwydT=
+FhNGdAZw" style=3D"color:#33B694;text-decoration:none;">Influenza shot</a><=
+/td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"Influenza shot"><a href=3D"https://www.google.com/calendar/r?eid=3DMGdx=
+a3Y0bGNyYXZvYWtuYjJhc3B2ZTIyaWUgN3EyZDZwdmEwdGlpNjhtbTkzbGwydTFhNGdAZw" sty=
+le=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Influenza sho=
+t"><a href=3D"https://www.google.com/calendar/r?eid=3DMGdxa3Y0bGNyYXZvYWtuY=
+jJhc3B2ZTIyaWUgN3EyZDZwdmEwdGlpNjhtbTkzbGwydTFhNGdAZw" style=3D"text-decora=
+tion:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Influenza shot"><a href=3D"https://www.google.com/calendar/r?eid=3DMGdx=
+a3Y0bGNyYXZvYWtuYjJhc3B2ZTIyaWUgN3EyZDZwdmEwdGlpNjhtbTkzbGwydTFhNGdAZw" sty=
+le=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Morning meeti=
+ng 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DNHMyYmFlcDc0dGI3=
+YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMjFUMTIzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">12:30pm &ndash; 1:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMjFUMTIzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Morning meeting 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"Morning meeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMjFUMTIzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Morning meeti=
+ng 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DNHMyYmFlcDc0dGI3=
+YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMjFUMTIzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Morning meeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMjFUMTIzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"UPK morning m=
+eeting"><a href=3D"https://www.google.com/calendar/r?eid=3DN2lqNXQ5ZmRqYzll=
+dWgxbzlycTNxN2libHRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMG=
+s4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfM=
+jAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-=
+decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">1:30pm &ndash; 2:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">UPK morning meeting</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"UPK morning meeting"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMGs4ZGhqNzBvMzJi=
+OW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfMjAyMDEwMjFUMTM=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">1:30pm &ndash; 2:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DXzhwMGs4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwaz=
+ZoMjMyZTltODRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn"=
+ style=3D"color:#33B694;text-decoration:none;">Math or literacy 2/3</a></td=
+>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"UPK morning m=
+eeting"><a href=3D"https://www.google.com/calendar/r?eid=3DN2lqNXQ5ZmRqYzll=
+dWgxbzlycTNxN2libHRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMG=
+s4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfM=
+jAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-=
+decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"UPK morning meeting"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMjFUMTMzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMGs4ZGhqNzBvMzJi=
+OW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfMjAyMDEwMjFUMTM=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"small group U=
+PK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhjcTNhZDFoNmwxNGNi=
+YTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNjBfMjAyMDEwMjFUMTQ=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm=
+1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tO=
+TNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">2:30pm &ndash; 3:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DXzhjcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMj=
+g5MTQ2Y3BuNjBfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn"=
+ style=3D"color:#33B694;text-decoration:none;">small group UPK</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"small group UPK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzh=
+jcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNj=
+BfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"te=
+xt-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm1mcHVmN25jMGlz=
+YTFxZWYyOGkwbXZfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0B=
+n" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">2:30pm &ndash; 3:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DdGNmdm1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Math or literacy 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"small group U=
+PK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhjcTNhZDFoNmwxNGNi=
+YTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNjBfMjAyMDEwMjFUMTQ=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm=
+1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tO=
+TNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Empl=
+oyee Mental Health with Dr. Altha Stewart, Part Two :: A World 50 Engage Ca=
+ll (zoom details enclosed)"><a href=3D"https://www.google.com/calendar/r?ei=
+d=3DNmIwN2ppc3Zscm9pcHNzMGhkc2RwZmg3MTcgam9zaEBqb3NoLmlz" style=3D"text-dec=
+oration:none">&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">3pm &ndash; 4pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DNmIwN2ppc3Zscm9pcHNzMGhkc2RwZmg3MTcgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Employee Mental Health with Dr. Altha Ste=
+wart, Part Two :: A World 50 Engage Call (zoom details enclosed)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"small group UPK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzh=
+jcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNj=
+BfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"te=
+xt-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm1mcHVmN25jMGlz=
+YTFxZWYyOGkwbXZfMjAyMDEwMjFUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0B=
+n" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" title=3D"Employee Mental He=
+alth with Dr. Altha Stewart, Part Two :: A World 50 Engage Call (zoom detai=
+ls enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=3DNmIwN2ppc3=
+Zscm9pcHNzMGhkc2RwZmg3MTcgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">=
+&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Empl=
+oyee Mental Health with Dr. Altha Stewart, Part Two :: A World 50 Engage Ca=
+ll (zoom details enclosed)"><a href=3D"https://www.google.com/calendar/r?ei=
+d=3DNmIwN2ppc3Zscm9pcHNzMGhkc2RwZmg3MTcgam9zaEBqb3NoLmlz" style=3D"text-dec=
+oration:none">&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Employee Mental He=
+alth with Dr. Altha Stewart, Part Two :: A World 50 Engage Call (zoom detai=
+ls enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=3DNmIwN2ppc3=
+Zscm9pcHNzMGhkc2RwZmg3MTcgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">=
+&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Casey Rieder =
+and Josh Klein (https://zoom.us/j/91091614737?pwd=3DYnJ4U1NFalg3NTNETDRXbjR=
+CUE9iZz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DN2RicGwzdGxn=
+cDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">4pm &ndash; 4:45pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Casey Rieder and Josh Klein (https://zoom=
+.us/j/91091614737?pwd=3DYnJ4U1NFalg3NTNETDRXbjRCUE9iZz09)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#9A9CFF" title=
+=3D"Casey Rieder and Josh Klein (https://zoom.us/j/91091614737?pwd=3DYnJ4U1=
+NFalg3NTNETDRXbjRCUE9iZz09)"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-de=
+coration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Casey Rieder =
+and Josh Klein (https://zoom.us/j/91091614737?pwd=3DYnJ4U1NFalg3NTNETDRXbjR=
+CUE9iZz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DN2RicGwzdGxn=
+cDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Casey Rieder and Josh Klein (https://zoom.us/j/91091614737?pwd=3DYnJ4U1=
+NFalg3NTNETDRXbjRCUE9iZz09)"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-de=
+coration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Whole group m=
+eeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DMm05cTNjNmxz=
+MXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMjFUMTcwMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ=
+1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">5pm &ndash; 6pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMjFUMTcwMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Whole group meeting 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"Whole group meeting 2/3"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMjFUMTcwMDAwWiA3cTJkNnB2YT=
+B0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Whole group m=
+eeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DMm05cTNjNmxz=
+MXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMjFUMTcwMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ=
+1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Whole group meeting 2/3"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMjFUMTcwMDAwWiA3cTJkNnB2YT=
+B0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr></table>
+<a href=3D"https://www.google.com/calendar"><img alt=3D"Google Calendar" sr=
+c=3D"https://calendar.google.com/googlecalendar/images/calendarlogo/calenda=
+r_logo_en_41px_1x_r1.png"></a>
+<p style=3D"font-family:Arial,Sans-serif;color:#666;font-size:11px">You are=
+ receiving this email at the account josh@josh.is because you are subscribe=
+d to receive daily agendas for the following calendars: <a href=3D"https://=
+www.google.com/calendar/render?cid=3D7q2d6pva0tii68mm93ll2u1a4g%40group.cal=
+endar.google.com">Hulda and Josh</a>, <a href=3D"https://www.google.com/cal=
+endar/render?cid=3Djosh%40josh.is">Josh</a>.</p>
+<p style=3D"font-family:Arial,Sans-serif;color:#666;font-size:11px">To chan=
+ge which calendars you receive daily agendas for, please log in to https://=
+www.google.com/calendar/ and change your notification settings for each cal=
+endar.</p></div>
+--00000000000010493c05b227844d--

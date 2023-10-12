@@ -1,0 +1,754 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Tue, 15 Sep 2020 07:49:30 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b54b:0:0:0:0:0 with SMTP id a11csp6908821ljn;
+        Tue, 18 Feb 2020 07:54:48 -0800 (PST)
+X-Received: by 2002:a05:6214:1189:: with SMTP id t9mr16838683qvv.153.1582041287345;
+        Tue, 18 Feb 2020 07:54:47 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1582041287; cv=none;
+        d=google.com; s=arc-20160816;
+        b=Mo15+VEf8z1cGCgzHeBXk++/SR1icd826NnGDPGoQv+liyHLLuyVcPWL58EOdSw3DS
+         7xpSkaathyh0H/Juid7U67yo6lZOezEKOgtmvdd2jRxhutFv1bsc2AX+41YCPbMJ/fqa
+         sf9a8A/bkVLyXyugzZ6iqCJLJakEfFRPMD+XdKEp8/G30PAEYQ03/A0+oRrPDR1KLbHG
+         hcdbYnL6ix+X7PsY2sMUqraAWc2tMKDVg6BDX3yUNSk0av0JtYhVcMc4JnC4ruMTYV9B
+         xxnLOrwrAyYrOMzCcPfGg6tCJcF+4cahlTzxxWvBOBF/yIGE+JSb4zTbbbso3epo0Dfm
+         gtMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=in-reply-to:to:references:date:subject:mime-version:message-id:from
+         :dkim-signature;
+        bh=lYfxzjuMbNFrIkQN8vvetQx+MOA87yxmKErAT+Py6pA=;
+        b=z369l1kflKKt8Ok+6O5D3VuiZcXZn4ILpjenXHVaBQHwJpEMirBR1bwbaObRc72mkC
+         sH6oGH3X0WF6tdYOdwX2Q3j0/3ViOsDvZPyQE4QGBrW8j7GjQ+ZNDWUty3MkTnzWJVpA
+         uWrGB5uMWDHNiYSm4wGWnc3x6Tjyuhi7DYtSOLJFJRdRowLAam5F3kcjNn2DmRMh8ol8
+         vUuQc4jSwMYpXYUrgGG50zfWRaNrgDKjKxznqf2NN8wl/5hmVAUr/FXl3naYqeZKqxQX
+         p4vmRUna/8hIib2hWzBcMvUEyHcUHKb2xczDyLsTNA6/saCT5p7vrb+Nh3DLAxPzFN+x
+         O5Vw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ionchannel-io.20150623.gappssmtp.com header.s=20150623 header.b="M8LA/xZc";
+       spf=pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) smtp.mailfrom=jc.herz@ionchannel.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ionchannel.io
+Return-Path: <jc.herz@ionchannel.io>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id u10sor3635094qvj.55.2020.02.18.07.54.47
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 18 Feb 2020 07:54:47 -0800 (PST)
+Received-SPF: pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ionchannel-io.20150623.gappssmtp.com header.s=20150623 header.b="M8LA/xZc";
+       spf=pass (google.com: domain of jc.herz@ionchannel.io designates 209.85.220.41 as permitted sender) smtp.mailfrom=jc.herz@ionchannel.io;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=ionchannel.io
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionchannel-io.20150623.gappssmtp.com; s=20150623;
+        h=from:message-id:mime-version:subject:date:references:to:in-reply-to;
+        bh=lYfxzjuMbNFrIkQN8vvetQx+MOA87yxmKErAT+Py6pA=;
+        b=M8LA/xZcFWIvOf+Kobi8x9inlhkO+KBPNBlPgreB7niex1X2jGw3XVbmasmYwmNFFn
+         KDiHRHX5B4czjwDccMzJQRXkcPgsQsA62ScM/zrVLmU9PRE3o5lgolmPY1QqzkAWEM0B
+         8dADq/LrOnDZHv0pGeQpMSDMA48+AxEP/2ta1IiIyjF3lp8DgmQk6yztt7Z4O00nPSpe
+         eFD4mYXOjDHKkheTyeWdTAh7oDu7cyKkcrQtmdYQ3XvnMHODGPMV6nVsu4hnAMt6HoB2
+         LiriNYYrZgufPDXRxSgr6vVq1Ra6fw+dGLZwmSNX0aaaKhaqgd5FhpEgVJ47gmphEcHT
+         vjDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:message-id:mime-version:subject:date
+         :references:to:in-reply-to;
+        bh=lYfxzjuMbNFrIkQN8vvetQx+MOA87yxmKErAT+Py6pA=;
+        b=dKPxYxQVDNqwI7xmnla2hb3RB0fVXxCDy6ppgriEqNRoC5z6qxV+o9ZPaxMApRjoBa
+         5lgbIqGYtExazup1xHYntpDxzZG+13JF1mOos/TOewhRMP9y1vZgvGF9QRvTLCMk7hd6
+         qVojW3Zcv24HubBrl7a7SnDXF0LSsxPFMQoqVPctBCWAw1zo1qNGDfr6I52kM9afcDj/
+         QtG3d7BAwBTBkYiL3f3cOPr21mCWR5iDy5AVzzWJSYYe3l+z+x1vUngYrNB9TLTM2Wzg
+         W5GYZCDaMuJBnvJ21yUup5Dd/4W/ay+0qTVUaFSwi8HFEjmWQ23ZkRusGPNcTj8K8Mt8
+         qgPQ==
+X-Gm-Message-State: APjAAAVO12D2GTJF/ktk1mwyhq3F3iWJ+GFhoJBydurh1HHFXfaGoR6A
+	xT51qnLqPQ9elJT+uPvWZE+L1PkWlwQ=
+X-Google-Smtp-Source: APXvYqx8WOtAl6KryTxOqsRcbbQje4o9Iw2pd/0PupHtpywubnDuBekklVcFWccn8bFeIDSukfr36Q==
+X-Received: by 2002:ad4:450a:: with SMTP id k10mr16131927qvu.136.1582041285803;
+        Tue, 18 Feb 2020 07:54:45 -0800 (PST)
+Return-Path: <jc.herz@ionchannel.io>
+Received: from [198.18.6.46] (92.17.559e.ip4.static.sl-reverse.com. [158.85.23.146])
+        by smtp.gmail.com with ESMTPSA id z6sm2118195qka.34.2020.02.18.07.54.41
+        for <josh@josh.is>
+        (version=TLS1 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 18 Feb 2020 07:54:44 -0800 (PST)
+From: JC Herz <jc.herz@ionchannel.io>
+Content-Type: multipart/alternative; boundary="Apple-Mail=_3C3F422B-5BF5-4DD6-9C13-2542748AF933"
+Message-Id: <2125164769.260.1600181370226@localhost>
+Mime-Version: 1.0
+Subject: Re: Deck
+Date: Tue, 18 Feb 2020 10:54:41 -0500
+References: <444AD607-F1F8-48F4-AED8-75D0F9856857@ionchannel.io> <CACNgykPGxLWGhpvjwWEVB6RyXp-nawcCfGfOcqaZ=OnYoksFLA@mail.gmail.com> <06C96535-E907-40D8-9F58-0F7633A2F21A@ionchannel.io> <CACNgykPbP1arzos0AZryoEnVAfuP+1Gwfgsm-y6-Pu1g+Uxktw@mail.gmail.com> <7B0B297F-4D72-471C-BEB5-5ADB6E485946@ionchannel.io> <CACNgykNj6=+YOf+zDdb3Cf6c12EH8F6ZPY_JexQKxP4cs0XVuw@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <CACNgykNj6=+YOf+zDdb3Cf6c12EH8F6ZPY_JexQKxP4cs0XVuw@mail.gmail.com>
+X-Mailer: Apple Mail (2.3124)
+
+--Apple-Mail=_3C3F422B-5BF5-4DD6-9C13-2542748AF933
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+
+
+> I had some conversations with a couple of my larger corporate clients (Fo=
+rtune 400 and up) and there was some real initial interest. Do you offer a =
+commission if I can provide an intro that turns into a contract?
+
+
+
+We do have lead-gen and commission agreements with channel partners if that=
+=E2=80=99s something you=E2=80=99d be interested in. Snapshots of our lead-=
+gen agreement are below - it=E2=80=99s a 5% commission on the first 12 mont=
+hs of revenue from a customer, assuming a purchase is made within 24 months=
+ of initial introduction.=20
+
+If this makes sense, we can get an NDA in place and go from there.
+
+
+
+Best,
+
+JC
+
+
+
+
+
+*************************************
+
+
+
+
+
+
+
+
+
+> On Feb 17, 2020, at 2:42 PM, Josh Klein <josh@josh.is> wrote:
+>=20
+> I had some conversations with a couple of my larger corporate clients (Fo=
+rtune 400 and up) and there was some real initial interest. Do you offer a =
+commission if I can provide an intro that turns into a contract?
+>=20
+> best,
+> Josh
+> =E1=90=A7
+>=20
+> On Thu, Feb 13, 2020 at 8:51 AM JC Herz <jc.herz@ionchannel.io <mailto:jc=
+.herz@ionchannel.io>> wrote:
+>=20
+> Small and medium companies have to do it because larger customers - speci=
+fically banks - are requiring it. Part of that is regulatory and part of it=
+ is large orgs want to push risk and liability to the left and have the lev=
+erage to do so. Our addressable market is the supplier base for defense (10=
+0,000 companies and their subcontractors, which includes a lot of public co=
+mpanies and software vendors that do business with the military/intel commu=
+nity) and regulated industry (energy, telecom, healthcare, finance, critica=
+l manufacturing, transportation, smart cities, election infrastructure). Th=
+ere are hundreds of thousands of corporate entities who are regulated to ca=
+re, and the mandates that kick in this year will be almost impossible to sa=
+tisfy without automation. See: https://csrc.nist.gov/publications/detail/ni=
+stir/8276/draft <https://csrc.nist.gov/publications/detail/nistir/8276/draf=
+t> and https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_20200131=
+_v2.pdf <https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Briefing_202001=
+31_v2.pdf>
+>=20
+> CIO=E2=80=99s tend to like this because it solves the impasse with securi=
+ty - put something in the background that satisfies the CISO and the chief =
+risk officer (this also mitigates the legal department=E2=80=99s concerns a=
+bout third party risk), and all the capabilities you want for the business =
+can move more quickly into operation.=20
+>=20
+>=20
+>=20
+> JC
+>=20
+>=20
+>> On Feb 13, 2020, at 8:40 AM, Josh Klein <josh@josh.is <mailto:josh@josh.=
+is>> wrote:
+>>=20
+>> Makes complete sense, but I wonder about how you=E2=80=99re going to get=
+ access to decision makers who aren=E2=80=99t siloed to the point of impote=
+nce for a project like this - again, considering where risk (specifically c=
+yber risk) is situated, I could see a CTO at a large company mandating this=
+ ... but never enforcing it.=20
+>>=20
+>> Conversely, does a small to midsize company have the business imperative=
+s to protect themselves this way, or is it going to be business as usual - =
+growth first, security fifth?
+>>=20
+>> Separately, would love your take on approaching intelligence communities=
+ - it sounded as though you had some good insights to share!
+>>=20
+>> - J
+>>=20
+>>=20
+>> On Wed, Feb 12, 2020 at 2:58 PM JC Herz <jc.herz@ionchannel.io <mailto:j=
+c.herz@ionchannel.io>> wrote:
+>>>=20
+>>> Thanks for this! I can already think of a few people to pass this to. C=
+an you follow up with an email contextualizing this for small, medium, and =
+large clients? I tend to work mostly with the latter and some with the form=
+er, and not as often with the midsize (although that is a new target for me=
+ for 2020 vis a vis board seats).
+>>=20
+>> The difficult problem for large enterprises - and any enterprise with a =
+large supplier network - is third party risk management: How do I get a bas=
+ic level of assurance on the software coming into my enterprise, particular=
+ly from outsourced/pro-services teams and small vendors, on a continuos bas=
+is. As Equifax showed us, a product that=E2=80=99s green today might be red=
+ 90 days later. What if that=E2=80=99s a mobile app that your web agency de=
+veloped? Or a cutting-edge AI/ML capability from some venture-backed startu=
+p (none of which give a rat=E2=80=99s ass about security).=20
+>>=20
+>> How do you automate transparency on those inbound deliverables (and thei=
+r updates) developed outside your boundary?
+>>=20
+>> How do you enforce governance on a continuous basis, so that suppliers a=
+re on the hook to remediate/update products as vulnerabilities emerge?
+>>=20
+>> How does this become a tractable process for procurement and vendor mana=
+gement, so they=E2=80=99re not saddled with cyber forensics that they=E2=80=
+=99re not staffed to take on?=20
+>>=20
+>> This is also about pushing risk to the left in contract provisions, and =
+meeting regulatory mandates for cyber responsiveness, as well as known-vuln=
+erability terms of cyber insurance policies.=20
+>>=20
+>> An example:
+>>=20
+>> 1) The supplier deliverable (either pro services app development or vend=
+or product SBOM) is analyzed prior to procurement. Governance criteria are =
+enforced. For instance, the large banks have prohibited components lists - =
+if you have certain Python libraries in your product (containing malware, p=
+er threat intel), you=E2=80=99re not going to sell that product to JP Morga=
+n Chase - it=E2=80=99s a firewall to procurement. One of the big banks requ=
+ires an SBOM for full pricing - any product without an SBOM is subject to a=
+ 40% discount if it gets procured at all.
+>>=20
+>> 2) Ion Channel runs analysis on that SBOM every day, parallel to whateve=
+r the supplier is doing for assurance.
+>>=20
+>> 3) If the deliverable moves from green to red (e.g. new critical vulnera=
+bility), that change is time-stamped. Contract provisions - security SLAs -=
+ can specify how many hours/days the supplier has to push an update that re=
+mediates the vulnerability, and see the time stamp with third party certifi=
+cation that the supplier has met the provision or not, in which case there =
+might be remedies.=20
+>>=20
+>>=20
+>>=20
+>> Does this make sense?
+>>=20
+>>=20
+>>=20
+>> JC
+>>=20
+>>=20
+>>>=20
+>>> Separately, any thinking you may have on how to propose a workable depl=
+oyment with gov't would be hugely appreciated.
+>>>=20
+>>> Sincerely,
+>>> Josh
+>>>=20
+>>> =E1=90=A7
+>>>=20
+>>> On Wed, Feb 12, 2020 at 11:09 AM JC Herz <jc.herz@ionchannel.io <mailto=
+:jc.herz@ionchannel.io>> wrote:
+>>>=20
+>>=20
+>=20
+
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Previous attachments:
+ - PastedGraphic-1.tiff (filename: 17059024b1802055-0-PastedGraphic-1.tiff)
+ - PastedGraphic-2.tiff (filename: 17059024b1802055-1-PastedGraphic-2.tiff)
+ - PastedGraphic-3.tiff (filename: 17059024b1802055-2-PastedGraphic-3.tiff)
+
+Information about the change:
+ - Made with:                 Unattach 2.2.0
+ - Date and time:             2020-09-15T14:49:30.223447Z
+ - Download target hostname:  Muninn-2.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+--Apple-Mail=_3C3F422B-5BF5-4DD6-9C13-2542748AF933
+Content-Type: multipart/related;
+	type="text/html";
+	boundary="Apple-Mail=_9E5921DF-FA7F-46E2-9FC8-8440F4E92CCF"
+
+--Apple-Mail=_9E5921DF-FA7F-46E2-9FC8-8440F4E92CCF
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=utf-8
+
+<html>
+ <head>
+  <meta http-equiv=3D"Content-Type" content=3D"text/html charset=3Dutf-8">
+ </head>
+ <body style=3D"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-li=
+ne-break: after-white-space;" class=3D"">
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <blockquote type=3D"cite" class=3D"">
+    <div dir=3D"ltr" class=3D"">
+     I had some conversations with a couple of my larger corporate clients =
+(Fortune 400 and up) and there was some real initial interest. Do you offer=
+ a commission if I can provide an intro that turns into a contract?
+    </div>
+   </blockquote>
+  </div>
+  <div class=3D"">
+   <div dir=3D"ltr" class=3D"">
+    <br class=3D"">
+   </div>
+  </div>
+  <div dir=3D"ltr" class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   We do have lead-gen and commission agreements with channel partners if t=
+hat=E2=80=99s something you=E2=80=99d be interested in. Snapshots of our le=
+ad-gen agreement are below - it=E2=80=99s a 5% commission on the first 12 m=
+onths of revenue from a customer, assuming a purchase is made within 24 mon=
+ths of initial introduction.&nbsp;
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   If this makes sense, we can get an NDA in place and go from there.
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   Best,
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   JC
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   *************************************
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">=20
+   <div class=3D"page" title=3D"Page 1">
+    <img apple-inline=3D"yes" id=3D"92C4D656-FCE0-4543-9E9D-B0A1F6E42C8B" h=
+eight=3D"558" width=3D"555" apple-width=3D"yes" apple-height=3D"yes" src=3D=
+"cid:AD6B1540-5E39-4037-B8C9-BA0C8303804F" class=3D"">
+   </div>
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <div class=3D"">
+   <br class=3D"">
+  </div>
+  <img apple-inline=3D"yes" id=3D"F24FF13C-40C1-4226-A89C-35DE8C6BA248" hei=
+ght=3D"475" width=3D"555" apple-width=3D"yes" apple-height=3D"yes" src=3D"c=
+id:4CB836D3-D873-487E-A4D5-0BF961270ACB" class=3D"">
+  <div class=3D"">
+   <img apple-inline=3D"yes" id=3D"7B7C5B35-C908-4F34-8E36-FEF0041665F5" he=
+ight=3D"552" width=3D"555" apple-width=3D"yes" apple-height=3D"yes" src=3D"=
+cid:1B4D95C5-3C22-4D57-A8C0-E46D0F19905C" class=3D"">
+   <br class=3D"">
+   <div class=3D"">
+    <br class=3D"">
+    <div>
+     <blockquote type=3D"cite" class=3D"">
+      <div class=3D"">
+       On Feb 17, 2020, at 2:42 PM, Josh Klein &lt;
+       <a href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; wrot=
+e:
+      </div>
+      <br class=3D"Apple-interchange-newline">
+      <div class=3D"">
+       <div dir=3D"ltr" class=3D"">
+        I had some conversations with a couple of my larger corporate clien=
+ts (Fortune 400 and up) and there was some real initial interest. Do you of=
+fer a commission if I can provide an intro that turns into a contract?
+        <div class=3D"">
+         <br class=3D"">
+        </div>
+        <div class=3D"">
+         best,
+         <br class=3D"">Josh
+        </div>
+       </div>
+       <div hspace=3D"streak-pt-mark" style=3D"max-height:1px" class=3D"">
+        <img alt=3D"" style=3D"width:0px;max-height:0px;overflow:hidden" sr=
+c=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=
+=3Dzerocontent&amp;guid=3Dd36ffb1e-f5a9-40c4-8b05-d16b798afc48" class=3D"">
+        <font color=3D"#ffffff" size=3D"1" class=3D"">=E1=90=A7</font>
+       </div>
+       <br class=3D"">
+       <div class=3D"gmail_quote">
+        <div dir=3D"ltr" class=3D"gmail_attr">
+         On Thu, Feb 13, 2020 at 8:51 AM JC Herz &lt;
+         <a href=3D"mailto:jc.herz@ionchannel.io" class=3D"">jc.herz@ioncha=
+nnel.io</a>&gt; wrote:
+         <br class=3D"">
+        </div>
+        <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
+;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+         <div style=3D"overflow-wrap: break-word;" class=3D"">
+          <div class=3D"">
+           <br class=3D"">
+          </div>Small and medium companies have to do it because larger cus=
+tomers - specifically banks - are requiring it. Part of that is regulatory =
+and part of it is large orgs want to push risk and liability to the left an=
+d have the leverage to do so. Our addressable market is the supplier base f=
+or defense (100,000 companies and their subcontractors, which includes a lo=
+t of public companies and software vendors that do business with the milita=
+ry/intel community) and regulated industry (energy, telecom, healthcare, fi=
+nance, critical manufacturing, transportation, smart cities, election infra=
+structure). There are hundreds of thousands of corporate entities who are r=
+egulated to care, and the mandates that kick in this year will be almost im=
+possible to satisfy without automation. See:&nbsp;
+          <a href=3D"https://csrc.nist.gov/publications/detail/nistir/8276/=
+draft" target=3D"_blank" class=3D"">https://csrc.nist.gov/publications/deta=
+il/nistir/8276/draft</a>&nbsp;and&nbsp;
+          <a href=3D"https://www.acq.osd.mil/cmmc/docs/CMMC_v1.0_Public_Bri=
+efing_20200131_v2.pdf" target=3D"_blank" class=3D"">https://www.acq.osd.mil=
+/cmmc/docs/CMMC_v1.0_Public_Briefing_20200131_v2.pdf</a>
+          <div class=3D"">
+           <div class=3D"">
+            <br class=3D"">
+           </div>
+           <div class=3D"">
+            CIO=E2=80=99s tend to like this because it solves the impasse w=
+ith security - put something in the background that satisfies the CISO and =
+the chief risk officer (this also mitigates the legal department=E2=80=99s =
+concerns about third party risk), and all the capabilities you want for the=
+ business can move more quickly into operation.&nbsp;
+           </div>
+           <div class=3D"">
+            <br class=3D"">
+           </div>
+           <div class=3D"">
+            <br class=3D"">
+           </div>
+           <div class=3D"">
+            <br class=3D"">
+           </div>
+           <div class=3D"">
+            JC
+            <br class=3D"">
+            <div class=3D"">
+             <br class=3D"">
+            </div>
+            <div class=3D"">
+             <br class=3D"">
+             <div class=3D"">
+              <blockquote type=3D"cite" class=3D"">
+               <div class=3D"">
+                On Feb 13, 2020, at 8:40 AM, Josh Klein &lt;
+                <a href=3D"mailto:josh@josh.is" target=3D"_blank" class=3D"=
+">josh@josh.is</a>&gt; wrote:
+               </div>
+               <br class=3D"">
+               <div class=3D"">
+                <div class=3D"">
+                 <div dir=3D"auto" class=3D"">
+                  Makes complete sense, but I wonder about how you=E2=80=99=
+re going to get access to decision makers who aren=E2=80=99t siloed to the =
+point of impotence for a project like this - again, considering where risk =
+(specifically cyber risk) is situated, I could see a CTO at a large company=
+ mandating this ... but never enforcing it.&nbsp;
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  <br class=3D"">
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  Conversely, does a small to midsize company have the busi=
+ness imperatives to protect themselves this way, or is it going to be busin=
+ess as usual - growth first, security fifth?
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  <br class=3D"">
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  Separately, would love your take on approaching intellige=
+nce communities - it sounded as though you had some good insights to share!
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  <br class=3D"">
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  - J
+                 </div>
+                 <div dir=3D"auto" class=3D"">
+                  <br class=3D"">
+                 </div>
+                </div>
+                <div class=3D"">
+                 <br class=3D"">
+                 <div class=3D"gmail_quote">
+                  <div dir=3D"ltr" class=3D"gmail_attr">
+                   On Wed, Feb 12, 2020 at 2:58 PM JC Herz &lt;
+                   <a href=3D"mailto:jc.herz@ionchannel.io" target=3D"_blan=
+k" class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:
+                   <br class=3D"">
+                  </div>
+                  <blockquote class=3D"gmail_quote" style=3D"margin:0px 0px=
+ 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+                   <div style=3D"overflow-wrap: break-word;" class=3D"">
+                    <div class=3D"">
+                     <blockquote type=3D"cite" class=3D"">
+                      <br class=3D"">
+                      <div class=3D"">
+                       <div dir=3D"ltr" class=3D"">
+                        Thanks for this! I can already think of a few peopl=
+e to pass this to. Can you follow up with an email contextualizing this for=
+ small, medium, and large clients? I tend to work mostly with the latter an=
+d some with the former, and not as often with the midsize (although&nbsp;th=
+at is a new target for me for 2020 vis a vis board seats).
+                       </div>
+                      </div>
+                     </blockquote>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      The difficult problem for large enterprises - and any=
+ enterprise with a large supplier network - is third party risk management:=
+ How do I get a basic level of assurance on the software coming into my ent=
+erprise, particularly from outsourced/pro-services teams and small vendors,=
+ on a continuos basis. As Equifax showed us, a product that=E2=80=99s green=
+ today might be red 90 days later. What if that=E2=80=99s a mobile app that=
+ your web agency developed? Or a cutting-edge AI/ML capability from some ve=
+nture-backed startup (none of which give a rat=E2=80=99s ass about security=
+).&nbsp;
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      How do you automate transparency on those inbound del=
+iverables (and their updates) developed outside your boundary?
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      How do you enforce governance on a continuous basis, =
+so that suppliers are on the hook to remediate/update products as vulnerabi=
+lities emerge?
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      How does this become a tractable process for procurem=
+ent and vendor management, so they=E2=80=99re not saddled with cyber forens=
+ics that they=E2=80=99re not staffed to take on?&nbsp;
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      This is also about pushing risk to the left in contra=
+ct provisions, and meeting regulatory mandates for cyber responsiveness, as=
+ well as known-vulnerability terms of cyber insurance policies.&nbsp;
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      An example:
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      1) The supplier deliverable (either pro services app =
+development or vendor product SBOM) is analyzed prior to procurement. Gover=
+nance criteria are enforced. For instance, the large banks have prohibited =
+components lists - if you have certain Python libraries in your product (co=
+ntaining malware, per threat intel), you=E2=80=99re not going to sell that =
+product to JP Morgan Chase - it=E2=80=99s a firewall to procurement. One of=
+ the big banks requires an SBOM for full pricing - any product without an S=
+BOM is subject to a 40% discount if it gets procured at all.
+                      <br class=3D"">
+                      <br class=3D"">2) Ion Channel runs analysis on that S=
+BOM every day, parallel to whatever the supplier is doing for assurance.
+                      <br class=3D"">
+                      <br class=3D"">3) If the deliverable moves from green=
+ to red (e.g. new critical vulnerability), that change is time-stamped. Con=
+tract provisions - security SLAs - can specify how many hours/days the supp=
+lier has to push an update that remediates the vulnerability, and see the t=
+ime stamp with third party certification that the supplier has met the prov=
+ision or not, in which case there might be remedies.&nbsp;
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      Does this make sense?
+                     </div>
+                    </div>
+                   </div>
+                   <div style=3D"overflow-wrap: break-word;" class=3D"">
+                    <div class=3D"">
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <div class=3D"">
+                      JC
+                     </div>
+                     <div class=3D"">
+                      <br class=3D"">
+                     </div>
+                     <br class=3D"">
+                     <blockquote type=3D"cite" class=3D"">
+                      <div class=3D"">
+                       <div dir=3D"ltr" class=3D"">
+                        <div class=3D"">
+                         <br class=3D"">
+                        </div>
+                        <div class=3D"">
+                         Separately, any thinking you may have on how to pr=
+opose a workable deployment with gov't would be hugely appreciated.
+                        </div>
+                        <div class=3D"">
+                         <br class=3D"">
+                        </div>
+                        <div class=3D"">
+                         Sincerely,
+                        </div>
+                        <div class=3D"">
+                         Josh
+                        </div>
+                        <div class=3D"">
+                         <br class=3D"">
+                        </div>
+                       </div>
+                       <div hspace=3D"streak-pt-mark" style=3D"max-height:1=
+px" class=3D"">
+                        <img alt=3D"" style=3D"width: 0px; max-height: 0px;=
+ overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9za=
+EBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D9f164aca-24d6-4204-9144-cf5aa=
+d26b6ea" class=3D"">
+                        <font size=3D"1" style=3D"color:rgb(255,255,255)" c=
+lass=3D"">=E1=90=A7</font>
+                       </div>
+                       <br class=3D"">
+                       <div class=3D"gmail_quote">
+                        <div dir=3D"ltr" class=3D"gmail_attr">
+                         On Wed, Feb 12, 2020 at 11:09 AM JC Herz &lt;
+                         <a href=3D"mailto:jc.herz@ionchannel.io" target=3D=
+"_blank" class=3D"">jc.herz@ionchannel.io</a>&gt; wrote:
+                         <br class=3D"">
+                        </div>
+                        <blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex">
+                         <br class=3D"">=20
+                        </blockquote>
+                       </div>=20
+                      </div>
+                     </blockquote>
+                    </div>
+                    <br class=3D"">
+                   </div>
+                  </blockquote>
+                 </div>
+                </div>=20
+               </div>
+              </blockquote>
+             </div>
+             <br class=3D"">
+            </div>
+           </div>
+          </div>
+         </div>
+        </blockquote>
+       </div>=20
+      </div>
+     </blockquote>
+    </div>
+    <br class=3D"">
+   </div>
+  </div>
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>PastedGraphic-1.tiff (filename: /Users/josh/Desktop/ATTACHMENTS/1705=
+9024b1802055-0-PastedGraphic-1.tiff, <a href=3D"file:////Users/josh/Desktop=
+/ATTACHMENTS/17059024b1802055-0-PastedGraphic-1.tiff">local link</a>)</li>=
+=20
+   <li>PastedGraphic-2.tiff (filename: /Users/josh/Desktop/ATTACHMENTS/1705=
+9024b1802055-1-PastedGraphic-2.tiff, <a href=3D"file:////Users/josh/Desktop=
+/ATTACHMENTS/17059024b1802055-1-PastedGraphic-2.tiff">local link</a>)</li>=
+=20
+   <li>PastedGraphic-3.tiff (filename: /Users/josh/Desktop/ATTACHMENTS/1705=
+9024b1802055-2-PastedGraphic-3.tiff, <a href=3D"file:////Users/josh/Desktop=
+/ATTACHMENTS/17059024b1802055-2-PastedGraphic-3.tiff">local link</a>)</li>=
+=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.2.0</li>=
+=20
+   <li>Date and time: 2020-09-15T14:49:30.223447Z</li>=20
+   <li>Download target host name: Muninn-2.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+--Apple-Mail=_9E5921DF-FA7F-46E2-9FC8-8440F4E92CCF--
+
+--Apple-Mail=_3C3F422B-5BF5-4DD6-9C13-2542748AF933--

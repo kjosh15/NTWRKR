@@ -1,0 +1,615 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp1864324vqp;
+        Thu, 28 Oct 2021 12:04:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxYrMP2uzc0r37kESNYSzp1jGb6/L+GnijU1ROF+2YliueE/FUocqhf1UJ8INorQk5Lctqu
+X-Received: by 2002:a2e:9891:: with SMTP id b17mr6517843ljj.391.1635447874986;
+        Thu, 28 Oct 2021 12:04:34 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1635447874; cv=none;
+        d=google.com; s=arc-20160816;
+        b=UVBoLiYNlljUh8J98OSaoAgRFr0MQazo+vj1b5c4GLiaDcRjpdbc6+x8Hy8BktoENm
+         mXvyqMtAM2/Ntjf+8VPXpTKXuKP1nP5t/nbIg5PZwnb/y/kErdcq6ttFZoCuoFqlGiSz
+         rw5RqY1Brylp5p2FT7kndhKdNXclKOX6Ubkj55CZbzjzrXTkhabesH3IRxE8NCjPQ2/4
+         ONCVPHJFNxojGDZqsiK4nzVUO1ZbQ0MMphrfmvl/CRR0JdDZycr1Fu6n1T+3hfqiVPLc
+         8qRSr6kiCPUMEK0Z46f0dELr3J4y701kxVJlXRLoApPShMovIdfkcsHLWEcq3AgpECPn
+         G64w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=sender:errors-to:cc:list-subscribe:list-help:list-post:list-archive
+         :list-unsubscribe:list-id:precedence:subject:to:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=oSD2lnVooVtVwQO0vNS+gKw7D2ov4cuM1LobemgCsrU=;
+        b=ONik8BaBjp4vGNFBZCnKxtsH2Ylihz4pWnmThuEmWoUuuQ/mnAbjYsnBdJ3aHAa1qD
+         Ml1PvmzLsF08EVqTS8i3+7KiGG6YEXljNVmKkUERrbWftjkAeDOuh47K8JdIrIGAgUwj
+         Z1cFlAv1ONS54Sz7TrIurKb7eIFnDGN/TzRomNOXdHaOZi47AtqQe4TnzSs4c8uKkC5z
+         WiqgCyT0PojZUcxFI8AyFbpYjFd1S8UiWXEbxdgxbELSESlZ9QzbrpdWdjgue7ja1AZJ
+         yiBgkswBe1tsE6UT4EHlPm4pXY3aU7l0EEtiNax518MSSYzrfsl/5moOpLwvLfsiYfTs
+         LO0Q==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=neutral (body hash did not verify) header.i=@gmail.com header.s=20210112 header.b=ZNK6CK6O;
+       spf=pass (google.com: domain of sharp-v-bounces@v0lv0x.com designates 37.252.121.88 as permitted sender) smtp.mailfrom=sharp-v-bounces@v0lv0x.com;
+       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Return-Path: <sharp-v-bounces@v0lv0x.com>
+Received: from moyeu.kuhu.org (wgyl.org. [37.252.121.88])
+        by mx.google.com with ESMTPS id h25si8505777lfv.89.2021.10.28.12.04.34
+        for <josh@josh.is>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 28 Oct 2021 12:04:34 -0700 (PDT)
+Received-SPF: pass (google.com: domain of sharp-v-bounces@v0lv0x.com designates 37.252.121.88 as permitted sender) client-ip=37.252.121.88;
+Authentication-Results: mx.google.com;
+       dkim=neutral (body hash did not verify) header.i=@gmail.com header.s=20210112 header.b=ZNK6CK6O;
+       spf=pass (google.com: domain of sharp-v-bounces@v0lv0x.com designates 37.252.121.88 as permitted sender) smtp.mailfrom=sharp-v-bounces@v0lv0x.com;
+       dmarc=fail (p=NONE sp=QUARANTINE dis=NONE) header.from=gmail.com
+Received: from [127.0.0.1] (localhost [IPv6:::1])
+	by moyeu.kuhu.org (Postfix) with ESMTP id DC332220C40;
+	Thu, 28 Oct 2021 21:04:32 +0200 (CEST)
+Received-SPF: Pass (mailfrom) identity=mailfrom; client-ip=209.85.167.182;
+ helo=mail-oi1-f182.google.com; envelope-from=glengineer@gmail.com;
+ receiver=<UNKNOWN> 
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com
+ [209.85.167.182])
+ by moyeu.kuhu.org (Postfix) with ESMTPS id E8ACC222A1
+ for <sharp-v@v0lv0x.com>; Thu, 28 Oct 2021 21:04:27 +0200 (CEST)
+Received: by mail-oi1-f182.google.com with SMTP id t4so9685636oie.5
+ for <sharp-v@v0lv0x.com>; Thu, 28 Oct 2021 12:04:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20210112;
+ h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+ :cc; bh=V2pqL1ExlCyp/C+BrxW8gwRF429Yd3ag7+Ce0ddRmOw=;
+ b=ZNK6CK6Ob7KTrZMkm4rzwCi/SLx7OG7ivg3HBqEGVxImF3hLdyApV4bYW2z8jpy53y
+ urEm/5X2qBYpCNlZN63hNljNda+AfAU7H+uAbDP6XgJlbf7gFLbDODBAn4junRkpA2BM
+ 53aaULO50CZ34+kY6rCtbTm/3b74LB8JJ0sb2iqjmyju2nGjpiuY/dQKBfbQSelp6x/p
+ jbpPC3e5laYTp/ygIaF/qPj4oWFlImDgsLTZOsDJXcV016xJSWUK/4Mz2AhECHwTEgmA
+ xWnzJiBu7Dg/VdEthj7x9NeHw/iEqqMP04hvWNMLtOPU88PbQdhNxUTdIH4f9Fxw/5cT
+ Bw6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=1e100.net; s=20210112;
+ h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+ :message-id:subject:to:cc;
+ bh=V2pqL1ExlCyp/C+BrxW8gwRF429Yd3ag7+Ce0ddRmOw=;
+ b=KBckh8yUvooxv4IPdhcBTl7tT2Ey/kc071NbHMLR+Run99bf2/D+ylGyeOZRiz5s+5
+ 7CohtEl/4f+lzjQ1N7nh2dwrjkk+wET49bzhQMpC3nmcBct3VlVl0GtEyXEtLrDMA5PP
+ qUnn9ehi/45hIiJMEm7J8Tfi68nwFNFjzrcvx9Lk0BBcaXZaue9yH5ftYtwJL3mU0Ix3
+ S4bVia+9Vjtu+JuFGYTHCkzGvd3WctNIWPTVRvFZhG4/KKNc0jG3LucJu2jdAaA2hID3
+ 6pM6rMQkWJxAD0AG3dK9Yy4l2jovRqA9uYT9Xb//fkcLTZ4JlYbR9J4PaGL7XL3YyxFG
+ Mrzg==
+X-Gm-Message-State: AOAM533ds83oE3fRR5fx6TPotq4eCtbN09JmsRu1D+jhm98AEF4cXTxl
+ B2x3bOUIo53Rn8VL+r8hYlftadJCgoK204DOQImiSCno
+X-Received: by 2002:a05:6808:1406:: with SMTP id
+ w6mr4498826oiv.172.1635447866054; 
+ Thu, 28 Oct 2021 12:04:26 -0700 (PDT)
+MIME-Version: 1.0
+References: <B94DDD6C-12FC-4505-875C-56BD6519B17F@gmail.com>
+ <3C02C399-F569-4748-9900-CFC58C48425B@gmail.com>
+ <CACaKHL6jwPA=wCfehrq_W=0ujJU5KMYW+d=typ+tbfkKtbfpeA@mail.gmail.com>
+ <CANS=3-E7=+MStgN2AzUuKAgVq1ZrWg+O=s3UksBkm8YGR-KjXg@mail.gmail.com>
+ <CAHqdoqDfmkhuMo8VqZ-f081dsOrWBYp25A+Amss+XCYU8iaCDw@mail.gmail.com>
+ <CAFKPWh3YSo_uVkn-_uaNwyeycykxsO6M5zftVOMLGgjTd-FqBg@mail.gmail.com>
+ <CADNw6EfFp_bhoRAOWgKDSMWSjRt_jPe6w1D5B_mMzo9JSnejAw@mail.gmail.com>
+In-Reply-To: <CADNw6EfFp_bhoRAOWgKDSMWSjRt_jPe6w1D5B_mMzo9JSnejAw@mail.gmail.com>
+From: Glen Donovan <glengineer@gmail.com>
+Date: Thu, 28 Oct 2021 15:04:14 -0400
+Message-ID: <CAMHqEE1sfye5Kx89pJpnMhSyW=kLaSSN6_-GuP=fvcVERBG+qA@mail.gmail.com>
+To: flint dille <flintdille@gmail.com>
+Subject: Re: [SHARP] Metaverse and Facebook
+X-BeenThere: sharp-v@v0lv0x.com
+X-Mailman-Version: 2.1.29
+Precedence: list
+List-Id: SHARP Alumni List <sharp-v.v0lv0x.com>
+List-Unsubscribe: <http://lists.monastic.org/options/sharp-v>,
+ <mailto:sharp-v-request@v0lv0x.com?subject=unsubscribe>
+List-Archive: <http://lists.monastic.org/private/sharp-v/>
+List-Post: <mailto:sharp-v@v0lv0x.com>
+List-Help: <mailto:sharp-v-request@v0lv0x.com?subject=help>
+List-Subscribe: <http://lists.monastic.org/listinfo/sharp-v>,
+ <mailto:sharp-v-request@v0lv0x.com?subject=subscribe>
+Cc: SHARP-V <sharp-v@v0lv0x.com>, teh gringe <tehgringe@gmail.com>
+Content-Type: multipart/mixed; boundary="===============1700968285810715027=="
+Errors-To: sharp-v-bounces@v0lv0x.com
+Sender: "SHARP-V" <sharp-v-bounces@v0lv0x.com>
+
+--===============1700968285810715027==
+Content-Type: multipart/alternative; boundary="0000000000001adb2105cf6e61e8"
+
+--0000000000001adb2105cf6e61e8
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Flint , that takes a lot more platform discipline and enforcement than the
+operator may realize.  SL had a teen-SL for the under-18 set, and had
+'cops' running around trying to identify and eject adults who were
+pretending to be young-uns, presumably for illicit encounters.  That's a
+lot of overhead for a small market.   They found that the kids themselves
+were better at sniffing out the pedos hunting there than the cops.
+
+What's left of World of Warcraft still has a gold-farming economy; I'm sure
+there's some naughtiness ongoing in Penguinland.
+
+It's like fighting crime - there's no end to it and no 100% solution.
+
+/Glen
+
+On Thu, Oct 28, 2021 at 1:49 PM flint dille <flintdille@gmail.com> wrote:
+
+> Here's the obvious problem.  The reason things devolve is that people are
+> greedy and lustful and prideful (insert other deadly sins in here).
+>
+> The question is how you can filter out the dirty birdies and smokin'
+> rectums.  My sense is that they get get channeled off to 'some other area=
+'
+> of the space.
+>
+>
+>
+> On Wed, Oct 27, 2021 at 4:40 AM Margaret Dillard <medillard21@gmail.com>
+> wrote:
+>
+>> "Lord of the Flies" is a term of endearment for me.   Your group had som=
+e
+>> fun in a rebellious way, and I applaud that.  Obedient people rarely mak=
+e
+>> history!
+>>  It only got tense while we were determining if our platforms might have
+>> been at risk of being taken down irreparably. Once everyone felt loved, =
+I
+>> think we got back on track.
+>>
+>> 2010 was rough for us leads. I was fighting to keep SHARP SHARP, when
+>> people over my head wanted it to be more like Brookings. In earlier year=
+s,
+>> we had the autonomy and topcover to experiment with new methodologies
+>> (within legal boundaries of course) not only in terms of what happened i=
+n
+>> AZ, but throughout the planning process. That last year, there was
+>> well-intentioned, but lethal, 3-piece suit intervention that really alte=
+red
+>> outcomes from beginning to end - intervention grounded in a lack of
+>> understanding (and even disregard) for core principles of the program...=
+a
+>> phenomenon not unlike Facebook's evolution to a Profit Over Ethics
+>> mentality.  So given that, I am of the belief that we can examine the
+>> Facebook situation with greater understanding than most.
+>>
+>> Why don't we "just" put together a rebellious little platform grounded i=
+n
+>> ethics and see if we can make it take off?  The time is right... ;)
+>>
+>> Margaret
+>>
+>> On Wed, Oct 27, 2021 at 2:02 AM teh gringe <tehgringe@gmail.com> wrote:
+>>
+>>> 2010 Lord of the flies - I love that. As disruptive as it might have
+>>> been perceived by some, I found SHARP 2010 to be one of the most pivota=
+l
+>>> moments in my career.
+>>>
+>>> I met such incredibly smart and capable people, and it spawned so many
+>>> new ideas, experiments and ways of approaching new problems, for me it =
+was
+>>> awesome.
+>>>
+>>> I still talk about some of those experiences today.
+>>>
+>>>
+>>> Gareth 'Welshman' Grindal
+>>>
+>>>
+>>>
+>>> On Wed, 27 Oct 2021, 06:51 nymbus broome, <nymbus.broome@gmail.com>
+>>> wrote:
+>>>
+>>>> The new name for the metaverse will be "Witness Protection". We know
+>>>> nothing about no social media... sue that other company (just like J&J=
+ and
+>>>> baby powder).
+>>>>
+>>>> On Tue, Oct 26, 2021, 8:15 PM Chuck Cohen <charles.l.cohen@gmail.com>
+>>>> wrote:
+>>>>
+>>>>> The infrastructure might have matured enough in the 13 years since
+>>>>> SHARP 2008 to support true online immersive environments that combine
+>>>>> online social networking, AR, VR, and gaming; all backed by virtual
+>>>>> currency.
+>>>>>
+>>>>> One source has the average U.S. residential bandwidth at 3 Mbps in
+>>>>> 2008.  Another source has the average U.S. residential bandwidth in
+>>>>> 2021 at 204 Mbps down and 74 Mbps up.  So, in the intervening years,
+>>>>> the speed increased by over 6,700%.
+>>>>>
+>>>>> In a similar manner, the iPhone 3G was released in July 2008.  It ran
+>>>>> a Samsung 620 MHz processor that was underclocked by Apple to 412 MHz=
+.
+>>>>> The iPhone 13 Pro, released last month runs a 16-core =E2=80=9CNeural=
+ Engine=E2=80=9D
+>>>>> processor running at 3.23 GHz with a separate 5-core GPU.
+>>>>>
+>>>>> On Tue, Oct 26, 2021 at 7:59 PM Margaret Dillard <
+>>>>> medillard21@gmail.com> wrote:
+>>>>>
+>>>>>> Perhaps I want to restate that. After the chaos ensued - and I=E2=80=
+=99ll
+>>>>>> admit I had no idea it would happen - precautions simply had to be t=
+aken to
+>>>>>> be sure that no servers were hacked that didn=E2=80=99t belong to us=
+. People helped
+>>>>>> make me sure lines weren=E2=80=99t crossed while you were having fun=
+ breaking into
+>>>>>> code and stealing artifacts. (Had I not been the PM, and had I posse=
+ssed
+>>>>>> the coding skills, I would=E2=80=99ve been right there with you=E2=
+=80=A6)
+>>>>>> I think it was a big surprise to us because we aren=E2=80=99t used t=
+o dealing
+>>>>>> with anything but the most cooperative classroom/audience. I=E2=80=
+=99m grateful for
+>>>>>> those disruptive experiences! It is what allowed us to be creative a=
+nd
+>>>>>> innovative and push all the boundaries. Coming back to a military
+>>>>>> environment the final few years of my career was utterly stifling. T=
+he more
+>>>>>> uniform we become in government, the less competitive we can be in t=
+he
+>>>>>> global marketplace. There are plenty historical references to suppor=
+t that.
+>>>>>>
+>>>>>> And from my perspective, if 2008 was =E2=80=9Cchaos,=E2=80=9D 2010 w=
+as =E2=80=9CLord of the
+>>>>>> flies.=E2=80=9D
+>>>>>>
+>>>>>> Margaret
+>>>>>>
+>>>>>> On Oct 26, 2021, at 7:47 PM, Margaret Dillard <medillard21@gmail.com=
+>
+>>>>>> wrote:
+>>>>>>
+>>>>>> =EF=BB=BFMarjorie, all the people at that session are really the one=
+s you
+>>>>>> would want to help you brainstorm! That would be a wonderful get tog=
+ether.
+>>>>>>
+>>>>>> Glenn, I had my own white hat hackers observing what you all were
+>>>>>> doing.
+>>>>>>
+>>>>>> Margaret
+>>>>>>
+>>>>>> On Oct 26, 2021, at 7:45 PM, Marjory Blumenthal <
+>>>>>> marjory.blumenthal@gmail.com> wrote:
+>>>>>>
+>>>>>> =EF=BB=BF
+>>>>>> FWIW, I'm trying to sort out a project that would look at metaverse-=
+y
+>>>>>> concepts but not be tied to any one (e.g., from any one company).  S=
+o I am
+>>>>>> on the prowl for sources and ideas, and might in time welcome some
+>>>>>> brainstorming.  I need to do my homework first, though.
+>>>>>>
+>>>>>> Regards,
+>>>>>>
+>>>>>> Marjory
+>>>>>>
+>>>>>> On Tue, Oct 26, 2021 at 12:41 PM Margaret Dillard <
+>>>>>> medillard21@gmail.com> wrote:
+>>>>>>
+>>>>>>> Apparently I missed this yesterday!  FYI, from several different
+>>>>>>> sources:
+>>>>>>>
+>>>>>>>
+>>>>>>> https://www.wsj.com/articles/mark-zuckerberg-sets-facebook-on-long-=
+costly-path-to-metaverse-reality-11635252726
+>>>>>>>
+>>>>>>> https://about.fb.com/news/2021/09/building-the-metaverse-responsibl=
+y
+>>>>>>>
+>>>>>>>
+>>>>>>> https://www.msn.com/en-us/news/technology/whistleblower-frances-hau=
+gen-says-facebooks-investment-in-the-metaverse-shows-how-its-priorities-are=
+-all-wrong/ar-AAPYcpL?ocid=3Duxbndlbing
+>>>>>>>
+>>>>>>> *You 2008ers were so ahead of your time. *
+>>>>>>>
+>>>>>>> Margaret
+>>>>>>>
+>>>>>>>
+>>>>>>>    1.
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>>
+>>>>>>> --
+>>>>>>>
+>>>>>>> Margaret Dillard
+>>>>>>>
+>>>>>>>
+>>>>>>> _______________________________________________
+>>>>>>> SHARP-V mailing list
+>>>>>>> SHARP-V@v0lv0x.com
+>>>>>>> http://lists.monastic.org/listinfo/sharp-v
+>>>>>>>
+>>>>>> _______________________________________________
+>>>>>> SHARP-V mailing list
+>>>>>> SHARP-V@v0lv0x.com
+>>>>>> http://lists.monastic.org/listinfo/sharp-v
+>>>>>>
+>>>>> _______________________________________________
+>>>>> SHARP-V mailing list
+>>>>> SHARP-V@v0lv0x.com
+>>>>> http://lists.monastic.org/listinfo/sharp-v
+>>>>>
+>>>> _______________________________________________
+>>>> SHARP-V mailing list
+>>>> SHARP-V@v0lv0x.com
+>>>> http://lists.monastic.org/listinfo/sharp-v
+>>>>
+>>> _______________________________________________
+>>> SHARP-V mailing list
+>>> SHARP-V@v0lv0x.com
+>>> http://lists.monastic.org/listinfo/sharp-v
+>>>
+>> _______________________________________________
+>> SHARP-V mailing list
+>> SHARP-V@v0lv0x.com
+>> http://lists.monastic.org/listinfo/sharp-v
+>>
+> _______________________________________________
+> SHARP-V mailing list
+> SHARP-V@v0lv0x.com
+> http://lists.monastic.org/listinfo/sharp-v
+>
+
+--0000000000001adb2105cf6e61e8
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>Flint , that takes a lot more platform discipline and=
+ enforcement than the operator may realize.=C2=A0 SL had a teen-SL for the =
+under-18 set, and had &#39;cops&#39; running around trying to identify and =
+eject adults who were pretending to be young-uns, presumably for illicit en=
+counters.=C2=A0 That&#39;s a lot of overhead for a small market.=C2=A0=C2=
+=A0 They found that the kids themselves were better at sniffing out the ped=
+os hunting there than the cops.</div><div><br></div><div>What&#39;s left of=
+ World of Warcraft still has a gold-farming economy; I&#39;m sure there&#39=
+;s some naughtiness ongoing in Penguinland.</div><div><br></div><div>It&#39=
+;s like fighting crime - there&#39;s no end to it and no 100% solution.<br>=
+</div><div><br></div><div>/Glen<br></div></div><br><div class=3D"gmail_quot=
+e"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Oct 28, 2021 at 1:49 PM fl=
+int dille &lt;<a href=3D"mailto:flintdille@gmail.com">flintdille@gmail.com<=
+/a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-size:large">Here=
+&#39;s the obvious problem.=C2=A0 The reason things devolve is that people =
+are greedy and lustful and prideful (insert other deadly sins in here).</di=
+v><div class=3D"gmail_default" style=3D"font-size:large"><br></div><div cla=
+ss=3D"gmail_default" style=3D"font-size:large">The question is how you can =
+filter out the dirty birdies and smokin&#39; rectums.=C2=A0 My sense is tha=
+t they get get channeled off to &#39;some other area&#39; of the space.</di=
+v><div class=3D"gmail_default" style=3D"font-size:large"><br></div><div cla=
+ss=3D"gmail_default" style=3D"font-size:large"><br></div></div><br><div cla=
+ss=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Oct 27, 20=
+21 at 4:40 AM Margaret Dillard &lt;<a href=3D"mailto:medillard21@gmail.com"=
+ target=3D"_blank">medillard21@gmail.com</a>&gt; wrote:<br></div><blockquot=
+e class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div>&quot;Lord of=
+ the Flies&quot; is a term of endearment for me.=C2=A0=C2=A0
+
+Your group had some fun in a rebellious way, and I applaud that.=C2=A0 Obed=
+ient people rarely make history!<br></div><div>=C2=A0It only=C2=A0got tense=
+ while we were determining if our platforms might have been at risk of bein=
+g taken down irreparably. Once everyone felt loved, I think we got back on =
+track.<br></div><div><div><br></div><div>2010 was rough for us leads. I was=
+ fighting to keep SHARP SHARP, when people over my head wanted it to be mor=
+e like Brookings. In earlier years, we had the autonomy and topcover=C2=A0t=
+o experiment with new methodologies (within legal boundaries of course) not=
+=C2=A0only in terms of what happened in AZ, but throughout the planning pro=
+cess. That last year, there was well-intentioned, but lethal, 3-piece suit =
+intervention that really altered outcomes from beginning to end - intervent=
+ion grounded in a lack of understanding (and even disregard) for core princ=
+iples of the program...a phenomenon=C2=A0not=C2=A0unlike Facebook&#39;s evo=
+lution to a Profit Over Ethics mentality.=C2=A0 So given that, I am of the =
+belief that we can examine the Facebook situation with greater understandin=
+g than most.=C2=A0</div><div><br></div><div>Why don&#39;t we &quot;just&quo=
+t; put together a rebellious little platform grounded in ethics and see if =
+we can make it take off?=C2=A0 The time is right... ;)</div><div><br></div>=
+<div>Margaret</div></div></div><br><div class=3D"gmail_quote"><div dir=3D"l=
+tr" class=3D"gmail_attr">On Wed, Oct 27, 2021 at 2:02 AM teh gringe &lt;<a =
+href=3D"mailto:tehgringe@gmail.com" target=3D"_blank">tehgringe@gmail.com</=
+a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0p=
+x 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><d=
+iv dir=3D"auto">2010 Lord of the flies - I love that. As disruptive as it m=
+ight have been perceived by some, I found SHARP 2010 to be one of the most =
+pivotal moments in my career.=C2=A0<div dir=3D"auto"><br></div><div dir=3D"=
+auto">I met such incredibly smart and capable people, and it spawned so man=
+y new ideas, experiments and ways of approaching new problems, for me it wa=
+s awesome.</div><div dir=3D"auto"><br></div><div dir=3D"auto">I still talk =
+about some of those experiences today.</div><div dir=3D"auto"><br></div><di=
+v dir=3D"auto"><br></div><div dir=3D"auto">Gareth &#39;Welshman&#39; Grinda=
+l<br><div dir=3D"auto"><br></div><div dir=3D"auto"><br></div></div></div><b=
+r><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, =
+27 Oct 2021, 06:51 nymbus broome, &lt;<a href=3D"mailto:nymbus.broome@gmail=
+.com" target=3D"_blank">nymbus.broome@gmail.com</a>&gt; wrote:<br></div><bl=
+ockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-lef=
+t:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"auto">The new na=
+me for the metaverse will be &quot;Witness Protection&quot;. We know nothin=
+g about no social media... sue that other company (just like J&amp;J and ba=
+by powder).</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"g=
+mail_attr">On Tue, Oct 26, 2021, 8:15 PM Chuck Cohen &lt;<a href=3D"mailto:=
+charles.l.cohen@gmail.com" rel=3D"noreferrer" target=3D"_blank">charles.l.c=
+ohen@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div dir=3D"ltr">
+<p class=3D"MsoNormal" style=3D"margin:0in 0in 8pt;line-height:107%;font-si=
+ze:11pt;font-family:Calibri,sans-serif">The infrastructure might have matur=
+ed enough in the 13 years
+since SHARP 2008 to support true online immersive environments that combine
+online social networking, AR, VR, and gaming; all backed by virtual currenc=
+y.<span>=C2=A0 </span><span></span></p>
+
+<p class=3D"MsoNormal" style=3D"margin:0in 0in 8pt;line-height:107%;font-si=
+ze:11pt;font-family:Calibri,sans-serif">One source has the average U.S. res=
+idential bandwidth at 3 Mbps
+in 2008.<span>=C2=A0 </span>Another source has the average
+U.S. residential bandwidth in 2021 at 204 Mbps down and 74 Mbps up.<span>=
+=C2=A0 </span>So, in the intervening years, the speed
+increased by over 6,700%. <span>=C2=A0</span><span></span></p>
+
+<p class=3D"MsoNormal" style=3D"margin:0in 0in 8pt;line-height:107%;font-si=
+ze:11pt;font-family:Calibri,sans-serif">In a similar manner, the iPhone 3G =
+was released in July
+2008.<span>=C2=A0 </span>It ran a Samsung 620 MHz processor
+that was underclocked by Apple to 412 MHz.<span>=C2=A0
+</span>The iPhone 13 Pro, released last month runs a 16-core =E2=80=9CNeura=
+l Engine=E2=80=9D processor
+running at 3.23 GHz with a separate 5-core GPU.<span>=C2=A0
+</span></p>
+
+</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">=
+On Tue, Oct 26, 2021 at 7:59 PM Margaret Dillard &lt;<a href=3D"mailto:medi=
+llard21@gmail.com" rel=3D"noreferrer noreferrer" target=3D"_blank">medillar=
+d21@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);paddi=
+ng-left:1ex"><div dir=3D"auto">Perhaps I want to restate that. After the ch=
+aos ensued - and I=E2=80=99ll admit I had no idea it would happen - precaut=
+ions simply had to be taken to be sure that no servers were hacked that did=
+n=E2=80=99t belong to us. People helped make me sure lines weren=E2=80=99t =
+crossed while you were having fun breaking into code and stealing artifacts=
+. (Had I not been the PM, and had I possessed the coding skills, I would=E2=
+=80=99ve been right there with you=E2=80=A6)<div>I think it was a big surpr=
+ise to us because we aren=E2=80=99t used to dealing with anything but the m=
+ost cooperative classroom/audience. I=E2=80=99m grateful for those disrupti=
+ve experiences! It is what allowed us to be creative and innovative and pus=
+h all the boundaries. Coming back to a military environment the final few y=
+ears of my career was utterly stifling. The more uniform we become in gover=
+nment, the less competitive we can be in the global marketplace. There are =
+plenty historical references to support that.=C2=A0</div><div><br></div><di=
+v>And from my perspective, if 2008 was =E2=80=9Cchaos,=E2=80=9D 2010 was =
+=E2=80=9CLord of the flies.=E2=80=9D</div><div><br><div dir=3D"ltr">Margare=
+t</div><div dir=3D"ltr"><br><blockquote type=3D"cite">On Oct 26, 2021, at 7=
+:47 PM, Margaret Dillard &lt;<a href=3D"mailto:medillard21@gmail.com" rel=
+=3D"noreferrer noreferrer" target=3D"_blank">medillard21@gmail.com</a>&gt; =
+wrote:<br><br></blockquote></div><blockquote type=3D"cite"><div dir=3D"ltr"=
+>=EF=BB=BFMarjorie, all the people at that session are really the ones you =
+would want to help you brainstorm! That would be a wonderful get together.<=
+div><br></div><div>Glenn, I had my own white hat hackers observing what you=
+ all were doing.<br><br><div dir=3D"ltr">Margaret</div><div dir=3D"ltr"><br=
+><blockquote type=3D"cite">On Oct 26, 2021, at 7:45 PM, Marjory Blumenthal =
+&lt;<a href=3D"mailto:marjory.blumenthal@gmail.com" rel=3D"noreferrer noref=
+errer" target=3D"_blank">marjory.blumenthal@gmail.com</a>&gt; wrote:<br><br=
+></blockquote></div><blockquote type=3D"cite"><div dir=3D"ltr">=EF=BB=BF<di=
+v dir=3D"ltr">FWIW, I&#39;m trying to sort out a project that would look at=
+ metaverse-y concepts but not be tied to any one (e.g., from any one compan=
+y).=C2=A0 So I am on the prowl for sources and ideas, and might in time wel=
+come some brainstorming.=C2=A0 I need to do my homework first, though.<div>=
+<br></div><div>Regards,</div><div><br></div><div>Marjory</div></div><br><di=
+v class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Oct 2=
+6, 2021 at 12:41 PM Margaret Dillard &lt;<a href=3D"mailto:medillard21@gmai=
+l.com" rel=3D"noreferrer noreferrer" target=3D"_blank">medillard21@gmail.co=
+m</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div dir=3D"ltr">Apparently I missed this yesterday!=C2=A0 FYI, from sever=
+al different sources:<div><br></div><div><a href=3D"https://www.wsj.com/art=
+icles/mark-zuckerberg-sets-facebook-on-long-costly-path-to-metaverse-realit=
+y-11635252726" rel=3D"noreferrer noreferrer" target=3D"_blank">https://www.=
+wsj.com/articles/mark-zuckerberg-sets-facebook-on-long-costly-path-to-metav=
+erse-reality-11635252726</a></div><div><div><span style=3D"color:rgb(0,102,=
+33);font-size:16px"><br></span></div><div><a href=3D"https://about.fb.com/n=
+ews/2021/09/building-the-metaverse-responsibly" rel=3D"noreferrer noreferre=
+r" target=3D"_blank"><span style=3D"color:rgb(0,102,33);font-size:16px">htt=
+ps://about.fb.com/news/2021/09/building-the-</span><span style=3D"color:rgb=
+(0,102,33);font-size:16px">metaverse</span><span style=3D"color:rgb(0,102,3=
+3);font-size:16px">-responsibly</span></a></div><div><br></div><div><a href=
+=3D"https://www.msn.com/en-us/news/technology/whistleblower-frances-haugen-=
+says-facebooks-investment-in-the-metaverse-shows-how-its-priorities-are-all=
+-wrong/ar-AAPYcpL?ocid=3Duxbndlbing" rel=3D"noreferrer noreferrer" target=
+=3D"_blank">https://www.msn.com/en-us/news/technology/whistleblower-frances=
+-haugen-says-facebooks-investment-in-the-metaverse-shows-how-its-priorities=
+-are-all-wrong/ar-AAPYcpL?ocid=3Duxbndlbing</a></div><div><br></div><div><b=
+>You 2008ers were so ahead of your time.=C2=A0</b></div><div><br></div><div=
+>Margaret</div><div><br></div><div><div id=3D"gmail-m_2936806737507414697gm=
+ail-m_8550025198036567888gmail-m_7704442374625791993m_-7535507228472434664m=
+_-6784910569848785859gmail-m_-9075191914594016094gmail-m_787044938338400428=
+1gmail-b_content" style=3D"line-height:1.2em;clear:both;min-height:316px;pa=
+dding:41px 0px 20px 160px"><ol id=3D"gmail-m_2936806737507414697gmail-m_855=
+0025198036567888gmail-m_7704442374625791993m_-7535507228472434664m_-6784910=
+569848785859gmail-m_-9075191914594016094gmail-m_7870449383384004281gmail-b_=
+results" style=3D"color:rgb(102,102,102);display:inline-block;width:648px;b=
+order:0px none;border-collapse:collapse;border-spacing:0px;list-style:outsi=
+de none none;margin:0px;padding:0px"><li id=3D"gmail-m_2936806737507414697g=
+mail-m_8550025198036567888gmail-m_7704442374625791993m_-7535507228472434664=
+m_-6784910569848785859gmail-m_-9075191914594016094gmail-m_78704493833840042=
+81gmail-b_firstalgo" style=3D"margin:9px 0px;padding:10px 20px 0px;border:0=
+px none;border-collapse:collapse;border-spacing:0px;list-style:outside none=
+ none"><div style=3D"line-height:20px;padding-bottom:10px;color:inherit"><d=
+iv style=3D"color:rgb(118,118,118);padding:1px 0px 0px;line-height:24px;fon=
+t-size:16px"><span style=3D"text-decoration-line:none;color:rgb(26,13,171);=
+display:inline-block;width:15px;height:14px"><span style=3D"display:inline-=
+block;overflow:hidden;direction:ltr;height:4px;width:7px;margin:4px 0px 2px=
+ 3px"></span></span></div></div></li></ol></div></div><div><br></div><div><=
+br></div><div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"><div=
+ dir=3D"ltr"><div><br></div>Margaret Dillard<div><br><div><br></div></div><=
+/div></div></div></div></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" rel=3D"noreferrer noreferrer" target=
+=3D"_blank">SHARP-V@v0lv0x.com</a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer no=
+referrer noreferrer" target=3D"_blank">http://lists.monastic.org/listinfo/s=
+harp-v</a><br>
+</blockquote></div>
+</div></blockquote></div></div></blockquote></div></div>___________________=
+____________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" rel=3D"noreferrer noreferrer" target=
+=3D"_blank">SHARP-V@v0lv0x.com</a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer no=
+referrer noreferrer" target=3D"_blank">http://lists.monastic.org/listinfo/s=
+harp-v</a><br>
+</blockquote></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" rel=3D"noreferrer noreferrer" target=
+=3D"_blank">SHARP-V@v0lv0x.com</a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer no=
+referrer noreferrer" target=3D"_blank">http://lists.monastic.org/listinfo/s=
+harp-v</a><br>
+</blockquote></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" rel=3D"noreferrer" target=3D"_blank">=
+SHARP-V@v0lv0x.com</a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer no=
+referrer" target=3D"_blank">http://lists.monastic.org/listinfo/sharp-v</a><=
+br>
+</blockquote></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" target=3D"_blank">SHARP-V@v0lv0x.com<=
+/a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer" t=
+arget=3D"_blank">http://lists.monastic.org/listinfo/sharp-v</a><br>
+</blockquote></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" target=3D"_blank">SHARP-V@v0lv0x.com<=
+/a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer" t=
+arget=3D"_blank">http://lists.monastic.org/listinfo/sharp-v</a><br>
+</blockquote></div>
+_______________________________________________<br>
+SHARP-V mailing list<br>
+<a href=3D"mailto:SHARP-V@v0lv0x.com" target=3D"_blank">SHARP-V@v0lv0x.com<=
+/a><br>
+<a href=3D"http://lists.monastic.org/listinfo/sharp-v" rel=3D"noreferrer" t=
+arget=3D"_blank">http://lists.monastic.org/listinfo/sharp-v</a><br>
+</blockquote></div>
+
+--0000000000001adb2105cf6e61e8--
+
+--===============1700968285810715027==
+Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+
+_______________________________________________
+SHARP-V mailing list
+SHARP-V@v0lv0x.com
+http://lists.monastic.org/listinfo/sharp-v
+
+--===============1700968285810715027==--

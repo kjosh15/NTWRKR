@@ -1,0 +1,469 @@
+MIME-Version: 1.0
+Date: Tue, 23 Mar 2021 17:48:40 +0000
+References: <CACNgykNzRsW=y_681BO6cRXmLGapwrqqN=h+XgjhT4zWQrVfgA@mail.gmail.com>
+	<CANb9isWb-Vou2EgKKC-9i0+18mKupHQgcXizQD++gamvjTEyzg@mail.gmail.com>
+	<CACNgykOqpHxff7e2pyCUvDttF-a4cju=L4BTXp6hden=nCuRAA@mail.gmail.com>
+	<CANb9isU4j=SUarA7rmD+AYcy9Kwx0+_gbSD7bT5PHXvB=kcCNQ@mail.gmail.com>
+	<CACNgykMRkMFmTPZLiXF9LSnS-vhRLRuYeJsRhZh5U68gpMDwnQ@mail.gmail.com>
+	<CANb9isURtxjoOdyNOKHm0_bMj5QXjEk=-rTqyU8CU4Up9wzoNw@mail.gmail.com>
+	<CACNgykOSnb_hhjJJ0ZST97vvPwezR7UBFC++bRt8LXGFBAt8pA@mail.gmail.com>
+	<CANb9isUPcYDOn-vcu3cG+KUUhigriVVuR4A_FuEXwDqmQgtdMw@mail.gmail.com>
+	<CACNgykMBCUVzajDudrA8B2a9Lz231E19jNcZ5GqzGEu7SrRsHg@mail.gmail.com>
+	<CANb9isXUwr36jKLO-J_JkPBHt2SngGcoD-SNty2R_6w7qi1LDg@mail.gmail.com>
+In-Reply-To: <CANb9isXUwr36jKLO-J_JkPBHt2SngGcoD-SNty2R_6w7qi1LDg@mail.gmail.com>
+Message-ID: <CACNgykNSf22xz7-4RCAHYxz08K9FTHR1a3B6XjoJF5hQunr+Zg@mail.gmail.com>
+Subject: Re: buckets
+From: Josh Klein <josh@josh.is>
+To: Lachlan Mcwilliam <mcwilliam01@gmail.com>
+Content-Type: multipart/alternative; boundary="000000000000f509f705be37ca37"
+
+--000000000000f509f705be37ca37
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+1) Excellent, that's very helpful. Makes a lot of sense, too - especially
+if we're going to rely on AWS for services (such as cron equivalents) going
+forward. Let's do it for now with the caveat that we need to start
+documenting features like this and I'd like you to begin thinking about
+how/where we should do that. I'll ping Chris to see WTF you don't have
+access yet...
+
+2) Additionally, I'm trying to think through what our corporate tech stack
+needs to be for the immediate future. At present I'm suggesting the
+following but wanted your feedback:
+
+Trello (or equivalent) for PM
+Slack (paid version for messages retention)
+Github for source code repository
+Gitlab for deployment
+?? for ongoing AWS Security checks
+Google Suite for mail + docs
+DropBox for file exchange
+
+3) April 1 you're going to be drinking from the firehose and I thought we
+could capitalize on that as an opportunity to draw up some basic
+architecture documentation. I.e., if you could create an infrastructure map
+as an excuse to learn what all the components are (and hopefully identify
+some gaps) within the company tech that would be enormously helpful. Does
+that seem feasible/useful, or would you rather push this off until you've
+had a chance to take the lay of the land?
+
+Stoked,
+Josh
+=E1=90=A7
+
+On Mon, Mar 22, 2021 at 4:56 PM Lachlan Mcwilliam <mcwilliam01@gmail.com>
+wrote:
+
+> So I worded that poorly I think, we would still be using an S3 bucket to
+> store/provide access to the files, but rather than running a script insid=
+e
+> of the VM(s) we have set up right now, we run it serverless in the cloud.
+> The advantages of serverless are that we only pay for the amount of time
+> the function needs to run each time it's called (AWS quotes about $0.20
+> per 1 million calls <https://aws.amazon.com/lambda/pricing/>, it also
+> provides a free tier we might never even pass), and it is incredibly
+> reliable as AWS handles provisioning machines to run the code when needed
+> so it would take nearly the whole data center going down to stop the
+> process running.
+> To the end-user, they shouldn't notice a difference as the end result is
+> the same as both options are just processing the API response and putting
+> it into the bucket as a CSV. So it's more a debate of how we run the
+> background job environment wise.
+> Using this basically means, we tell AWS to do something and it's on them
+> to do it, we don't have to worry about our VM crashing at 3am and
+> causing issues, as there is no VM for us to manage, its all handled for u=
+s.
+>
+> It boils down to, other than paying for the S3 bucket, it would be pretty
+> much free to run it in the VM as we are already paying for that computing
+> space, but running it serverless would mean a small added cost for its
+> increased reliability and ease of expanding either the code or the number
+> of clients using it later.
+>
+> - L
+>
+> On Mon, Mar 22, 2021 at 3:59 PM Josh Klein <josh@josh.is> wrote:
+>
+>> NP!
+>>
+>> Some quick questions:
+>>
+>> 1. What are the maintenance costs for the serverless container vs a S3
+>> bucket?
+>> 2. Am I right that functionally these solutions are identical for the en=
+d
+>> user (I.e., they securely connect to a file repository of some kind and
+>> pull out the files there)?
+>> 3. Are you suggesting the Lamda is more maintainable than the S3 bucket
+>> b/c it uses AWS native controls instead of a VM's cron controls?
+>>
+>> - J
+>>
+>> =E1=90=A7
+>>
+>> On Mon, Mar 22, 2021 at 3:52 PM Lachlan Mcwilliam <mcwilliam01@gmail.com=
+>
+>> wrote:
+>>
+>>> Oh my apologies, I was holding off on a timeline until I'd had a look a=
+t
+>>> the AWS set-up to figure out exactly how I was going to integrate to be=
+st!
+>>> Sorry about that, it's only been about an hour and if the API works aro=
+und
+>>> how I think it works will only take about < 30mins to get it running.
+>>>
+>>> So I have the script set up, and there are two ways it can be run. The
+>>> most maintainable would be running it in a serverless container (AWS
+>>> Lambda) and we can set up AWS to automatically run the function at set =
+a
+>>> set time of day. In that case, getting it set up is clicking a few butt=
+ons
+>>> and defining some environment variables so if we ended up adding this f=
+or
+>>> other clients would take very little time to get up and running.
+>>> The other way would be the original ask, where I can set up a CRON job
+>>> on the VM to just run the python script at set times, the simple
+>>> difference between the two is Lambda just scales a lot better.
+>>>
+>>> Let me know what you think!
+>>> - L
+>>>
+>>> On Mon, Mar 22, 2021 at 3:03 PM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> We were waiting on a timeline from you before asking you to start the
+>>>> work. It sounds like you already did it? Let me know what you came up =
+with
+>>>> and I can ping Chris for access. In future get me a time estimate befo=
+re
+>>>> you start so we know what we're buying! ;)
+>>>>
+>>>> - J
+>>>> =E1=90=A7
+>>>>
+>>>> On Mon, Mar 22, 2021 at 2:58 PM Lachlan Mcwilliam <
+>>>> mcwilliam01@gmail.com> wrote:
+>>>>
+>>>>> Hi Josh,
+>>>>>
+>>>>> Was just wondering if there was an update about my access to AWS? I
+>>>>> have most of the coding done so it should be pretty plug and play fro=
+m
+>>>>> here, just need an hour or so in AWS to make sure everything is set u=
+p
+>>>>> properly!
+>>>>>
+>>>>> Thanks,
+>>>>> Lachlan
+>>>>>
+>>>>> On Fri, Mar 19, 2021 at 3:47 PM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> Hit you on signal; let me know about that timeline!
+>>>>>>
+>>>>>> - J
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Thu, Mar 18, 2021 at 7:01 PM Lachlan Mcwilliam <
+>>>>>> mcwilliam01@gmail.com> wrote:
+>>>>>>
+>>>>>>> Hey, Yeah my number is 07803545983
+>>>>>>>
+>>>>>>> - Lachlan
+>>>>>>>
+>>>>>>> On Thu, Mar 18, 2021 at 4:22 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> Hey, where should I send stuff like this?
+>>>>>>>>
+>>>>>>>> DT&FmnSC6y!KerxhS3$$
+>>>>>>>>
+>>>>>>>> Got a cell # w/ Signal on it?
+>>>>>>>> - J
+>>>>>>>> =E1=90=A7
+>>>>>>>>
+>>>>>>>> On Wed, Mar 17, 2021 at 5:05 PM Lachlan Mcwilliam <
+>>>>>>>> mcwilliam01@gmail.com> wrote:
+>>>>>>>>
+>>>>>>>>> Hi Josh,
+>>>>>>>>>
+>>>>>>>>> Sorry for the late reply, my PSU decided to explode this morning,
+>>>>>>>>> so I've been trying to Frankenstein my old laptop back into worki=
+ng order.
+>>>>>>>>> Sounds good to me! I'll hop on and have a look but if what I'm as=
+suming is
+>>>>>>>>> true turns out to be true, then it won't take me terribly long to=
+ code and
+>>>>>>>>> get it running, but I'll let you know a time estimate once I've h=
+ad a look
+>>>>>>>>> at the infrastructure in place.
+>>>>>>>>>
+>>>>>>>>> Thanks, and looking forward to working with you!
+>>>>>>>>> Lachlan
+>>>>>>>>>
+>>>>>>>>> On Wed, Mar 17, 2021 at 10:28 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>
+>>>>>>>>>> Lachlan,
+>>>>>>>>>>
+>>>>>>>>>> Chris got the S3 bucket working, but now we need to get 3 csvs
+>>>>>>>>>> into the bucket every night. Essentially we need a bit of code o=
+n one of
+>>>>>>>>>> the VMs that hits our API, downloads the user logs and puts them=
+ in the S3
+>>>>>>>>>> bucket. You can do it in python using boto3 but perhaps there is=
+ a better
+>>>>>>>>>> way? Would be good also to have a size reporting feature so we c=
+an push the
+>>>>>>>>>> client on times to delete old logs...
+>>>>>>>>>>
+>>>>>>>>>> As you've signed the employment contract we are OK on
+>>>>>>>>>> confidentiality; can I set you up with
+>>>>>>>>>> lachlan.mcwilliam@indigometrics.com so Chris can give you AWS
+>>>>>>>>>> access to sort it? Could be a good chance to poke around and loo=
+k at what's
+>>>>>>>>>> there.
+>>>>>>>>>>
+>>>>>>>>>> We can pay you by the hour until 1 April, if that works - just
+>>>>>>>>>> give me a time estimate up front.
+>>>>>>>>>>
+>>>>>>>>>> Let me know - and welcome to the team!!
+>>>>>>>>>> Josh
+>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> --
+>>>>>>>>> Lachlan McWilliam
+>>>>>>>>>
+>>>>>>>>
+>>>>>>>
+>>>>>>> --
+>>>>>>> Lachlan McWilliam
+>>>>>>>
+>>>>>>
+>>>>>
+>>>>> --
+>>>>> Lachlan McWilliam
+>>>>>
+>>>>
+>>>
+>>> --
+>>> Lachlan McWilliam
+>>>
+>>
+>
+> --
+> Lachlan McWilliam
+>
+
+--000000000000f509f705be37ca37
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div>1) Excellent, that&#39;s very helpful. Makes a lot of=
+ sense, too - especially if we&#39;re going to rely on AWS for services (su=
+ch as cron equivalents) going forward. Let&#39;s do it for now with the cav=
+eat that we need to start documenting features like this and I&#39;d like y=
+ou to begin thinking about how/where we should do that. I&#39;ll ping Chris=
+ to see WTF you don&#39;t have access yet...<br></div><div><br></div><div>2=
+) Additionally, I&#39;m trying to think through what our corporate tech sta=
+ck needs to be for the immediate future. At present I&#39;m suggesting the =
+following but wanted your feedback:<br><br>Trello (or equivalent) for PM<br=
+>Slack (paid version for messages retention)</div><div>Github for source co=
+de repository<br>Gitlab for deployment<br>?? for ongoing AWS Security check=
+s<br>Google Suite for mail=C2=A0+ docs</div><div>DropBox for file exchange<=
+/div><div><br></div><div>3) April 1 you&#39;re going to be drinking from th=
+e firehose and I thought we could capitalize on that as an opportunity to d=
+raw up some basic architecture documentation. I.e., if you could create an =
+infrastructure map as an excuse to learn what all the components are (and h=
+opefully identify some gaps) within the company tech that would be enormous=
+ly helpful. Does that seem feasible/useful, or would you rather push this o=
+ff until you&#39;ve had a chance to take the lay of the land?=C2=A0</div><d=
+iv><br></div><div>Stoked,</div><div>Josh</div></div><div hspace=3D"streak-p=
+t-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width:0px;max-heigh=
+t:0px;overflow:hidden" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam=
+9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Da818000d-9b54-4225-89b8-b5=
+59c323c136"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><d=
+iv class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Mar =
+22, 2021 at 4:56 PM Lachlan Mcwilliam &lt;<a href=3D"mailto:mcwilliam01@gma=
+il.com">mcwilliam01@gmail.com</a>&gt; wrote:<br></div><blockquote class=3D"=
+gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(20=
+4,204,204);padding-left:1ex"><div dir=3D"ltr">So I worded=C2=A0that poorly =
+I think, we would still be using an S3 bucket to store/provide access to th=
+e files, but rather than running a script=C2=A0inside of the VM(s) we have =
+set up right now, we run it serverless in the cloud.<div>The advantages of =
+serverless are that we only pay for the amount of time the function needs t=
+o run each time it&#39;s called (<a href=3D"https://aws.amazon.com/lambda/p=
+ricing/" target=3D"_blank">AWS quotes about $0.20 per 1 million calls</a>, =
+it also provides a free tier we might never even pass), and it is incredibl=
+y reliable as AWS handles provisioning machines to run=C2=A0the code when n=
+eeded so it would take nearly the whole data center going down to stop the =
+process running.</div><div><div>To the end-user, they shouldn&#39;t notice =
+a difference as the=C2=A0end result=C2=A0is the same as both options are ju=
+st processing the API response=C2=A0and putting it into the bucket as a CSV=
+. So it&#39;s more a debate of how we run the background=C2=A0job environme=
+nt wise.</div></div><div>Using this basically=C2=A0means, we tell AWS to do=
+ something=C2=A0and it&#39;s on them to do it, we don&#39;t=C2=A0have to wo=
+rry about our VM crashing at 3am and causing=C2=A0issues, as there=C2=A0is =
+no VM for us to manage, its all handled for us.</div><div><br></div><div>It=
+ boils down to, other than paying for the S3 bucket, it would be pretty muc=
+h free to run it in the VM as we are already paying for that computing spac=
+e, but running it serverless would mean a small added cost for its increase=
+d reliability and ease of expanding either the code or the number of client=
+s using it later.</div><div><br></div><div>- L</div></div><br><div class=3D=
+"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Mar 22, 2021 at=
+ 3:59 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">j=
+osh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div dir=3D"ltr">NP!<div><br></div><div>Some quick questions:</d=
+iv><div><br></div><div>1. What are the maintenance costs for the serverless=
+ container vs a S3 bucket?</div><div>2. Am I right that functionally these =
+solutions are identical for the end user (I.e., they securely connect to a =
+file repository of some kind and pull out the files there)?</div><div>3. Ar=
+e you suggesting the Lamda is more maintainable than the S3 bucket b/c it u=
+ses AWS native controls instead of a VM&#39;s cron controls?</div><div><br>=
+</div><div>- J</div><div><br></div></div><div hspace=3D"streak-pt-mark" sty=
+le=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; o=
+verflow: hidden;" src=3D"https://ci4.googleusercontent.com/proxy/MsbiuoKuZW=
+k_XhmktxAhwitCdYV1ZbaQChQmA3NRae3AyYhjQwYi0jgX41jei-4Pz9mNspdsEFdQsTqkzfUhp=
+RirHYIwfzbpVLmm7a2x444AXaytzel2YzPvkZ2275UYnEeCK0oYewRuvTC1NU5lIXX6Y1xsAXc8=
+Utt0sHLIS28gWewkFrlB=3Ds0-d-e1-ft#https://mailfoogae.appspot.com/t?sender=
+=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D201a31af-5c65-43c1-a=
+937-0061560a7106"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon=
+, Mar 22, 2021 at 3:52 PM Lachlan Mcwilliam &lt;<a href=3D"mailto:mcwilliam=
+01@gmail.com" target=3D"_blank">mcwilliam01@gmail.com</a>&gt; wrote:<br></d=
+iv><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bord=
+er-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Oh my=
+ apologies, I was holding off on a timeline until I&#39;d had a look at the=
+ AWS set-up to figure out exactly how I was going to integrate=C2=A0to best=
+! Sorry about that, it&#39;s only been about an hour and if the API works a=
+round how I think it works will only take about &lt; 30mins to get it runni=
+ng.<div><br></div><div>So I have the script set up, and there are two ways =
+it can be run. The most maintainable=C2=A0would be running it in a serverle=
+ss container (AWS Lambda) and we can set up AWS to automatically=C2=A0run t=
+he function at set a set time of day. In that case, getting it set up is cl=
+icking a few buttons and defining=C2=A0some environment=C2=A0variables so i=
+f we ended up adding this for other clients would take very little time to =
+get up and running.</div><div>The other way would be the original=C2=A0ask,=
+ where I can set up a CRON job on the VM to just run the python script at s=
+et times, the simple difference=C2=A0between the two is Lambda just scales =
+a lot better.</div><div><br></div><div>Let=C2=A0me know what you think!</di=
+v><div>- L</div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=
+=3D"gmail_attr">On Mon, Mar 22, 2021 at 3:03 PM Josh Klein &lt;<a href=3D"m=
+ailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div>=
+<blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-=
+left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">We were =
+waiting on a timeline from you before asking you to start the work. It soun=
+ds like you already did it? Let me know what you came up with and I can pin=
+g Chris for access. In future get me a time estimate before you start so we=
+ know what we&#39;re buying! ;)<div><br></div><div>- J</div></div><div hspa=
+ce=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width=
+: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci6.googleusercon=
+tent.com/proxy/8ML5MGg0ma3ggGQ2Li6nxGO1YC-VoR3oY5i9T-oDrlM3VEETZB1r8HVlRCz4=
+GVD57snGQBUPJI3tvY62yYpkf0f6bWXxczLGHOsJZACPoreCvBv9nMYVXKq-apJRIZ805Fn4CdB=
+dCvhYedqXa-XOR2a8NdIGDeKU_moFp-Pd0rVBRoyswZdg=3Ds0-d-e1-ft#https://mailfoog=
+ae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=
+=3D051e15de-ca1b-40a4-8566-3109d6085a7a"><font color=3D"#ffffff" size=3D"1"=
+>=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Mon, Mar 22, 2021 at 2:58 PM Lachlan Mcwilliam &lt;<a h=
+ref=3D"mailto:mcwilliam01@gmail.com" target=3D"_blank">mcwilliam01@gmail.co=
+m</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin=
+:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"=
+><div dir=3D"ltr">Hi=C2=A0Josh,<div><br></div><div>Was just wondering if th=
+ere was an update about my access to AWS? I have most of the coding done so=
+ it should be pretty plug and play from here, just need an hour or so in AW=
+S to make sure everything=C2=A0is set up properly!</div><div><br></div><div=
+>Thanks,</div><div>Lachlan</div></div><br><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Fri, Mar 19, 2021 at 3:47 PM Josh Klein =
+&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr">Hit you on signal; let me know about that timeline!<div><br></div>=
+<div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"=
+><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=
+=3D"https://ci6.googleusercontent.com/proxy/BACsGkX7bPdIk-7NNODPDY_pdn60zV6=
+1bg-tOEuSVXsxD8p8Q0WAU3-sk7EqiAZOu4tgY0YgZLqR--NO3KKLsfuXpBvGgf1TUHHTzhIAhQ=
+YkW1Kk3ZfmlWy5-PAHNPblxPqZ3dguGxIXo74jP47WUnO0eKWyxNowyQXjTLSPrrrns8sAlaMi=
+=3Ds0-d-e1-ft#https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&a=
+mp;type=3Dzerocontent&amp;guid=3D3a854dfd-557b-4950-bce0-511bfaafcc5a"><fon=
+t color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmai=
+l_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Mar 18, 2021 at 7:01=
+ PM Lachlan Mcwilliam &lt;<a href=3D"mailto:mcwilliam01@gmail.com" target=
+=3D"_blank">mcwilliam01@gmail.com</a>&gt; wrote:<br></div><blockquote class=
+=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rg=
+b(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hey, Yeah my number is 07=
+803545983<div><br></div><div>- Lachlan</div></div><br><div class=3D"gmail_q=
+uote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Mar 18, 2021 at 4:22 PM=
+ Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh=
+.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div dir=3D"ltr">Hey, where should I send stuff like this? <div><br></di=
+v><div>DT&amp;FmnSC6y!KerxhS3$$<br></div><div><br></div><div>Got a cell # w=
+/ Signal on it?<br></div><div>- J</div></div><div hspace=3D"streak-pt-mark"=
+ style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0p=
+x; overflow: hidden;" src=3D"https://ci5.googleusercontent.com/proxy/hV0_Z3=
+Ro5Gxa0KuvZSNPsxF5fqomodeOa48NeUiwsjNrlQ2XmiTtPT8qC7YDHMAAiVlJGFEND1SLhMc0z=
+ynvjLMWtEGlO-vCl8iv8SvzBMuLF3kxh17KI0-_pgBMHQNDpjhFBQgHMLQN3yZBhV_Xe_x7aBTu=
+Ij5g8X_O-kef_x-CCmnIBXEA=3Ds0-d-e1-ft#https://mailfoogae.appspot.com/t?send=
+er=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Df3166eba-c87a-4b2f=
+-8234-3a027060400a"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></di=
+v><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On W=
+ed, Mar 17, 2021 at 5:05 PM Lachlan Mcwilliam &lt;<a href=3D"mailto:mcwilli=
+am01@gmail.com" target=3D"_blank">mcwilliam01@gmail.com</a>&gt; wrote:<br><=
+/div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;bo=
+rder-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Hi=
+=C2=A0Josh,<div><br></div><div>Sorry for the late reply, my PSU decided to =
+explode=C2=A0this morning, so I&#39;ve been trying to Frankenstein=C2=A0my =
+old laptop back into working order. Sounds=C2=A0good to me! I&#39;ll hop on=
+ and have a look but if what=C2=A0I&#39;m assuming is true turns out to be =
+true, then it won&#39;t take me terribly long=C2=A0to code and get it runni=
+ng, but I&#39;ll let you know a time estimate once I&#39;ve had a look at=
+=C2=A0the=C2=A0infrastructure=C2=A0in place.</div><div><br></div><div>Thank=
+s, and looking forward to working with you!</div><div>Lachlan</div><div></d=
+iv></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_att=
+r">On Wed, Mar 17, 2021 at 10:28 AM Josh Klein &lt;<a href=3D"mailto:josh@j=
+osh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px sol=
+id rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Lachlan,<br><br>Chri=
+s got the S3 bucket working, but now we need to get 3 csvs into the bucket =
+every night. Essentially we need a bit of code on one of the VMs that hits =
+our API, downloads the user logs and puts them in the S3 bucket. You can do=
+ it in python using boto3 but perhaps there is a better way? Would be good =
+also to have a size reporting feature so we can push the client on times to=
+ delete old logs...<br><br>As you&#39;ve signed the employment contract we =
+are OK on confidentiality; can I set you up with <a href=3D"mailto:lachlan.=
+mcwilliam@indigometrics.com" target=3D"_blank">lachlan.mcwilliam@indigometr=
+ics.com</a> so Chris can give you AWS access to sort it? Could be a good ch=
+ance to poke around and look at what&#39;s there. <br><br>We can pay you by=
+ the hour until 1 April, if that works - just give me a time estimate up fr=
+ont. <br><br>Let me know - and welcome to the team!!<br>Josh<br></div><div =
+hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"w=
+idth: 0px; max-height: 0px; overflow: hidden;" src=3D"https://ci4.googleuse=
+rcontent.com/proxy/ubqkLYRuf6-SYvRiK9alCFwnKvOHT6JqePYxsY-d6LNCIdnI-NXHSvTc=
+lDHtFFDfCV7dYubQS9o--gGtkCpPds5U7osNOdEc6zuIuBhOzY5gEUI6Dqn8j49BAjZ2rRpRWg9=
+Mqk870Npgi1VPvDW4cE085hNFP01XJ-ATq0nFsdZCtvLDVgh2=3Ds0-d-e1-ft#https://mail=
+foogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;=
+guid=3D6de1ce10-811b-4432-9a4b-b947c6f2004f"><font color=3D"#ffffff" size=
+=3D"1">=E1=90=A7</font></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><span style=3D"font-family:arial,helvetica,sans-seri=
+f;font-size:large">Lachlan McWilliam</span><br></div></div></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><span style=3D"font-family:arial,helvetica,sans-seri=
+f;font-size:large">Lachlan McWilliam</span><br></div></div></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><span style=3D"font-family:arial,helvetica,sans-seri=
+f;font-size:large">Lachlan McWilliam</span><br></div></div></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><span style=3D"font-family:arial,helvetica,sans-seri=
+f;font-size:large">Lachlan McWilliam</span><br></div></div></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><span style=3D"font-family:arial,helvetica,sans-seri=
+f;font-size:large">Lachlan McWilliam</span><br></div></div></div>
+</blockquote></div>
+
+--000000000000f509f705be37ca37--

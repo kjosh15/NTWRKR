@@ -1,0 +1,578 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp591887ljh;
+        Fri, 10 Jul 2020 09:01:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyiZG40pFetntEbNxT1DsZfdXJhIFOsozv+uAOKinI9GTszOj8NusAWP9Jwuqk79y1YI42c
+X-Received: by 2002:aca:c78c:: with SMTP id x134mr4404856oif.64.1594396873734;
+        Fri, 10 Jul 2020 09:01:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1594396873; cv=none;
+        d=google.com; s=arc-20160816;
+        b=cZdukdYvGJps6r3H526/ez9Cf9GKhP1z5+jHIEsEVpXSwaOoJlOMjVze6sSp+gzb8A
+         WiM9YRvW4ibACBC7R1IUI8vW5Hrsv2EQ3dd4t9ssnq+6L9/ThFpQKkRrIEKfLQdJY/R5
+         20Hit+kpm4aalASVaq7CyoNmTwPnhzTx7eI8man4Lsv0UhHS8JCX5TzHz6JBO+PoKqX3
+         iGsfjmx4AhgJtabXWgymtR+v3OIyWrrTpnvHrpNaD3+ORS2sfaTHsizQEI/RW+IQqaFk
+         RsqI2EBIMU4HUHNOamlonzQvxvdirSG3L4u2BxERdzbyiEgPaaOQ5YTocTQwTbmiEXND
+         pSKg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-transfer-encoding:message-id:list-id:mime-version:date
+         :subject:to:from:dkim-signature;
+        bh=o69diQQSG00NH3Dx0fuU7h5c4V6yKqr6k/sTa6eL2WY=;
+        b=0/qanUxeLQgWOAlsfmDNuMBXefyN9jMS6oNoxmyePLjVmI0lASiEz1Ee1uR6JLBJ1V
+         p9Flp0vo+glTuKl1r4Hfhq2YLtZfjs3KQc2jucJESmD5JI0hLtJ0XV6TYFinEjkhTsxN
+         JLMUuSypSEmZW2CXaRNfEhV/YVBcs1UFjAeiuaLM2yFKysixrunu7mAJgif9zpQy1IPG
+         vW2Hq/Czu7X5fZsFKWvroqbS0sj0Ba+jsF4tnKuREkL0BZHCgHqZBC0/mD28w47jhmGU
+         0nGRAFd8h7w4MEjGXXfQ+lyZp8XBh7S/m13ilhNvrHKFNNq9J4369yhGkE/FoDZfKtG2
+         xgBQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@em.kabbage.com header.s=10dkim1 header.b=jrDFwLM5;
+       spf=pass (google.com: domain of bounce-16_html-117421269-478010-100018158-33@bounce.em.kabbage.com designates 13.111.106.59 as permitted sender) smtp.mailfrom=bounce-16_HTML-117421269-478010-100018158-33@bounce.em.kabbage.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=em.kabbage.com
+Return-Path: <bounce-16_HTML-117421269-478010-100018158-33@bounce.em.kabbage.com>
+Received: from mta.em.kabbage.com (mta.em.kabbage.com. [13.111.106.59])
+        by mx.google.com with ESMTPS id k13si2933066otb.55.2020.07.10.09.01.13
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jul 2020 09:01:13 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounce-16_html-117421269-478010-100018158-33@bounce.em.kabbage.com designates 13.111.106.59 as permitted sender) client-ip=13.111.106.59;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@em.kabbage.com header.s=10dkim1 header.b=jrDFwLM5;
+       spf=pass (google.com: domain of bounce-16_html-117421269-478010-100018158-33@bounce.em.kabbage.com designates 13.111.106.59 as permitted sender) smtp.mailfrom=bounce-16_HTML-117421269-478010-100018158-33@bounce.em.kabbage.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=em.kabbage.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=10dkim1; d=em.kabbage.com;
+ h=From:To:Subject:Date:MIME-Version:List-ID:X-CSA-Complaints:Message-ID:
+ Content-Type:Content-Transfer-Encoding; i=kabbage@em.kabbage.com;
+ bh=o69diQQSG00NH3Dx0fuU7h5c4V6yKqr6k/sTa6eL2WY=;
+ b=jrDFwLM572t00B+z1j040Qv2fb38D4H9f0VKx0HcHSYKqDezp4/D3jmlWjanWFU7j5nOU2rH1WEw
+   WDltSRehzOR54+Q3bc5BlLO+7GEy2D4l12ccgHxGMpmuPhstFRBHXo6QSQNKzG3C5MEgL4N1xVEF
+   Q1xAdi9DCtEgUaOAMwkH2/pcm3roQ0HCnCYeja9KMaH2SQbX9R0czdpdj8HP/rXWvigMTmRzcEYL
+   uFQsHD9Gn6d+WQLmZDmjqcM8I0G2en8PinldOkWS7vpsTNfZ9ib19OEgsPONF0xbjErGKSVLjlb2
+   LvlYjD/kAZsdnO21/K8jmLGnPIi9APVwyEw5uQ==
+Received: by mta.em.kabbage.com id h128ci2fmd4m for <josh@josh.is>; Fri, 10 Jul 2020 16:01:13 +0000 (envelope-from <bounce-16_HTML-117421269-478010-100018158-33@bounce.em.kabbage.com>)
+From: "Kabbage" <kabbage@em.kabbage.com>
+To: <josh@josh.is>
+Subject: Get ready to apply for loan forgiveness
+Date: Fri, 10 Jul 2020 10:01:12 -0600
+MIME-Version: 1.0
+List-ID: <100007739.xt.local>
+X-CSA-Complaints: whitelist-complaints@eco.de
+X-SFMC-Stack: 10
+x-job: 100018158_478010
+Message-ID: <2d5a7a82-4a05-48ba-b0c4-70f82e8c44e8@dfw1s10mta559.xt.local>
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: 8bit
+
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="x-apple-disable-message-reformatting">
+        <META NAME="ROBOTS" CONTENT="NOINDEX, NOFOLLOW">
+        <META NAME="referrer" CONTENT="no-referrer">
+        <title>Kabbage</title>
+        <!--[if mso]>         <style>             * {             font-family: Arial, Helvetica, sans-serif !important;             }             h1, body, table, td, p {font-family: Arial, Helvetica, sans-serif !important;}         </style>         <![endif]-->
+        <style>
+            @import url('https://fonts.googleapis.com/css?family=Montserrat:100,300,400,500,700&display=swap');
+        </style>
+        <style>
+            @import url("https://use.typekit.net/dxo6yta.css");
+        </style>
+        <!-- CSS Reset : BEGIN -->
+        <style>
+            /* What it does: Remove spaces around the email design added by some email clients. */
+            /* Beware: It can remove the padding / margin and add a background color to the compose a reply window. */
+            html,
+            body {
+            margin: 0 auto !important;
+            padding: 0 !important;
+            height: 100% !important;
+            width: 100% !important;
+            }
+            /* What it does: Stops email clients resizing small text. */
+            * {
+            -ms-text-size-adjust: 100%;
+            -webkit-text-size-adjust: 100%;
+            }
+            /* What it does: Centers email on Android 4.4 */
+            div[style*="margin: 16px 0"] {
+            margin: 0 !important;
+            }
+            /* What it does: Stops Outlook from adding extra spacing to tables. */
+            table,
+            td {
+            mso-table-lspace: 0pt !important;
+            mso-table-rspace: 0pt !important;
+            }
+            /* What it does: Fixes webkit padding issue.
+            Fix for Yahoo mail table alignment bug.
+            Applies table-layout to the first 2 tables then removes for anything nested deeper. */
+            table {
+            border-spacing: 0 !important;
+            border-collapse: collapse !important;
+            table-layout: fixed !important;
+            margin: 0 auto !important;
+            }
+            table table table {
+            table-layout: auto;
+            }
+            /* What it does: Uses a better rendering method when resizing images in IE. */
+            img {
+            -ms-interpolation-mode: bicubic;
+            }
+            /* What it does: Prevents Windows 10 Mail from underlining links despite inline CSS.
+            Styles for underlined links should be inline. */
+            a {
+            text-decoration: none;
+            }
+            p,
+            ul {
+            font-family: Montserrat, Helvetica, Arial, sans-serif !important;
+            font-size: 300;
+            font-size: 18px;
+            line-height: 29px;
+            color: #666666;
+            }
+            h1 {
+            font-family: Montserrat, Helvetica, Arial, sans-serif !important;
+            font-weight: 300;
+            font-size: 40px !important;
+            line-height: 44px !important;
+            margin: 0;
+            }
+            li {
+            padding: 5px 0;
+            }
+            /* What it does: A work-around for email clients meddling in triggered links. */
+            *[x-apple-data-detectors],
+            /* iOS */
+            .unstyle-auto-detected-links *,
+            .aBn {
+            border-bottom: 0 !important;
+            cursor: default !important;
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+            }
+            /* What it does: Prevents Gmail from displaying a download button on large, non-linked images. */
+            .a6S {
+            display: none !important;
+            opacity: 0.01 !important;
+            }
+            /* If the above doesn't work, add a .g-img class to any image in question. */
+            img.g-img + div {
+            display: none !important;
+            }
+            /* What it does: Removes right gutter in Gmail iOS app: https://github.com/TedGoas/Cerberus/issues/89  */
+            /* Create one of these media queries for each additional viewport size you'd like to fix */
+            /* iPhone 4, 4S, 5, 5S, 5C, and 5SE */
+            @media only screen and (min-device-width: 320px) and (max-device-width: 374px) {
+            .email-container {
+            min-width: 320px !important;
+            }
+            }
+            /* iPhone 6, 6S, 7, 8, and X */
+            @media only screen and (min-device-width: 375px) and (max-device-width: 413px) {
+            .email-container {
+            min-width: 375px !important;
+            }
+            }
+            /* iPhone 6+, 7+, and 8+
+            @media only screen and (min-device-width: 414px) {
+            .email-container {
+            min-width: 414px !important;
+            }
+            */
+            }
+        </style>
+        <!-- CSS Reset : END -->
+        <!-- Reset list spacing because Outlook ignores much of our inline CSS. -->
+        <!--[if mso]>         <style type="text/css">             ul,             ol {             margin: 0 !important;             }             li {             margin-left: 30px !important;             }             li.list-item-first {             margin-top: 0 !important;             }             li.list-item-last {             margin-bottom: 10px !important;             }         </style>         <![endif]-->
+        <!-- Progressive Enhancements : BEGIN -->
+        <style>
+            /* What it does: Hover styles for buttons */
+            .button-td,
+            .button-a {
+            transition: all 100ms ease-in;
+            }
+            .button-td-primary:hover,
+            .button-a-primary:hover {
+            background: #555555 !important;
+            border-color: #555555 !important;
+            }
+            /* Media Queries */
+            @media screen and (max-width: 480px) {
+            /* What it does: Forces elements to resize to the full width of their container.
+            Useful for resizing images beyond their max-width. */
+            .fluid {
+            width: 100% !important;
+            max-width: 100% !important;
+            height: auto !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            }
+            /* What it does: Forces table cells into full-width rows. */
+            .stack-column,
+            .stack-column-center {
+            display: block !important;
+            width: 100% !important;
+            max-width: 100% !important;
+            direction: ltr !important;
+            }
+            /* And center justify these ones. */
+            .stack-column-center {
+            text-align: center !important;
+            }
+            .stack-column-center li {
+            text-align
+            }
+            /* What it does: Generic utility class for centering.
+            Useful for images, buttons, and nested tables. */
+            .center-on-narrow {
+            text-align: center !important;
+            display: block !important;
+            margin-left: auto !important;
+            margin-right: auto !important;
+            float: none !important;
+            }
+            table.center-on-narrow {
+            display: inline-block !important;
+            }
+            .center {
+            text-align: center !important;
+            }
+            .min_width {
+            min-width: 100% !important;
+            }
+            .noMo {
+            display:none!important;
+            }
+            .hide {
+            display: none;
+            }
+            .hund {
+            width: 100% !important;
+            height: auto !important;
+            }
+            .stack-column-center {
+            width: 100% !important;
+            display: block !important;
+            }
+            .center {
+            text-align: center !important;
+            margin: 0 auto !important;
+            }
+            .block {
+            display:block!important;
+            }
+   .link {
+   width: 100% !important;
+   max-width: 260px !important;
+   font-size: 14pxpx !important;
+   }
+            .center_t {
+            text-align:center !important;
+            padding-left:20px !important;
+            padding-right:20px !important;
+            }
+           }
+        </style>
+        <!-- Progressive Enhancements : END -->
+        <!-- What it does: Makes background images in 72ppi Outlook render at correct size. -->
+        <!--[if gte mso 9]>         <xml>             <o:OfficeDocumentSettings>                 <o:AllowPNG/>                 <o:PixelsPerInch>96</o:PixelsPerInch>             </o:OfficeDocumentSettings>         </xml>         <![endif]-->
+    </head>
+    <body width="100%" style="margin:0;padding:0!important;mso-line-height-rule:exactly;background-color:#e8e8e3">
+      <img src="http://click.em.kabbage.com/open.aspx?ffcb10-fecb10777d64057d-fe5e107277600d757615-fe37157075640575741178-ff981576-fe2e15717260067c771279-ff991773" width="1" height="1">  
+      <center style="width:100%;background-color:#e8e8e3">
+            <!--[if mso | IE]>             <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color:#e8e8e3">             <tr>                 <td>                     <![endif]-->
+                    <!-- Visually Hidden Preheader Text : BEGIN -->
+                    <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+                     Here’s what you can expect
+                    </div>
+                    <!-- Visually Hidden Preheader Text : END -->
+                    <!-- Preview Text Spacing Hack : BEGIN -->
+                    <div style="display: none; font-size: 1px; line-height: 1px; max-height: 0px; max-width: 0px; opacity: 0; overflow: hidden; mso-hide: all; font-family: sans-serif;">
+                        &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp; &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+ &zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;
+                    </div>
+                    <!-- Preview Text Spacing Hack : END -->
+                    <div style="max-width:600px;margin:0 auto; padding:0 0" class="email-container">
+                    <!--[if mso]>                     <table role="presentation" align="center" role="presentation" cellspacing="0" cellpadding="0" border="0" width="600">             <tr>                 <td>                     <![endif]-->
+                    <!-- Email Body : BEGIN -->
+            <tr class="hide">
+                <td aria-hidden="true" height="30" style="font-size: 0px; line-height: 0px;">&nbsp;</td>
+            </tr>
+            <tr>
+                <td align="center" class="min_width" style="min-width:600px; padding:0 10px">
+                    <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#e8e8e3" style="width:600px;">
+                        <tr>
+                            <td align="center" style="padding:0;">
+                                <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" style="width:600px;">
+                                     <!-- Preheader : START -->
+                                        <tr>
+                                            <td style="padding:15px" bgcolor="#F8F8F8">
+                                                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                                                    <tr bgcolor="#F8F8F8">
+                                                        <td align="left" style="font-family:Arial,sans-serif; color:#63666A; font-size:12px; line-height:18px; mso-line-height-rule:exactly;">
+                                                     Here’s what you can expect.
+                                                        </td>
+                                                        <td class="noMo" align="right" style="font-family:Arial,'Helvetica Neue',Helvetica,sans-serif; color:#63666A; font-size:12px; line-height:18px; mso-line-height-rule:exactly;">
+                                                            <a href="http://view.em.kabbage.com/?qs=1dbaa60de52d6a1fa39d58878e54a0e208076a432ae149b904970f03bdd3337d1afb85941c376364d1bfef65c155f55ae4908cb157e85c4ed847fa372131aaa65c8eeb8614ac6abe8542c6aa72141690" style="color:#63666A; text-decoration:underline;">Click to view in browser</a>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                        <!-- Preheader : END -->
+                                    <tr>
+                                        <td align="center" style="padding:0 10px 25px 10px; border-bottom:3px solid #5AC174">
+                                            <table role="presentation" class="hund" align="center" border="0" width="550" cellpadding="0" cellspacing="0" style="width:550px;">
+                                                <tr>
+                                                    <!-- Column : BEGIN -->
+                                                    <td valign="top" width="50%" class="stack-column-center">
+                                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%">
+                                                            <tr>
+                                                                <td style="padding:30px 0 0 0">
+                 <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960bb25a90755168a3764fea9e060c7e00da3f85460e7707e478a7177c11d385bb79ebcaa645619be45690107a06b7043619">
+                 <img src="http://image.em.kabbage.com/lib/fe3415707564047a721779/m/1/8d3ae753-0e90-4914-9bdb-685879af5398.png" style="display:block; max-width:157px" width="157" height="32" border="0" class="center-on-narrow" alt="Kabbage"/>
+                 </a>
+                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <!-- Column : END -->
+                                                    <!-- Column : BEGIN -->
+                                                    <td valign="top" width="50%" class="stack-column-center">
+                                                        <table role="presentation" cellspacing="0" cellpadding="0" border="0" width="100%" style="width:100%">
+                                                            <tr>
+                                                                <td align="right" style="padding:30px 0 0 0">
+                                                                    <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b1bbec28fc6810db9db654864316cd6ce0ca4a8c85ef37e5838a8c61a27a37a0a37667ce3701a172be35c8ca6fdf05c81">
+                 <img src="http://image.em.kabbage.com/lib/fe37157075640575741178/m/1/e4acae91-60a5-45e3-9210-2bbcc20353f8.png" width="113" height="" border="0" alt="Sign In" class="center-on-narrow" style="width:100%;max-width:113px;height:auto;border:0"></a>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <!-- Column : END -->
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center">
+                                <table class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#FFFFFF" style="width:600px;">
+         <tr>
+                                        <td align="center" style="padding:0 10px;">
+                                            <table class="hund" align="center" border="0" width="550" cellpadding="0" cellspacing="0" style="width:550px;">
+            
+                                              
+            <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:57px 0 0 0">
+             Josh,
+
+                                                    </td>
+                                                </tr>
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:17px 0 0 0">
+          If you plan to seek forgiveness for your Paycheck Protection Program&nbsp;(PPP)<sup>*</sup> loan, we want to give you an update on when you can apply and what you will need.
+                                                    </td>
+                                                </tr>
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:17px 0 0 0">
+          <strong>The SBA is not yet processing applications and is continuing to finalize the forgiveness 
+requirements. We’ll let you know when you can apply online for forgiveness through the Kabbage dashboard.</strong>  
+
+                                                    </td>
+                                                </tr>
+                                              
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:20px; line-height:32px; color:#56c271; font-weight:600; padding:17px 0 0 0">
+                                                      How you can prepare to apply for forgiveness:
+                                                    </td>
+                                                </tr>
+                                              
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:0px 0 0 0">
+          <ul>
+            <li><strong><a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960bb317de92ff693eb9d92601a7ef96b858f5a6b851a79218450ad36459b0a9d5e5cb4c34cf00baef2bc138570c8ab9c1b2" style="color:#666666; text-decoration:underline;">Learn more about how loan forgiveness works</a></strong> and prepare documents to verify how you used your loan. You can also visit the <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b1e19e78fd2d954bc3dcbf2aea28f4e89cb08381c6baf043592364555cfacf79f7e4b8ee324375216d336b064b2764010" style="color:#666666; text-decoration:underline;">SBA website</a> for comprehensive materials on the loan forgiveness rules and loan forgiveness application process, including sample loan forgiveness application forms and instructions.
+</li>
+            <li><strong>Decide which “Covered Period” applies to your business</strong>: Either 8 weeks or 24 weeks after your loan is disbursed.</li>
+            <li><strong>Pick which “reference period” is best for your business</strong>: Either 2/15/19 – 6/30/19 or  1/1/20 – 2/29/20. If employees and payroll are consistent with your chosen reference period, you can have up to 100% of your loan forgiven.</li>
+            <li><strong>Make sure you’re tracking <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b4106f7798dd9ac06664c631a478075b1a17ac5a4180e6664bb7db11e33a584e37ee5f069b25f25078a2cb54757461e52" style="color:#666666; text-decoration:underline;">the documents you need</a></strong> to verify your payroll and other expenses.</li>
+                                                      </ul>
+                                                    </td>
+                                                </tr>
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:20px; line-height:32px; color:#56c271; font-weight:600; padding:17px 0 0 0">
+                                                      Important program details:
+                                                    </td>
+                                                </tr>
+                                              
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:0px 0 0 0">
+          <ul>
+            <li>Up to 100% of the amount of your PPP loan may be forgiven if you use at least 60% of the loan to cover payroll costs, and the rest on business mortgage interest payments on real or personal property, rent payments, or certain utility payments. Certain reductions in employee salaries or headcount may impact the extent to which you qualify for loan forgiveness.
+</li>
+            <li>After the end of your Covered Period, <strong>you’ll have 10 months to apply for loan forgiveness</strong>. Depending on when you received your loan, your Covered Period is either an 8- or 24-week period after you received your loan funds that will factor into your forgiveness calculations.</li>
+            <li>Once we receive your loan application, we will review it, which may take up to 60 days, and then submit a decision to the SBA. The SBA then has 90 days to review your submission.</li>
+            <li>For loans approved prior to June 5, 2020, any amount that is not forgiven will be treated as a two-year loan with a 1% fixed interest rate. For loans approved on or after June 5, 2020, any amount that is not forgiven will be treated as a five-year loan with a 1% fixed interest rate.
+</li>
+            <li>All payments (principal, interest and fees) are deferred until you receive a decision on your loan forgiveness application. However, interest will continue to accrue over this period.</li>
+                                                      </ul>
+                                                    </td>
+                                                </tr>
+                                              <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:17px 0 10px 0">
+          Regards,<br>
+                                                      The Kabbage Team
+                                                    </td>
+                                                </tr>
+                                             <tr>
+                                                    <td align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; font-size:17px; line-height:32px; color:#666666; padding:17px 0 30px 0">
+                                                      <strong>Have questions about the PPP?</strong><br> Our team is experiencing extremely high call volumes, so the fastest way to get answers is through <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b21f6f60e39057eb33344cfaa8a9bba010bbd241149954449abf16a5a7ed018f0c24205997a102f463e2de306cd86201b" style="color:#56c271; text-decoration: none;">your dashboard</a> and&nbsp;our&nbsp;<a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b46c5ca9ff124c65907f1c09e6dbfd2eb8e2a6ab2c17b089c4b38213d53d3c20be1dc7299c615370704d44b675583d7c5" style="color:#56c271; text-decoration: none;">FAQs</a>.
+                                                
+                                             
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                      <tr>
+                            <td align="center"  style="border-top:2px solid #D9D7D3">
+                                <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#E8E8E3" style="width:600px;">
+                                    <tr>
+                                        <td align="center" style="padding:0;">
+                                            <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#E8E8E3" style="width:600px;">
+                                                <tr>
+                                                    <td class="center_t" align="left" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; Font-size:12px; line-height:22px;  color:#8B8B89; padding:38px 0 0 0">
+                                                      
+                                                       <p style="font-family:Montserrat,Arial,sans-serif;Font-size:12px;line-height:22px; font-weight:normal; font-style:normal; color:#8B8B89;">*At this time, Kabbage is offering Paycheck Protection Program (“Program”) loans directly as an approved U.S. Small Business Administration (“SBA”) lender and indirectly on behalf of one or more approved lenders.</p>
+<p style="font-family:Montserrat,Arial,sans-serif;Font-size:12px;line-height:22px; font-weight:normal; font-style:normal; color:#8B8B89;">Borrowers are responsible for reviewing and understanding the SBA Paycheck Protection Program's rules. The Paycheck Protection Program rules are subject to change.  Borrowers are encouraged to visit the <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b638080f1f58709a929016b9057162d2ba9ae0da21b9987b789184674d28e168c97ffdbc6b7c0c4e0aad01da47e51d4d1" style="text-decoration:underline; color:#8B8B89;">SBA website</a> to review program rules and guidance.  This email is provided for informational purposes only and is not legal advice.</p>
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+  <td align="center">
+           <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#E8E8E3" style="width:600px;">
+            <tr>
+             <td class="padding10" align="center" style="padding:0 0 30px 0">
+              <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" style="width:600px;">
+               <tr>
+                <td class="stack-column-center" align="left" valign="center" width="202">
+                 <table role="presentation" class="hund" align="left" border="0" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
+                  <tr>
+                   <td align="center" style="padding:57px 0 0 0">
+                    <table role="presentation" align="center" border="0" width="202" cellpadding="0" cellspacing="0" style="width:202">
+                     <tr>
+                      <td align="left" style="padding-right:28px;">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b4eabd77135b547f5838ce797a72197da825b00df6ad8dc702939336883dbf7ffee82df8146bf0c2821ec0871ea962b48">
+                       <img src="https://go.kabbage.com/l/498181/2018-09-17/lkzb8/498181/60499/temp_1_social_facebook_9_1.png" style="display:block" width="9" height="20" border="0" alt="Facebook"/></a>
+                      </td>
+                      <td align="left" style="padding-right:28px;">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b41c42344effbea00e45135b4bf612caf52978f61f4521d391b7a23b88567cd55323c58c484f1eabd65c1fc432cb459df">
+                       <img src="https://go.kabbage.com/l/498181/2018-09-17/lkzb6/498181/60497/temp_1_social_twitter_20_1.png" style="display:block" width="20" height="20" border="0" alt="Twitter"/></a>
+                      </td>
+                      <td align="left" style="padding-right:28px;">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b9781febc4a11783070050676954546c77ec853ea85b94674ee616d1474173f4e8ed5fd535a3e9f33c93a516b61fa461e">
+                       <img src="https://go.kabbage.com/l/498181/2018-09-17/lkzb2/498181/60493/temp_1_social_linkedin_20_1.png" style="display:block" width="20" height="20" border="0" alt="LinkedIn"/></a>
+                      </td>
+                      <td align="left" style="padding-right:28px;">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b58acbbf0c4655bde54ac92882e5de8aff3c4eb887d037ab90f229d8ec66faedbd0992e5299b75b7c77464bcd5aa13468">
+                       <img src="https://go.kabbage.com/l/498181/2018-09-17/lkzb4/498181/60495/temp_1_social_instagram_20_1.png" style="display:block" width="20" height="20" border="0" alt="Instagram"/></a>
+                      </td>
+                      <td align="left" style="padding:0;">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b5dbb2240683950415135b1776e779f0805cda5c949dd71bbb4b8a87db94ba694b50acd93767ae35bfebfc94bd852978c">
+                       <img src="https://go.kabbage.com/l/498181/2018-09-17/lkz9z/498181/60491/temp_1_social_youtube_20_1.png" style="display:block" width="20" height="20" border="0" alt="YouTube"/></a>
+                      </td>
+                     </tr>
+                    </table>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+                <td class="stack-column-center" align="center" valign="center" width="130"></td>
+                <td class="stack-column-center" align="right" valign="center" width="260">
+                 <table role="presentation" class="hund" align="right" border="0" width="100%" cellpadding="0" cellspacing="0" style="width:100%">
+                  <tr>
+                   <td align="center" style="padding-top:57px;">
+                    <table role="presentation" align="center" border="0" width="260" cellpadding="0" cellspacing="0" style="width:260px">
+                     <tr>
+                      <td align="center" class="hund" style="padding:0">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b7c9f79fdd9b74feb2a25f04b87ec124b362ce449599803663611e684f5e2e8bebaef17b689cd9995634b0211a0c5a563">
+                       <img alt="App Store" border="0" height="35" src="https://go.kabbage.com/l/498181/2018-10-25/rgwj8/498181/65845/app_apple_grey.png" style="display:block; max-width:118px" width="118"> </a>
+                      </td>
+                      <td width="13" class="">&nbsp;</td>
+                      <td align="center" class="hund" style="padding:0">
+                       <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960baa409ae68464f2ea708c072429a5cc93af3a42628860ace9b28e6344957b7ef1f97ba5619123b7bfa5a0da846134ecab">
+                       <img alt="Google Play" border="0" height="35" src="https://go.kabbage.com/l/498181/2018-10-25/rgwjb/498181/65847/app_google_grey.png" style="display:block; max-width:129px" width="129"> </a>
+                      </td>
+                     </tr>
+                    </table>
+                   </td>
+                  </tr>
+                 </table>
+                </td>
+               </tr>
+              </table>
+             </td>
+            </tr>
+           </table>
+          </td>
+         </tr>
+         
+                        <tr>
+                            <td align="center">
+                                <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#E8E8E3" style="width:600px;">
+                                    <tr>
+                                        <td align="center" style="padding:0 15px; border-top:1px solid #BDBDBB">
+                                            <table role="presentation" class="hund" align="center" border="0" width="600" cellpadding="0" cellspacing="0" bgcolor="#E8E8E3" style="width:600px;">
+                                                <tr>
+                                                    <td align="center" style="font-family:'Montserrat', Helvetica, Arial, sans-serif; Font-size:11px; line-height:24px;  color:#8B8B89; padding:30px 0 0 0">
+                                                       <p style="font-family:Montserrat,Arial,sans-serif;Font-size:12px;line-height:22px; font-weight:normal; font-style:normal; color:#8B8B89;">This email was sent to
+                                        josh@josh.is. Please do not reply to this
+                                        message, as this email inbox is not monitored. To contact us, visit
+                                        <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960b9928a4aeec8f061547c2313e02097952e7edbed1fb238c1fcec5b2d5634ead50a61740bc7f3577fcbdd305fb53a21663"
+                                           style="color: #56c271;">www.kabbage.com/support/contact</a>.
+                                    </p>
+                                    
+                                
+                                    <p style="font-family:Montserrat,Arial,sans-serif;Font-size:12px;line-height:22px; font-weight:normal; font-style:normal; color:#8B8B89;">© 2020 Kabbage, Inc. All rights reserved.  </p>
+                                    
+                                    <a href="http://click.em.kabbage.com/?qs=b54ddc210ad3960bcae8ed4f96d3eaaa7307f2aba151cd5952bbf073c61eeff392a7e77a4cbd182a45daa92ef66cd4e6b47fd78939becb5f"
+                                       style="text-decoration: underline; color: #8b8b8b; font-family:AvenirNext-Medium, Arial, sans-serif; Font-size:12px; line-height:22px; font-weight:normal; font-style:normal;" target="_blank">Terms of Service</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<a
+                                        href="http://click.em.kabbage.com/?qs=b54ddc210ad3960ba287ef309826dc67f30218cfb0e5b31bbaa617fb7821d849024e43b46977cd9d320cadffc81bfe94365a74ef2d13bda0"
+                                        style="text-decoration: underline; color: #8b8b8b; font-family:AvenirNext-Medium, Arial, sans-serif; Font-size:12px; line-height:22px; font-weight:normal; font-style:normal;" target="_blank">Privacy Policy</a>&nbsp;&nbsp;&nbsp;
+
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </center>
+    </body>
+</html>

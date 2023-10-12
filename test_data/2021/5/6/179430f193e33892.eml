@@ -1,0 +1,869 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:1504:0:0:0:0:0 with SMTP id s4csp1646279ljd;
+        Thu, 6 May 2021 12:02:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzux4JVBQVQnqoPjAZg/jpObEncUbgjDPsTh72ppUQKwDlKHjdK9tkPJSGsed/bxOmVa/MP
+X-Received: by 2002:a05:620a:15f8:: with SMTP id p24mr1765880qkm.43.1620327733566;
+        Thu, 06 May 2021 12:02:13 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1620327733; cv=none;
+        d=google.com; s=arc-20160816;
+        b=VUpqk02xDun95VxtCcGnfY0/OqMO/1DcwJe9TByWM18rDCYwx0OPN+lB5RiHSmUrhc
+         De+h0zYWyQr2fX6em7b7l9f+HiiDVgdhB6v5m4asMeZqHR4oOieQQ56arTK63kDViO5c
+         5qf1XfeiP3eEc5vUQM92irUOXld+LcZUoL+aiVuDI9BIPE7MW3sqw3gAHLtSXlaEFFqd
+         T69Qvzs9gfniXW+MbWe9/OAj0SRvpw4EvlFC7vY1bpkEGcG3QR7/n9Gsnyc3lApkmVqk
+         lgpzJ00jxxUnY7HYzU3j3YMtJZHomQavet+UgWgisK58GV1TjNzer3le101yxjVfGfbj
+         143Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=precedence:mime-version:subject:message-id:to:reply-to:from:date
+         :list-unsubscribe:dkim-signature:dkim-signature;
+        bh=wupfCvV0+UMjtJGUXm1xNMPVxXvojiJig8r6F2RD6LA=;
+        b=1CNZ5AyP31IH16UK5zPhi+xmERuOEu+ViUUjuJRacIaPiqGjtLPoP2Np06Mb/m9Hxo
+         pUyMRfCKfMBwoACNicmoxcxR0HdyOVWhhatLvCeaNkOUDMGKqKzS6lu83fL3oNscbDiz
+         VKuuvPRo0OGXGqtvKlxh5Slg78dmZ293YV+dsPZKP+v0IgADnE0zbzuIYMOzVv81G9uT
+         zPGPVYwlwykS0t6IpqEpqfCRGxzGtavMVjBa/H3JopsgGMZC1QIieuLL9XA6ZeZWbDNR
+         5xsAjS/O61r30f/qAU5ue6bCe0zE/BcyQGjKM7FoACHJ37cCJn0HbVLh2ToydZrfOoHh
+         uePw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@7432255m.su.org header.s=hs1 header.b=JycpDm0j;
+       dkim=pass header.i=@su.org header.s=hs1 header.b=Uk1Kbbzz;
+       spf=pass (google.com: domain of 1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org designates 158.247.17.161 as permitted sender) smtp.mailfrom="1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=su.org
+Return-Path: <1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org>
+Received: from bid46ib.7432255m.su.org (bid46ib.7432255m.su.org. [158.247.17.161])
+        by mx.google.com with ESMTPS id q24si2445591qki.318.2021.05.06.12.02.13
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 06 May 2021 12:02:13 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org designates 158.247.17.161 as permitted sender) client-ip=158.247.17.161;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@7432255m.su.org header.s=hs1 header.b=JycpDm0j;
+       dkim=pass header.i=@su.org header.s=hs1 header.b=Uk1Kbbzz;
+       spf=pass (google.com: domain of 1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org designates 158.247.17.161 as permitted sender) smtp.mailfrom="1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=su.org
+Received: by 172.16.251.53 with SMTP id axgrxyqepup3h49u8ew8p4r215umbivit0bttu;
+        Thu, 6 May 2021 19:02:13 GMT
+DKIM-Signature: v=1; s=hs1; d=7432255m.su.org; 
+        i=@7432255m.su.org; 
+        h=sender:from:reply-to:to:subject:mime-version:content-type:list-unsubscribe:form-sub:feedback-id; 
+        a=rsa-sha256; c=relaxed/relaxed; 
+        bh=wupfCvV0+UMjtJGUXm1xNMPVxXvojiJig8r6F2RD6LA=; 
+        b=JycpDm0jDLTGmZ9eOAeKNuADPu5tYs/ImpETO5bnQleqPDFh3gLM3Mds+QWxYT
+         g5StP1KAh/sG4DNzCzeDkGdlDkjcUPwLehBsBIpKNA5yPRKQiO5MEwu++1EY7y2
+         4ZfgcVGiT+8PpaHjdZczXboDT9wCk7x2+g2OdeW8DctDiA0iX56LWNeipNKzsAi
+         VrIlaM/Ja75Gi7FJmEjxCXMrQBv4YU16ize2+krYxmJN6HeJxVivNCbnecQNvV5
+         MN9JmOH9uqEl7jZkElIyeNip67QNwwOH7m5vSrhZezPrGexZWQ+vwjwj1NYZvDq
+         OsJH1rD/EKXTcyhsXK04lUUVhaxQ==; q=dns/txt; t=1620327733;
+DKIM-Signature: v=1; s=hs1; d=su.org; i=@su.org; 
+        h=sender:from:reply-to:to:subject:mime-version:content-type:list-unsubscribe:form-sub:feedback-id; 
+        a=rsa-sha256; c=relaxed/relaxed; 
+        bh=wupfCvV0+UMjtJGUXm1xNMPVxXvojiJig8r6F2RD6LA=; 
+        b=Uk1KbbzzNJavbB3fjMsI1Q95mxg4Pb4a7d01JEEqQKbfgtpnArOUrAo6d6HNPw
+         M/hPc3l9sAnXic5mptASeRP8akkh3yCg2/N7mfJsP7S4a7O2AKgi5RUtqe/B4GB
+         fJ9SyL3oeSFHa99qxc20rx4mRb77SgX6aW5WBJcs1fIzxig8pIrj7zyI5gq2UOm
+         y7daOdSBwTAdjsuicu7GB1xT89UAQ0DxTOMjiDITNqLjAUBDpMkZUetoiICX4t6
+         4WRKMVVYk0XC+WR4WrKZovViRsolaocM7SZY/NUNaWNQyNUSmuyoNvVdK98ykJq
+         x2NFi2Pp+SAWefK2RD9O5IBJZwYQ==; q=dns/txt; t=1620327733;
+Return-Path: <1axblh7n3s2sbczr7o1hmuywlwinl5mjudsyji-josh=josh.is@7432255m.su.org>
+X-HS-Cid: 1axfc5n3a3yukxd9zqteynrkkvkg1dvxqnawny
+List-Unsubscribe: <mailto:1axcr1m7mvznapw969cn7r10dkmze0117pqh1q-josh=josh.is@7432255m.su.org?subject=unsubscribe>
+Date: Thu, 6 May 2021 12:02:13 -0700
+From: "Alix @ Singularity" <info@su.org>
+Reply-To: info@su.org
+To: josh@josh.is
+Message-ID: <1620327732971.e5e43daf-5001-492f-98cd-25cbf84aa7f3@7432255m.su.org>
+Subject: What Do You Know About Algorithmic Bias, Josh
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_6723740_583827097.1620327733077"
+Precedence: bulk
+X-Report-Abuse-To: abuse@hubspot.com (see
+ https://www.hubspot.com/abuse-complaints)
+
+------=_Part_6723740_583827097.1620327733077
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Get ahead of this increasingly impactful issue with our Singularity Researc=
+h Paper & Tech Release preview.
+
+su-logo-white (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y=
+1lW6qqC6d8-QqVMW8mSzZ96lQ0KMf1KTlgd03 )
+
+Algorithmic-Bias-Email-Header (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFb=
+kGSB-W76fPDZ8q-Y1lW6qqC6d8-QqVMW8mSzZ96lQ0KMf1KTlgd13 )
+
+Dear Josh,
+
+Right now, somewhere, an algorithm is being unintentionally coded with bias=
+. While that may not seem urgent on the surface, bias in AI is actually a c=
+ritical issue for business leaders to consider.
+
+Why?
+
+Find out in a sample of our research publication, Rooting Out Algorithmic B=
+ias (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6qqC6d8=
+-QqVMW8mSzZ96lQ0KMf1KTlgd23 ) . The full research paper and tech release ou=
+tlines why addressing bias is vital from not only a business perspective bu=
+t a societal lens. You can download a preview of the resource as well as a =
+sample code & tutorial by clicking the link below.
+
+Access the Research Paper & Tech Release Preview
+(https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6qqC6d8-QqV=
+MW8mSzZ96lQ0KMf1KTlgd33 )
+
+Alix R=C3=BCbsaam
+
+Director of Curated and Research Content
+
+FOLLOW US
+
+twitter (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6qq=
+C6d8-QqVMW8mSzZ96lQ0KMf1KTlgd43 )
+
+youtube (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6qq=
+C6d8-QqVMW8mSzZ96lQ0KMf1KTlgd53 )
+
+linkedin (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6q=
+qC6d8-QqVMW8mSzZ96lQ0KMf1KTlgd63 )
+
+instagram (https://i7.t.hubspotemail.net/e2t/sc2/Mm-nFbkGSB-W76fPDZ8q-Y1lW6=
+qqC6d8-QqVMW8mSzZ96lQ0KMf1KTlgd73 )
+
+Visit su.org
+
+1049 El Monte Ave. Suite C #16  | Mountain View, CA 94040, United States
+
+Singularity University, 1049 El Monte Ave. Suite C #16, Mountain View, CA 9=
+4040, United States, +1-650-200-3434
+
+Unsubscribe (https://hs-7432255.s.hubspotemail.net/hs/manage-preferences/un=
+subscribe-all?d=3DVn9bTc7DXFv6VsvT7k3QJF47W4cKbkQ4c5bRkN5SL7rXmWFg7W7BM8_D6=
+PB5P0V25vwC4Vqlh3N5g1cZwX9bV2N5B2KWvXk_7QVbv_s871qPp3Vn_b__4pjxmqw8pJRV07r8=
+2&v=3D3&_hsenc=3Dp2ANqtz-8WkWLTK_-BfqsmYNPVHiBNODAc7BmflNZmzyccfnQagOEEz-_P=
+2Wn1vOMZO9wxHPHGCIG51nD9m5Ns8NqrAeDZMV-20A&_hsmi=3D118065794 )
+
+Manage preferences (https://hs-7432255.s.hubspotemail.net/hs/manage-prefere=
+nces/unsubscribe?d=3DVn9bTc7DXFv6VsvT7k3QJF47W4cKbkQ4c5bRkN5SL7rXmWFg7W7BM8=
+_D6PB5P0V25vwC4Vqlh3N5g1cZwX9bV2N5B2KWvXk_7QVbv_s871qPp3Vn_b__4pjxmqw8pJRV0=
+7r82&v=3D3&_hsenc=3Dp2ANqtz-8WkWLTK_-BfqsmYNPVHiBNODAc7BmflNZmzyccfnQagOEEz=
+-_P2Wn1vOMZO9wxHPHGCIG51nD9m5Ns8NqrAeDZMV-20A&_hsmi=3D118065794 )
+------=_Part_6723740_583827097.1620327733077
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www=
+.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns=3D"http://www.w3=
+.org/1999/xhtml" xmlns:o=3D"urn:schemas-microsoft-com:office:office" xmlns:=
+v=3D"urn:schemas-microsoft-com:vml" lang=3D"en"><head>
+    <title>What Do You Know About Algorithmic Bias, Josh</title>
+    <meta property=3D"og:title" content=3D"What Do You Know About Algorithm=
+ic Bias, Josh">
+    <meta name=3D"twitter:title" content=3D"What Do You Know About Algorith=
+mic Bias, Josh">
+   =20
+   =20
+   =20
+<meta name=3D"x-apple-disable-message-reformatting">
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8">
+<meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1.=
+0">
+    <!--[if gte mso 9]>
+  <xml>
+      <o:OfficeDocumentSettings>
+      <o:AllowPNG/>
+      <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+  </xml>
+ =20
+  <style>
+    ul > li {
+      text-indent: -1em;
+    }
+  </style>
+<![endif]-->
+<!--[if mso]>
+<style type=3D"text/css">
+ body, td {font-family: Arial, Helvetica, sans-serif;}
+</style>
+<![endif]-->
+   =20
+     =20
+   =20
+  <meta name=3D"generator" content=3D"HubSpot"><meta property=3D"og:url" co=
+ntent=3D"http://su-7432255.hs-sites.com/-temporary-slug-139efd7a-91f9-4425-=
+92a6-89a51d2ad6e1"><meta name=3D"robots" content=3D"noindex,follow"><!--[if=
+ !((mso)|(IE))]><!-- --><style type=3D"text/css">.moz-text-html .hse-column=
+-container{max-width:600px !important;width:600px !important}
+.moz-text-html .hse-column{display:table-cell;vertical-align:top}.moz-text-=
+html .hse-section .hse-size-12{max-width:600px !important;width:600px !impo=
+rtant}
+[owa] .hse-column-container{max-width:600px !important;width:600px !importa=
+nt}[owa] .hse-column{display:table-cell;vertical-align:top}
+[owa] .hse-section .hse-size-12{max-width:600px !important;width:600px !imp=
+ortant}
+@media only screen and (min-width:640px){.hse-column-container{max-width:60=
+0px !important;width:600px !important}
+.hse-column{display:table-cell;vertical-align:top}.hse-section .hse-size-12=
+{max-width:600px !important;width:600px !important}
+}@media only screen and (max-width:639px){img.stretch-on-mobile,.hs_rss_ema=
+il_entries_table img{height:auto !important;width:100% !important}
+.display_block_on_small_screens{display:block}.hs_padded{padding-left:20px =
+!important;padding-right:20px !important}
+}</style><!--<![endif]--><style type=3D"text/css">body[data-outlook-cycle] =
+img.stretch-on-mobile,body[data-outlook-cycle] .hs_rss_email_entries_table =
+img{height:auto !important;width:100% !important}
+body[data-outlook-cycle] .hs_padded{padding-left:20px !important;padding-ri=
+ght:20px !important}
+a[x-apple-data-detectors]{color:inherit !important;text-decoration:none !im=
+portant;font-size:inherit !important;font-family:inherit !important;font-we=
+ight:inherit !important;line-height:inherit !important}
+#outlook a{padding:0}.yshortcuts a{border-bottom:none !important}a{text-dec=
+oration:underline}
+.ExternalClass{width:100%}.ExternalClass,.ExternalClass p,.ExternalClass td=
+,.ExternalClass div,.ExternalClass span,.ExternalClass font{line-height:100=
+%}
+p{margin:0}body{-ms-text-size-adjust:100%;-webkit-text-size-adjust:100%;-we=
+bkit-font-smoothing:antialiased;moz-osx-font-smoothing:grayscale}</style></=
+head>
+  <body bgcolor=3D"#000000" style=3D"margin:0 !important; padding:0 !import=
+ant; font-family:Arial, sans-serif; font-size:13px; color:#4f4f4f; word-bre=
+ak:break-word">
+   =20
+<div id=3D"preview_text" style=3D"display:none!important;font-size:1px;colo=
+r:#000000;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:h=
+idden;">Get ahead of this increasingly impactful issue with our Singularity=
+ Research Paper &amp; Tech Release preview. </div>
+   =20
+<!--[if gte mso 9]>
+<v:background xmlns:v=3D"urn:schemas-microsoft-com:vml" fill=3D"t">
+ =20
+    <v:fill type=3D"tile" size=3D"100%,100%" color=3D"#000000"/>
+ =20
+</v:background>
+<![endif]-->
+    <div class=3D"hse-body-background" style=3D"background-color:#000000" b=
+gcolor=3D"#000000">
+      <table role=3D"presentation" class=3D"hse-body-wrapper-table" cellpad=
+ding=3D"0" cellspacing=3D"0" style=3D"border-spacing:0 !important; border-c=
+ollapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; margin:0; pad=
+ding:0; width:100% !important; min-width:320px !important; height:100% !imp=
+ortant" width=3D"100%" height=3D"100%">
+        <tbody><tr>
+          <td class=3D"hse-body-wrapper-td" valign=3D"top" style=3D"border-=
+collapse:collapse; mso-line-height-rule:exactly; font-family:Arial, sans-se=
+rif; font-size:13px; color:#4f4f4f; word-break:break-word">
+            <div id=3D"hs_cos_wrapper_main" class=3D"hs_cos_wrapper hs_cos_=
+wrapper_widget hs_cos_wrapper_type_dnd_area" style=3D"color: inherit; font-=
+size: inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" d=
+ata-hs-cos-type=3D"dnd_area">  <div id=3D"section-1" class=3D"hse-section h=
+se-section-first" style=3D"padding-left:10px; padding-right:10px; padding-t=
+op:20px">
+   =20
+   =20
+    <!--[if !((mso)|(IE))]><!-- -->
+      <div class=3D"hse-column-container" style=3D"min-width:280px; max-wid=
+th:600px; width:100%; Margin-left:auto; Margin-right:auto; border-collapse:=
+collapse; border-spacing:0; background-color:#000000; padding-bottom:15px; =
+padding-top:15px" bgcolor=3D"#000000">
+    <!--<![endif]-->
+   =20
+    <!--[if (mso)|(IE)]>
+      <div class=3D"hse-column-container" style=3D"min-width:280px;max-widt=
+h:600px;width:100%;Margin-left:auto;Margin-right:auto;border-collapse:colla=
+pse;border-spacing:0;">
+      <table align=3D"center" style=3D"border-collapse:collapse;mso-table-l=
+space:0pt;mso-table-rspace:0pt;width:600px;" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"600" bgcolor=3D"#000000">
+      <tr style=3D"background-color:#000000;">
+    <![endif]-->
+    <!--[if (mso)|(IE)]>
+  <td valign=3D"top" style=3D"width:600px;padding-bottom:15px; padding-top:=
+15px;">
+<![endif]-->
+<!--[if gte mso 9]>
+  <table role=3D"presentation" width=3D"600" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-table-rsp=
+ace:0pt;width:600px">
+<![endif]-->
+<div id=3D"column-1-1" class=3D"hse-column hse-size-12">
+  <div id=3D"hs_cos_wrapper_module-1-1-1" class=3D"hs_cos_wrapper hs_cos_wr=
+apper_widget hs_cos_wrapper_type_module" style=3D"color: inherit; font-size=
+: inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" data-=
+hs-cos-type=3D"module">
+=09
+<table class=3D"hse-image-wrapper" role=3D"presentation" width=3D"100%" cel=
+lpadding=3D"0" cellspacing=3D"0" style=3D"border-spacing:0 !important; bord=
+er-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt">
+    <tbody>
+        <tr>
+            <td align=3D"left" valign=3D"top" style=3D"border-collapse:coll=
+apse; mso-line-height-rule:exactly; font-family:Arial, sans-serif; color:#4=
+f4f4f; word-break:break-word; text-align:left; padding:0px 0px 10px 10px; f=
+ont-size:0px">
+               =20
+                    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6=
+pWX9VW1LXgQZ7ssfsGW8VsNl14rg126N8BHR5V3p_8SV1-WJV7CgJp8N4z8gshzlB9LW9jmpdr8=
+wMQlgW2S40yy1w_WjkW4nqkdK3gY47TW4l4qTC6VwCvnN1MvYLhXLSJfW1NTfQl24kBXHW3fPFz=
+f280KkSW6RB6Tz5HjMdqW2-drp15lH5JjW4YL8ZY2xzB-nN2zgJvVtKv6nW2Bzhr22VktxKW8B-=
+7-k6j2l6ZW5M1dVQ5dFJJ4W5Qzt_96mYrHXW11PKsm93z-GgVlkpfW6C6XrfVtnWDg9jgKd8W1m=
+5P57391NjxW5qDY_d1CmJLCW4YXqvM64pfzw3cGk1" target=3D"_blank" style=3D"color=
+:#00a4bd; mso-line-height-rule:exactly" data-hs-link-id=3D"0">
+               =20
+                <img alt=3D"su-logo-white" src=3D"https://hs-7432255.f.hubs=
+potemail.net/hub/7432255/hubfs/caracal/images/email/su-logo-white.png?width=
+=3D312&amp;upscale=3Dtrue&amp;name=3Dsu-logo-white.png" style=3D"outline:no=
+ne; text-decoration:none; -ms-interpolation-mode:bicubic; border:none; max-=
+width:100%; font-size:16px" width=3D"156" align=3D"middle" srcset=3D"https:=
+//hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/caracal/images/email/su-l=
+ogo-white.png?upscale=3Dtrue&amp;width=3D312&amp;upscale=3Dtrue&amp;name=3D=
+su-logo-white.png 156w, https://hs-7432255.f.hubspotemail.net/hub/7432255/h=
+ubfs/caracal/images/email/su-logo-white.png?upscale=3Dtrue&amp;width=3D624&=
+amp;upscale=3Dtrue&amp;name=3Dsu-logo-white.png 312w" sizes=3D"(max-width: =
+156px) 100vw, 156px">
+               =20
+                    </a>
+               =20
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+<!--[if gte mso 9]></table><![endif]-->
+<!--[if (mso)|(IE)]></td><![endif]-->
+    <!--[if (mso)|(IE)]></tr></table><![endif]-->
+    </div>
+  =20
+  </div>
+  <div id=3D"section-2" class=3D"hse-section" style=3D"padding-left:10px; p=
+adding-right:10px">
+   =20
+   =20
+    <!--[if !((mso)|(IE))]><!-- -->
+      <div class=3D"hse-column-container" style=3D"min-width:280px; max-wid=
+th:600px; width:100%; Margin-left:auto; Margin-right:auto; border-collapse:=
+collapse; border-spacing:0; background-color:#ffffff; padding-top:20px" bgc=
+olor=3D"#ffffff">
+    <!--<![endif]-->
+   =20
+    <!--[if (mso)|(IE)]>
+      <div class=3D"hse-column-container" style=3D"min-width:280px;max-widt=
+h:600px;width:100%;Margin-left:auto;Margin-right:auto;border-collapse:colla=
+pse;border-spacing:0;">
+      <table align=3D"center" style=3D"border-collapse:collapse;mso-table-l=
+space:0pt;mso-table-rspace:0pt;width:600px;" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"600" bgcolor=3D"#ffffff">
+      <tr style=3D"background-color:#ffffff;">
+    <![endif]-->
+    <!--[if (mso)|(IE)]>
+  <td valign=3D"top" style=3D"width:600px;padding-top:20px;">
+<![endif]-->
+<!--[if gte mso 9]>
+  <table role=3D"presentation" width=3D"600" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-table-rsp=
+ace:0pt;width:600px">
+<![endif]-->
+<div id=3D"column-2-1" class=3D"hse-column hse-size-12">
+  <div id=3D"hs_cos_wrapper_module-2-1-1" class=3D"hs_cos_wrapper hs_cos_wr=
+apper_widget hs_cos_wrapper_type_module" style=3D"color: inherit; font-size=
+: inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" data-=
+hs-cos-type=3D"module">
+=09
+<table class=3D"hse-image-wrapper" role=3D"presentation" width=3D"100%" cel=
+lpadding=3D"0" cellspacing=3D"0" style=3D"border-spacing:0 !important; bord=
+er-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt">
+    <tbody>
+        <tr>
+            <td align=3D"center" valign=3D"top" style=3D"border-collapse:co=
+llapse; mso-line-height-rule:exactly; font-family:Arial, sans-serif; color:=
+#4f4f4f; word-break:break-word; text-align:center; padding:0px 20px 10px; f=
+ont-size:0px">
+               =20
+                    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6=
+pWX9VW1LXgQZ7ssfsGW8VsNl14rg126N8BHR693p_97V1-WJV7CgZ3LW6gsvXc9bBZmNW38RQNR=
+9j19gCW6xzblL4z0ZMYN39sNdcMsmvbVxZLq574-10-W2ZJNdd7DYNqSW2HFg_m5q2NRDW5D_VJ=
+23WnNMDW6TYFwc7b-QsdW3Xh7XL1Gl2L2N17mDB13V5gmW70jSQW4_Sb8bW2GNtKM97-c23W6dy=
+G2c5tPCFpW1d3G5Z3KGt4QW13Hh1f4FK9_1W1krGG1887tDCW4qhNxb98zcMtW8Sb1Mh5MCXx1V=
+Ln-XH6M1Ms7W8Mz_QJ34pRCNW78M5Y62P1bDcN16tfKWwXVBXW84Fld999GPH13n3g1" target=
+=3D"_blank" style=3D"color:#00a4bd; mso-line-height-rule:exactly" data-hs-l=
+ink-id=3D"0">
+               =20
+                <img alt=3D"Algorithmic-Bias-Email-Header" src=3D"https://h=
+s-7432255.f.hubspotemail.net/hub/7432255/hubfs/Algorithmic-Bias-Email-Heade=
+r.png?width=3D1120&amp;upscale=3Dtrue&amp;name=3DAlgorithmic-Bias-Email-Hea=
+der.png" style=3D"outline:none; text-decoration:none; -ms-interpolation-mod=
+e:bicubic; border:none; max-width:100%; font-size:16px" width=3D"560" align=
+=3D"middle" srcset=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hub=
+fs/Algorithmic-Bias-Email-Header.png?upscale=3Dtrue&amp;width=3D1120&amp;up=
+scale=3Dtrue&amp;name=3DAlgorithmic-Bias-Email-Header.png 560w, https://hs-=
+7432255.f.hubspotemail.net/hub/7432255/hubfs/Algorithmic-Bias-Email-Header.=
+png?upscale=3Dtrue&amp;width=3D2240&amp;upscale=3Dtrue&amp;name=3DAlgorithm=
+ic-Bias-Email-Header.png 1120w" sizes=3D"(max-width: 560px) 100vw, 560px">
+               =20
+                    </a>
+               =20
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+<table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D"1=
+00%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-ta=
+ble-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" st=
+yle=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-family:=
+Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; pa=
+dding:10px 40px 20px"><div id=3D"hs_cos_wrapper_module-2-1-5" class=3D"hs_c=
+os_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=3D"color=
+: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-general-t=
+ype=3D"widget" data-hs-cos-type=3D"module"><div id=3D"hs_cos_wrapper_module=
+-2-1-5_" class=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_=
+rich_text" style=3D"color: inherit; font-size: inherit; line-height: inheri=
+t;" data-hs-cos-general-type=3D"widget" data-hs-cos-type=3D"rich_text"><p s=
+tyle=3D"mso-line-height-rule:exactly; line-height:200%">Dear Josh,</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">&nbsp;</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">Right now, some=
+where, an algorithm is being unintentionally coded with bias. While that ma=
+y not seem urgent on the surface, bias in AI is actually a critical issue f=
+or business leaders to consider.</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">&nbsp;</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%; font-weight:bol=
+d">Why?</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">&nbsp;</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">Find out in a s=
+ample of our research publication, <a href=3D"https://i7.t.hubspotemail.net=
+/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssfsGW8VsNl14rg126N8BHR693p_97V1-WJV7CgTn1W8SrN=
+VD2cr3c3N6qtJ_GJQv0ZW7crFmT6szZTQW4MBm1j6JCTkFV_7lsk102FB9VQYHsM7My8dCW3D9J=
+bc88rmQ_VWpY6r59z00BW72PC5y90kRW2W5rSpsp2fcvJlW6q7x3n4pl6VVW6HxKwc9dDPGYW33=
+b37230t3DCW5sfPT93stT9LW5Yr3wn2YP88BW1KkQNG6yRBfZW7-HFd57Y-hVNVvRkG437tgkbW=
+1T8C8z8HBDMqW6x87zt6l3NkFW1dztSV1bLkVZN5CPVvlvc2TvW5GNxC_5h9SycW48rN7-1mkxC=
+v3dpn1" rel=3D"noopener" style=3D"mso-line-height-rule:exactly; color:#0000=
+00; font-weight:bold" data-hs-link-id=3D"1" target=3D"_blank"><span style=
+=3D"font-weight: bold;">Rooting Out Algorithmic Bias</span></a>. The full r=
+esearch paper and tech release outlines why addressing bias is vital from n=
+ot only a business perspective but a societal lens. You can download a prev=
+iew of the resource as well as a sample code &amp; tutorial by clicking the=
+ link below.</p></div></div></td></tr></tbody></table>
+</div>
+<!--[if gte mso 9]></table><![endif]-->
+<!--[if (mso)|(IE)]></td><![endif]-->
+    <!--[if (mso)|(IE)]></tr></table><![endif]-->
+    </div>
+  =20
+  </div>
+  <div id=3D"section_1611783405526" class=3D"hse-section" style=3D"padding-=
+left:10px; padding-right:10px">
+   =20
+   =20
+    <!--[if !((mso)|(IE))]><!-- -->
+      <div class=3D"hse-column-container" style=3D"min-width:280px; max-wid=
+th:600px; width:100%; Margin-left:auto; Margin-right:auto; border-collapse:=
+collapse; border-spacing:0; background-color:#ffffff" bgcolor=3D"#ffffff">
+    <!--<![endif]-->
+   =20
+    <!--[if (mso)|(IE)]>
+      <div class=3D"hse-column-container" style=3D"min-width:280px;max-widt=
+h:600px;width:100%;Margin-left:auto;Margin-right:auto;border-collapse:colla=
+pse;border-spacing:0;">
+      <table align=3D"center" style=3D"border-collapse:collapse;mso-table-l=
+space:0pt;mso-table-rspace:0pt;width:600px;" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"600" bgcolor=3D"#ffffff">
+      <tr style=3D"background-color:#ffffff;">
+    <![endif]-->
+    <!--[if (mso)|(IE)]>
+  <td valign=3D"top" style=3D"width:600px;">
+<![endif]-->
+<!--[if gte mso 9]>
+  <table role=3D"presentation" width=3D"600" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-table-rsp=
+ace:0pt;width:600px">
+<![endif]-->
+<div id=3D"column_1611783405526_0" class=3D"hse-column hse-size-12">
+  <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D=
+"100%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-=
+table-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" =
+style=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-famil=
+y:Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; =
+padding:10px 20px"><div id=3D"hs_cos_wrapper_module_16167847462982" class=
+=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=
+=3D"color: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-=
+general-type=3D"widget" data-hs-cos-type=3D"module">
+ =20
+  <table align=3D"center" border=3D"0" cellpadding=3D"0" cellspacing=3D"0" =
+role=3D"presentation" style=3D"border-spacing:0 !important; mso-table-lspac=
+e:0pt; mso-table-rspace:0pt; border-collapse:separate!important">
+    <tbody><tr>
+        <!--[if mso]>
+      <td align=3D"center" valign=3D"middle" bgcolor=3D"#000000" role=3D"pr=
+esentation"  valign=3D"middle" style=3D"border-radius:8px;cursor:auto;backg=
+round-color:#000000;padding:12px 18px;">
+    <![endif]-->
+    <!--[if !mso]><!-- -->
+      <td align=3D"center" valign=3D"middle" bgcolor=3D"#000000" role=3D"pr=
+esentation" style=3D"border-collapse:collapse; mso-line-height-rule:exactly=
+; font-family:Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:=
+break-word; border-radius:8px; cursor:auto; background-color:#000000">
+   <!--<![endif]-->
+        <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ=
+7ssfsGW8VsNl14rg126N8BHR693p_97V1-WJV7CgJTFW5YNS3F6zWYJ6W4_SSBF67ZmXtW7M90T=
+_1fxHj5W887XlT1SNBy9W6qm7Fy13pkjxW5RlR2b56RjLVW3Qf4_x6cLvrHW65Mz9m5_zKQ_W6z=
+dc6j88p_LYW695nhp44mttFW99rNzY81z-5NW8TBLF98l-j1PW7ZbJGL9cdmJlN88-G-sFQCW4W=
+5cBrXt1nRxV0W12JFq83kqvYkW3yL5jN659FkwW1ybfNM8R_CgDN6bRqbHv4V7RW3c7WJY6zgt-=
+NN2BbQJmVdVP3VgGGjQ8ZR5zhW4nBhSf5sgT0zW1byFCL1_yC4R3p5c1" target=3D"_blank"=
+ style=3D"color:#00a4bd; mso-line-height-rule:exactly; font-size:14px; font=
+-family:Arial, sans-serif; Margin:0; text-transform:none; text-decoration:n=
+one; padding:12px 18px; display:block" data-hs-link-id=3D"2">
+          <strong style=3D"color:#ffffff;font-weight:bold;text-decoration:n=
+one;font-style:normal;">Access the Research Paper &amp; Tech Release Previe=
+w</strong>
+        </a>
+      </td>
+    </tr>
+  </tbody></table>
+</div></td></tr></tbody></table>
+<table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D"1=
+00%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-ta=
+ble-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" st=
+yle=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-family:=
+Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; pa=
+dding:20px 40px"><div id=3D"hs_cos_wrapper_module_16117834175375" class=3D"=
+hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=3D"c=
+olor: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-gener=
+al-type=3D"widget" data-hs-cos-type=3D"module"><div id=3D"hs_cos_wrapper_mo=
+dule_16117834175375_" class=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_=
+wrapper_type_rich_text" style=3D"color: inherit; font-size: inherit; line-h=
+eight: inherit;" data-hs-cos-general-type=3D"widget" data-hs-cos-type=3D"ri=
+ch_text"><p style=3D"mso-line-height-rule:exactly; line-height:200%">&nbsp;=
+</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%; font-weight:bol=
+d">Alix R=C3=BCbsaam</p>
+<p style=3D"mso-line-height-rule:exactly; line-height:200%">Director of Cur=
+ated and Research Content</p></div></div></td></tr></tbody></table>
+</div>
+<!--[if gte mso 9]></table><![endif]-->
+<!--[if (mso)|(IE)]></td><![endif]-->
+    <!--[if (mso)|(IE)]></tr></table><![endif]-->
+    </div>
+  =20
+  </div>
+  <div id=3D"section-26" class=3D"hse-section" style=3D"padding-left:10px; =
+padding-right:10px">
+   =20
+   =20
+    <!--[if !((mso)|(IE))]><!-- -->
+      <div class=3D"hse-column-container" style=3D"min-width:280px; max-wid=
+th:600px; width:100%; Margin-left:auto; Margin-right:auto; border-collapse:=
+collapse; border-spacing:0; background-color:#ffffff; padding-bottom:30px; =
+padding-top:30px" bgcolor=3D"#ffffff">
+    <!--<![endif]-->
+   =20
+    <!--[if (mso)|(IE)]>
+      <div class=3D"hse-column-container" style=3D"min-width:280px;max-widt=
+h:600px;width:100%;Margin-left:auto;Margin-right:auto;border-collapse:colla=
+pse;border-spacing:0;">
+      <table align=3D"center" style=3D"border-collapse:collapse;mso-table-l=
+space:0pt;mso-table-rspace:0pt;width:600px;" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation" width=3D"600" bgcolor=3D"#ffffff">
+      <tr style=3D"background-color:#ffffff;">
+    <![endif]-->
+    <!--[if (mso)|(IE)]>
+  <td valign=3D"top" style=3D"width:600px;padding-bottom:30px; padding-top:=
+30px;">
+<![endif]-->
+<!--[if gte mso 9]>
+  <table role=3D"presentation" width=3D"600" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-table-rsp=
+ace:0pt;width:600px">
+<![endif]-->
+<div id=3D"column-26-1" class=3D"hse-column hse-size-12">
+  <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D=
+"100%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-=
+table-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" =
+style=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-famil=
+y:Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; =
+padding:0px 40px 10px"><div id=3D"hs_cos_wrapper_module-26-1-1" class=3D"hs=
+_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=3D"col=
+or: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-general=
+-type=3D"widget" data-hs-cos-type=3D"module"><div id=3D"hs_cos_wrapper_modu=
+le-26-1-1_" class=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_ty=
+pe_rich_text" style=3D"color: inherit; font-size: inherit; line-height: inh=
+erit;" data-hs-cos-general-type=3D"widget" data-hs-cos-type=3D"rich_text"><=
+p style=3D"mso-line-height-rule:exactly; text-align:center; font-size:13px;=
+ line-height:200%; font-weight:bold" align=3D"center">FOLLOW US</p></div></=
+div></td></tr></tbody></table>
+<div id=3D"hs_cos_wrapper_module-26-1-3" class=3D"hs_cos_wrapper hs_cos_wra=
+pper_widget hs_cos_wrapper_type_module" style=3D"color: inherit; font-size:=
+ inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" data-h=
+s-cos-type=3D"module"><div style=3D"text-align: center;">
+    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssf=
+sGW8VsNl14rg126N8BHR693p_97V1-WJV7CgYkxW6CV-Fv4JZ7qFN2H4fbN3xWPzW6Ql7p_2DDl=
+1xN88ZHVhjCthhW1TDXpC2bdZnRW7qnSN81znXzGW7m_d1n6Jx7jKW3nHB5y11cDnSN6zf8KDpk=
+19RW5Kk60m8hqNw2W50dMBW2l59qhW2Pwn265GCVCXW2Z7KvX54Zvm7W53tWrK239hvbN51sCVm=
+8_G7WW5Vsnt416ZdNqW1RR7Tn7LmX_cW9dnxW75nBZTqVRQT0K49BDWxW1qXbyP32GCpgW3J74D=
+N1whjP8W92jbXg2R3G-gW50v4dm3J7PLFW6hk-5q6q00hs3kcq1" target=3D"_blank" styl=
+e=3D"color:#00a4bd; mso-line-height-rule:exactly; text-decoration:none" dat=
+a-hs-link-id=3D"0">
+      <img src=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/c=
+aracal/images/graphics/social/facebook.png?upscale=3Dtrue&amp;name=3Dfacebo=
+ok.png" alt=3D"" style=3D"outline:none; text-decoration:none; -ms-interpola=
+tion-mode:bicubic; border:none">
+    </a>
+     &nbsp;&nbsp;&nbsp;&nbsp;=20
+    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssf=
+sGW8VsNl14rg126N8BHR693p_97V1-WJV7Cg-v4W1N72bG35S7H5W4mdsSq7Tt-fDW1Q2xz-2cL=
+CDfW90YRqg4cCgBCW1_M1Lx5SszN2W7nn2075C840NW5xpsBj89zDBXW4JDPjM3RVqqwW5q-3Gd=
+6LfVN3W2Wfdb63-LWF5Vqn_Kj3cdrt1W78bt921hzWZMVw4pDD8B4XZGW2w5tCD24KtGQW3c_S1=
+D3ww14PW9kSf1W2yBLn6W7t-Yl-7_GW9cVy_wbb3h3cq2W7621Y697NnhjW4BL5s15lryL8W6cJ=
+KLd50RLypW5cfgzK46b2cqW6s6z4B8ZT-rmW6nQlWj4DbR-x3g2M1" target=3D"_blank" st=
+yle=3D"color:#00a4bd; mso-line-height-rule:exactly; text-decoration:none" d=
+ata-hs-link-id=3D"0">
+      <img src=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/c=
+aracal/images/email/twitter.png?width=3D40&amp;height=3D42&amp;upscale=3Dtr=
+ue&amp;name=3Dtwitter.png" alt=3D"twitter" width=3D"20" height=3D"21" srcse=
+t=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/caracal/images=
+/email/twitter.png?upscale=3Dtrue&amp;width=3D40&amp;height=3D42&amp;upscal=
+e=3Dtrue&amp;name=3Dtwitter.png 20w, https://hs-7432255.f.hubspotemail.net/=
+hub/7432255/hubfs/caracal/images/email/twitter.png?upscale=3Dtrue&amp;width=
+=3D80&amp;height=3D84&amp;upscale=3Dtrue&amp;name=3Dtwitter.png 40w" sizes=
+=3D"(max-width: 20px) 100vw, 20px" style=3D"outline:none; text-decoration:n=
+one; -ms-interpolation-mode:bicubic; border:none">
+    </a>
+     &nbsp;&nbsp;&nbsp;&nbsp;=20
+    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssf=
+sGW8VsNl14rg126N8BHR693p_97V1-WJV7CgFsKW3pJYQ61DlnJzW8FZxYd84dqJ9W2sjZG21j9=
+Bw_W4WM2L_6L6mWRV-XSv96v6jMXW2qXlgZ212Q9RW66zCfL5zb7gfW8-sKxh8M-lY6W3F4SHW8=
+L4FfNW34mPWC4MjbHPV65gy45VrD5qW4GWpKs1b9FqqW81Msth4jFF2wW7vB7T17TLSG5N4QYz5=
+l93wL0W6-SsX58THN8RW46xbc488h66SV8WV167LHvGnW12Yy3h6RRGZPW22BqtJ7b7408W8jNw=
+Vq1k2bn3VGPvl750XxNXVqwGf74tf-gvW4kx0YP75Yz3f31BD1" target=3D"_blank" style=
+=3D"color:#00a4bd; mso-line-height-rule:exactly; text-decoration:none" data=
+-hs-link-id=3D"0">
+      <img src=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/c=
+aracal/images/email/youtube.png?width=3D46&amp;height=3D42&amp;upscale=3Dtr=
+ue&amp;name=3Dyoutube.png" alt=3D"youtube" width=3D"23" height=3D"21" srcse=
+t=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/caracal/images=
+/email/youtube.png?upscale=3Dtrue&amp;width=3D46&amp;height=3D42&amp;upscal=
+e=3Dtrue&amp;name=3Dyoutube.png 23w, https://hs-7432255.f.hubspotemail.net/=
+hub/7432255/hubfs/caracal/images/email/youtube.png?upscale=3Dtrue&amp;width=
+=3D92&amp;height=3D84&amp;upscale=3Dtrue&amp;name=3Dyoutube.png 46w" sizes=
+=3D"(max-width: 23px) 100vw, 23px" style=3D"outline:none; text-decoration:n=
+one; -ms-interpolation-mode:bicubic; border:none">
+    </a>
+     &nbsp;&nbsp;&nbsp;&nbsp;=20
+    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssf=
+sGW8VsNl14rg126N8BHR6t3p_9rV1-WJV7CgX3FML-zfgXdq9wW2Y3RJb3wJh9dW5XMLY43PmYT=
+hVvPrRj4K_f5fW4J7_HF1D7fVfW3G97cS3tp_gYW48hTHD8xZpCPW3cpD5Z4GwRF1W5KcyFQ5qB=
+llrW51RlGH7_3R3cW34RsnD1TFD8xW11hDtd5dZcKgW7d75d687WYGbVyL5Hf8Y_2t1W7NDt683=
+lLKH1W2YF9vd8rj7BzW2bxlZz4t7dYHW45VbT82lRDKHVHFpgr1wsb7GW34-Flv7VjbMXN8Tr1Q=
+JhCts4W4ydv7166lLc6W7s-RQf20_l29W7b6d4n3Wd3rTW8B1LM627zYbdW2VHXBK4Q1BK93347=
+1" target=3D"_blank" style=3D"color:#00a4bd; mso-line-height-rule:exactly; =
+text-decoration:none" data-hs-link-id=3D"0">
+      <img src=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/c=
+aracal/images/email/linkedin.png?width=3D36&amp;height=3D42&amp;upscale=3Dt=
+rue&amp;name=3Dlinkedin.png" alt=3D"linkedin" width=3D"18" height=3D"21" sr=
+cset=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/caracal/ima=
+ges/email/linkedin.png?upscale=3Dtrue&amp;width=3D36&amp;height=3D42&amp;up=
+scale=3Dtrue&amp;name=3Dlinkedin.png 18w, https://hs-7432255.f.hubspotemail=
+.net/hub/7432255/hubfs/caracal/images/email/linkedin.png?upscale=3Dtrue&amp=
+;width=3D72&amp;height=3D84&amp;upscale=3Dtrue&amp;name=3Dlinkedin.png 36w"=
+ sizes=3D"(max-width: 18px) 100vw, 18px" style=3D"outline:none; text-decora=
+tion:none; -ms-interpolation-mode:bicubic; border:none">
+    </a>
+     &nbsp;&nbsp;&nbsp;&nbsp;=20
+    <a href=3D"https://i7.t.hubspotemail.net/e2t/tc/VX6PQG6pWX9VW1LXgQZ7ssf=
+sGW8VsNl14rg126N8BHR693p_97V1-WJV7CgP0jW2l4NYr7BG32-W7z0wqL3lCRf7W3MPm7H1H1=
+byPW3GWHqx1LH5n7W35PDHQ97t6n8W6vZ7tK6YkTj5W5CPPH-5gdYxdW4cBzQH2gdR3FW3npXhW=
+2DjN4BW7mXPWN1gVTXHW75HC-r8Q_kC2VHng238TCcjWW19bbqg7-3lzLW4fXrj686Trv2W5fRv=
+t98XvxMvW5dSZTm87jZbLW3rbH8B6LFqnGVkck9S2vnPMLW1htxXy3wjwrZN2BFvp_vJsbSW5Ft=
+cWj7jvYHrW5d7fd94sDV--VlbQVd946DcsW83BVD-1Q8dZ23mrj1" target=3D"_blank" sty=
+le=3D"color:#00a4bd; mso-line-height-rule:exactly; text-decoration:none" da=
+ta-hs-link-id=3D"0">
+      <img src=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/c=
+aracal/images/email/instagram.png?width=3D38&amp;height=3D42&amp;upscale=3D=
+true&amp;name=3Dinstagram.png" alt=3D"instagram" width=3D"19" height=3D"21"=
+ srcset=3D"https://hs-7432255.f.hubspotemail.net/hub/7432255/hubfs/caracal/=
+images/email/instagram.png?upscale=3Dtrue&amp;width=3D38&amp;height=3D42&am=
+p;upscale=3Dtrue&amp;name=3Dinstagram.png 19w, https://hs-7432255.f.hubspot=
+email.net/hub/7432255/hubfs/caracal/images/email/instagram.png?upscale=3Dtr=
+ue&amp;width=3D76&amp;height=3D84&amp;upscale=3Dtrue&amp;name=3Dinstagram.p=
+ng 38w" sizes=3D"(max-width: 19px) 100vw, 19px" style=3D"outline:none; text=
+-decoration:none; -ms-interpolation-mode:bicubic; border:none">
+    </a>
+    </div>
+</div>
+<table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D"1=
+00%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-ta=
+ble-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" st=
+yle=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-family:=
+Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; pa=
+dding:10px 40px"><div id=3D"hs_cos_wrapper_module-26-1-5" class=3D"hs_cos_w=
+rapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=3D"color: in=
+herit; font-size: inherit; line-height: inherit;" data-hs-cos-general-type=
+=3D"widget" data-hs-cos-type=3D"module"><div id=3D"hs_cos_wrapper_module-26=
+-1-5_" class=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_ri=
+ch_text" style=3D"color: inherit; font-size: inherit; line-height: inherit;=
+" data-hs-cos-general-type=3D"widget" data-hs-cos-type=3D"rich_text"><p sty=
+le=3D"mso-line-height-rule:exactly; font-weight:600; text-align:center; fon=
+t-size:11px; line-height:125%" align=3D"center">Visit su.org<br><br></p>
+<p style=3D"mso-line-height-rule:exactly; text-align:center; font-size:11px=
+; line-height:125%" align=3D"center">1049 El Monte Ave. Suite C #16  | Moun=
+tain View, CA 94040, United States</p></div></div></td></tr></tbody></table=
+>
+</div>
+<!--[if gte mso 9]></table><![endif]-->
+<!--[if (mso)|(IE)]></td><![endif]-->
+    <!--[if (mso)|(IE)]></tr></table><![endif]-->
+    </div>
+  =20
+  </div>
+  <div id=3D"section-28" class=3D"hse-section hse-section-last" style=3D"pa=
+dding-left:10px; padding-right:10px; padding-bottom:20px">
+   =20
+   =20
+    <!--[if !((mso)|(IE))]><!-- -->
+      <div class=3D"hse-column-container" style=3D"min-width:280px; max-wid=
+th:600px; width:100%; Margin-left:auto; Margin-right:auto; border-collapse:=
+collapse; border-spacing:0">
+    <!--<![endif]-->
+   =20
+    <!--[if (mso)|(IE)]>
+      <div class=3D"hse-column-container" style=3D"min-width:280px;max-widt=
+h:600px;width:100%;Margin-left:auto;Margin-right:auto;border-collapse:colla=
+pse;border-spacing:0;">
+      <table align=3D"center" style=3D"border-collapse:collapse;mso-table-l=
+space:0pt;mso-table-rspace:0pt;width:600px;" cellpadding=3D"0" cellspacing=
+=3D"0" role=3D"presentation">
+      <tr>
+    <![endif]-->
+    <!--[if (mso)|(IE)]>
+  <td valign=3D"top" style=3D"width:600px;">
+<![endif]-->
+<!--[if gte mso 9]>
+  <table role=3D"presentation" width=3D"600" cellpadding=3D"0" cellspacing=
+=3D"0" style=3D"border-collapse:collapse;mso-table-lspace:0pt;mso-table-rsp=
+ace:0pt;width:600px">
+<![endif]-->
+<div id=3D"column-28-1" class=3D"hse-column hse-size-12">
+  <table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" width=3D=
+"100%" style=3D"border-spacing:0 !important; border-collapse:collapse; mso-=
+table-lspace:0pt; mso-table-rspace:0pt"><tbody><tr><td class=3D"hs_padded" =
+style=3D"border-collapse:collapse; mso-line-height-rule:exactly; font-famil=
+y:Arial, sans-serif; font-size:13px; color:#4f4f4f; word-break:break-word; =
+padding:10px 20px"><div id=3D"hs_cos_wrapper_module_16117832905893" class=
+=3D"hs_cos_wrapper hs_cos_wrapper_widget hs_cos_wrapper_type_module" style=
+=3D"color: inherit; font-size: inherit; line-height: inherit;" data-hs-cos-=
+general-type=3D"widget" data-hs-cos-type=3D"module">
+<!--[if gte mso 9]>
+<v:rect xmlns:v=3D"urn:schemas-microsoft-com:vml" fill=3D"true" stroke=3D"f=
+alse" style=3D"width:560px; height:2pt;" fillcolor=3D"none">
+<v:fill type=3D"tile"/>
+<v:textbox inset=3D"0,0,0,0">
+<div>
+<![endif]-->
+<table role=3D"presentation" width=3D"100%" align=3D"center" border=3D"0" s=
+tyle=3D"position:relative; top:-1px; min-width:20px; width:100%; max-width:=
+100%; border-spacing:0; mso-table-lspace:0pt; mso-table-rspace:0pt; border-=
+collapse:collapse; font-size:1px">
+  <tbody><tr>
+   =20
+   =20
+    =09<td width=3D"auto" style=3D"border-collapse:collapse; mso-line-heigh=
+t-rule:exactly; font-family:Arial, sans-serif; font-size:13px; color:#4f4f4=
+f; word-break:break-word; line-height:0">&nbsp;</td>
+   =20
+   =20
+    <td width=3D"1%" valign=3D"middle" style=3D"border-collapse:collapse; m=
+so-line-height-rule:exactly; font-family:Arial, sans-serif; font-size:13px;=
+ color:#4f4f4f; word-break:break-word; line-height:0; border:transparent; b=
+order-bottom:1px solid #000000; mso-border-bottom-alt:1px solid #000000; bo=
+rder-bottom-width:1px">&nbsp;</td>
+   =20
+   =20
+    =09<td width=3D"auto" style=3D"border-collapse:collapse; mso-line-heigh=
+t-rule:exactly; font-family:Arial, sans-serif; font-size:13px; color:#4f4f4=
+f; word-break:break-word; line-height:0">&nbsp;</td>
+   =20
+  </tr>
+</tbody></table>
+<!--[if gte mso 9]></div></v:textbox></v:rect><![endif]-->
+</div></td></tr></tbody></table>
+<div id=3D"hs_cos_wrapper_module-28-1-1" class=3D"hs_cos_wrapper hs_cos_wra=
+pper_widget hs_cos_wrapper_type_module" style=3D"color: inherit; font-size:=
+ inherit; line-height: inherit;" data-hs-cos-general-type=3D"widget" data-h=
+s-cos-type=3D"module">
+ =20
+ =20
+ =20
+ =20
+ =20
+ =20
+ =20
+<table role=3D"presentation" class=3D"hse-footer hse-secondary" width=3D"10=
+0%" cellpadding=3D"0" cellspacing=3D"0" style=3D"border-spacing:0 !importan=
+t; border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; fo=
+nt-family:Arial, sans-serif; font-size:12px; line-height:135%; color:#23496=
+d; margin-bottom:0; padding:0">
+    <tbody>
+        <tr>
+            <td align=3D"center" valign=3D"top" style=3D"border-collapse:co=
+llapse; mso-line-height-rule:exactly; font-family:Arial, sans-serif; font-s=
+ize:13px; color:#4f4f4f; word-break:break-word; text-align:center; margin-b=
+ottom:0; line-height:135%; padding:10px 20px">
+                <p style=3D"mso-line-height-rule:exactly; font-family:Arial=
+, sans-serif; font-size:11px; font-weight:normal; text-decoration:none; fon=
+t-style:normal; color:#999999; direction:lrt" dir=3D"lrt">
+                  Singularity University, 1049 El Monte Ave. Suite C #16, M=
+ountain View, CA 94040, United States, +1-650-200-3434
+                </p>
+                <p style=3D"mso-line-height-rule:exactly">
+                 =20
+                  <a data-unsubscribe=3D"true"  href=3D"https://hs-7432255.=
+s.hubspotemail.net/hs/manage-preferences/unsubscribe-all?d=3DVn9bTc7DXFv6Vs=
+vT7k3QJF47W4cKbkQ4c5bRkN5SL7rXmWFg7W7BM8_D6PB5P0V25vwC4Vqlh3N5g1cZwX9bV2N5B=
+2KWvXk_7QVbv_s871qPp3Vn_b__4pjxmqw8pJRV07r82&amp;v=3D3&amp;utm_campaign=3DA=
+lgorithmic%20Bias%20Whitepaper&amp;utm_source=3Dhs_automation&amp;utm_mediu=
+m=3Demail&amp;utm_content=3D118065794&amp;_hsenc=3Dp2ANqtz-8FWk-f8EcIdqWxP7=
+U04t5ZakG9vVkzzHCNIskdYBdBZ0K2ioDi7geSOHfDNF1-1zbS5p2XPUOUiieu3mSoOqMOU1XRx=
+g&amp;_hsmi=3D118065794" style=3D"mso-line-height-rule:exactly; font-family=
+:Helvetica,Arial,sans-serif; font-size:11px; color:#999999; font-weight:bol=
+d; text-decoration:underline; font-style:normal" data-hs-link-id=3D"0" targ=
+et=3D"_blank">Unsubscribe</a>
+                 =20
+                  <a data-unsubscribe=3D"true"  href=3D"https://hs-7432255.=
+s.hubspotemail.net/hs/manage-preferences/unsubscribe?d=3DVn9bTc7DXFv6VsvT7k=
+3QJF47W4cKbkQ4c5bRkN5SL7rXmWFg7W7BM8_D6PB5P0V25vwC4Vqlh3N5g1cZwX9bV2N5B2KWv=
+Xk_7QVbv_s871qPp3Vn_b__4pjxmqw8pJRV07r82&amp;v=3D3&amp;utm_campaign=3DAlgor=
+ithmic%20Bias%20Whitepaper&amp;utm_source=3Dhs_automation&amp;utm_medium=3D=
+email&amp;utm_content=3D118065794&amp;_hsenc=3Dp2ANqtz-8FWk-f8EcIdqWxP7U04t=
+5ZakG9vVkzzHCNIskdYBdBZ0K2ioDi7geSOHfDNF1-1zbS5p2XPUOUiieu3mSoOqMOU1XRxg&am=
+p;_hsmi=3D118065794" style=3D"mso-line-height-rule:exactly; font-family:Hel=
+vetica,Arial,sans-serif; font-size:11px; color:#999999; font-weight:bold; t=
+ext-decoration:underline; font-style:normal" data-hs-link-id=3D"0" target=
+=3D"_blank">Manage preferences</a>
+                 =20
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+</div>
+</div>
+<!--[if gte mso 9]></table><![endif]-->
+<!--[if (mso)|(IE)]></td><![endif]-->
+    <!--[if (mso)|(IE)]></tr></table><![endif]-->
+    </div>
+  =20
+  </div>
+</div>
+          </td>
+        </tr>
+      </tbody></table>
+    </div>
+ =20
+<img src=3D"https://i7.t.hubspotemail.net/e2t/to/VX6PQG6pWX9VW1LXgQZ7ssfsGW=
+8VsNl14rg126f8BHQTX22" alt=3D"" width=3D"1" height=3D"1" border=3D"0" style=
+=3D"display:none!important;min-height:1px!important;width:1px!important;bor=
+der-width:0!important;margin-top:0!important;margin-bottom:0!important;marg=
+in-right:0!important;margin-left:0!important;padding-top:0!important;paddin=
+g-bottom:0!important;padding-right:0!important;padding-left:0!important"></=
+body></html>
+------=_Part_6723740_583827097.1620327733077--
+

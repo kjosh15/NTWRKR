@@ -1,0 +1,387 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp1392242ljh;
+        Thu, 9 Jul 2020 04:07:12 -0700 (PDT)
+X-Received: by 2002:a17:906:2304:: with SMTP id l4mr54786705eja.104.1594292832398;
+        Thu, 09 Jul 2020 04:07:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1594292832; cv=none;
+        d=google.com; s=arc-20160816;
+        b=gKZ+bl3wAAkHwVO3AP1reB5M5RpB0/alOX6HgGpCHcvbtQCwWh19AOPJsf+ieDtb75
+         LdL9XNE/ej25M60HrMwp7oxJzGmFO8tkZKhHWqHg9U7fAFY4GHHeDjq4EgAURFEYwGaw
+         4sv8WRMzssVrRsY86uw7nEJ8uzaxJpQYdgJy+G9j0yK+UNhLkbhVfuPxKtmbWt/CyWoy
+         hm4iUf4FFcP7YVf0ipM6lcScOlT53tDxS9U2d8FzKwZogpss2iBHVAQnYMQyJ47J55XH
+         p5xnqvNjqXDoJOwEQUlSh57ond24QCjqH6aPlIQ5DQkieg0gCmi5WGrv5elWzeeCBvzF
+         pcyQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:mime-version:references:in-reply-to:from
+         :dkim-signature;
+        bh=qKl6cHgwz2Avv8OCNGFRsb2zbZjekx+kDarVRNfB8Ag=;
+        b=IHA5IpdTU9h687OEtBgMqpiKNr8JExZW30tqgB2/FHXgIbgz930TnjFsl8ubrZ1HVw
+         t++cn0pf3PtDbR/VZJ1jRD69B2d6k7KgUWE7/ZhE+Zkn40oa86b1bJQPylVXiOq0puP9
+         zaflv/GVQaADX4MBncTlKAGOaXQrDsaLa32nXwGsu5U0hhphRJAEtUiNHZ19vcCQHoob
+         pM/T8Oro+Ael28utcstLLHUEi5sv1sgvs872eo1Y/TIILn9VG4PMtai3A+GNIX06fUk6
+         WRZlgmWyho8o+GXOVsUzPihflZZGgGeaEmslnftTHYsggNP80cR2XGOA7XlFVbLL2N+Z
+         tmbA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=g0ZtABuD;
+       spf=pass (google.com: domain of pbennett@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=pbennett@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+Return-Path: <pbennett@ideo.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id w21sor1752827eja.50.2020.07.09.04.07.12
+        for <josh@josh.is>
+        (Google Transport Security);
+        Thu, 09 Jul 2020 04:07:12 -0700 (PDT)
+Received-SPF: pass (google.com: domain of pbennett@ideo.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=g0ZtABuD;
+       spf=pass (google.com: domain of pbennett@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=pbennett@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ideo.com; s=google;
+        h=from:in-reply-to:references:mime-version:date:message-id:subject:to;
+        bh=qKl6cHgwz2Avv8OCNGFRsb2zbZjekx+kDarVRNfB8Ag=;
+        b=g0ZtABuDXR3D4CsvingAXAZ/talqS5/9dHVpcwdeRZG56DXyAapzoQelX5zODhIpiF
+         9nX8tpynA0bEh0N9xO1zfOVVsNPy5/orUiExBFphiIkFTvtQhj5WtafRMePblyPoTx5o
+         TZGghTX9e+XseMlmQTPCFx9VafmEj0oFwHYqQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:in-reply-to:references:mime-version:date
+         :message-id:subject:to;
+        bh=qKl6cHgwz2Avv8OCNGFRsb2zbZjekx+kDarVRNfB8Ag=;
+        b=Dz7s7BVaE2i0cd+tE9vixQtB4AUw/82OfOIRTTo6IkXlBWwjtbAOLGgcLFaHwokLXo
+         NCvp4z2clFy6IqvTlE9kzwAogS+l95SqY0pzv/kT4ulHeqzKXBgvULTafhNhTzIvfkMp
+         GahViAuvfNroNC3Ot8bX6Utk3dhKHSfi3BjXJpI2PokztOnqz5IdvO0MnHHsHLM1AMNI
+         erXP4JXnmd64ci152/0wkBYPQkaK2PSPthCUUHYZpp9boQQH3urTgYNiDFjFVL8ij2S3
+         iZp5Jw+PzNSo2zv0F5aj1Q+8DCvRK5CfHbWZxSkOzkkGAH4YEWA+yoMWd0KbpIkjaLT3
+         ZQ0Q==
+X-Gm-Message-State: AOAM531wqSRu9KsRHViKs07akY53bXdfKrxP2ywrKNFCJJ+zK4E7/JmP
+	roKkc6O/AGR5WESA2jRM7kvBxFoc/+vkkJPqpqlT2x9DD3E=
+X-Google-Smtp-Source: ABdhPJxzZTmpB91l/8nCs46RBobirA+G3iG5kua3Ay+NwP/u5vJ/PMUQgmXGCGkMzzuLR/Te6qVSYtzy/BJy0GP20Ps=
+X-Received: by 2002:a17:906:fcc1:: with SMTP id qx1mr57292885ejb.379.1594292831599;
+ Thu, 09 Jul 2020 04:07:11 -0700 (PDT)
+Received: from 1058052472880 named unknown by gmailapi.google.com with
+ HTTPREST; Thu, 9 Jul 2020 07:07:11 -0400
+From: Paul Bennett <pbennett@ideo.com>
+In-Reply-To: <CACNgykM=mmovU3LMNXNSo_30yGLrGKrz1MJ9ofDTWPgu9++o=g@mail.gmail.com>
+References: <CACNgykPPv+v3B-jrox=hn24=-tzr3GvXMJUdrdj+nDA67ROGDw@mail.gmail.com>
+ <C36D662C-0A27-480F-BCD5-CDDFB7B66F31@ideo.com> <CACNgykM=mmovU3LMNXNSo_30yGLrGKrz1MJ9ofDTWPgu9++o=g@mail.gmail.com>
+MIME-Version: 1.0
+Date: Thu, 9 Jul 2020 07:07:11 -0400
+Message-ID: <CAMQHE99ETJa1gjiW0GCd-m9HOUwOohLL=YqRWt04WV3gC2Wyfg@mail.gmail.com>
+Subject: Re: I'm in Iceland. Getting here was bizarre. Catch up soon? <eom?
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="000000000000e5664805aa003933"
+
+--000000000000e5664805aa003933
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Can we chat tomorrow (Friday) instead? My day is wide open
+
+
+
+
+On July 8, 2020 at 10:42:43 PM, Josh Klein (josh@josh.is) wrote:
+
+Sounds good. Just sent you an invite; let me know if you missed it.
+
+- J
+
+
+On Wed, Jul 8, 2020 at 8:08 PM Paul Bennett <pbennett@ideo.com> wrote:
+
+> Monday at 10 is good.
+>
+> pb iPhone
+>
+> On Jul 8, 2020, at 7:58 PM, Josh Klein <josh@josh.is> wrote:
+>
+> =EF=BB=BF
+>
+> Cool. Monday 10am or 1:30pm GMT ok?
+>
+> - J
+>
+>
+> On Wed, Jul 8, 2020 at 4:30 PM Paul Bennett <pbennett@ideo.com> wrote:
+>
+>> Early next week is better. I=E2=80=99m taking a break from all things id=
+eo for a
+>> week and setting up home here. I=E2=80=99ll be free all week. This would=
+ be a good
+>> thing to chat about.
+>>
+>> pb iPhone
+>>
+>> On Jul 8, 2020, at 2:32 PM, Josh Klein <josh@josh.is> wrote:
+>>
+>> =EF=BB=BF
+>>
+>> Good news across the board. Yes, back in Akureyri. Planning a meeting
+>> tour for later this month, am setting to do a keynote presentation to th=
+e
+>> Futures Committee, and am digging a little deeper into the political / t=
+ech
+>> community here. Not all bad news, but plenty of inertia. Let me know if
+>> you'd like to set a call for Friday/next week!
+>>
+>> - J
+>> =E1=90=A7
+>>
+>> On Wed, Jul 8, 2020 at 1:23 PM Paul Bennett <pbennett@ideo.com> wrote:
+>>
+>>> I was going to write to you today so well timed. We=E2=80=99re here, st=
+uff is in
+>>> port and clearing customs as we speak, and cats set for end of the mont=
+h.
+>>> Love to reconnect. You in Akureyri still?
+>>>
+>>> pb iPhone
+>>>
+>>> On Jul 8, 2020, at 1:20 PM, Josh Klein <josh@josh.is> wrote:
+>>>
+>>> =EF=BB=BF
+>>> Recently reconnected with some friends in the pirate party and the tech
+>>> community in R.vik. What's news with you - you landed and all settled i=
+n?
+>>>
+>>> - J
+>>> =E1=90=A7
+>>>
+>>> On Sun, Jun 28, 2020 at 5:42 PM Paul Bennett <pbennett@ideo.com> wrote:
+>>>
+>>>> I=E2=80=99ll text you this week when all is clear. My Icelandic cell i=
+s +354
+>>>> 773 0022
+>>>>
+>>>> pb iPhone
+>>>>
+>>>> On Jun 28, 2020, at 5:31 PM, Paul Bennett <pbennett@ideo.com> wrote:
+>>>>
+>>>> =EF=BB=BFBoston, yes. Easy.
+>>>>
+>>>> pb iPhone
+>>>>
+>>>> On Jun 28, 2020, at 2:27 PM, Josh Klein <josh@josh.is> wrote:
+>>>>
+>>>> =EF=BB=BF
+>>>> Glad to hear it! That was fast; did you end up going through Boston?
+>>>>
+>>>> Let me know when you get settled and let=E2=80=99s talk strategy - bee=
+n having
+>>>> some conversations here and am keen to make plans.
+>>>>
+>>>> - J
+>>>>
+>>>>
+>>>> On Sun, Jun 28, 2020 at 1:40 PM Paul Bennett <pbennett@ideo.com> wrote=
+:
+>>>>
+>>>>> We=E2=80=99re in Iceland. Tested and safe. Phew.
+>>>>>
+>>>>> pb mac 1
+>>>>>
+>>>>> On June 25, 2020 at 2:47:36 PM, Paul Bennett (pbennett@ideo.com)
+>>>>> wrote:
+>>>>>
+>>>>> https://ideo.zoom.us/j/97697911245
+>>>>> pb mac 1
+>>>>>
+>>>>> On June 25, 2020 at 10:45:14 AM, Josh Klein (josh@josh.is) wrote:
+>>>>>
+>>>>> Got a quick sec for a short piece of advice? I'm on Facetime / zoom /
+>>>>> hangout / etc. and just had a call cancel, if it's useful.
+>>>>>
+>>>>> - J
+>>>>> =E1=90=A7
+>>>>>
+>>>>> On Thu, Jun 25, 2020 at 2:38 PM Paul Bennett <pbennett@ideo.com>
+>>>>> wrote:
+>>>>>
+>>>>>> Our flight to Iceland was just canceled. We=E2=80=99re freaking out.=
+ Trying
+>>>>>> to resolve.
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> pb mac 1
+>>>>>>
+>>>>>> On June 25, 2020 at 10:29:28 AM, Josh Klein (josh@josh.is) wrote:
+>>>>>>
+>>>>>> Early next week morning your time? Let me know when you're around.
+>>>>>>
+>>>>>> - J
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>> On Thu, Jun 25, 2020 at 2:22 PM Paul Bennett <pbennett@ideo.com>
+>>>>>> wrote:
+>>>>>>
+>>>>>>> Yep. Please. Mildly panicking about US being closed again.
+>>>>>>>
+>>>>>>> pb mac 1
+>>>>>>>
+>>>>>>> On June 25, 2020 at 10:17:23 AM, Josh Klein (josh@josh.is) wrote:
+>>>>>>>
+>>>>>>>
+>>>>>>> =E1=90=A7
+>>>>>>>
+>>>>>>>
+
+--000000000000e5664805aa003933
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html><head><style>body{font-family:Adobe Caslon Pro,Arial;font-size:16px}<=
+/style></head><body><div style=3D"font-family:Adobe Caslon Pro,Arial;font-s=
+ize:16px">Can we chat tomorrow (Friday) instead? My day is wide open</div><=
+div style=3D"font-family:Adobe Caslon Pro,Arial;font-size:16px"><br></div> =
+<br> <div class=3D"gmail_signature"><br></div> <br><p class=3D"airmail_on">=
+On July 8, 2020 at 10:42:43 PM, Josh Klein (<a href=3D"mailto:josh@josh.is"=
+>josh@josh.is</a>) wrote:</p> <blockquote type=3D"cite" class=3D"clean_bq">=
+<span><div><div></div><div><div><div dir=3D"auto">Sounds good. Just sent yo=
+u an invite; let me know if you missed it.</div><div dir=3D"auto"><br></div=
+><div dir=3D"auto">- J</div><div dir=3D"auto"><br></div></div><div><br><div=
+ class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Jul 8,=
+ 2020 at 8:08 PM Paul Bennett &lt;<a href=3D"mailto:pbennett@ideo.com">pben=
+nett@ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" sty=
+le=3D"margin:0px 0px 0px 0.8ex;border-left-width:1px;border-left-style:soli=
+d;padding-left:1ex;border-left-color:rgb(204,204,204)"><div dir=3D"auto">Mo=
+nday at 10 is good.=C2=A0<br><br><div dir=3D"ltr">pb iPhone</div><div dir=
+=3D"ltr"><br><blockquote type=3D"cite">On Jul 8, 2020, at 7:58 PM, Josh Kle=
+in &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&g=
+t; wrote:<br><br></blockquote></div><blockquote type=3D"cite"><div dir=3D"l=
+tr">=EF=BB=BF</div></blockquote></div><div dir=3D"auto"><blockquote type=3D=
+"cite"><div dir=3D"ltr"><div><div dir=3D"auto">Cool. Monday 10am or 1:30pm =
+GMT ok?</div><div dir=3D"auto"><br></div><div dir=3D"auto">- J</div><div di=
+r=3D"auto"><br></div></div><div><br><div class=3D"gmail_quote"><div dir=3D"=
+ltr" class=3D"gmail_attr">On Wed, Jul 8, 2020 at 4:30 PM Paul Bennett &lt;<=
+a href=3D"mailto:pbennett@ideo.com" target=3D"_blank">pbennett@ideo.com</a>=
+&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left-width:1px;border-left-style:solid;padding-left:1e=
+x;border-left-color:rgb(204,204,204)"><div dir=3D"auto">Early next week is =
+better. I=E2=80=99m taking a break from all things ideo for a week and sett=
+ing up home here. I=E2=80=99ll be free all week. This would be a good thing=
+ to chat about.=C2=A0<br><br><div dir=3D"ltr">pb iPhone</div><div dir=3D"lt=
+r"><br><blockquote type=3D"cite">On Jul 8, 2020, at 2:32 PM, Josh Klein &lt=
+;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wro=
+te:<br><br></blockquote></div><blockquote type=3D"cite"><div dir=3D"ltr">=
+=EF=BB=BF</div></blockquote></div><div dir=3D"auto"><blockquote type=3D"cit=
+e"><div dir=3D"ltr"><div dir=3D"ltr">Good news across the board. Yes, back =
+in Akureyri. Planning a meeting tour for later this month, am setting to do=
+ a keynote presentation to the Futures Committee, and am digging a little d=
+eeper into the political / tech community here. Not all bad news, but plent=
+y of inertia. Let me know if you&#39;d like to set a call for Friday/next w=
+eek!<div><br></div><div>- J</div></div><div hspace=3D"streak-pt-mark" style=
+=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; ove=
+rflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb=
+3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dee2171c7-36c7-4c58-a86a-069055cb3=
+265"><font size=3D"1" style=3D"color:rgb(255,255,255)">=E1=90=A7</font></di=
+v><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On W=
+ed, Jul 8, 2020 at 1:23 PM Paul Bennett &lt;<a href=3D"mailto:pbennett@ideo=
+.com" target=3D"_blank">pbennett@ideo.com</a>&gt; wrote:<br></div><blockquo=
+te class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left-widt=
+h:1px;border-left-style:solid;padding-left:1ex;border-left-color:rgb(204,20=
+4,204)"><div dir=3D"auto">I was going to write to you today so well timed. =
+We=E2=80=99re here, stuff is in port and clearing customs as we speak, and =
+cats set for end of the month. Love to reconnect. You in Akureyri still?<di=
+v><br><div dir=3D"ltr">pb iPhone</div><div dir=3D"ltr"><br><blockquote type=
+=3D"cite">On Jul 8, 2020, at 1:20 PM, Josh Klein &lt;<a href=3D"mailto:josh=
+@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br><br></blockquote=
+></div><blockquote type=3D"cite"><div dir=3D"ltr">=EF=BB=BF<div dir=3D"ltr"=
+>Recently reconnected with some friends in the pirate party and the tech co=
+mmunity in R.vik. What&#39;s news with you - you landed and all settled in?=
+<div><br></div><div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"=
+max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflo=
+w: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoL=
+mlz&amp;type=3Dzerocontent&amp;guid=3Df418cd0f-c0f1-46af-9a4b-2d22a4e0d34b"=
+><font size=3D"1" style=3D"color:rgb(255,255,255)">=E1=90=A7</font></div><b=
+r><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Sun, =
+Jun 28, 2020 at 5:42 PM Paul Bennett &lt;<a href=3D"mailto:pbennett@ideo.co=
+m" target=3D"_blank">pbennett@ideo.com</a>&gt; wrote:<br></div><blockquote =
+class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left-width:1=
+px;border-left-style:solid;padding-left:1ex;border-left-color:rgb(204,204,2=
+04)"><div dir=3D"auto">I=E2=80=99ll text you this week when all is clear. M=
+y Icelandic cell is +354 773 0022<br><br><div dir=3D"ltr">pb iPhone</div><d=
+iv dir=3D"ltr"><br><blockquote type=3D"cite">On Jun 28, 2020, at 5:31 PM, P=
+aul Bennett &lt;<a href=3D"mailto:pbennett@ideo.com" target=3D"_blank">pben=
+nett@ideo.com</a>&gt; wrote:<br><br></blockquote></div><blockquote type=3D"=
+cite"><div dir=3D"ltr">=EF=BB=BFBoston, yes. Easy.=C2=A0<br><br><div dir=3D=
+"ltr">pb iPhone</div><div dir=3D"ltr"><br><blockquote type=3D"cite">On Jun =
+28, 2020, at 2:27 PM, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=
+=3D"_blank">josh@josh.is</a>&gt; wrote:<br><br></blockquote></div><blockquo=
+te type=3D"cite"><div dir=3D"ltr">=EF=BB=BF<div><div dir=3D"auto">Glad to h=
+ear it! That was fast; did you end up going through Boston?</div><div dir=
+=3D"auto"><br></div><div dir=3D"auto">Let me know when you get settled and =
+let=E2=80=99s talk strategy - been having some conversations here and am ke=
+en to make plans.</div><div dir=3D"auto"><br></div><div dir=3D"auto">- J</d=
+iv><div dir=3D"auto"><br></div></div><div><br><div class=3D"gmail_quote"><d=
+iv dir=3D"ltr" class=3D"gmail_attr">On Sun, Jun 28, 2020 at 1:40 PM Paul Be=
+nnett &lt;<a href=3D"mailto:pbennett@ideo.com" target=3D"_blank">pbennett@i=
+deo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"=
+margin:0px 0px 0px 0.8ex;border-left-width:1px;border-left-style:solid;padd=
+ing-left:1ex;border-left-color:rgb(204,204,204)"><div><div style=3D"font-fa=
+mily:&quot;Adobe Caslon Pro&quot;,Arial;font-size:16px">We=E2=80=99re in Ic=
+eland. Tested and safe. Phew.=C2=A0</div> <br> <div>pb mac 1</div></div><di=
+v> <br><p>On June 25, 2020 at 2:47:36 PM, Paul Bennett (<a href=3D"mailto:p=
+bennett@ideo.com" target=3D"_blank">pbennett@ideo.com</a>) wrote:</p> <bloc=
+kquote type=3D"cite"><span><div><div></div><div><div style=3D"font-family:&=
+quot;Adobe Caslon Pro&quot;,Arial;font-size:16px"><a href=3D"https://ideo.z=
+oom.us/j/97697911245" style=3D"font-family:&quot;Adobe Caslon Pro&quot;,Ari=
+al" target=3D"_blank">https://ideo.zoom.us/j/97697911245</a></div> <div>pb =
+mac 1</div> <br><p>On June 25, 2020 at 10:45:14 AM, Josh Klein (<a href=3D"=
+mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>) wrote:</p> <blockq=
+uote type=3D"cite"><span><div><div></div><div><div dir=3D"ltr">Got a quick =
+sec for a short piece of advice? I&#39;m on Facetime / zoom / hangout=C2=A0=
+/ etc. and just had a call cancel, if it&#39;s useful.=C2=A0<div><br></div>=
+<div>- J</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"=
+><img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=
+=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3D=
+zerocontent&amp;guid=3Da6a922dd-42d3-4f08-8b93-9381a6274020"><font size=3D"=
+1" style=3D"color:rgb(255,255,255)">=E1=90=A7</font></div><br><div class=3D=
+"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu, Jun 25, 2020 at=
+ 2:38 PM Paul Bennett &lt;<a href=3D"mailto:pbennett@ideo.com" target=3D"_b=
+lank">pbennett@ideo.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_=
+quote" style=3D"margin:0px 0px 0px 0.8ex;border-left-width:1px;border-left-=
+style:solid;padding-left:1ex;border-left-color:rgb(204,204,204)"><div><div =
+style=3D"font-family:&quot;Adobe Caslon Pro&quot;,Arial;font-size:16px">Our=
+ flight to Iceland was just canceled. We=E2=80=99re freaking out. Trying to=
+ resolve.=C2=A0</div><div style=3D"font-family:&quot;Adobe Caslon Pro&quot;=
+,Arial;font-size:16px"><br></div><div style=3D"font-family:&quot;Adobe Casl=
+on Pro&quot;,Arial;font-size:16px"><br></div> <br> <div>pb mac 1</div> <br>=
+<p>On June 25, 2020 at 10:29:28 AM, Josh Klein (<a href=3D"mailto:josh@josh=
+.is" target=3D"_blank">josh@josh.is</a>) wrote:</p> <blockquote type=3D"cit=
+e"><span><div><div></div><div><div dir=3D"ltr">Early next week morning your=
+ time? Let me know when you&#39;re around.<div><br></div><div>- J</div></di=
+v><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" sty=
+le=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfo=
+ogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;gu=
+id=3Dc2262002-0ca9-4a4b-8ec8-e5ba082f5f5a"><font size=3D"1" style=3D"color:=
+rgb(255,255,255)">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div=
+ dir=3D"ltr" class=3D"gmail_attr">On Thu, Jun 25, 2020 at 2:22 PM Paul Benn=
+ett &lt;<a href=3D"mailto:pbennett@ideo.com" target=3D"_blank">pbennett@ide=
+o.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0px 0px 0px 0.8ex;border-left-width:1px;border-left-style:solid;paddin=
+g-left:1ex;border-left-color:rgb(204,204,204)"><div><div style=3D"font-fami=
+ly:&quot;Adobe Caslon Pro&quot;,Arial;font-size:16px">Yep. Please. Mildly p=
+anicking about US being closed again.=C2=A0</div> <br> <div>pb mac 1</div> =
+<br><p>On June 25, 2020 at 10:17:23 AM, Josh Klein (<a href=3D"mailto:josh@=
+josh.is" target=3D"_blank">josh@josh.is</a>) wrote:</p> <blockquote type=3D=
+"cite"><span><div><div></div><div><div dir=3D"ltr"><br></div><div hspace=3D=
+"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px=
+; max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com=
+/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D3c66aba6-4f=
+42-4afb-8d8a-9cfdc56cc5b6"><font size=3D"1" style=3D"color:rgb(255,255,255)=
+">=E1=90=A7</font></div>
+</div></div></span></blockquote></div>
+</blockquote></div>
+</div></div></span></blockquote></div>
+</blockquote></div>
+</div></div></span></blockquote></div></div></span></blockquote></div>
+</blockquote></div></div>
+</div></blockquote></div></blockquote></div></blockquote></div>
+</div></blockquote></div></div></blockquote></div>
+</div></blockquote></div></blockquote></div></div>
+</div></blockquote></div></blockquote></div></div>
+</div></div></span></blockquote></body></html>
+
+--000000000000e5664805aa003933--

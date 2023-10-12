@@ -1,0 +1,930 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b522:0:0:0:0:0 with SMTP id z2csp621114ljm;
+        Fri, 10 Jan 2020 02:15:08 -0800 (PST)
+X-Google-Smtp-Source: APXvYqxS/ZnsznL/NOPM1K20BFC6aJu38WiiPIF+fvU6K3KMxJIwaE2XTKgtY6j8FEUywBvMUQY1
+X-Received: by 2002:a05:620a:1136:: with SMTP id p22mr2387593qkk.8.1578651307935;
+        Fri, 10 Jan 2020 02:15:07 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1578651307; cv=none;
+        d=google.com; s=arc-20160816;
+        b=gDcDxxHF6n2tDmn0cpICKCgJbKvlcv4o3nxm0cv1w5s+mFfsCgZGMGm0dqCGwD4V7k
+         /VdsqsV/mXLrEqChfpoNMaNKGP33kap5BxITzHgVwygqtml66PjMQ1AlYcabpU3NQuZr
+         +22dr25kePxwsVy0+XSQK91QQN+oTgZKE3O/KedBTRsPOBwU18Vo0ql3XnrU3F9LZGph
+         BmRK9cHULpH0WNBnu1DnZWGk9VLydgnIXU0F4OmQwgTJcOVVjED+wK3axxzQVGGn4icX
+         a1Q3DROyvwDGCvhN09lGmXUfTnWyXYAhhEtXnlWQgD5l4Jj4wOWsknHVKozKMcLu8QZu
+         X5EA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from;
+        bh=+tS08Bowjqy2Zymn3gIGolQsygiL0x4m0jVinkjWSyY=;
+        b=dAQRNINJ5zRlSy/pHVwd01JYUPs/sHet8ITDmPg/R10M1/mc2jd75Ooqfq3cOQHLfS
+         XG3mFv7RhOAbWlhIHhOAYjq4elbPMdxtxdf0EXbnV7uGKZBAo2yIbbvRNDq6a9VcwDvG
+         CjL4Zkk1LdutNe2HCQsp9SIpsXyZm0jij70H7vc4w2T3lA17pzf8HIowWqnFq4+5258w
+         F4fhybOCuCLu5D04PPgAaOa7r5ib1Fo91FydU8EZE4NvEQ87+MjdAgg+nReWZkKHytjw
+         sGlDQTGxiQpFIvigh+wtLZEX78YVcO7YL0UdGpZ+6kkAep5eJA1LHddYYYhiAARR0BnE
+         i+tA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.225.37 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-03.prod.iad2.secureserver.net (a2nlsmtp01-03.prod.iad2.secureserver.net. [198.71.225.37])
+        by mx.google.com with ESMTPS id n7si956098qtl.44.2020.01.10.02.15.07
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Jan 2020 02:15:07 -0800 (PST)
+Received-SPF: fail (google.com: domain of chris@indigometrics.com does not designate 198.71.225.37 as permitted sender) client-ip=198.71.225.37;
+Authentication-Results: mx.google.com;
+       spf=fail (google.com: domain of chris@indigometrics.com does not designate 198.71.225.37 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Received: from mailout02.c01.mtsvc.net ([64.207.129.76])
+	by : HOSTING RELAY : with ESMTP
+	id prIsir8c1E7ZgprIsixirU; Fri, 10 Jan 2020 03:14:06 -0700
+Received: from cl09.gs01.gridserver.com ([64.13.192.18])
+	by mailout02.c01.mtsvc.net with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1iprIq-0001AN-0W
+	for josh@josh.is; Fri, 10 Jan 2020 02:14:05 -0800
+Received: from [84.78.248.169] (port=40739 helo=DESKTOP9FLF1V4)
+	by cl09.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1iprIp-00010n-6k
+	for josh@josh.is; Fri, 10 Jan 2020 02:14:03 -0800
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+References: <CACNgykOZnmsNfsPyyFdKnDYLBf=fbekJ6MtBOk7EXDY3yHYVOA@mail.gmail.com> <BN8PR20MB22580C319BBBEACAFAA9EB9DCA700@BN8PR20MB2258.namprd20.prod.outlook.com> <CACNgykN+ryg4Z2JxUzPRXkf=g27jKXa-jSc=bUO3+dwB=tnSQQ@mail.gmail.com> <BN8PR20MB2258BA5AB02D19BA5BA4EAEFCA4D0@BN8PR20MB2258.namprd20.prod.outlook.com> <CACNgykNoxOxpfmyZLgQsRzW0h7sACdookz4aUzWvab0GrQp_ww@mail.gmail.com> <BN8PR20MB2258123031052DAC8035A913CA4D0@BN8PR20MB2258.namprd20.prod.outlook.com> <CACNgykOHTXQC0KX2UN5wJi4aCfxTyqoXpcWeLHnPJd6koRKpOw@mail.gmail.com> <CACNgykOGSQiv3VyXwB9odQDvfpwChp-+FR-CGJ60NZasYeG3gQ@mail.gmail.com> <BN8PR20MB22586FCD94B30844F8826C5ECA5D0@BN8PR20MB2258.namprd20.prod.outlook.com> <CACNgykMw+aKJiiXiHLg2+X78f_ViC_dhHso=4zycFjOgS_ES1w@mail.gmail.com> <BN8PR20MB2258F6FA1D0AAC5AFAAE2CFCCA500@BN8PR20MB2258.namprd20.prod.outlook.com> <CACNgykNH3K2+dj=dJPTBJanYP_QgwAyPvz4ejZgoss-evmi5QQ@mail.gmail.com> <DM5PR20MB121144D9632795EDD19EF49DCA3C0@DM5PR20MB1211.namprd20.prod.outlook.com> <CACNgykPAzRmGAEb-TZVM7OQLnqrFf
+	C3nXO6i0TNpEHPfgQmWSg@mail.gmail.com> <DM5PR20MB1211ED2C2BEC23B6297F1491CA390@DM5PR20MB1211.namprd20.prod.outlook.com> <CACNgykPcmA65wkFE7onLTrrvCdfjfk-cVR+qqyuGxt6S9tezNA@mail.gmail.com>
+In-Reply-To: <CACNgykPcmA65wkFE7onLTrrvCdfjfk-cVR+qqyuGxt6S9tezNA@mail.gmail.com>
+Subject: RE: Irrational
+Date: Fri, 10 Jan 2020 10:14:05 -0000
+Message-ID: <004301d5c79e$b3a71750$1af545f0$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_0044_01D5C79E.B3ABD240"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQJgtv+obDNuhFHFj7bLKuTGlBTpnQFtPwKQAVGkybABl/f0tAG/++z/AbdQMZwCC/TluwF24X9WAWl/LL4CzI3HSQE/X3CEAjOlS/ICLUMuVwFneiWIAiXLZv4CGy1oBaX3UQRw
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-CMAE-Envelope: MS4wfNrtA+qnbHDBem6Udvx0yM93n19SnpMgQFpgsGF2vwIEI6Hk84uX8dkGM1sX+Ui8ZgrNY8FSj1hvTxL4R8e5o71bexn7/VIbfUkpGKywB5j9momtHk3A
+ uGN3c4acrMyE0v+46fUa5KTYkrwnXK7WwPpFNgHGx+M6004TAWOuK/9fShj9NtsfRpRkdCALzKat4A==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_0044_01D5C79E.B3ABD240
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+All good for me =E2=80=93 Ill share a new version of the deck including =
+some commentary on comparisons to traditional surveys.
+
+C
+
+=20
+
+From: Josh Klein <josh@josh.is>=20
+Sent: 09 January 2020 14:00
+To: Chris at Indigo <chris@indigometrics.com>
+Subject: Fwd: Irrational
+
+=20
+
+This work for you? Does for me, and he=E2=80=99s clearly thinking =
+strategically if he=E2=80=99s outlined what we need to highlight to =
+differentiate - a good sign!
+
+=20
+
+- J
+
+=20
+
+=20
+
+---------- Forwarded message ---------
+From: Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> >
+Date: Thu, Jan 9, 2020 at 8:46 AM
+Subject: RE: Irrational
+To: Josh Klein <josh@josh.is <mailto:josh@josh.is> >
+
+=20
+
+10-11 AM EST work on 1/22?=20
+
+=20
+
+Also, as a prep point or element to address =E2=80=93 differentiators =
+from other solutions (e.g. Qualtrics) or surveys.=20
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Tuesday, January 7, 2020 11:58 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+Great! Is the 22nd in the morning ok?=20
+
+=20
+
+- J
+
+=20
+
+=20
+
+On Mon, Jan 6, 2020 at 1:56 PM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+How=E2=80=99s the week after next look for you?=20
+
+=20
+
+A demo for a potential user group sprinkled with specs and results would =
+be great.=20
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Saturday, December 21, 2019 4:35 PM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+Great! Would be happy to walk you through our demo / sandbox. When would =
+be best for you, or are you looking more for some technical specs to =
+drum up more support?
+
+=20
+
+- J
+
+=20
+
+=20
+
+=20
+
+On Tue, Dec 17, 2019 at 8:46 AM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+Josh =E2=80=93 thoughts on a technical demo in early 2020 for a few =
+folks within Bechtel =E2=80=93 I=E2=80=99ve generated a bit of interest. =
+
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Thursday, December 5, 2019 7:25 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+Apologies for the long delay - let me know what more I can provide!
+
+=20
+
+All best,
+
+Josh
+
+=20
+
+On Wed, Dec 4, 2019 at 10:39 AM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+No worries =E2=80=93 I am flexible. Hope you had a great Thanksgiving.=20
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Wednesday, November 27, 2019 9:45 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Cc: Joshua William Klein <josh@josh.is <mailto:josh@josh.is> >
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+Just a heads up that I'm delaying sending you our materials while we =
+update them with some new features that just passed testing; these are =
+largely around the qualitative feedback elements which I thought you'd =
+find interesting (plus, with the holidays it seemed like a good time). =
+Look for these soon!
+
+=20
+
+All best and happy holidays,
+
+Josh
+
+=20
+
+=20
+
+On Mon, Nov 18, 2019 at 11:00 AM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is> > wrote:
+
+Works for me! How best to reach you?
+
+=20
+
+- J
+
+=20
+
+=20
+
+On Mon, Nov 18, 2019 at 10:25 AM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+Level 3 - Internal and Selected External Distribution
+
+=20
+
+How about 12:30-1:30 EST?
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Monday, November 18, 2019 10:22 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+Monday works for me. 1pm EST ok?
+
+=20
+
+- J
+
+=20
+
+On Mon, Nov 18, 2019 at 8:18 AM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+Level 3 - Internal and Selected External Distribution
+
+=20
+
+This week has now gotten away from me =E2=80=93 what about any time next =
+Monday (11/25) or Tuesday (11/26) afternoon (EST)? =20
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Saturday, November 16, 2019 4:05 PM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Cc: Joshua William Klein <josh@josh.is <mailto:josh@josh.is> >
+Subject: Re: Irrational [*EXTERNAL*]
+
+=20
+
+I could only do 9-9:30, but am mostly free later that afternoon if =
+you've any other time open!=20
+
+=20
+
+- J
+
+=20
+
+On Fri, Nov 15, 2019 at 11:28 AM Wilson, David J <djwilson@bechtel.com =
+<mailto:djwilson@bechtel.com> > wrote:
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+=20
+
+How does next Wednesday morning (EST) look for you? I am free until 11 =
+AM EST.=20
+
+=20
+
+Regards,
+
+David=20
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: Friday, November 15, 2019 9:54 AM
+To: Wilson, David J <djwilson@Bechtel.com <mailto:djwilson@Bechtel.com> =
+>
+Cc: Joshua William Klein <josh@josh.is <mailto:josh@josh.is> >
+Subject: Irrational [*EXTERNAL*]
+
+=20
+
+David,
+
+=20
+
+Following up pursuant our exchange on LinkedIn. Let me know when you're =
+available to connect to continue the conversation around alternate =
+methods of influencing behavior - as you noted, human irrationality is a =
+deciding factor, but one that can be exploited!
+
+=20
+
+All best,
+
+Josh
+
+=20
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+=20
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+=20
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+=20
+
+Level 3 - Bechtel Internal and Selected External Distribution
+
+
+------=_NextPart_000_0044_01D5C79E.B3ABD240
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 15 (filtered =
+medium)"><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:purple;
+	text-decoration:underline;}
+p.msonormal0, li.msonormal0, div.msonormal0
+	{mso-style-name:msonormal;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.m-5774651551852925115m4036905192953357874m-1963315258123106117gmail-m48=
+81379169578618855msipfooter69083fef, =
+li.m-5774651551852925115m4036905192953357874m-1963315258123106117gmail-m4=
+881379169578618855msipfooter69083fef, =
+div.m-5774651551852925115m4036905192953357874m-1963315258123106117gmail-m=
+4881379169578618855msipfooter69083fef
+	=
+{mso-style-name:m_-5774651551852925115m4036905192953357874m-1963315258123=
+106117gmail-m4881379169578618855msipfooter69083fef;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.m-5774651551852925115m4036905192953357874m-1963315258123106117msipfoote=
+r69083fef, =
+li.m-5774651551852925115m4036905192953357874m-1963315258123106117msipfoot=
+er69083fef, =
+div.m-5774651551852925115m4036905192953357874m-1963315258123106117msipfoo=
+ter69083fef
+	=
+{mso-style-name:m_-5774651551852925115m4036905192953357874m-1963315258123=
+106117msipfooter69083fef;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.m-5774651551852925115m4036905192953357874msipfooter69083fef, =
+li.m-5774651551852925115m4036905192953357874msipfooter69083fef, =
+div.m-5774651551852925115m4036905192953357874msipfooter69083fef
+	=
+{mso-style-name:m_-5774651551852925115m4036905192953357874msipfooter69083=
+fef;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+p.m-5774651551852925115msipfooter69083fef, =
+li.m-5774651551852925115msipfooter69083fef, =
+div.m-5774651551852925115msipfooter69083fef
+	{mso-style-name:m_-5774651551852925115msipfooter69083fef;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle25
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue =
+vlink=3Dpurple><div class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>All good for me =E2=80=93 Ill share =
+a new version of the deck including some commentary on comparisons to =
+traditional surveys.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>C<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><p =
+class=3DMsoNormal><b><span lang=3DEN-US>From:</span></b><span =
+lang=3DEN-US> Josh Klein &lt;josh@josh.is&gt; <br><b>Sent:</b> 09 =
+January 2020 14:00<br><b>To:</b> Chris at Indigo =
+&lt;chris@indigometrics.com&gt;<br><b>Subject:</b> Fwd: =
+Irrational<o:p></o:p></span></p><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p =
+class=3DMsoNormal>This work for you? Does for me, and he=E2=80=99s =
+clearly thinking strategically if he=E2=80=99s outlined what we need to =
+highlight to differentiate - a good sign!<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div><div><p class=3DMsoNormal>- =
+J<o:p></o:p></p></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p></div></div><div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p =
+class=3DMsoNormal>---------- Forwarded message ---------<br>From: =
+<strong><span style=3D'font-family:"Calibri",sans-serif'>Wilson, David =
+J</span></strong> &lt;<a =
+href=3D"mailto:djwilson@bechtel.com">djwilson@bechtel.com</a>&gt;<br>Date=
+: Thu, Jan 9, 2020 at 8:46 AM<br>Subject: RE: Irrational<br>To: Josh =
+Klein &lt;<a =
+href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;<o:p></o:p></p></div><p =
+class=3DMsoNormal =
+style=3D'margin-bottom:12.0pt'><o:p>&nbsp;</o:p></p><div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>10-11 AM EST work on 1/22? <o:p></o:p></span></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Also, as a prep point or element to address =E2=80=93 =
+differentiators from other solutions (e.g. Qualtrics) or surveys. =
+<o:p></o:p></span></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Tuesday, January 7, 2020 11:58 AM<br><b>To:</b> Wilson, =
+David J &lt;<a =
+href=3D"mailto:djwilson@Bechtel.com">djwilson@Bechtel.com</a>&gt;<br><b>S=
+ubject:</b> Re: Irrational [*EXTERNAL*]<o:p></o:p></span></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Great! Is the 22nd in the morning =
+ok?&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>- J<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Mon, Jan 6, 2020 at 1:56 PM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>How=E2=80=99s the week after next look for you? =
+<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>A demo for a potential user group sprinkled with specs and =
+results would be great. <o:p></o:p></span></p></div></div><div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Saturday, December 21, 2019 4:35 PM<br><b>To:</b> =
+Wilson, David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Subject:</b> Re: =
+Irrational [*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Great! Would be happy to walk you through our demo / =
+sandbox. When would be best for you, or are you looking more for some =
+technical specs to drum up more =
+support?<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>- J<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Tue, Dec 17, 2019 at 8:46 AM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Josh =E2=80=93 thoughts on a technical demo in early 2020 =
+for a few folks within Bechtel =E2=80=93 I=E2=80=99ve generated a bit of =
+interest. <o:p></o:p></span></p></div></div><div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Thursday, December 5, 2019 7:25 AM<br><b>To:</b> =
+Wilson, David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Subject:</b> Re: =
+Irrational [*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Apologies for the long delay - let me know what more I can =
+provide!<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>All best,<o:p></o:p></span></p></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Josh<o:p></o:p></span></p></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Wed, Dec 4, 2019 at 10:39 AM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>No worries =E2=80=93 I am flexible. Hope you had a great =
+Thanksgiving. <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Wednesday, November 27, 2019 9:45 AM<br><b>To:</b> =
+Wilson, David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Cc:</b> Joshua =
+William Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank">josh@josh.is</a>&gt;<br><b>Subject:</b> Re: Irrational =
+[*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Just a heads up that I'm delaying sending you our materials =
+while we update them with some new features that just passed testing; =
+these are largely around the qualitative feedback elements which I =
+thought you'd find interesting (plus, with the holidays it seemed like a =
+good time). Look for these soon!<o:p></o:p></span></p><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>All best and happy =
+holidays,<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Josh<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div></div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Mon, Nov 18, 2019 at 11:00 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid windowtext 1.0pt;padding:0cm 0cm =
+0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt;border-color:currentcolor currentcolor currentcolor =
+rgb(204,204,204)'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Works for me! How best to reach =
+you?<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>- J<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Mon, Nov 18, 2019 at 10:25 AM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid windowtext 1.0pt;padding:0cm 0cm =
+0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt;border-color:currentcolor currentcolor currentcolor =
+rgb(204,204,204)'><div><div><p =
+style=3D'margin:0cm;margin-bottom:.0001pt'><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>How about 12:30-1:30 =
+EST?<o:p></o:p></span></p></div></div><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Monday, November 18, 2019 10:22 AM<br><b>To:</b> =
+Wilson, David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Subject:</b> Re: =
+Irrational [*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Monday works for me. 1pm EST =
+ok?<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>- J<o:p></o:p></span></p></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Mon, Nov 18, 2019 at 8:18 AM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid windowtext 1.0pt;padding:0cm 0cm =
+0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt;border-color:currentcolor currentcolor currentcolor =
+rgb(204,204,204)'><div><div><p =
+style=3D'margin:0cm;margin-bottom:.0001pt'><span lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>This week has now gotten away from me =E2=80=93 what about =
+any time next Monday (11/25) or Tuesday (11/26) afternoon (EST)? =
+&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Saturday, November 16, 2019 4:05 PM<br><b>To:</b> =
+Wilson, David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Cc:</b> Joshua =
+William Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank">josh@josh.is</a>&gt;<br><b>Subject:</b> Re: Irrational =
+[*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>I could only do 9-9:30, but am mostly free later that =
+afternoon if you've any other time =
+open!&nbsp;<o:p></o:p></span></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>- J<o:p></o:p></span></p></div></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>On Fri, Nov 15, 2019 at 11:28 AM Wilson, David J &lt;<a =
+href=3D"mailto:djwilson@bechtel.com" =
+target=3D"_blank">djwilson@bechtel.com</a>&gt; =
+wrote:<o:p></o:p></span></p></div><blockquote =
+style=3D'border:none;border-left:solid windowtext 1.0pt;padding:0cm 0cm =
+0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt;border-color:currentcolor currentcolor currentcolor =
+rgb(204,204,204)'><div><div><p =
+style=3D'margin:0cm;margin-bottom:.0001pt'><span lang=3DEN-US =
+style=3D'font-family:"Arial",sans-serif;color:black'>Level 3 - Bechtel =
+Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>How does next Wednesday morning (EST) look for you? I am =
+free until 11 AM EST. <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Regards,<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David <o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> Friday, November 15, 2019 9:54 AM<br><b>To:</b> Wilson, =
+David J &lt;<a href=3D"mailto:djwilson@Bechtel.com" =
+target=3D"_blank">djwilson@Bechtel.com</a>&gt;<br><b>Cc:</b> Joshua =
+William Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank">josh@josh.is</a>&gt;<br><b>Subject:</b> Irrational =
+[*EXTERNAL*]<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><div><div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>David,<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Following up pursuant our exchange on LinkedIn. Let me know =
+when you're available to connect to continue the conversation around =
+alternate methods of influencing behavior - as you noted, human =
+irrationality is a deciding factor, but one that can be =
+exploited!<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>All best,<o:p></o:p></span></p></div><div><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>Josh<o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p =
+class=3D"m-5774651551852925115m4036905192953357874m-1963315258123106117gm=
+ail-m4881379169578618855msipfooter69083fef" align=3Dcenter =
+style=3D'margin:0cm;margin-bottom:.0001pt;text-align:center'><span =
+lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p =
+class=3Dm-5774651551852925115m4036905192953357874m-1963315258123106117msi=
+pfooter69083fef align=3Dcenter =
+style=3D'margin:0cm;margin-bottom:.0001pt;text-align:center'><span =
+lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p =
+class=3Dm-5774651551852925115m4036905192953357874msipfooter69083fef =
+align=3Dcenter =
+style=3D'margin:0cm;margin-bottom:.0001pt;text-align:center'><span =
+lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><span =
+lang=3DEN-US>&nbsp;<o:p></o:p></span></p><p =
+class=3Dm-5774651551852925115msipfooter69083fef align=3Dcenter =
+style=3D'margin:0cm;margin-bottom:.0001pt;text-align:center'><span =
+lang=3DEN-US =
+style=3D'font-size:10.0pt;font-family:"Arial",sans-serif;color:black'>Lev=
+el 3 - Bechtel Internal and Selected External Distribution</span><span =
+lang=3DEN-US><o:p></o:p></span></p></div></div></div></div></div></blockq=
+uote></div></div></div></blockquote></div></div></div></blockquote></div>=
+</div></blockquote></div></div></div></blockquote></div></div></div></blo=
+ckquote></div></div></div></div></blockquote></div></div></div></div></di=
+v></div></div></body></html>
+------=_NextPart_000_0044_01D5C79E.B3ABD240--
+

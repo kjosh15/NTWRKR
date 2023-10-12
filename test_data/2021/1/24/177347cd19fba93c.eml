@@ -1,0 +1,874 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:894f:0:0:0:0:0 with SMTP id b15csp2800925ljk;
+        Sun, 24 Jan 2021 05:02:11 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz5A9RzsLC3wzfTuKbegTrwLxPSmOKFNYP4l3F34ORJnWmJvm9ajc9cu7dPKiSTHu5AbDiI
+X-Received: by 2002:aa7:c244:: with SMTP id y4mr902200edo.239.1611493331420;
+        Sun, 24 Jan 2021 05:02:11 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1611493331; cv=none;
+        d=google.com; s=arc-20160816;
+        b=dKD+0FbUV4iRj/5ez00HHGJBPaUOtwPoDlEovAG3OTe6J6H6HQjh9NS1D6GXYR8wNr
+         LaQlx0V9iDs3wXLNTGSyej5zqtYAiecibXufjCXXjH9pPI9wnx/QYxfIkgQO+ySRb3Tk
+         mtFeKX8KLZNFjMvy4Zc6AdL8hrMQwAuGGDzNF9YpNGe7PMle5G9Eds/qZbSIICI1MUCk
+         7URILepSu36cmpHzmo5py4arFMEDHyNSaMLJJIq0AWfZRn6hwrH2JwRKPKUztq8cdI1m
+         CC2OuYwz6LBsSdf9BWzOzhcnjI7h3Nm/UF+qNYY54WE3iWJwpP/OZjJsb0oFdUyLE7j9
+         PlJQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=list-unsubscribe:subject:message-id:to:reply-to:mime-version:from
+         :date:dkim-signature;
+        bh=Ol691iCFk16RlxZiuPuNwvH3WrKSB5qV+LhjB+wmCik=;
+        b=HCQ0pCHSf68jfsbxzumFXTAVWXtxbS2P8pytpKZ0U0TyDaHOiNLGM+DbtBMdCrSE18
+         7eI+D4VoQrU9T29oXfQIDdigH25ptNc9tUi00qOKpCt+iVYu+hANuPCN6Co8v+saXBUA
+         2y/qaxM6GlSNo1wUvgSRV9e7NKA6nUP6v908sVFLaYNphp5TyZqJs26p7g+bggXh8zak
+         5TZEA5kx3HqTG01uNwYDRibTJKrHpbv+8agzg1XxagB5ZR515Me40nUl1/Z0t54L2OMW
+         aH3XiVIwyN/uoXfjZTxYWJ9OXViTCOa9Pkeknz1Lz1LoJWf11XduGtg2uISioopZC4xx
+         qPAw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@inside.com header.s=s1 header.b="ryY/Rz3J";
+       spf=pass (google.com: domain of bounces+5080173-16ed-josh=josh.is@news.inside.com designates 168.245.32.206 as permitted sender) smtp.mailfrom="bounces+5080173-16ed-josh=josh.is@news.inside.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=inside.com
+Return-Path: <bounces+5080173-16ed-josh=josh.is@news.inside.com>
+Received: from o2.sendgrid.inside.com (o2.sendgrid.inside.com. [168.245.32.206])
+        by mx.google.com with ESMTPS id c2si6191871edw.234.2021.01.24.05.02.10
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 24 Jan 2021 05:02:11 -0800 (PST)
+Received-SPF: pass (google.com: domain of bounces+5080173-16ed-josh=josh.is@news.inside.com designates 168.245.32.206 as permitted sender) client-ip=168.245.32.206;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@inside.com header.s=s1 header.b="ryY/Rz3J";
+       spf=pass (google.com: domain of bounces+5080173-16ed-josh=josh.is@news.inside.com designates 168.245.32.206 as permitted sender) smtp.mailfrom="bounces+5080173-16ed-josh=josh.is@news.inside.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=inside.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=inside.com; 
+	h=content-type:from:mime-version:reply-to:to:subject:list-unsubscribe; 
+	s=s1; bh=Ol691iCFk16RlxZiuPuNwvH3WrKSB5qV+LhjB+wmCik=; b=ryY/Rz3
+	JcT72CMMl2mCqbybtL7chyo1P88gTsqOSyBnwSsqp5LtzK1p1WNKsbQwe840+92i
+	I9ffMwqO4E0nq/nMpeW21pHtipYDxQETkiwh4bBvcliuPcZIJrOW6aLGn5WIEI7/
+	pH1sYrGNS6v+JEwoMHUAxYroBAxStL2OOGIg=
+Received: by filter1740p1iad2.sendgrid.net with SMTP id filter1740p1iad2-6053-600D6FC6-14
+        2021-01-24 13:01:58.425992139 +0000 UTC m=+184993.091056565
+Received: from NTA4MDE3Mw (unknown)
+	by ismtpd0007p1sjc2.sendgrid.net (SG) with HTTP id GikRpslcT5m0dqUAt7ZhpA
+	Sun, 24 Jan 2021 13:01:58.037 +0000 (UTC)
+Content-Type: multipart/alternative; boundary=db2d3c99a32d0c4ef6b42c786da2a72f604cc84f8c57a8bf7d600f265b3e
+Date: Sun, 24 Jan 2021 13:02:08 +0000 (UTC)
+From: "Inside AI" <ai@inside.com>
+Mime-Version: 1.0
+Reply-to: "Inside AI" <ai@inside.com>
+To: josh@josh.is
+Message-ID: <GikRpslcT5m0dqUAt7ZhpA@ismtpd0007p1sjc2.sendgrid.net>
+Subject: Inside AI Weekend Commentary:  Why MLOps is Different Than DevOps
+List-Unsubscribe: <https://inside.com/lists/unsubscribe/lArS9zE1BofEVd4IRHiCug?list=65>
+X-SG-EID: FyJPS/4HFhLWsB6XUBQwM/I7yDTO0MpU7rHTacBaeAfEGoJxZmYbrJHdPo03lLBE6P6URcxdOV/zyO
+ YhzTYYsZ4MYPYcRWaDj0tGTrCiIMpiD0gHRmjyg3rRE8E9LVu1YrVQIwJJpW61uo/4hipvWzdXXAk/
+ d0Q52TDQfhCqT4X8NEcsBg4xkuQgh6WJWYS0vTYiWC/XC+RL2LkBZkMqjQ==
+X-SG-ID: CaKVnp7vtWNdtxHTtJ5mf5pH+J3/JhXHEgI64TojGkZZhO+JnIm88oAV1yDezOGx
+X-Entity-ID: atrBGIOACO9z/Xu8xAn05g==
+
+--db2d3c99a32d0c4ef6b42c786da2a72f604cc84f8c57a8bf7d600f265b3e
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Mime-Version: 1.0
+
+inside ai commentary
+<img src=3D'https://u5080173.ct.sendgrid.net/ss/c/OoCVj5i616Rkf1rEw3jGqhjHt=
+-9iLRjBsbn2CuJ1SHQrpjQCd5nkF3P0HNPppTDTboUROCA5p3VyTNMTFbIk5wtcUPuVF9MiX6Jj=
+udyaZ4CgebQsIah2o9Rxnyv6HfmN/38u/82YjBkZWSWG-6br9VaQy2g/t30/a-MYM_PutumZcly=
+I00vNVFRQdTw0MKNle3FJaYJ03cE>
+
+Inside.com
+
+Part of ( https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03Rak5SAHp=
+HB-UWTHctE5yPcII/38u/82YjBkZWSWG-6br9VaQy2g/t31/5ZdhPpAGExeJLAPK9S-wgvxxzMl=
+SPbqRiOv3yHU1_ko ) Network
+
+January 24, 2021=20
+( https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5alXkn0F3OZMsp7lG1eyUwTgH-OB-uaSIUSvwJBjsV1sw3gdIFXiviMLBsia1-X9HZA/38=
+u/82YjBkZWSWG-6br9VaQy2g/t32/rccOwP0vMIvR95X5rm-ZUYjbr3cKz1GKYRcg6bsh30E )
+
+
+=20
+( https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeM-mIUlAGF5km0K=
+9bVIJ1f-8yef82Cb8rfgbQJeznK5SRQUPPiNVN6763KExoFDRow/38u/82YjBkZWSWG-6br9VaQ=
+y2g/t33/OMAU5hpolh76WPh7kpyaifSBdfLJiigSQsLYSD9wrXQ )
+
+
+
+Twitter=20
+( https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZyEhKqEukUlheKul2K8pHRZlN0_Vcv7xKBTqD_NUTelIvKSU2SYwZYPJnfYsJNZgeUi0=
+qfnzIsa7fetq1_HbgoMLtRDQumL1KnMsuLFAk4ten-8UsYyGu4W6-RMcO-sk5wGBixrdn2EBC3i=
+AC3iNlGcf_t0M_r6wGbCqjsr5dBvCgx3hf8jeKTU3wOCCpraZXobVVWuMLK97j3rerKFLh2/38u=
+/82YjBkZWSWG-6br9VaQy2g/t34/htWmWIeahrveMa9E5_C-HPlbycj8XIj2OVxwGu95Tmw )
+
+
+Facebook=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWtSe=
+GbQi6IQgyCrCCpY_3PdsVnEn0yHQuFA_64Gn8KoMK2aqF1hn0mGGnzr1uN2XMDQ6dInv83KxGlH=
+q2S3lCEddT-m0rmnbys6U7_V8sxtA/38u/82YjBkZWSWG-6br9VaQy2g/t35/31e76siSq75wZQ=
+Hdg9XflPeiH_NfuMkZj-4tcJnx9Ts )
+
+
+Forward (
+?subject=3DInside+AI+Best+Articles+of+the+Week&body=3Dhttp%3A%2F%2Finside.c=
+om%2Fcampaigns%2Finside-ai-26274%2Fsections%2Finside-ai-best-articles-of-th=
+e-week-222267
+)
+
+
+( https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5alXkn0F3OZMsp7lG1eyUwTgSVrQwZcIuuyGViXuw9sqSWgVRe1sLf5Nb6VW0VeTCsgiZ8=
+VxPqtRB3jNlBhtPBZHKWLfNeKy10FFWqxUC6FefQ/38u/82YjBkZWSWG-6br9VaQy2g/t36/0tI=
+38f7pNUP_vIAUDyDgKSxrTMCh4CoSddI-TFHeRC8 )
+
+
+Happy Sunday and welcome to InsideAI! I'm Rob
+May, a Partner at PJC ( https://u5080173.ct.sendgrid.net/ss/c/q5e7et0h93Ujh=
+irqEQeOCzBqeUvrnDSpfq6XTYV6RXU/38u/82YjBkZWSWG-6br9VaQy2g/t37/5esxqdhevw9nB=
+t7sysxFNaCO2hhnNLE92FBpeEGxqBc ), investing in AI and
+Robotics. If you are starting an early stage company in the AI
+space, please reach out.
+
+Here are the most popular articles of the week from our daily
+newsletter:
+
+European Parliament members adopted a new AI report=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXYO0qh1zIxh2h3=
+gxZNvcZ6WiAKSgTOJBKQHArnR-8nOhgAeZ5TnQFfKjCMLTTH3nbRFj52a5jFBEmItXBXpWvkWvH=
+ziR7i3b4vkWFnUr8uRCyYt3W9PwZwsayCVhwP1RJEyTrYgfKmgathHC1O1ZbWmkjODE5jE9Qb5J=
+rr0l4dlnCAvDcPJtVK8xa0BLPne9Q/38u/82YjBkZWSWG-6br9VaQy2g/t38/c0tXdFsbxyK1J8=
+S8jB3sNHwMdpvEsFF_aFE0mrCHrjY )
+ yesterday that calls for a ban on lethal autonomous weapons, as
+well as =E2=80=9Chighly intrusive" AI-based social scoring applications.
+AI programs can't replace human contact or decision-making,
+according to the report, which provides guidelines for both
+military and non-military AI uses.
+
+Microsoft was granted a patent for creating chatbots using
+people's social media profiles, prompting internet users to
+compare it to an episode of =E2=80=9CBlack Mirror." As UberGizmo notes=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgaLXf0I1sCdHAzD=
+bTkZJ3DAUMuS9hYwLVIqFmPEaPc-uWjkkT5yVSdN2tJP-VxXfuWvle2oWmY7UZ3UkPo_3IiU/38=
+u/82YjBkZWSWG-6br9VaQy2g/t39/_tHW_cMYM5FERMhVaPOgbZF3ebvLhtxenwCr2xUWKtQ )
+, one application could be conversing with chatbots of loved
+ones after they've died. In "Black Mirror's" first episode of
+its second season, a young woman's boyfriend is killed in a car
+accident and she uses AI technology to resurrect him as a chatbot
+and later, a robot.
+
+Google opened an investigation into one of its AI researchers,
+Margaret Mitchell ( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSl=
+DnIgWs9B8unOn-0Hp2wCuL6cUDIKTMN8Ydpp5mBB33ypugJ/38u/82YjBkZWSWG-6br9VaQy2g/=
+t40/G7Ig0okboVesHT2iH73h6to7ezWwT8g1r5TAzQ7uMwM ), under claims
+that she shared thousands of internal company files with
+outsiders. A source told Axios=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgUj-jrHHoxUx7np=
+Bkg5IGEDKd-20r6yBThiBW_icW8wl5gbf9ftcmJIbFUFkR8CCM5NQvIf5FSzHBXr_3LEbFH1aRD=
+eoWTYJgmvKgptn3ejgUTR3pdJcbfZqT2ap09tWzWMJ0H_QYEpH0OArA8K9woNdbXwszvyejQ0RW=
+QQ1UnCC/38u/82YjBkZWSWG-6br9VaQy2g/t41/3cAmqI1A2BQkQZSxeePKaYeyeZwWQ8TVw2or=
+yunC2Mw )
+ that Mitchell, a co-leader of Google's ethical AI team, used
+automated scripts to search through messages for instances of
+discriminatory treatment toward AI researcher Timnit Gebru.
+Gebru, Mitchell's former colleague, who was also a co-lead of
+Google's ethical AI team, was ousted=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdAx3Jwn8W3Uwu3=
+0QObcmlDvZXsaStJ7YP_bBXRGXkm0r9BPSakqgUil8olUU6s2zCunaB879EgBl_knRcUWwGCru8=
+RCxgZbd_Hnx0-zzdNyKKhfg7KlNUZgDr79wG1R257x8FJPm0yUkCtte-aVM0s/38u/82YjBkZWS=
+WG-6br9VaQy2g/t42/9AK_uBa52-SUhKhGMHkjv38uu7spwqPLLlnoKosSLk4 )
+ last month after Google asked her to retract an AI research
+paper she co-authored. Gebru later voiced frustration at
+managers' requests to retract the paper, as well as its treatment
+of women and minorities, particularly in hiring, which generated
+support from colleagues=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdwuiiDIeWMAr_y=
+ZTF4urSewpqBp1r-uPks0ZxTpJhXd-HHIWnuEg5mhosEQUZPIVxm0zZk32J7JRP3pkZrExL9gl8=
+xFpb4QsbPfDludsBeO/38u/82YjBkZWSWG-6br9VaQy2g/t43/Jy_Nk6WSmCSI-Ics1E1U4ARH9=
+2mQzcmxS63ox4tMYNk )
+ and people online.
+
+
+
+Twitter=20
+( https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13K=
+fGqJjUWZyEhKqEukUlheKul2K8pHRgET5b-xxxBBmLew8ggN98J7f9FEoeTAHnvkDBfd6ROYc3c=
+h8vN4boE5V5nxz-semDQP-yUgehUCxZ_9Ed-mRTi4TSI76LNndJHXwnnYa5GohLnxXClVEo0wTw=
+o-D4izNb9UBhnrbsaMTKlIDNPZD_DpvdOzNnzgzdWtX4ZlVjYyg1bou8zxvLm-JlDqKmO4q/38u=
+/82YjBkZWSWG-6br9VaQy2g/t44/LFPCGWGMuDwTW7lUKETW3y_lcdMxqq5yLI65RkhY6aI )
+
+
+Facebook=20
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE26n1odeS6u=
+2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH51iNQeUWtSe=
+GbQi6IQgyCrCCpY_3PdsVnEn0yHQuFA_64Gn8KoJJMc62OfkvAN4WGw-CAzTBF9reVXyj2lLOmQ=
+38z5ktK/38u/82YjBkZWSWG-6br9VaQy2g/t45/W5-Uqsqhd2mFcmBXPRbQAMGNxO0GiRK8eiV4=
+BJEPjDY )
+
+
+Forward (
+?subject=3DInside+AI+Commentary+by+%40robmay&body=3Dhttp%3A%2F%2Finside.com=
+%2Fcampaigns%2Finside-ai-26274%2Fsections%2Finside-ai-commentary-by-robmay-=
+222268
+)
+
+
+( https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sy=
+kQuEX5alXkn0F3OZMsp7lG1eyUwTgSVrQwZcIuuyGViXuw9sqSVnS3yqdTW_WeENR17rtYvKdr2=
+HNHsxapFz1KN-LI07sEswBepBkZXHCx3X5No5nuQ/38u/82YjBkZWSWG-6br9VaQy2g/t46/6uC=
+snvkehdrJKGmMMxLyUXOW_pyAomZWxG0Wp6am5mc )
+
+
+One of the things I've been asked a lot lately is about MLOps as
+an area of investment, and how it differs from DevOps, and why
+the Devops tools won't just own the space. On the latter
+question - will devops own the space - I don't have an opinion at
+the moment. Long term, maybe they will. But what I want to do
+today is briefly explain for those of you who don't work in the
+space how the workflows are different.
+
+The use of data in most systems, up until recently, is either for
+analysis of some type, or retrieval for a user. When you build a
+system and store data in the database, you pull it out as
+information. The data doesn't usually affect how the underlying
+application works. That is handled by the code. Since changes
+to code might impact how the application functions in the future,
+those changes are tested with a series of what programmers call
+unit tests, and then functional tests, then deployed on a staging
+server (a server that simulates a real world production
+environment but isn't), and archived so you can roll back to the
+previous version if necessary.
+
+Data, however, is usually backed up or archived for disaster
+recovery purposes or legal purposes, but you really don't need a
+copy of every change of the data to make the application work or
+possibly roll back if the application doesn't work as planned
+after some changes.
+
+In machine learning models, the data is used to train a model,
+and the model performs a task. The code is used to define the
+structure of the neural network, and doesn't change as often as
+the data. So the functionality of your application is more
+impacted by changes in data than changes in code. That isn't
+how most software works today.
+
+As a result, MLOps is emerging as a set of tools that manage,
+analyze, and archive these models and their related performance
+characteristics so that you can understand how data changes might
+impact performance. The workflows here are different. For
+example, most web applications that don't use ML don't need a
+data engineering pipeline, but most ML applications do.
+
+The workflows are still changing, and there aren't set
+engineering standards and best practices to the same extent there
+are in traditional software just yet. Until that happens it will
+be difficult to predict where MLOps will go. My guess though, is
+that there will be 1 or 2 MLOps companies that get big enough
+fast enough that they become standalone or very large
+acquisitions, and the rest that show some traction will get
+swallowed up by companies like Snowflake, Github, Splunk, and the
+like.
+
+What will determine the final outcome? One key thing to watch is
+how similar the workflow and related UX/UI is between MLOps and
+DevOps. The other is how fast MLOps grows. If it's slow and
+steady, expect DevOps tools to add it over time. If it's fast,
+then MLOps startups will benefit from being focused just on that.
+
+There is a lot more depth I could cover here, but, I hope this
+was a good high level explanation of what is going on in the
+market at the moment.
+
+Thanks for reading.
+
+@robmay ( https://u5080173.ct.sendgrid.net/ss/c/beJHD2FuMOujSBVBixKy2bBOB2N=
+imvoF-Ef29jRPCOU/38u/82YjBkZWSWG-6br9VaQy2g/t47/POmzU3ZlECAvkPVw2Hw4x7g4L02=
+ZqxpTv2qv6V0P9GY )
+
+
+
+
+( https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yDlF_VpPyVaEA9q_2pYOoqmA=
+JQ3rrfXqP3px4N8NXFaim_buh4BEH/38u/82YjBkZWSWG-6br9VaQy2g/t48/O6t1kznG88isGI=
+WrDOl1BpsFduNIhiPWO69WWz4WyNY )
+
+
+( https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgVx5xVUUxrXIoqR=
+-rSAC3ICGQWdvwIwQdjTqP2zj_geTseEeJofIRxakv55BdJUOhg/38u/82YjBkZWSWG-6br9VaQ=
+y2g/t49/iO6I_Fwkab1Fshpl0ZkfcfzNRS3LlCbsKEqBs9uvmO4 )
+
+767 Bryant St. #203, San Francisco, CA
+94107
+
+Copyright =C2=A9 2021 Inside.com
+
+Did someone forward this email to you? Head
+over to inside.com ( https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAn=
+Q03Rak5SAHpHB-UWTHctE5yPcII/38u/82YjBkZWSWG-6br9VaQy2g/t50/xhLtyrbBW8TpsuOZ=
+K0x2kXim-uamMT82lHR6GFNglUM ) to get your very own
+free subscription!
+
+You received this email because you
+subscribed to Inside AI=20
+( https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeM-mIUlAGF5km0K=
+9bVIJ1f-8yef82Cb8rfgbQJeznK5SRQUPPiNVN6763KExoFDRow/38u/82YjBkZWSWG-6br9VaQ=
+y2g/t51/_X7VSVu2mrfhBXf7bDi-sO9Dnr3QU-0nL-WDTlUQeHQ ). Click here (
+https://u5080173.ct.sendgrid.net/ss/c/okruA9B9I1s8_DAnQ03RaqXbD3qNJ3I6jnuAk=
+0k0syNty8WPPOuYiorsEsXOp23zOXInv-jpv7BAfprySebrC4GTxreBRQ3wyGdMPu7NXaE/38u/=
+82YjBkZWSWG-6br9VaQy2g/t52/p2uwAJby-KpjiCq_QMAxaQB_0ds427ScoyN3VBdKuPo ) to=
+ unsubscribe from Inside
+AI list or manage your subscriptions ( https://u5080173.ct.sendgrid.net/ss/=
+c/okruA9B9I1s8_DAnQ03Ranv9NlKQPO4ModGIId3ruJtjXyr5v7G7bb6ZSH3Mwb57J_bRIaXHB=
+ouHEppTGKD4m7KoYTbs3NF-2tjGHa0zV28/38u/82YjBkZWSWG-6br9VaQy2g/t53/fcByu0vAf=
+Epq-MmnBndgnRtDFK_03px9v2DkMqZNKs4
+).=
+
+--db2d3c99a32d0c4ef6b42c786da2a72f604cc84f8c57a8bf7d600f265b3e
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+Mime-Version: 1.0
+
+<!DOCTYPE html> <html lang=3D"en" xmlns=3D"http://www.w3.org/1999/xhtml" xm=
+lns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-microsoft-co=
+m:office:office"> <head> <meta http-equiv=3D"Content-Type" content=3D"text/=
+html; charset=3DUTF-8"> <meta name=3D"viewport" content=3D"width=3Ddevice-w=
+idth"> <meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge"> <meta na=
+me=3D"x-apple-disable-message-reformatting"> <meta name=3D"format-detection=
+" content=3D"telephone=3Dno,address=3Dno,email=3Dno,date=3Dno,url=3Dno"> <t=
+itle>Inside AI</title> <!--[if mso]><style> * { font-family: sans-serif !im=
+portant; } </style><![endif]--> <!--[if !mso]><!--> <link href=3D"https://f=
+onts.googleapis.com/css?family=3DOpen+Sans:400,400i,700,700i&display=3Dswap=
+" rel=3D"stylesheet" type=3D"text/css"> <!--<![endif]--> <style> html, body=
+ { margin: 0 auto !important; padding: 0 !important; height: 100% !importan=
+t; width: 100% !important; } * { -ms-text-size-adjust: 100%; -webkit-text-s=
+ize-adjust: 100%; } div[style*=3D"margin: 16px 0"] { margin: 0 !important; =
+} table, td { mso-table-lspace: 0pt !important; mso-table-rspace: 0pt !impo=
+rtant; } table { border-spacing: 0 !important; border-collapse: collapse !i=
+mportant; table-layout: fixed !important; margin: 0 auto !important; } img =
+{ -ms-interpolation-mode: bicubic; } a[x-apple-data-detectors], { border-bo=
+ttom: 0 !important; cursor: default !important; color: inherit !important; =
+text-decoration: none !important; font-size: inherit !important; font-famil=
+y: inherit !important; font-weight: inherit !important; line-height: inheri=
+t !important; } .im { color: #180b01 !important; } @media only screen and (=
+min-device-width: 320px) and (max-device-width: 374px) { u~div .email-conta=
+iner { min-width: 320px !important; } } @media only screen and (min-device-=
+width: 375px) and (max-device-width: 413px) { u~div .email-container { min-=
+width: 375px !important; } } @media only screen and (min-device-width: 414p=
+x) { u~div .email-container { min-width: 414px !important; } } </style> <!-=
+-[if gte mso 9]><xml> <o:OfficeDocumentSettings> <o:AllowPNG/> <o:PixelsPer=
+Inch>96</o:PixelsPerInch> </o:OfficeDocumentSettings> </xml><![endif]--> <s=
+tyle> @media screen and (max-width: 680px) { a { color: #ff5d16 !important;=
+ text-decoration: none !important; } .logo { max-width: 80% !important; hei=
+ght: auto !important; max-height: 43px !important; } .story-title p { margi=
+n: 0 !important; } .sm-px-none { padding-left: 0 !important; padding-right:=
+ 0 !important; } .sm-p { padding: 20px !important; } .sm-pt { padding-top: =
+20px !important; } .sm-px10 { padding-left: 10px !important; padding-right:=
+ 10px !important; } .markets { width: 100%; border: 0; } .markets td { bord=
+er-bottom: 1px solid #e6d1c6; padding: 10px 0; } .text-left { text-align: l=
+eft !important; } } </style> <style> @media only screen and (min-width: 681=
+px) { .template-button { background-color: #ff5d16 !important; border-radiu=
+s: 5px !important; font-weight: 700 !important; text-transform: uppercase !=
+important; letter-spacing: 1px !important; padding: 12px 10px !important; c=
+olor: #fff !important; Margin-left: 0px !important; font-size: 12px !import=
+ant; line-height: 12px !important; text-decoration: none !important; } a { =
+color: #ff5d16 !important; text-decoration: none !important; } .copyright-c=
+olumn p, .date-column p { text-align: right !important; } .text-left { text=
+-align: left !important; } .story-body p { margin-top: 0 !important; } .sto=
+ry-title p { margin: 0 !important; } .ad-body, .column-share, .column-conte=
+nt, .ad-image, .social-column, .copyright-column, .date-column, .hidden-col=
+umn, .network-column { display: table-cell; vertical-align: top; } .column-=
+share { width: 55px; } .column-content { width: 585px; } .ad-body { vertica=
+l-align: middle; } .ad-image { width: 230px; } .network-column { width: 310=
+px; } .hidden-column, .date-column { width: 165px; } .copyright-column, .so=
+cial-column { width: 320px; } .template-button { color: #FFF !important; } =
+.markets { width: 100%; border: 0; } .markets td { border-bottom: 1px solid=
+ #e6d1c6; padding: 10px 0; } } </style> </head> <body style=3D"margin:0;pad=
+ding:0 !important;mso-line-height-rule:exactly;line-height:.8" id=3D"body">=
+ <center style=3D"width:100%"> <!--[if mso]><table role=3D"presentation" bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" style=3D"width:100%"> <tr> <=
+td><![endif]--> <div style=3D"display:none;font-size:1px;line-height:1px;ma=
+x-height:0;max-width:0;opacity:0;overflow:hidden;mso-hide:all;font-family:s=
+ans-serif"> inside ai commentary <img src=3D'https://pixel.inside.com/pixel=
+/open?campaign_id=3D26274&outbound_id=3D532904942'> </div> <table role=3D"p=
+resentation" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"back=
+ground-color:#0A0300;width:100%"> <tr> <td align=3D"ccenter"> <div style=3D=
+"font-size:0;max-width:640px;margin:0 auto;line-height:2" class=3D"email-co=
+ntainer"> <!--[if mso]><table role=3D"presentation" border=3D"0" cellspacin=
+g=3D"0" cellpadding=3D"0" style=3D"width:640px;margin:0 auto" align=3D"cent=
+er"> <tr> <td align=3D"center" style=3D"vertical-align:middle;width:165px;h=
+eight:50px;margin:0 auto"><![endif]--><div class=3D"hidden-column"> <table =
+role=3D"presentation" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" styl=
+e=3D"width:100%"> <tr> <td style=3D"font-size:0;line-height:0">Inside.com</=
+td> </tr> </table> </div> <!--[if mso]></td> <td align=3D"center" style=3D"=
+vertical-align:middle;width:310px;height:50px;margin:0 auto"><![endif]--><d=
+iv class=3D"network-column"> <table role=3D"presentation" cellspacing=3D"0"=
+ cellpadding=3D"0" border=3D"0" style=3D"width:100%;height:50px"> <tr> <td>=
+ <p style=3D"color:#fff;text-align:center;text-transform:uppercase;font-siz=
+e:12px;letter-spacing:1px;font-family:Open Sans ,Segoe UI ,sans-serif">Part=
+ of&nbsp;<a clicktracking=3D"off" href=3D"https://inside.com" style=3D"marg=
+in:0 4px;text-decoration:none"> <img alt=3D"" src=3D"https://e.insd.io/e/il=
+.png" width=3D"57" style=3D"vertical-align:text-top;height:auto"> </a>&nbsp=
+;Network</p> </td> </tr> </table> </div> <!--[if mso]></td> <td align=3D"ri=
+ght" style=3D"vertical-align:middle;width:165px;height:50px;margin:right"><=
+![endif]--><div class=3D"date-column"> <table role=3D"presentation" cellspa=
+cing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%;height:50px">=
+ <tr> <td> <p style=3D"font-size:12px;text-align:center;color:#fff;text-tra=
+nsform:uppercase;letter-spacing:1px;font-family:Open Sans ,Segoe UI ,sans-s=
+erif"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-uc=
+KeDjjC6udx9HM-sykQuEX5alXkn0F3OZMsp7lG1eyUwTgH-OB-uaSIUSvwJBjsV1sw3gdIFXivi=
+MLBsia1-X9HZA/38u/82YjBkZWSWG-6br9VaQy2g/h0/AN7iPC3uxNNx4FIzPR5cnTPJglg0IrP=
+XpXOQRBnRa_o" style=3D"color:#fff !important">January 24, 2021</a> </p> </t=
+d> </tr> </table> </div> <!--[if mso]></td> </tr> </table><![endif]--></div=
+> </td> </tr> </table> <div class=3D"email-container" style=3D"max-width:68=
+0px;margin:0 auto"> <!--[if mso]><table role=3D"presentation" cellspacing=
+=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:680px;margin:0 auto" a=
+lign=3D"center"> <tr> <td><![endif]--> <table border=3D"0" cellpadding=3D"0=
+" cellspacing=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td st=
+yle=3D"padding:70px 0 50px" align=3D"center"> <h1 style=3D"text-align:cente=
+r;margin:0"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJd=
+Ccj-ucKeM-mIUlAGF5km0K9bVIJ1f-8yef82Cb8rfgbQJeznK5SRQUPPiNVN6763KExoFDRow/3=
+8u/82YjBkZWSWG-6br9VaQy2g/h1/_xMJrBnJf-l1rPfYk0x3xPtwU2yDk2djRK3SyhRR5iI" s=
+tyle=3D"text-decoration:none"> <img alt=3D"" src=3D"https://e.insd.io/lists=
+/logos/000/000/065/original_ai.png?1583514279" border=3D"0" height=3D"43" s=
+tyle=3D"width:auto" class=3D"logo"> </a> </h1> <!DOCTYPE html PUBLIC "-//W3=
+C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dt=
+d"> <html> <head></head> <body> <p style=3D"text-transform:uppercase;font-s=
+ize:12px;letter-spacing:1px;font-family:Open Sans ,Segoe UI ,Tahoma ,sans-s=
+erif;font-weight:normal;color:#82758a;margin:35px 0 20px" align=3D"center">=
+ Presented by </p> <p style=3D"margin:0" align=3D"center"> <a href=3D"https=
+://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kag=
+skrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2owEPwx0le-USSJzuiAMTG2aEsjJmdKfSm=
+DWYxzZj6KzPGQlr9u7JYwChnUy1nlRepzTEpbcbF6Dp5GF06R-7hJqKXyPUSs_uAwtXtDybpu5P=
+sHNTMjHOSPutVm1dmvjeNnsKEVENxc9RvsjZ0Ee-qs8/38u/82YjBkZWSWG-6br9VaQy2g/h2/5=
+jwCAUy2MMVFbWghsE3xXJX0zm8djLjKpJtdTvgziG4" style=3D"color:#ff5d16;text-dec=
+oration:none;font-weight:400"> <img alt=3D"" src=3D"https://e.insd.io/a/h/6=
+52_x2.png" border=3D"0" width=3D"150"> </a> </p> </body> </html> </td> </tr=
+> </table> <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"=
+presentation" style=3D"max-width:680px"> <tr> <td style=3D"vertical-align:t=
+op;padding:0 10px 40px;font-size:0"> <div style=3D"max-width:660px;margin:0=
+ auto"> <!--[if mso]><table border=3D"0" cellpadding=3D"0" cellspacing=3D"0=
+" role=3D"presentation" style=3D"width:640px"> <tr> <td style=3D"vertical-a=
+lign:top;width:35px"><![endif]--><div class=3D"column-share"> <table border=
+=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=3D"w=
+idth:100%"> <tr> <td style=3D"padding:0 10px"> <p style=3D"float:left;margi=
+n:0 0 10px;border-radius:5px;background-color:#ff5d16;width:35px"> <a href=
+=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-=
+sykQuEX5alXkn0F3OZMsp7lG1eyUwTgSVrQwZcIuuyGViXuw9sqSWgVRe1sLf5Nb6VW0VeTCsgi=
+Z8VxPqtRB3jNlBhtPBZHKWLfNeKy10FFWqxUC6FefQ/38u/82YjBkZWSWG-6br9VaQy2g/h3/Ca=
+96mZ4JnLg3qIwEqY4iymmYC3qlhaGib_u5aMsvUlc"><img alt=3D"" src=3D"https://e.i=
+nsd.io/e/1.png" width=3D"35" height=3D"35"></a> </p> <p style=3D"float:righ=
+t;margin:0"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/0dORZiTaa00yD=
+lF_VpPyVe1UE8i2d4ay13KfGqJjUWZyEhKqEukUlheKul2K8pHRZlN0_Vcv7xKBTqD_NUTelIvK=
+SU2SYwZYPJnfYsJNZgcTLPxh8fXl1db-B9ltzvqqqlcScZb-vDhkZ0HktelnEHmCGdqrtO7hAyt=
+wx4ySWYwzp55Lpm3_Zm_XvwNWOmGs7oa_HtOhHFwTYUfdTBaUqq2sP9oc7EGu2P91EGHnfzEyll=
+l7WR91bsbiDUP5gbPe/38u/82YjBkZWSWG-6br9VaQy2g/h4/8bLswpG3sO6iG46tLSG8lO2Sh0=
+LlgwqgAN0RFJ7e-KA"> <img src=3D"https://e.insd.io/e/ti-o.png" alt=3D"Twitte=
+r" width=3D"35" height=3D"35"> </a> </p> <p style=3D"float:right;margin:0">=
+ <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXPvE=
+26n1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKqiZ7B-XC6Xbf6lbTGt1SH5=
+1iNQeUWtSeGbQi6IQgyCrCCpY_3PdsVnEn0yHQuFA_64Gn8KoMK2aqF1hn0mGGnzr1uN2XMDQ6d=
+Inv83KxGlHq2S3lCEddT-m0rmnbys6U7_V8sxtA/38u/82YjBkZWSWG-6br9VaQy2g/h5/roOf4=
+svJ-bqmXTxdpdJtHuuDfaMS6A478IgyMaQ9dAM"> <img src=3D"https://e.insd.io/e/fi=
+-o.png" alt=3D"Facebook" width=3D"35" height=3D"38"> </a> </p> <p style=3D"=
+float:right;margin:0"> <a href=3D"mailto:?subject=3DInside+AI+Best+Articles=
++of+the+Week&body=3Dhttp%3A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26274%2=
+Fsections%2Finside-ai-best-articles-of-the-week-222267"> <img src=3D"https:=
+//e.insd.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" height=3D"37"> </a> =
+</p> <p style=3D"float:right;margin:0"> <a href=3D"https://u5080173.ct.send=
+grid.net/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sykQuEX5alXkn0F3OZMsp7lG1eyU=
+wTgSVrQwZcIuuyGViXuw9sqSWgVRe1sLf5Nb6VW0VeTCsgiZ8VxPqtRB3jNlBhtPBZHKWLfNeKy=
+10FFWqxUC6FefQ/38u/82YjBkZWSWG-6br9VaQy2g/h6/IbzYL-nCuHqoUByc0d2DD331gFrROk=
+suMy6gDyMTjZ4"> <img alt=3D"" src=3D"https://e.insd.io/e/ki-o.png" alt=3D"L=
+ink" width=3D"35" height=3D"38"> </a> </p> </td> </tr> </table> </div> <!--=
+[if mso]></td> <td style=3D"vertical-align:top;width:605px"><![endif]--><di=
+v class=3D"column-content"> <table border=3D"0" cellpadding=3D"0" cellspaci=
+ng=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=3D"padd=
+ing:0 10px"> <div style=3D"margin:0 0 16px;font-family:Open Sans ,Segoe UI =
+,Tahoma ,sans-serif;font-size:16px;line-height:28px" class=3D"story-body"> =
+<p>Happy Sunday and welcome to InsideAI!&nbsp; I&#39;m Rob May, a Partner a=
+t <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/q5e7et0h93UjhirqEQeOCzBq=
+eUvrnDSpfq6XTYV6RXU/38u/82YjBkZWSWG-6br9VaQy2g/h7/puZbM5qAV9nPF0fzYwu8y2cag=
+Ci0QbS7s8SG2wh4IeU">PJC</a>, investing in AI and Robotics.&nbsp; If you are=
+ starting an early stage company in the AI space, please reach out.</p> <p>=
+Here are the most popular articles of the week from our daily newsletter:</=
+p> <p><strong>European Parliament members adopted a <a href=3D"https://u508=
+0173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgXYO0qh1zIxh2h3gxZNvcZ6WiAKSg=
+TOJBKQHArnR-8nOhgAeZ5TnQFfKjCMLTTH3nbRFj52a5jFBEmItXBXpWvkWvHziR7i3b4vkWFnU=
+r8uRCyYt3W9PwZwsayCVhwP1RJEyTrYgfKmgathHC1O1ZbWmkjODE5jE9Qb5Jrr0l4dlnCAvDcP=
+JtVK8xa0BLPne9Q/38u/82YjBkZWSWG-6br9VaQy2g/h8/yoqXcRzsg8Xvus1VlT3DFkdA006_8=
+wco4U8Ayz31Vnk">new AI report</a>&nbsp;yesterday that calls for a ban on le=
+thal autonomous weapons, as well as &ldquo;highly intrusive&quot; AI-based =
+social scoring applications.</strong> AI programs can&#39;t replace human c=
+ontact or decision-making, according to the report, which provides guidelin=
+es for both military and non-military AI uses.</p> <p><strong>Microsoft was=
+ granted a patent for creating chatbots using people&#39;s social media pro=
+files, prompting internet users to compare it to an episode of &ldquo;Black=
+ Mirror.&quot;</strong> As UberGizmo <a href=3D"https://u5080173.ct.sendgri=
+d.net/ss/c/FriLxoy8skJk2qiSlDnIgaLXf0I1sCdHAzDbTkZJ3DAUMuS9hYwLVIqFmPEaPc-u=
+WjkkT5yVSdN2tJP-VxXfuWvle2oWmY7UZ3UkPo_3IiU/38u/82YjBkZWSWG-6br9VaQy2g/h9/n=
+bGJLdRATUcE3ZXSprIFw-7Ncyb1XEg3_r2NV4rI1-o">notes</a>, one application coul=
+d be conversing with chatbots of loved ones after they&#39;ve died.<strong>=
+&nbsp; </strong>In &quot;Black Mirror&#39;s&quot; first episode of its seco=
+nd season, a young woman&#39;s boyfriend is killed in a car accident and sh=
+e uses AI technology to resurrect him as a chatbot and later, a robot.</p> =
+<p><strong>Google opened an investigation into one of its AI researchers, <=
+a href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgWs9B8u=
+nOn-0Hp2wCuL6cUDIKTMN8Ydpp5mBB33ypugJ/38u/82YjBkZWSWG-6br9VaQy2g/h10/nAYKWA=
+aGk-trAK2RxQRUm-3ezFYQhhVj4GMMS__RDkc">Margaret Mitchell</a>, under claims =
+that she shared thousands of internal company files with outsiders.</strong=
+> A source told <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8sk=
+Jk2qiSlDnIgUj-jrHHoxUx7npBkg5IGEDKd-20r6yBThiBW_icW8wl5gbf9ftcmJIbFUFkR8CCM=
+5NQvIf5FSzHBXr_3LEbFH1aRDeoWTYJgmvKgptn3ejgUTR3pdJcbfZqT2ap09tWzWMJ0H_QYEpH=
+0OArA8K9woNdbXwszvyejQ0RWQQ1UnCC/38u/82YjBkZWSWG-6br9VaQy2g/h11/vlv4CEAE1J9=
+lzwTDk86X__-YEgnuipPt2lxRuBZ_EVI">Axios</a> that Mitchell, a co-leader of G=
+oogle&#39;s ethical AI team, used automated scripts to search through messa=
+ges for instances of discriminatory treatment toward AI researcher Timnit G=
+ebru.<strong>&nbsp; </strong>Gebru, Mitchell&#39;s former colleague, who wa=
+s also a co-lead of Google&#39;s ethical AI team, was <a href=3D"https://u5=
+080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgdAx3Jwn8W3Uwu30QObcmlDvZXs=
+aStJ7YP_bBXRGXkm0r9BPSakqgUil8olUU6s2zCunaB879EgBl_knRcUWwGCru8RCxgZbd_Hnx0=
+-zzdNyKKhfg7KlNUZgDr79wG1R257x8FJPm0yUkCtte-aVM0s/38u/82YjBkZWSWG-6br9VaQy2=
+g/h12/tVr_Row5q697sOv4P3LO14SzbZ_Ys9Q6FhV1GsPkhGQ">ousted</a> last month af=
+ter Google asked her to retract an AI research paper she co-authored. Gebru=
+ later voiced frustration at managers&#39; requests to retract the paper, a=
+s well as its treatment of women and minorities, particularly in hiring, wh=
+ich <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriLxoy8skJk2qiSlDnIgd=
+wuiiDIeWMAr_yZTF4urSewpqBp1r-uPks0ZxTpJhXd-HHIWnuEg5mhosEQUZPIVxm0zZk32J7JR=
+P3pkZrExL9gl8xFpb4QsbPfDludsBeO/38u/82YjBkZWSWG-6br9VaQy2g/h13/EZwNT0373WEf=
+IP_51Ow-phbbvW_87JWN9CyQwrYXdys">generated support from colleagues</a> and =
+people online.</p> </div> <hr style=3D"margin-top:40px;height:12px;backgrou=
+nd-color:#f8f8f8;background:url('https://e.insd.io/e/hr.png');background-si=
+ze:4px;color:#f8f8f8;border:0"> </td> </tr> </table> </div> <!--[if mso]></=
+td> </tr> </table><![endif]--></div> </td> </tr> <!DOCTYPE html PUBLIC "-//=
+W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.=
+dtd"> <html><head> <tr> <td style=3D"font-size:0;padding:0 10px 40px" valig=
+n=3D"top"> <div style=3D"max-width:660px;margin:0 auto"> <!--[if mso]><tabl=
+e border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" st=
+yle=3D"width:640px"> <tr> <td style=3D"vertical-align:top;width:35px"><![en=
+dif]--><div class=3D"column-share"> <table border=3D"0" cellpadding=3D"0" c=
+ellspacing=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=
+=3D"padding:0 10px"> <p style=3D"float:left;border-radius:5px;background-co=
+lor:#ff5d16;width:35px;margin:0 0 10px"> <img alt=3D"" src=3D"https://e.ins=
+d.io/e/ai.png" width=3D"35" height=3D"35"> </p> </td> </tr> </table> </div>=
+ <!--[if mso]></td> <td style=3D"vertical-align:top;width:605px"><![endif]-=
+-><div class=3D"column-content"> <table border=3D"0" cellpadding=3D"0" cell=
+spacing=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=3D=
+"padding:0 10px"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk=
+_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA=
+2o6r24_ic2AXlM9fyhgC8CMmqycHu5vjdTriAbMDLNyZ-7fr-SzhXMzu_GTRpvnxX5sHOk97VSS=
+OhYt23TmszaQTNGV8Jvw-LXaWtvVM4bS0B4Ok3wfEpe8QM5F0f0bAiTJkXFczvPvRYCDQZ6H1hq=
+cE/38u/82YjBkZWSWG-6br9VaQy2g/h14/06pAiEOFIINd_gZkSu5FDHgnuTax7k_4KRAd23_FW=
+Fk" style=3D"color:#ff5d16;text-decoration:none;font-weight:400"> <img alt=
+=3D"" src=3D"https://e.insd.io/a/n/1521_e2.jpg?1610658305" width=3D"585" bo=
+rder=3D"0" style=3D"height:auto;max-width:100%;margin:0 auto"> </a> <p styl=
+e=3D"text-transform:uppercase;font-size:12px;letter-spacing:1px;font-family=
+:Open Sans ,Segoe UI ,Tahoma ,sans-serif;font-weight:normal;color:#82758a;m=
+argin:10px 0" class=3D"text-left" align=3D"center"> A message from HIRED </=
+p> <div style=3D"font-family:Open Sans ,Segoe UI ,sans-serif;font-size:16px=
+;line-height:28px;margin:0 0 10px" align=3D"center" class=3D"text-left"> <p=
+ style=3D"margin-top:0"><strong><a href=3D"https://u5080173.ct.sendgrid.net=
+/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgv=
+QFSnxpGllwW3E2cN2HbKVc0p4Aovey1h6f2mnV66ZafuJLIPcZeW0M5WWbTNTi60F36nt5xjI0T=
+TrixuR9MWSe_YYou6azorSc8cVQhY3iDpZfQPf6pLSmFGSb6GiygvtmYAWxwrnRdzSR0Ig_c1fw=
+nSuG1mgPe1SB_MgA/38u/82YjBkZWSWG-6br9VaQy2g/h15/0pzzHxzjAirLSsPJ0oJddiSFomq=
+-djV4hVO8mrGfAA8" style=3D"color:#ff5d16;text-decoration:none;font-weight:4=
+00">[Data Report]</a> Remote Work: Compensation Trends</strong></p> <p dir=
+=3D"ltr" style=3D"margin-top:0"><a href=3D"https://u5080173.ct.sendgrid.net=
+/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgv=
+QFSnxpGllwW3E2cN2HbKVc0p4Aovey1h6f2mnV66ZafuJLIPcZeW0M5WWbTNTi60F36nt5xjI0T=
+TrixuR9MWSe_YYou6azorSc8cVQhY3iDpZfQPf6pLSmFGSb6GiygvtmYAWxwrnRdzSR0Ig_c1fw=
+nSuG1mgPe1SB_MgA/38u/82YjBkZWSWG-6br9VaQy2g/h16/X5JRAHTes3NGPJp9COBXVvRQmLp=
+Yh4Uh6-5ylBB2xgU" style=3D"color:#ff5d16;text-decoration:none;font-weight:4=
+00">This report</a> is designed to give employers a clear look at how thing=
+s like salary expectations, perceptions of job security, and relocation pla=
+ns differ based on a candidate's current location, age, gender, and parenta=
+l status.&nbsp;</p> <p dir=3D"ltr" style=3D"margin-top:0">Understanding the=
+ nuances of different populations of people not only helps innovative compa=
+nies recruit top tech talent but also foster a working environment that is =
+equitable and inclusive, enabling candidates from different backgrounds to =
+succeed.</p> <p dir=3D"ltr" style=3D"margin-top:0"><a class=3D"template-but=
+ton" href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf98=
+6GIrurB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGllwW3E2cN2HbKVc0p4Aovey=
+1h6f2mnV66ZafuJLIPcZeW0M5WWbTNTi60F36nt5xjI0TTrixuR9MWSe_YYou6azorSc8cVQhY3=
+iDpZfQPf6pLSmFGSb6GiygvtmYAWxwrnRdzSR0Ig_c1fwnSuG1mgPe1SB_MgA/38u/82YjBkZWS=
+WG-6br9VaQy2g/h17/PwjiI3n0aguXdDwULjHAo9SlwZYqwBcoEaMIMcWsUtk" style=3D"bac=
+kground-color:#ff5d16 !important;border-radius:5px !important;font-weight:7=
+00 !important;text-transform:uppercase !important;letter-spacing:1px !impor=
+tant;color:#FFF !important;margin-left:0 !important;font-size:12px !importa=
+nt;line-height:12px !important;text-decoration:none !important;padding:12px=
+ 10px">Download Hired's Data Report</a></p> </div> <hr style=3D"margin-top:=
+40px;height:12px;color:#f8f8f8;background:#f8f8f8 url('https://e.insd.io/e/=
+hr.png') 0 0 /4px;border:0"> </td> </tr> </table> </div> <!--[if mso]></td>=
+ </tr> </table><![endif]--></div> </td> </tr></head></html> <tr> <td style=
+=3D"vertical-align:top;padding:0 10px 40px;font-size:0"> <div style=3D"max-=
+width:660px;margin:0 auto"> <!--[if mso]><table border=3D"0" cellpadding=3D=
+"0" cellspacing=3D"0" role=3D"presentation" style=3D"width:640px"> <tr> <td=
+ style=3D"vertical-align:top;width:35px"><![endif]--><div class=3D"column-s=
+hare"> <table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"pres=
+entation" style=3D"width:100%"> <tr> <td style=3D"padding:0 10px"> <p style=
+=3D"float:left;margin:0 0 10px;border-radius:5px;background-color:#ff5d16;w=
+idth:35px"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/88STjw-EFhdJdC=
+cj-ucKeDjjC6udx9HM-sykQuEX5alXkn0F3OZMsp7lG1eyUwTgSVrQwZcIuuyGViXuw9sqSVnS3=
+yqdTW_WeENR17rtYvKdr2HNHsxapFz1KN-LI07sEswBepBkZXHCx3X5No5nuQ/38u/82YjBkZWS=
+WG-6br9VaQy2g/h18/YzxesvGgzeqVPjeziAKLLM2Oaish_b_0XeejJ7Bz0BI"><img alt=3D"=
+" src=3D"https://e.insd.io/e/2.png" width=3D"35" height=3D"35"></a> </p> <p=
+ style=3D"float:right;margin:0"> <a href=3D"https://u5080173.ct.sendgrid.ne=
+t/ss/c/0dORZiTaa00yDlF_VpPyVe1UE8i2d4ay13KfGqJjUWZyEhKqEukUlheKul2K8pHRgET5=
+b-xxxBBmLew8ggN98BcK67MKL4AtBFT6JwqzuxxIIXrtLUa94JNnxXHCSWiP0RB2EgnZ5V5NwgI=
+0-7hJKJ-A2Jy0N_6JD03xCCNe37k4f8ug3QhIcvfxaVvw4j-qfU_QCXNbkrEermi1J05d1aFeGs=
+A9bmEV4f8Hf__eMfOW1UGC-uTEMMD-jhnixqvi/38u/82YjBkZWSWG-6br9VaQy2g/h19/PHtUi=
+9Zj9rGqTMX84H-txEivcOBhznkNK6-55obyILY"> <img src=3D"https://e.insd.io/e/ti=
+-o.png" alt=3D"Twitter" width=3D"35" height=3D"35"> </a> </p> <p style=3D"f=
+loat:right;margin:0"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/FriL=
+xoy8skJk2qiSlDnIgXPvE26n1odeS6u2ntxBnWfZFqg-oug1Y5uhCiwsSHyJ9aTrpqXgACHwrKq=
+iZ7B-XC6Xbf6lbTGt1SH51iNQeUWtSeGbQi6IQgyCrCCpY_3PdsVnEn0yHQuFA_64Gn8KoJJMc6=
+2OfkvAN4WGw-CAzTBF9reVXyj2lLOmQ38z5ktK/38u/82YjBkZWSWG-6br9VaQy2g/h20/cYQDP=
+7GzzS1QN8lKDuf8ydXqY5F5MeN-LtUglrwjuUk"> <img src=3D"https://e.insd.io/e/fi=
+-o.png" alt=3D"Facebook" width=3D"35" height=3D"38"> </a> </p> <p style=3D"=
+float:right;margin:0"> <a href=3D"mailto:?subject=3DInside+AI+Commentary+by=
++%40robmay&body=3Dhttp%3A%2F%2Finside.com%2Fcampaigns%2Finside-ai-26274%2Fs=
+ections%2Finside-ai-commentary-by-robmay-222268"> <img src=3D"https://e.ins=
+d.io/e/fwdi-o.png" alt=3D"Forward" width=3D"35" height=3D"37"> </a> </p> <p=
+ style=3D"float:right;margin:0"> <a href=3D"https://u5080173.ct.sendgrid.ne=
+t/ss/c/88STjw-EFhdJdCcj-ucKeDjjC6udx9HM-sykQuEX5alXkn0F3OZMsp7lG1eyUwTgSVrQ=
+wZcIuuyGViXuw9sqSVnS3yqdTW_WeENR17rtYvKdr2HNHsxapFz1KN-LI07sEswBepBkZXHCx3X=
+5No5nuQ/38u/82YjBkZWSWG-6br9VaQy2g/h21/vfshlfO1WUN3m0FczYgNHtZVtUMQZZD6iL7y=
+3xQqFZo"> <img alt=3D"" src=3D"https://e.insd.io/e/ki-o.png" alt=3D"Link" w=
+idth=3D"35" height=3D"38"> </a> </p> </td> </tr> </table> </div> <!--[if ms=
+o]></td> <td style=3D"vertical-align:top;width:605px"><![endif]--><div clas=
+s=3D"column-content"> <table border=3D"0" cellpadding=3D"0" cellspacing=3D"=
+0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=3D"padding:0 =
+10px"> <div style=3D"margin:0 0 16px;font-family:Open Sans ,Segoe UI ,Tahom=
+a ,sans-serif;font-size:16px;line-height:28px" class=3D"story-body"> <div i=
+d=3D"story222268"></div> <p>One of the things I&#39;ve been asked a lot lat=
+ely is about MLOps as an area of investment, and how it differs from DevOps=
+, and why the Devops tools won&#39;t just own the space.&nbsp; On the latte=
+r question - will devops own the space - I don&#39;t have an opinion at the=
+ moment.&nbsp; Long term, maybe they will.&nbsp; But what I want to do toda=
+y is briefly explain for those of you who don&#39;t work in the space how t=
+he workflows are different.</p> <p>The use of data in most systems, up unti=
+l recently, is either for analysis of some type, or retrieval for a user.&n=
+bsp; When you build a system and store data in the database, you pull it ou=
+t as information.&nbsp; The data doesn&#39;t usually affect how the underly=
+ing application works.&nbsp; That is handled by the code.&nbsp;&nbsp; Since=
+ changes to code might impact how the application functions in the future, =
+those changes are tested with a series of what programmers call unit tests,=
+ and then functional tests, then deployed on a staging server (a server tha=
+t simulates a real world production environment but isn&#39;t), and archive=
+d so you can roll back to the previous version if necessary.</p> <p>Data, h=
+owever, is usually backed up or archived for disaster recovery purposes or =
+legal purposes, but you really don&#39;t need a copy of every change of the=
+ data to make the application work or possibly roll back if the application=
+ doesn&#39;t work as planned after some changes.&nbsp;</p> <p>In machine le=
+arning models, the data is used to train a model, and the model performs a =
+task.&nbsp; The code is used to define the structure of the neural network,=
+ and doesn&#39;t change as often as the data.&nbsp; <strong>So the function=
+ality of your application is more impacted by changes in data than changes =
+in code</strong>.&nbsp;&nbsp; That isn&#39;t how most software works today.=
+&nbsp;</p> <p>As a result, MLOps is emerging as a set of tools that manage,=
+ analyze, and archive these models and their related performance characteri=
+stics so that you can understand how data changes might impact performance.=
+&nbsp; The workflows here are different.&nbsp; For example, most web applic=
+ations that don&#39;t use ML don&#39;t need a data engineering pipeline, bu=
+t most ML applications do.&nbsp;</p> <p>The workflows are still changing, a=
+nd there aren&#39;t set engineering standards and best practices to the sam=
+e extent there are in traditional software just yet.&nbsp; Until that happe=
+ns it will be difficult to predict where MLOps will go.&nbsp; My guess thou=
+gh, is that there will be 1 or 2 MLOps companies that get big enough fast e=
+nough that they become standalone or very large acquisitions, and the rest =
+that show some traction will get swallowed up by companies like Snowflake, =
+Github, Splunk, and the like.&nbsp;</p> <p>What will determine the final ou=
+tcome?&nbsp; One key thing to watch is how similar the workflow and related=
+ UX/UI is between MLOps and DevOps.&nbsp; The other is how fast MLOps grows=
+.&nbsp; If it&#39;s slow and steady, expect DevOps tools to add it over tim=
+e.&nbsp; If it&#39;s fast, then MLOps startups will benefit from being focu=
+sed just on that.</p> <p>There is a lot more depth I could cover here, but,=
+ I hope this was a good high level explanation of what is going on in the m=
+arket at the moment.</p> <p>Thanks for reading.</p> <p><a href=3D"https://u=
+5080173.ct.sendgrid.net/ss/c/beJHD2FuMOujSBVBixKy2bBOB2NimvoF-Ef29jRPCOU/38=
+u/82YjBkZWSWG-6br9VaQy2g/h22/PnzRess1IZ0ysh-EPVNKeLbMltorJzfwdQLvisBGs_o">@=
+robmay</a></p> </div> <hr style=3D"margin-top:40px;height:12px;background-c=
+olor:#f8f8f8;background:url('https://e.insd.io/e/hr.png');background-size:4=
+px;color:#f8f8f8;border:0"> </td> </tr> </table> </div> <!--[if mso]></td> =
+</tr> </table><![endif]--></div> </td> </tr> <!DOCTYPE html PUBLIC "-//W3C/=
+/DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"=
+> <html><head> <tr> <td style=3D"font-size:0;padding:0 10px 40px" valign=3D=
+"top"> <div style=3D"max-width:660px;margin:0 auto"> <!--[if mso]><table bo=
+rder=3D"0" cellpadding=3D"0" cellspacing=3D"0" role=3D"presentation" style=
+=3D"width:640px"> <tr> <td style=3D"vertical-align:top;width:35px"><![endif=
+]--><div class=3D"column-share"> <table border=3D"0" cellpadding=3D"0" cell=
+spacing=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=3D=
+"padding:0 10px"> <p style=3D"float:left;border-radius:5px;background-color=
+:#ff5d16;width:35px;margin:0 0 10px"> <img alt=3D"" src=3D"https://e.insd.i=
+o/e/ai.png" width=3D"35" height=3D"35"> </p> </td> </tr> </table> </div> <!=
+--[if mso]></td> <td style=3D"vertical-align:top;width:605px"><![endif]--><=
+div class=3D"column-content"> <table border=3D"0" cellpadding=3D"0" cellspa=
+cing=3D"0" role=3D"presentation" style=3D"width:100%"> <tr> <td style=3D"pa=
+dding:0 10px"> <a href=3D"https://u5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xr=
+hZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o9=
+SVQ7_iDt6ytvTLlv0Nxib22XN-gKpj-gmCqD3WpVe3Udn7p8Il5plXKGv3zAHFpcsPheoaQM89O=
+ZoWjrMItRH5vNpXDlM3TG2509tSVojiTGqv1_G_8OJkFMvd4FKBjAzePPa2OBOXoku4Ld145wo/=
+38u/82YjBkZWSWG-6br9VaQy2g/h23/eJ8NXJsCzwPGHM5RPPuvuZkE4M9h4czr4j8vFnRROyE"=
+ style=3D"color:#ff5d16;text-decoration:none;font-weight:400"> <img alt=3D"=
+" src=3D"https://e.insd.io/a/n/1494_e2.jpg?1609955958" width=3D"585" border=
+=3D"0" style=3D"height:auto;max-width:100%;margin:0 auto"> </a> <p style=3D=
+"text-transform:uppercase;font-size:12px;letter-spacing:1px;font-family:Ope=
+n Sans ,Segoe UI ,Tahoma ,sans-serif;font-weight:normal;color:#82758a;margi=
+n:10px 0" class=3D"text-left" align=3D"center"> A message from UBER BUSINES=
+S </p> <div style=3D"font-family:Open Sans ,Segoe UI ,sans-serif;font-size:=
+16px;line-height:28px;margin:0 0 10px" align=3D"center" class=3D"text-left"=
+> <p style=3D"margin-top:0"><strong>Join over 150,000 companies using Uber =
+for Business, including more than half of the Fortune 500.</strong></p> <p =
+style=3D"margin-top:0"><a href=3D"https://u5080173.ct.sendgrid.net/ss/c/W_A=
+A9-F1CZIBmGGqHDprqf986GIrurB5WhTpw_n_5AvT9avPxleP4oRpXAKPmtBpTKYgvQFSnxpGll=
+wW3E2cN82GjxiYleqLv9iZviPRaObCuzBbhT9dIYaeCh9kfP3_bTbEerB_fAojUPsP-RSbBeZ_V=
+P4Gg7wFUvyL76y56WJGi2xW6rw9JR6zk0Gc8HQwEdpXQUZWaeOYUxCcH-Zl-F6ky3_xhG8W8-1r=
+R6ql17M/38u/82YjBkZWSWG-6br9VaQy2g/h24/InR_IZV5AbTVE44FRA_3_WcmeenVL4VjfdlO=
+E8fBN5k" style=3D"color:#ff5d16;text-decoration:none;font-weight:400">Uber =
+for Business</a> is a platform for companies of all sizes to use to manage =
+global rides, meals, and local deliveries.</p> <ul> <li> <strong>Rides:</st=
+rong> Airport runs. Daily commutes. A ride for clients. When your business =
+needs to move, a ride can be requested in more than 10,000 cities worldwide=
+.</li> <li> <strong>Meals:</strong> It&rsquo;s hard to do great work on an =
+empty stomach. Keep your teams motivated and your guests well-fed with opti=
+ons from over 500,000 restaurant partners globally.</li> <li> <strong>Deliv=
+ery:</strong> For packages under 50 pounds, from retail orders to automotiv=
+e supplies, we can help your business reach customers faster than ever with=
+ access to same-day local delivery options.</li> </ul> <p style=3D"margin-t=
+op:0">Your business is going places. We&rsquo;re here to help.</p> <p style=
+=3D"margin-top:0"><a class=3D"template-button" href=3D"https://u5080173.ct.=
+sendgrid.net/ss/c/W_AA9-F1CZIBmGGqHDprqf986GIrurB5WhTpw_n_5AvT9avPxleP4oRpX=
+AKPmtBpTKYgvQFSnxpGllwW3E2cN82GjxiYleqLv9iZviPRaObCuzBbhT9dIYaeCh9kfP3_bTbE=
+erB_fAojUPsP-RSbBeZ_VP4Gg7wFUvyL76y56WJGi2xW6rw9JR6zk0Gc8HQwEdpXQUZWaeOYUxC=
+cH-Zl-F6ky3_xhG8W8-1rR6ql17M/38u/82YjBkZWSWG-6br9VaQy2g/h25/PdksD8c62L4lKxq=
+BVRGz8OTA353vGUJq_-pLhCR22mQ" style=3D"background-color:#ff5d16 !important;=
+border-radius:5px !important;font-weight:700 !important;text-transform:uppe=
+rcase !important;letter-spacing:1px !important;color:#FFF !important;margin=
+-left:0 !important;font-size:12px !important;line-height:12px !important;te=
+xt-decoration:none !important;padding:12px 10px">Get started for free</a></=
+p> <p style=3D"margin-top:0"><span style=3D"font-size:11px">Limited time of=
+fer.&nbsp;</span></p> </div> <hr style=3D"margin-top:40px;height:12px;color=
+:#f8f8f8;background:#f8f8f8 url('https://e.insd.io/e/hr.png') 0 0 /4px;bord=
+er:0"> </td> </tr> </table> </div> <!--[if mso]></td> </tr> </table><![endi=
+f]--></div> </td> </tr></head></html> <!DOCTYPE html PUBLIC "-//W3C//DTD HT=
+ML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"> <html=
+><head> <tr> <td style=3D"padding-bottom:40px;font-size:0" class=3D"sm-px10=
+" align=3D"center" valign=3D"top"> <div style=3D"border-radius:5px;border:1=
+px solid #d8dbdf"> <!--[if mso]><table role=3D"presentation" cellspacing=3D=
+"0" cellpadding=3D"0" style=3D"width:100%;border:1px solid #d8dbdf"> <tr> <=
+td style=3D"vertical-align:top;width:220px;padding-right:10px"><![endif]-->=
+<div class=3D"ad-image"> <table role=3D"presentation" cellspacing=3D"0" cel=
+lpadding=3D"0" border=3D"0" style=3D"width:100%"> <tr> <td style=3D"padding=
+:30px 10px 30px 20px" align=3D"center"> <a href=3D"https://u5080173.ct.send=
+grid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr22NI4vz-RAS8sPp=
+6HzBMhTBpgxPUw8oB8TPYA2owEPwx0le-USSJzuiAMTG2aEsjJmdKfSmDWYxzZj6KzPUEKhEjhZ=
+IYf7jfjuOWk_1IU1_Mcd-0lS3s6lmuVm2mCIANJyCc3mh0QXxsRcDEGg2rg6Ybmq710Jy0Y1JMB=
+k94UuuWXJAZ5IM30Q-kqMpjU/38u/82YjBkZWSWG-6br9VaQy2g/h26/c4Oi9Vbt7ypZqX1zBsD=
+pj6PGtdIBlGs9zrDsBYG7IK0" style=3D"color:#ff5d16;text-decoration:none;font-=
+weight:400"> <img alt=3D"" src=3D"https://e.insd.io/a/f/652_x2.png" width=
+=3D"150" style=3D"max-width:100%;margin:0 auto"> </a> </td> </tr> </table> =
+</div> <!--[if mso]></td> <td style=3D"vertical-align:top;width:440px;paddi=
+ng-left:10px"><![endif]--><div class=3D"ad-body"> <table role=3D"presentati=
+on" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%"> =
+<tr> <td style=3D"color:#1f0a00;padding:30px 20px 30px 10px" class=3D"sm-p"=
+> <div style=3D"font-family:Open Sans ,Segoe UI ,Tahoma ,sans-serif;font-si=
+ze:14px;line-height:25px;margin:0" class=3D"text-left" align=3D"center"> <p=
+ style=3D"margin-top:0">Get instant access to a curated pool of responsive =
+top tech talent actively seeking their next role. <a href=3D"https://u50801=
+73.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr22NI4=
+vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2owEPwx0le-USSJzuiAMTG2aEsjJmdKfSmDWYxzZj6K=
+zPUEKhEjhZIYf7jfjuOWk_1IU1_Mcd-0lS3s6lmuVm2mDrPKxaqL3Bx3xaLtTRhp5tcHUAVkQ2E=
+TsGdRBuu_ab0h-4_r5zG94627sOGmKc7iQ/38u/82YjBkZWSWG-6br9VaQy2g/h27/lxIeDfEjr=
+3cgBEBVuJwPYi3_3nYeRMLyD-RrZTjCFF0" style=3D"color:#ff5d16;text-decoration:=
+none;font-weight:400">Sign up for a free trial of Hired today.</a></p> </di=
+v> </td> </tr> </table> </div> <!--[if mso]></td> </tr> </table><![endif]--=
+></div> </td> </tr></head></html><!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.=
+0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd"> <html><hea=
+d> <tr> <td style=3D"padding-bottom:40px;font-size:0" class=3D"sm-px10" ali=
+gn=3D"center" valign=3D"top"> <div style=3D"border-radius:5px;border:1px so=
+lid #d8dbdf"> <!--[if mso]><table role=3D"presentation" cellspacing=3D"0" c=
+ellpadding=3D"0" style=3D"width:100%;border:1px solid #d8dbdf"> <tr> <td st=
+yle=3D"vertical-align:top;width:220px;padding-right:10px"><![endif]--><div =
+class=3D"ad-image"> <table role=3D"presentation" cellspacing=3D"0" cellpadd=
+ing=3D"0" border=3D"0" style=3D"width:100%"> <tr> <td style=3D"padding:30px=
+ 10px 30px 20px" align=3D"center"> <a href=3D"https://u5080173.ct.sendgrid.=
+net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr22NI4vz-RAS8sPp6HzBM=
+hTBpgxPUw8oB8TPYA2o9R5Zy1hmxKbRnsd0ctjK7ldrluhJpo0OEpIaLm1c0XI07P8Hnh2mveoq=
+HSKcCjxv9Dxw1_26-awFJJ-pXQay70uw_FTIn4tpFFVA2YYifF8ltgG7Ieq7c0CTdTyUjZuhHBq=
+nfv85N9hn-a1JegC_EI/38u/82YjBkZWSWG-6br9VaQy2g/h28/b0o-d7Ck5bQN68dX620f5z7X=
+FCuhYllmbNGmPXuWWeU" style=3D"color:#ff5d16;text-decoration:none;font-weigh=
+t:400"> <img alt=3D"" src=3D"https://e.insd.io/a/f/674_x2.png" width=3D"150=
+" style=3D"max-width:100%;margin:0 auto"> </a> </td> </tr> </table> </div> =
+<!--[if mso]></td> <td style=3D"vertical-align:top;width:440px;padding-left=
+:10px"><![endif]--><div class=3D"ad-body"> <table role=3D"presentation" cel=
+lspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%"> <tr> <t=
+d style=3D"color:#1f0a00;padding:30px 20px 30px 10px" class=3D"sm-p"> <div =
+style=3D"font-family:Open Sans ,Segoe UI ,Tahoma ,sans-serif;font-size:14px=
+;line-height:25px;margin:0" class=3D"text-left" align=3D"center"> <p style=
+=3D"margin-top:0">Join over 150,000 companies that use <a href=3D"https://u=
+5080173.ct.sendgrid.net/ss/c/GpCPmJvk_xrhZUZh3TUXpjqoRUXwvZkQBG49Xh5kagskrr=
+22NI4vz-RAS8sPp6HzBMhTBpgxPUw8oB8TPYA2o9R5Zy1hmxKbRnsd0ctjK7ldrluhJpo0OEpIa=
+Lm1c0XI07P8Hnh2mveoqHSKcCjxv9Dxw1_26-awFJJ-pXQay70uw_FTIn4tpFFVA2YYifF8ltgG=
+7Ieq7c0CTdTyUjZuhHBqnfv85N9hn-a1JegC_EI/38u/82YjBkZWSWG-6br9VaQy2g/h29/JqHm=
+vDDTiUtc1sFmEnWVAwnpNZvKg36q9KSt-6xlWGk" style=3D"color:#ff5d16;text-decora=
+tion:none;font-weight:400">Uber for Business</a>, including more than half =
+of the Fortune 500.</p> </div> </td> </tr> </table> </div> <!--[if mso]></t=
+d> </tr> </table><![endif]--></div> </td> </tr></head></html> </table> <!--=
+[if mso]></td> </tr> </table><![endif]--></div> <table role=3D"presentation=
+" cellspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"background-colo=
+r:#0A0300;width:100%"> <tr> <td style=3D"padding:20px"> <div style=3D"font-=
+size:0;max-width:640px;margin:0 auto" class=3D"email-container"> <!--[if ms=
+o]><table role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" align=3D"center" style=3D"width:640px;margin:0 auto"> <tr> <td align=
+=3D"left" style=3D"vertical-align:middle;width:140px"><![endif]--><div clas=
+s=3D"social-column"> <table role=3D"presentation" cellspacing=3D"0" cellpad=
+ding=3D"0" border=3D"0" align=3D"left"> <tr> <td> <a clicktracking=3Doff hr=
+ef=3D"https://twitter.com/inside" style=3D"box-sizing:content-box;display:i=
+nline-block;width:35px;height:35px;border:1px solid #fff7f1;Margin:10px 16p=
+x 10px 0;text-align:center;border-radius:50%"> <img alt=3D"" src=3D"https:/=
+/e.insd.io/e/ti-wo.png" border=3D"0" height=3D"35" width=3D"35"> </a> </td>=
+ <td> <a clicktracking=3Doff href=3D"https://www.linkedin.com/company/insid=
+e-com/" style=3D"box-sizing:content-box;display:inline-block;width:35px;hei=
+ght:35px;border:1px solid #fff7f1;text-align:center;border-radius:50%"> <im=
+g alt=3D"" src=3D"https://e.insd.io/e/inki-wo.png" border=3D"0" height=3D"3=
+5" width=3D"35"> </a> </td> </tr> </table> </div> <!--[if mso]></td> <td al=
+ign=3D"left" style=3D"vertical-align:middle;width:500px"><![endif]--><div c=
+lass=3D"copyright-column"> <table role=3D"presentation" cellspacing=3D"0" c=
+ellpadding=3D"0" border=3D"0" style=3D"width:100%"> <tr> <td> <p style=3D"c=
+olor:#fff7f1;margin:0;font-size:12px;font-family:Open Sans ,Segoe UI ,sans-=
+serif;line-height:28px" class=3D"sm-pt"> 767 Bryant St. #203, San Francisco=
+, CA 94107 <br> Copyright =C2=A9 2021 Inside.com </p> </td> </tr> </table> =
+</div> <!--[if mso]></td> </tr> </table><![endif]--></div> </td> </tr> <tr>=
+ <td style=3D"padding:20px;border-top:1px solid #200a00"> <div style=3D"max=
+-width:640px;margin:0 auto" class=3D"email-container"> <!--[if mso]><table =
+role=3D"presentation" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" styl=
+e=3D"width:640px;margin:0 auto" align=3D"center"> <tr> <td align=3D"left" s=
+tyle=3D"vertical-align:middle"><![endif]--><table role=3D"presentation" cel=
+lspacing=3D"0" cellpadding=3D"0" border=3D"0" style=3D"width:100%"> <tr> <t=
+d> <p style=3D"color:#fff7f1;font-size:12px;font-family:Open Sans ,Segoe UI=
+ ,sans-serif;line-height:24px"> Did someone forward this email to you? <a c=
+licktracking=3Doff href=3D"https://inside.com" style=3D"color:#fff7f1;text-=
+decoration:underline">Head over to inside.com</a> to get your very own free=
+ subscription! <br> You received this email because you subscribed to <a cl=
+icktracking=3Doff href=3D"http://inside.com/ai?token=3Dh6tjzrRkwBOrnvn4jDQe=
+kw" style=3D"color:#fff7f1;text-decoration:underline">Inside AI</a>. <a cli=
+cktracking=3Doff href=3D"https://inside.com/lists/unsubscribe/lArS9zE1BofEV=
+d4IRHiCug?list=3D65" style=3D"color:#fff7f1;text-decoration:underline">Clic=
+k here</a> to unsubscribe from Inside AI list or <a clicktracking=3Doff hre=
+f=3D"https://inside.com/subscriptions/manage/h6tjzrRkwBOrnvn4jDQekw" style=
+=3D"color:#fff7f1;text-decoration:underline">manage your subscriptions</a>.=
+ </p> </td> </tr> </table> <!--[if mso]></td> </tr> </table><![endif]--></d=
+iv> </td> </tr> </table> <div style=3D"display:none;white-space:nowrap;font=
+:15px courier;line-height:0"> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nb=
+sp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &=
+nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;=
+ &nbsp; &nbsp; </div> <!--[if mso]></td> </tr> </table><![endif]--></center=
+>=20
+<img src=3D"https://u5080173.ct.sendgrid.net/ss/o/RXMiRW23918i1vfyr3pnlQ/38=
+u/82YjBkZWSWG-6br9VaQy2g/ho.gif" alt=3D"" width=3D"1" height=3D"1" border=
+=3D"0" style=3D"height:1px !important;width:1px !important;border-width:0 !=
+important;margin-top:0 !important;margin-bottom:0 !important;margin-right:0=
+ !important;margin-left:0 !important;padding-top:0 !important;padding-botto=
+m:0 !important;padding-right:0 !important;padding-left:0 !important;"/>
+</body> </html>
+
+--db2d3c99a32d0c4ef6b42c786da2a72f604cc84f8c57a8bf7d600f265b3e--

@@ -1,0 +1,938 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b522:0:0:0:0:0 with SMTP id z2csp4399426ljm;
+        Tue, 21 Jan 2020 10:49:21 -0800 (PST)
+X-Google-Smtp-Source: APXvYqyDPsF/rJmvB56MceA3OOHa34F3mQ5DOBFVjLQuOQjIklS3j5BZxwpB2EZhhIfeMTkyQ/YI
+X-Received: by 2002:a17:902:864c:: with SMTP id y12mr6789704plt.8.1579632561548;
+        Tue, 21 Jan 2020 10:49:21 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1579632561; cv=none;
+        d=google.com; s=arc-20160816;
+        b=gZnYRqXOLEAmFv44NjcjWrdTXTbZAPIrPTGEJfMIn2HJ776q01Cb2maFP61pyBleJ3
+         EKSHL1WQHKqREoElw/KjsKG8NbdhAbEoueVBPahDnjg1GpxdnFUX4+rMGaaUuM7rLOd3
+         roUm9IKfx9dIRwswgIVd9LdkCWaE5n/UEoYpwYGIzMQ0/88+2SArXeVMBGFT1ul1PVXX
+         /av2pRjaP/5enLtW4IlD4UoLHnPx4rIRLpKhnx3z6UHnSG1bJgkbUUP8cTB37Bw26Bkw
+         ASNLFby2VwdE1Vxh4JrZvUfz4+a/vubpJweEnPnnPycOA9Rq4uCPX/kYWE2ujFk8/pRj
+         bWeQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:mime-version:subject:message-id:to:reply-to:from:date
+         :dkim-signature:dkim-signature;
+        bh=ekmc8IoeJNZQR75vUAEQOLj31ZyXRbX3MEp0A4wYo2o=;
+        b=S++q6kzBL9ifdVqHikzEbQRPJxMKn4MIpyalu+45hQt47OzXVyW7xi3SD0nsX6mW/R
+         qCilQAtLGR/MsKeDNz5qpgjVhIDCngTzqQD6knG1yFnDs2ZJ6gJo0Bt4hUkromgOTl6/
+         9yh0OBy4iErl7EnpMkMgVEahfYUgcBRPythixRyS4UZoug2uuMoAenjFfwszprEM7wI5
+         8PWMBBXsjQ27yBbZHtkONqT75AMdOsWMp1pUFbM5fUbtKQYXdhr7d9jOObmvrepbSKkd
+         TTpUlmnLvvQJ6dtkfEMvsf2Z4yQ6Lfg/vPWVdbzejObn8V7rNzeiHA67nxUR48L7JbaS
+         L86Q==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@messaging.squareup.com header.s=4rmist4nlvu5xggi42ultfptbjah6jd5 header.b=Su2xFRAI;
+       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=X0sf01mi;
+       spf=pass (google.com: domain of 0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com designates 54.240.27.99 as permitted sender) smtp.mailfrom=0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=messaging.squareup.com
+Return-Path: <0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com>
+Received: from a27-99.smtp-out.us-west-2.amazonses.com (a27-99.smtp-out.us-west-2.amazonses.com. [54.240.27.99])
+        by mx.google.com with ESMTPS id j12si36824039pls.258.2020.01.21.10.49.21
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Tue, 21 Jan 2020 10:49:21 -0800 (PST)
+Received-SPF: pass (google.com: domain of 0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com designates 54.240.27.99 as permitted sender) client-ip=54.240.27.99;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@messaging.squareup.com header.s=4rmist4nlvu5xggi42ultfptbjah6jd5 header.b=Su2xFRAI;
+       dkim=pass header.i=@amazonses.com header.s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx header.b=X0sf01mi;
+       spf=pass (google.com: domain of 0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com designates 54.240.27.99 as permitted sender) smtp.mailfrom=0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@amazonses.messaging.squareup.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=messaging.squareup.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=4rmist4nlvu5xggi42ultfptbjah6jd5; d=messaging.squareup.com;
+	t=1579632560;
+	h=Date:From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type;
+	bh=1OcuXWZCgqmD1gba9VYCdxrc00S370iZJbCi5+wLjcc=;
+	b=Su2xFRAIGs1EMl5PeWZvfTbLchuHjK+3Kh6fwX/YfqXqggzioZ5BblPBCZea8bEv
+	pN7tFfAwEjp/ReOcivpA7FIWBIyiNiQXvMzLhSOw4d0U4uQeswYLwe+xqkF/fDIQYF6
+	UT54eaUnNmKPevQt8oIoPOV0C2awyhmBDeFGYoSs=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=gdwg2y3kokkkj5a55z2ilkup5wp5hhxx; d=amazonses.com; t=1579632560;
+	h=Date:From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Feedback-ID;
+	bh=1OcuXWZCgqmD1gba9VYCdxrc00S370iZJbCi5+wLjcc=;
+	b=X0sf01miJJeZ5fYAZ35wiQUUkny6U/30PYqUi3s+d/+1VoCJU+HmNnnZF9WimL2R
+	ypGzrAffiX8nO5UA7zrIZBP8lahGku9MSE8u3VAJ2WcQBjsSxaEBCStybnw+DAWXsmH
+	QE3hBuMAlmNhnU7Ryz5l8KqshS76GNjbEy9zmu8Q=
+Date: Tue, 21 Jan 2020 18:49:20 +0000
+From: Norwood via Square <receipts@messaging.squareup.com>
+Reply-To: 
+	Norwood via Square <CAESPxIAGjFyX21memdld3R0a2p0ZWtzY2tvZnZlNjZ0cWhmemc0NTNrbGp1eG1ubHdvZjJ3Y3FxIghkaWFsb2d1ZSIgrBcfCoHGSAJPQGPrVTlbJyOLdIeAStiNoYaj9CvC2Lo=@reply2.squareup.com>
+To:  <josh@josh.is>
+Message-ID: <0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000@us-west-2.amazonses.com>
+Subject: Receipt from Norwood
+MIME-Version: 1.0
+Content-Type: multipart/mixed; 
+	boundary="----=_Part_12342768_1871373769.1579632560000"
+X-Metadata-receipt-token: arbZsRfEHJqjOzp9rnwjZiv5vquaB
+X-Reply-To-Service: dialogue
+X-Metadata-automatic: true
+X-Metadata-payment-token: bZsRfEHJqjOzp9rnwjZiv5vquaB
+X-ERS-Token: CFgQoZ3x0sDWu/AkGMiCm+azy567iwE=
+X-Metadata-merchant-token: 2R02JXE05M0GZ
+X-EMS-Request-ID: 3f13ddcf-a245-40a1-9812-b03f0f6617ae
+X-Metadata-app-version: 18eaa0c860c7d540bd0b4dff8a8b1810f5524ead
+X-SES-Outgoing: 2020.01.21-54.240.27.99
+Feedback-ID: 1.us-west-2.Ys0TtaV3ThrL9KaebebAtwQ8vYTqz4B6QHfonsV/uOw=:AmazonSES
+
+------=_Part_12342768_1871373769.1579632560000
+Content-Type: multipart/related; 
+	boundary="----=_Part_12342769_212203071.1579632560000"
+
+------=_Part_12342769_212203071.1579632560000
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_12342770_999928134.1579632560000"
+
+------=_Part_12342770_999928134.1579632560000
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+
+Reply to this email to leave feedback for Norwood
+You paid $7.53 with your Visa ending in 6507 to Norwood on Jan 21 2020 at 1:45 PM.
+
+View your full receipt:
+https://squareup.com/r/arbZsRfEHJqjOzp9rnwjZiv5vquaB
+
+Your full receipt has more information about your payment to Norwood.
+
+https://squareup.com
+
+
+------=_Part_12342770_999928134.1579632560000
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html lang=3D"en" style=3D"background-color: #f2f4f5;"><head><meta content=
+=3D"width=3Ddevice-width" name=3D"viewport"><meta content=3D"telephone=3Dno=
+" name=3D"format-detection"><meta content=3D"text/html;charset=3Dutf-8" htt=
+p-equiv=3D"Content-Type"><title>Square Receipt</title><style type=3D"text/c=
+ss">@font-face{font-family:"SQMarket";src:url("https://squareup.com/jp/publ=
+ic-fonts/sqmarket/sqmarket-light.eot");src:url("https://squareup.com/jp/pub=
+lic-fonts/sqmarket/sqmarket-light.eot?#iefix") format("embedded-opentype"),=
+url("https://dl6rt3mwcjzxg.cloudfront.net/assets/sqmarket/sqmarket-light.wo=
+ff") format("woff"),url("https://dl6rt3mwcjzxg.cloudfront.net/assets/sqmark=
+et/sqmarket-light.ttf") format("truetype");font-weight:300;font-style:norma=
+l;mso-font-alt:Arial}@font-face{font-family:"SQMarket";src:url("https://squ=
+areup.com/jp/public-fonts/sqmarket/sqmarket-regular.eot");src:url("https://=
+squareup.com/jp/public-fonts/sqmarket/sqmarket-regular.eot?#iefix") format(=
+"embedded-opentype"),url("https://dl6rt3mwcjzxg.cloudfront.net/assets/sqmar=
+ket/sqmarket-regular.woff") format("woff"),url("https://dl6rt3mwcjzxg.cloud=
+front.net/assets/sqmarket/sqmarket-regular.ttf") format("truetype");font-we=
+ight:400;font-style:normal;mso-font-alt:Arial}@font-face{font-family:"SQMar=
+ket";src:url("https://squareup.com/jp/public-fonts/sqmarket/sqmarket-medium=
+.eot");src:url("https://squareup.com/jp/public-fonts/sqmarket/sqmarket-medi=
+um.eot?#iefix") format("embedded-opentype"),url("https://dl6rt3mwcjzxg.clou=
+dfront.net/assets/sqmarket/sqmarket-medium.woff") format("woff"),url("https=
+://dl6rt3mwcjzxg.cloudfront.net/assets/sqmarket/sqmarket-medium.ttf") forma=
+t("truetype");font-weight:500;font-style:normal;mso-font-alt:Arial}@font-fa=
+ce{font-family:"SQMarket";src:url("https://squareup.com/jp/public-fonts/sqm=
+arket/sqmarket-bold.eot");src:url("https://squareup.com/jp/public-fonts/sqm=
+arket/sqmarket-bold.eot?#iefix") format("embedded-opentype"),url("https://d=
+l6rt3mwcjzxg.cloudfront.net/assets/sqmarket/sqmarket-bold.woff") format("wo=
+ff"),url("https://dl6rt3mwcjzxg.cloudfront.net/assets/sqmarket/sqmarket-bol=
+d.ttf") format("truetype");font-weight:700;font-style:normal;mso-font-alt:A=
+rial}
+@media (max-width: 480px){.receipt-top-edge-white{display:inline !important=
+}.receipt-top-edge-gray{display:none !important}.receipt-content-wrapper{ma=
+rgin-top:0px !important}}
+</style><style>body {
+font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, s=
+ans-serif; font-size: 14px; line-height: 30px; color: #3d454d; font-weight:=
+ normal;
+}
+body {
+background-color: #f2f4f5;
+}
+body {
+-webkit-font-smoothing: antialiased; width: 100% !important; -webkit-text-s=
+ize-adjust: 100%; -ms-text-size-adjust: 100%; padding: 0; margin: 0;
+}
+body {
+min-height: 400px; margin: 0; padding: 0;
+}
+body.sensitive-data p {
+color: #3d454d;
+}
+body.sensitive-data .p {
+color: #3d454d;
+}
+body.sensitive-data .replyable-header-wrapper .p {
+color: #3d454d;
+}
+body.sensitive-data .table-footer .p {
+color: #3d454d;
+}
+body.sensitive-data .table-footer a {
+color: #3d454d;
+}
+body.sensitive-data .table-footer .footer-link a {
+color: #3d454d;
+}
+body.sensitive-data .td-receipt-address .last-location {
+color: #3d454d;
+}
+body.sensitive-data .item-modifier-name .p {
+color: #3d454d;
+}
+body.sensitive-data .td-cash-amount .p {
+color: #3d454d;
+}
+body.sensitive-data .non-taxable-items .p {
+color: #3d454d;
+}
+body.sensitive-data .refund-date .p {
+color: #3d454d;
+}
+body.sensitive-data .td-payment-card .p {
+color: #3d454d;
+}
+body.sensitive-data .table-return-policy .p {
+color: #3d454d;
+}
+body.sensitive-data .table-custom-text .p {
+color: #3d454d;
+}
+body.sensitive-data .table-date-and-tenders .p {
+color: #3d454d;
+}
+body.sensitive-data .table-date-and-tenders a {
+color: #3d454d;
+}
+body.sensitive-data .register-upsell-tile .register-upsell-tile-header {
+color: #3d454d;
+}
+body.sensitive-data .register-upsell-tile .register-upsell-tile-body {
+color: #3d454d;
+}
+</style></head><body style=3D'font-family: SQMarket, HelveticaNeue, "Helvet=
+ica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 30px=
+; color: #3d454d; font-weight: normal; -webkit-font-smoothing: antialiased;=
+ width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adju=
+st: 100%; min-height: 400px; margin-top: 0; margin-right: 0; margin-bottom:=
+ 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; pa=
+dding-left: 0;' bgcolor=3D"#f2f4f5"><div class=3D"preheader" style=3D"font-=
+size: 0; max-height: 0; overflow: hidden; display: none; mso-hide: all;">Re=
+ceipt for $7.53 at Norwood on Jan 21 2020 at 1:45 PM.</div><div class=3D"ps=
+eudo-body ExternalClass" style=3D"min-height: 400px; background-color: #f2f=
+4f5 !important; width: 100%; -premailer-width: 100%; line-height: 100%;"><t=
+able border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" style=
+=3D"border-collapse: collapse; border-spacing: 0; border-top-width: 0; bord=
+er-right-width: 0; border-bottom-width: 0; border-left-width: 0;"><tr><td a=
+lign=3D"center" style=3D"line-height: 0px; font-size: 0px; border-collapse:=
+ collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-lef=
+t: 0;" valign=3D"top"><!--[if (gte mso 9)|(IE)]> <table align=3D"center" bo=
+rder=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"375"> <tr> <td alig=
+n=3D"center" valign=3D"top" width=3D"375"> <![endif]--><table class=3D"tabl=
+e-container-section automatic-receipt-wrapper" border=3D"0" cellspacing=3D"=
+0" cellpadding=3D"0" style=3D"border-collapse: collapse; border-spacing: 0;=
+ width: 100%; min-width: 100%; border-top-width: 0; border-right-width: 0; =
+border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"white" width=3D"1=
+00%"><tr><td align=3D"center" valign=3D"top" style=3D"line-height: 0px; fon=
+t-size: 0px; border-collapse: collapse; padding-top: 0; padding-right: 0; p=
+adding-bottom: 0; padding-left: 0;"><table style=3D"border-collapse: collap=
+se; border-spacing: 0; border-top-width: 0; border-right-width: 0; border-b=
+ottom-width: 0; border-left-width: 0;" cellpadding=3D"0" cellspacing=3D"0">=
+<tr><td class=3D"td-automatic-receipt-banner" style=3D'line-height: 21px; f=
+ont-size: 14px; border-collapse: collapse; font-family: SQMarket, Helvetica=
+Neue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-weight: normal; =
+letter-spacing: 0.2px; color: #85898c; padding-top: 12px; padding-right: 16=
+px; padding-bottom: 12px; padding-left: 16px;' align=3D"center">Square auto=
+matically sends receipts to the email address you used at any Square seller=
+.=C2=A0<a class=3D"automatic-receipt-link" id=3D"automatic-receipt-learn-mo=
+re" href=3D"https://a.squareupmessaging.com/CL0/https:%2F%2Fsquareup.com%2F=
+help%2Farticle%2F5212/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516=
+c6-000000/rW8QCos8S05-ODaJncRFZ0GD9fEQZYK27C8m-FondLk=3D124" style=3D"text-=
+decoration: underline !important; color: #2996cc;">Learn more</a></td></tr>=
+</table></td></tr></table><table align=3D"center" class=3D"receipt-content-=
+wrapper receipt-content-wrapper--71b7bc" style=3D"border-collapse: collapse=
+; border-spacing: 0; text-align: left; margin-left: auto; margin-right: aut=
+o; margin-top: 16px; width: 100%; min-width: 320px; max-width: 375px; borde=
+r-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-=
+width: 0;" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0"><tr><td align=
+=3D"center" style=3D"line-height: 0px; font-size: 0px; border-collapse: col=
+lapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0=
+;"><table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"border-=
+collapse: collapse; border-spacing: 0; border-top-width: 0; border-right-wi=
+dth: 0; border-bottom-width: 0; border-left-width: 0;"><tr><td align=3D"cen=
+ter" valign=3D"top" class=3D"merchant-header-wrapper feedback-visible " sty=
+le=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; overflow=
+: hidden; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left=
+: 0;"><table class=3D"curated-image" style=3D"border-collapse: collapse; bo=
+rder-spacing: 0; border-top-width: 0; border-right-width: 0; border-bottom-=
+width: 0; border-left-width: 0;" bgcolor=3D"#5a9296" cellpadding=3D"0" cell=
+spacing=3D"0"><tr class=3D"receipt-top-edge-gray"><td valign=3D"bottom" sty=
+le=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; padding-=
+top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><img alt=3D"=
+gray" width=3D"375" height=3D"3" class=3D"receipt-top-edge" src=3D"https://=
+d2isyty7gbnm74.cloudfront.net/TKLQn7U4CVrmPAZManlIt13xdr8=3D/fit-in/750x6/f=
+ilters:fill(5a9296):watermark(https://d3g64w74of3jgu.cloudfront.net/receipt=
+s/assets/receipt-top-edge-mask-e4b3ac1f0660315cfe627b6f6655ecb62d6c8cded4c4=
+3526d139b7959ccda317.png,0,0,0):quality(100)/https://d3g64w74of3jgu.cloudfr=
+ont.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30=
+cc0fe0b72443e78cbffb.png" style=3D"border-top-width: 0; border-right-width:=
+ 0; border-bottom-width: 0; border-left-width: 0; display: block; max-width=
+: 375px; width: 100%;"></td></tr><tr class=3D"receipt-top-edge-white" style=
+=3D"display: none; mso-hide: all;"><td valign=3D"bottom" style=3D"line-heig=
+ht: 0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding=
+-right: 0; padding-bottom: 0; padding-left: 0;"><img alt=3D"white" width=3D=
+"375" height=3D"3" class=3D"receipt-top-edge" src=3D"https://d2isyty7gbnm74=
+.cloudfront.net/UApdia4xkuu9qouRtS5cQxg3vDE=3D/fit-in/750x6/filters:fill(5a=
+9296):watermark(https://d3g64w74of3jgu.cloudfront.net/receipts/assets/recei=
+pt-top-edge-white-e04dd053ad1839f8e3e91459faf5e1606dca195cd4c6fbd74e195bafe=
+abae1eb.png,0,0,0):quality(100)/https://d3g64w74of3jgu.cloudfront.net/recei=
+pts/assets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e=
+78cbffb.png" style=3D"border-top-width: 0; border-right-width: 0; border-bo=
+ttom-width: 0; border-left-width: 0; display: block; max-width: 375px; widt=
+h: 100%;"></td></tr><tr><td width=3D"100%" height=3D"8" colspan=3D"1" style=
+=3D"line-height: 0; font-size: 0; border-collapse: collapse; padding-top: 0=
+; padding-right: 0; padding-bottom: 0; padding-left: 0;"> </td></tr><tr><td=
+ align=3D"center" class=3D"td-merchant-header-info" valign=3D"middle" style=
+=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Aria=
+l, sans-serif; font-size: 14px; line-height: 30px; color: white; font-weigh=
+t: normal; border-collapse: collapse; width: 100%; height: 141px; padding-t=
+op: 0; padding-right: 36px; padding-bottom: 0; padding-left: 36px;' width=
+=3D"100%" height=3D"141"><table style=3D"border-collapse: collapse; border-=
+spacing: 0; table-layout: fixed; width: 100%; word-wrap: break-word; border=
+-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-w=
+idth: 0;" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0"><tr><td align=
+=3D"center" style=3D"line-height: 0px; font-size: 0px; border-collapse: col=
+lapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0=
+;">      <!--[if mso]><span style=3D"border: 3px solid #ffffff;"><![endif]-=
+->
+        <img width=3D"64" height=3D"64" border=3D"0" alt=3D"" style=3D"bord=
+er-radius: 11px; vertical-align: middle; border-top-color: #ffffff; border-=
+right-color: #ffffff; border-bottom-color: #ffffff; border-left-color: #fff=
+fff; border-top-style: solid; border-right-style: solid; border-bottom-styl=
+e: solid; border-left-style: solid; border-top-width: 3px; border-right-wid=
+th: 3px; border-bottom-width: 3px; border-left-width: 3px;" class=3D"mercha=
+nt-header__image" src=3D"https://d2isyty7gbnm74.cloudfront.net/xAEoeOAvjrT2=
+kbSRAb6Wwqnx6tg=3D/128x128/filters:fill(ffffff):quality(100):format(png)/ht=
+tps://d1g145x70srn7h.cloudfront.net/files/9ad550a21cc92f24d74f2fa458e82d76c=
+a564c59/original.png">
+      <!--[if mso]></span><![endif]-->
+</td></tr><tr><td align=3D"center" class=3D"merchant-header__name" style=3D=
+'line-height: 18px; font-size: 16px; border-collapse: collapse; letter-spac=
+ing: 0.3px; color: white; font-family: SQMarket, HelveticaNeue-Medium, "Hel=
+vetica Neue Medium", Helvetica-Bold, Helvetica, Arial, sans-serif; font-wei=
+ght: 500; padding-top: 24px; padding-right: 0; padding-bottom: 0; padding-l=
+eft: 0;'>Norwood</td></tr></table></td></tr><tr><td align=3D"center" class=
+=3D"td-curated-image-arrow" valign=3D"bottom" style=3D"line-height: 0px; fo=
+nt-size: 0px; border-collapse: collapse; height: 8px; padding-top: 0; paddi=
+ng-right: 0; padding-bottom: 0; padding-left: 0;" height=3D"8"><div class=
+=3D"curated-image-arrow" style=3D"border-bottom-style: solid; border-bottom=
+-color: #71b7bc; height: 0; width: 0; border-right-style: solid; border-rig=
+ht-color: transparent; border-left-style: solid; border-left-color: transpa=
+rent; vertical-align: bottom; border-top-width: 0; border-right-width: 8px;=
+ border-bottom-width: 8px; border-left-width: 8px;"></div></td></tr></table=
+></td></tr></table><table class=3D"table-container-section table-program ta=
+ble-question" style=3D"border-collapse: collapse; border-spacing: 0; width:=
+ 100%; min-width: 100%; height: 120px; border-top-width: 0; border-right-wi=
+dth: 0; border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"#71b7bc" =
+width=3D"100%" height=3D"120" cellpadding=3D"0" cellspacing=3D"0"><tr><td w=
+idth=3D"100%" height=3D"12" colspan=3D"1" style=3D"line-height: 0; font-siz=
+e: 0; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-=
+bottom: 0; padding-left: 0;"> </td></tr><tr class=3D"tr-question-text"><td =
+align=3D"center" style=3D"line-height: 16px; font-size: 12px; border-collap=
+se: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-=
+left: 0;"><div class=3D"question-text" style=3D'font-family: SQMarket, Helv=
+eticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 16px;=
+ font-weight: normal; letter-spacing: 0.2px; line-height: 24px; color: whit=
+e;'>How was your experience?</div></td></tr><tr><td width=3D"100%" height=
+=3D"4" colspan=3D"1" style=3D"line-height: 0; font-size: 0; border-collapse=
+: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-le=
+ft: 0;"> </td></tr><tr><td align=3D"center" class=3D"choices" style=3D"line=
+-height: 16px; font-size: 12px; border-collapse: collapse; width: 100%; hei=
+ght: 100%; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-lef=
+t: 0;" width=3D"100%" height=3D"100%"><table style=3D"border-collapse: coll=
+apse; border-spacing: 0; border-top-width: 0; border-right-width: 0; border=
+-bottom-width: 0; border-left-width: 0;" cellpadding=3D"0" cellspacing=3D"0=
+"><tr><td class=3D"choice face positive" style=3D"line-height: 16px; font-s=
+ize: 12px; border-collapse: collapse; width: 74px; height: 52px; padding-to=
+p: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" align=3D"cente=
+r" valign=3D"middle" width=3D"74" height=3D"52"><a id=3D"question-positive"=
+ href=3D"https://a.squareupmessaging.com/CL0/https:%2F%2Faccount.squareup.c=
+om%2Fresponse%2FarbZsRfEHJqjOzp9rnwjZiv5vquaB%2F1/1/0101016fc97007c6-2015d8=
+fc-defc-4dfe-959f-f382984516c6-000000/cLHWGCqVDGhm940Two6iY8aMQu6b1uaXmg43i=
+qOQpww=3D124" style=3D"text-decoration: none; vertical-align: middle; displ=
+ay: block; width: 100%; -premailer-width: 100%; height: 100%; -premailer-he=
+ight: 100%;"><div><img alt=3D"Positive" title=3D"Positive" width=3D"64" hei=
+ght=3D"64" border=3D"0" src=3D"https://d2isyty7gbnm74.cloudfront.net/CRyV7g=
+hohlz9eBvamEQv6j6QIpk=3D/128x128/filters:fill(71b7bc,true):format(png)/http=
+s://d3g64w74of3jgu.cloudfront.net/receipts/assets/feedback-positive-ac20d76=
+ea8053764cf8e1993d6ecc0429749ef06fffcfb0e55627b7a8b81d00c.png" style=3D"ver=
+tical-align: middle; display: inline-block;"></div></a></td><td class=3D"ch=
+oice face negative" style=3D"line-height: 16px; font-size: 12px; border-col=
+lapse: collapse; width: 74px; height: 52px; padding-top: 0; padding-right: =
+0; padding-bottom: 0; padding-left: 0;" align=3D"center" valign=3D"middle" =
+width=3D"74" height=3D"52"><a id=3D"question-negative" href=3D"https://a.sq=
+uareupmessaging.com/CL0/https:%2F%2Faccount.squareup.com%2Fresponse%2FarbZs=
+RfEHJqjOzp9rnwjZiv5vquaB%2F-1/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f3=
+82984516c6-000000/a0xzx1h6jwUkitFXZBD-WFNz8EQWPusKHJtgF42WwKk=3D124" style=
+=3D"text-decoration: none; vertical-align: middle; display: block; width: 1=
+00%; -premailer-width: 100%; height: 100%; -premailer-height: 100%;"><div><=
+img alt=3D"Negative" title=3D"Negative" width=3D"64" height=3D"64" border=
+=3D"0" src=3D"https://d2isyty7gbnm74.cloudfront.net/Xcu-7gh0wPKbdUR5lHa7LpG=
+MawY=3D/128x128/filters:fill(71b7bc,true):format(png)/https://d3g64w74of3jg=
+u.cloudfront.net/receipts/assets/feedback-negative-e37f79db3f0e129220b0544c=
+d8ca9dcd0e772d4d6f6310b8efaee34990ea86ce.png" style=3D"vertical-align: midd=
+le; display: inline-block;"></div></a></td></tr></table></td></tr><tr><td w=
+idth=3D"100%" height=3D"16" colspan=3D"1" style=3D"line-height: 0; font-siz=
+e: 0; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-=
+bottom: 0; padding-left: 0;"> </td></tr></table><table class=3D"table-conta=
+iner-section table-payment-header " style=3D"border-collapse: collapse; bor=
+der-spacing: 0; width: 100%; min-width: 100%; border-top-width: 0; border-r=
+ight-width: 0; border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"wh=
+ite" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0"><tr><td width=3D"10=
+0%" height=3D"24" colspan=3D"1" style=3D'line-height: 0; font-size: 0; font=
+-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-=
+serif; color: #3d454d; font-weight: normal; border-collapse: collapse; padd=
+ing-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;'> </td></=
+tr><tr><td align=3D"center" style=3D'font-family: SQMarket, HelveticaNeue, =
+"Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-heigh=
+t: 30px; color: #3d454d; font-weight: normal; border-collapse: collapse; pa=
+dding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;'><div c=
+lass=3D"h1  language-en currency-USD" style=3D'font-family: SQMarket, Helve=
+ticaNeue-Medium, "Helvetica Neue Medium", Helvetica-Bold, Helvetica, Arial,=
+ sans-serif; font-weight: 500; color: #3d454d; font-size: 64px; line-height=
+: 64px; white-space: nowrap;' align=3D"center"><span class=3D"currency_symb=
+ol" style=3D'font-family: SQMarket, HelveticaNeue-Medium, "Helvetica Neue M=
+edium", Helvetica-Bold, Helvetica, Arial, sans-serif; font-weight: 500; fon=
+t-size: 26px; vertical-align: super; line-height: 1;'>$</span>7.53</div></t=
+d></tr><tr><td width=3D"100%" height=3D"8" colspan=3D"1" style=3D'line-heig=
+ht: 0; font-size: 0; font-family: SQMarket, HelveticaNeue, "Helvetica Neue"=
+, Helvetica, Arial, sans-serif; color: #3d454d; font-weight: normal; border=
+-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; p=
+adding-left: 0;'> </td></tr></table><table class=3D"table-container-section=
+" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"border-collapse=
+: collapse; border-spacing: 0; width: 100%; min-width: 100%; border-top-wid=
+th: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;=
+" bgcolor=3D"white" width=3D"100%"><tr><td bgcolor=3D"#ffffff" width=3D"16"=
+ style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; padd=
+ing-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><img wid=
+th=3D"16" height=3D"1" border=3D"0" alt=3D"" style=3D"line-height: 0; font-=
+size: 0;" src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/assets/spac=
+er-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></=
+td><td style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse=
+; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><t=
+able class=3D"table-container-section table-payment-info" border=3D"0" cell=
+spacing=3D"0" cellpadding=3D"0" style=3D"border-collapse: separate; border-=
+spacing: 0; width: 100%; min-width: 100%; word-wrap: break-word; border-top=
+-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width=
+: 0;" bgcolor=3D"white" width=3D"100%"><tr><td align=3D"center" valign=3D"t=
+op" style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; p=
+adding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"></td>=
+</tr><tr><td width=3D"100%" height=3D"8" colspan=3D"1" style=3D"line-height=
+: 0; font-size: 0; border-collapse: collapse; padding-top: 0; padding-right=
+: 0; padding-bottom: 0; padding-left: 0;"> </td></tr><tr><td width=3D"100%"=
+ height=3D"3.5" colspan=3D"3" style=3D"line-height: 0px; font-size: 0px; bo=
+rder-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: =
+0; padding-left: 0;"> </td></tr><tr><td colspan=3D"3" style=3D"border-top-w=
+idth: 1px; border-top-color: #e0e1e2; border-top-style: dashed; line-height=
+: 0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-r=
+ight: 0; padding-bottom: 0; padding-left: 0;" height=3D"1"><img width=3D"1"=
+ height=3D"1" border=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;"=
+ src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e=
+65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td></tr><=
+tr><td width=3D"100%" height=3D"11" colspan=3D"3" style=3D"line-height: 0px=
+; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-right:=
+ 0; padding-bottom: 0; padding-left: 0;"> </td></tr><tr><td align=3D"left" =
+class=3D"half-col-left" valign=3D"top" style=3D"line-height: 0px; font-size=
+: 0px; border-collapse: collapse; width: 70%; padding-top: 0; padding-right=
+: 0; padding-bottom: 0; padding-left: 0;" width=3D"70%"><div class=3D"p ite=
+m-name" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", He=
+lvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #3d4=
+54d; font-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin-righ=
+t: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; padding-right: =
+0; padding-bottom: 3.5px; padding-left: 0;'>Pot of Tea</div></td><td align=
+=3D"right" class=3D"half-col-right" valign=3D"top" style=3D"line-height: 0p=
+x; font-size: 0px; border-collapse: collapse; width: 30%; padding-top: 0; p=
+adding-right: 0; padding-bottom: 0; padding-left: 0;" width=3D"30%"><div cl=
+ass=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", =
+Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #3=
+d454d; font-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin-ri=
+ght: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; padding-right=
+: 0; padding-bottom: 3.5px; padding-left: 0;'>$6.00</div></td></tr><tr><td =
+align=3D"left" class=3D"full-col item-modifier-name" colspan=3D"2" style=3D=
+"line-height: 0px; font-size: 0px; border-collapse: collapse; width: 100%; =
+color: #85898c; padding-top: 0; padding-right: 6px; padding-bottom: 0; padd=
+ing-left: 6px;" width=3D"100%"><div class=3D"p" style=3D'font-family: SQMar=
+ket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-si=
+ze: 14px; line-height: 21px; color: #85898c; font-weight: normal; letter-sp=
+acing: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left=
+: 0; padding-top: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-l=
+eft: 0;'>+ Mint  </div></td></tr><tr><td width=3D"100%" height=3D"11" colsp=
+an=3D"3" style=3D"line-height: 0px; font-size: 0px; border-collapse: collap=
+se; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;">=
+ </td></tr><tr><td colspan=3D"3" style=3D"border-top-width: 1px; border-top=
+-color: #e0e1e2; border-top-style: dashed; line-height: 0px; font-size: 0px=
+; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-bott=
+om: 0; padding-left: 0;" height=3D"1"><img width=3D"1" height=3D"1" border=
+=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;" src=3D"https://d3g6=
+4w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729=
+f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td></tr><tr><td width=3D"100%=
+" height=3D"11" colspan=3D"3" style=3D"line-height: 0px; font-size: 0px; bo=
+rder-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: =
+0; padding-left: 0;"> </td></tr><tr><td align=3D"left" class=3D"half-col-le=
+ft" style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; w=
+idth: 70%; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-lef=
+t: 0;" width=3D"70%"><div class=3D"p" style=3D'font-family: SQMarket, Helve=
+ticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; =
+line-height: 21px; color: #3d454d; font-weight: normal; letter-spacing: 0.2=
+px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; paddi=
+ng-top: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>P=
+urchase Subtotal</div></td><td align=3D"right" class=3D"half-col-right" sty=
+le=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; width: 3=
+0%; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" =
+width=3D"30%"><div class=3D"p" style=3D'font-family: SQMarket, HelveticaNeu=
+e, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-he=
+ight: 21px; color: #3d454d; font-weight: normal; letter-spacing: 0.2px; mar=
+gin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top:=
+ 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>$6.00</d=
+iv></td></tr><tr><td align=3D"left" class=3D"half-col-left" style=3D"line-h=
+eight: 0px; font-size: 0px; border-collapse: collapse; width: 70%; padding-=
+top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" width=3D"70%=
+"><div class=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetic=
+a Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; =
+color: #3d454d; font-weight: normal; letter-spacing: 0.2px; margin-top: 0; =
+margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; padd=
+ing-right: 0; padding-bottom: 3.5px; padding-left: 0;'>Sales Tax (8.875%)</=
+div></td><td align=3D"right" class=3D"half-col-right" style=3D"line-height:=
+ 0px; font-size: 0px; border-collapse: collapse; width: 30%; padding-top: 0=
+; padding-right: 0; padding-bottom: 0; padding-left: 0;" width=3D"30%"><div=
+ class=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue=
+", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color:=
+ #3d454d; font-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin=
+-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; padding-ri=
+ght: 0; padding-bottom: 3.5px; padding-left: 0;'>$0.53</div></td></tr><tr><=
+td align=3D"left" class=3D"half-col-left" style=3D"line-height: 0px; font-s=
+ize: 0px; border-collapse: collapse; width: 70%; padding-top: 0; padding-ri=
+ght: 0; padding-bottom: 0; padding-left: 0;" width=3D"70%"><div class=3D"p"=
+ style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica=
+, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #3d454d; fo=
+nt-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin-right: 0; m=
+argin-bottom: 0; margin-left: 0; padding-top: 3.5px; padding-right: 0; padd=
+ing-bottom: 3.5px; padding-left: 0;'>Tip</div></td><td align=3D"right" clas=
+s=3D"half-col-right" style=3D"line-height: 0px; font-size: 0px; border-coll=
+apse: collapse; width: 30%; padding-top: 0; padding-right: 0; padding-botto=
+m: 0; padding-left: 0;" width=3D"30%"><div class=3D"p" style=3D'font-family=
+: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; =
+font-size: 14px; line-height: 21px; color: #3d454d; font-weight: normal; le=
+tter-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; marg=
+in-left: 0; padding-top: 3.5px; padding-right: 0; padding-bottom: 3.5px; pa=
+dding-left: 0;'>$1.00</div></td></tr><tr><td width=3D"100%" height=3D"11" c=
+olspan=3D"3" style=3D"line-height: 0px; font-size: 0px; border-collapse: co=
+llapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: =
+0;"> </td></tr><tr><td colspan=3D"3" style=3D"border-top-width: 1px; border=
+-top-color: #e0e1e2; border-top-style: dashed; line-height: 0px; font-size:=
+ 0px; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-=
+bottom: 0; padding-left: 0;" height=3D"1"><img width=3D"1" height=3D"1" bor=
+der=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;" src=3D"https://d=
+3g64w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc=
+729f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td></tr><tr><td width=3D"1=
+00%" height=3D"11" colspan=3D"3" style=3D"line-height: 0px; font-size: 0px;=
+ border-collapse: collapse; padding-top: 0; padding-right: 0; padding-botto=
+m: 0; padding-left: 0;"> </td></tr><tr><td align=3D"left" class=3D"half-col=
+-left" style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse=
+; width: 70%; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-=
+left: 0;" width=3D"70%"><div class=3D"p" style=3D'font-family: SQMarket, He=
+lveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14p=
+x; line-height: 21px; color: #3d454d; font-weight: normal; letter-spacing: =
+0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; pa=
+dding-top: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;=
+'>Total</div></td><td align=3D"right" class=3D"half-col-right" style=3D"lin=
+e-height: 0px; font-size: 0px; border-collapse: collapse; width: 30%; paddi=
+ng-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" width=3D"=
+30%"><div class=3D"p purchase-total" style=3D'font-family: SQMarket, Helvet=
+icaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; l=
+ine-height: 21px; color: #3d454d; font-weight: bold; letter-spacing: 0.2px;=
+ margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-=
+top: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>$7.5=
+3</div></td></tr></table></td><td bgcolor=3D"#ffffff" width=3D"16" style=3D=
+"line-height: 0px; font-size: 0px; border-collapse: collapse; padding-top: =
+0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><img width=3D"16"=
+ height=3D"1" border=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;"=
+ src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e=
+65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td></tr><=
+/table><table class=3D"table-container-section" border=3D"0" cellspacing=3D=
+"0" cellpadding=3D"0" style=3D"border-collapse: collapse; border-spacing: 0=
+; width: 100%; min-width: 100%; border-top-width: 0; border-right-width: 0;=
+ border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"white" width=3D"=
+100%"><tr><td bgcolor=3D"#ffffff" width=3D"16" style=3D"line-height: 0px; f=
+ont-size: 0px; border-collapse: collapse; padding-top: 0; padding-right: 0;=
+ padding-bottom: 0; padding-left: 0;"><img width=3D"16" height=3D"1" border=
+=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;" src=3D"https://d3g6=
+4w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729=
+f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td><td style=3D"line-height: =
+0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-rig=
+ht: 0; padding-bottom: 0; padding-left: 0;"><table class=3D"table-container=
+-section table-payment-info" border=3D"0" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse: separate; border-spacing: 0; width: 100%; min-=
+width: 100%; word-wrap: break-word; border-top-width: 0; border-right-width=
+: 0; border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"white" width=
+=3D"100%"><tr><td align=3D"center" valign=3D"top" style=3D"line-height: 0px=
+; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-right:=
+ 0; padding-bottom: 0; padding-left: 0;"></td></tr><tr><td width=3D"100%" h=
+eight=3D"16" colspan=3D"2" style=3D"line-height: 0; font-size: 0; border-co=
+llapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padd=
+ing-left: 0;"> </td></tr></table></td><td bgcolor=3D"#ffffff" width=3D"16" =
+style=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; paddi=
+ng-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><img widt=
+h=3D"16" height=3D"1" border=3D"0" alt=3D"" style=3D"line-height: 0; font-s=
+ize: 0;" src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/assets/space=
+r-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></t=
+d></tr></table><table class=3D"table-container-section table-merchant-info"=
+ style=3D"border-collapse: collapse; border-spacing: 0; width: 100%; min-wi=
+dth: 100%; table-layout: fixed; word-wrap: break-word; border-top-width: 0;=
+ border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" bgco=
+lor=3D"white" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0"><tr><td al=
+ign=3D"center" class=3D"td-map-container" valign=3D"top" style=3D"line-heig=
+ht: 0px; font-size: 0px; border-collapse: collapse; width: 100%; padding-to=
+p: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" width=3D"100%"=
+><img align=3D"center" border=3D"0" class=3D"merchant-info__map" src=3D"htt=
+ps://api.tiles.mapbox.com/v4/square.io0hcgln/url-s3.amazonaws.com%2Fsquare-=
+receipts-production%2Freceipts%2Fstatic-assets%2Fmap-pin-140924-71b7bc.png(=
+-74.001,40.739)/-74.001,40.739,15/375x120@2x.jpg?access_token=3Dpk.eyJ1Ijoi=
+c3F1YXJlIiwiYSI6IlBvOHNOSGcifQ.UEuIIhAN8OO4uCCqLShcJw" width=3D"375" style=
+=3D"display: block; max-width: 375px; width: 100%; max-height: 120px;"></td=
+></tr><tr><td width=3D"100%" height=3D"24" colspan=3D"1" style=3D"line-heig=
+ht: 0; font-size: 0; border-collapse: collapse; padding-top: 0; padding-rig=
+ht: 0; padding-bottom: 0; padding-left: 0;"> </td></tr><tr><td align=3D"cen=
+ter" class=3D"td-receipt-address" style=3D"line-height: 0px; font-size: 0px=
+; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-bott=
+om: 0; padding-left: 0;"><div class=3D"p receipt-profile-name" style=3D'fon=
+t-family: SQMarket, HelveticaNeue-Medium, "Helvetica Neue Medium", Helvetic=
+a-Bold, Helvetica, Arial, sans-serif; font-size: 14px; line-height: 23px; c=
+olor: #3d454d; font-weight: 500; letter-spacing: 0.2px; text-decoration: no=
+ne; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; paddi=
+ng-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;' align=3D"=
+center">Norwood</div><div class=3D"p receipt-address" style=3D'font-family:=
+ SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; f=
+ont-size: 14px; line-height: 23px; color: #3d454d; font-weight: normal; let=
+ter-spacing: 0.2px; text-decoration: none; margin-top: 0; margin-right: 0; =
+margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding=
+-bottom: 0; padding-left: 0;' align=3D"center"><div class=3D"p receipt-addr=
+ess" x-apple-data-detectors=3D"false" style=3D'color: #3d454d; font-family:=
+ SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; f=
+ont-size: 14px; font-weight: normal; letter-spacing: 0.2px; line-height: 23=
+px; text-decoration: none;' align=3D"center">241 West 14th Street</div><div=
+ class=3D"p receipt-address" x-apple-data-detectors=3D"false" style=3D'colo=
+r: #3d454d; font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helveti=
+ca, Arial, sans-serif; font-size: 14px; font-weight: normal; letter-spacing=
+: 0.2px; line-height: 23px; text-decoration: none;' align=3D"center">NEW YO=
+RK, NY 10011</div></div><div class=3D"p receipt-address" id=3D"receipt-phon=
+e-number" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", =
+Helvetica, Arial, sans-serif; font-size: 14px; line-height: 23px; color: #3=
+d454d; font-weight: normal; letter-spacing: 0.2px; text-decoration: none; m=
+argin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-to=
+p: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;' align=3D"cente=
+r"><a href=3D"http://a.squareupmessaging.com/CL0/tel:212-255-9300/1/0101016=
+fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000/jELqPcUAjyO5XDR0Mny4r=
+WIIZ-AAFeRu-pl2uCgoBgw=3D124" style=3D"text-decoration: none; color: #3d454=
+d;">212-255-9300</a></div></td></tr><tr><td width=3D"100%" height=3D"16" co=
+lspan=3D"1" style=3D"line-height: 0; font-size: 0; border-collapse: collaps=
+e; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"> =
+</td></tr><tr><td align=3D"center" style=3D"line-height: 0px; font-size: 0p=
+x; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-bot=
+tom: 0; padding-left: 0;"><table align=3D"center" style=3D"border-collapse:=
+ collapse; border-spacing: 0; border-top-width: 0; border-right-width: 0; b=
+order-bottom-width: 0; border-left-width: 0;" cellpadding=3D"0" cellspacing=
+=3D"0"><tr><td class=3D"td-social-link" id=3D"receipt-website-url" style=3D=
+"line-height: 0px; font-size: 0px; border-collapse: collapse; height: 32px;=
+ width: 56px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-=
+left: 0;" align=3D"center" valign=3D"middle" width=3D"56" height=3D"32"><a =
+href=3D"http://a.squareupmessaging.com/CL0/http:%2F%2Fnorwoodclub.com/1/010=
+1016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000/PPAtYy53gDlj6W-AH=
+809IggWLzUTbRhUB5u-He2yXoI=3D124" style=3D"text-decoration: none; vertical-=
+align: middle;"><img width=3D"32" height=3D"32" border=3D"0" src=3D"https:/=
+/d3g64w74of3jgu.cloudfront.net/receipts/assets/website-icon-f3f91153be499f8=
+f6b26f76c2ab37397899a1aa719a22d8a8f2785286d2cef18.png" alt=3D"Website icon"=
+ style=3D"display: inline-block; vertical-align: middle;"></a></td></tr></t=
+able></td></tr><tr><td width=3D"100%" height=3D"20" colspan=3D"1" style=3D"=
+line-height: 0; font-size: 0; border-collapse: collapse; padding-top: 0; pa=
+dding-right: 0; padding-bottom: 0; padding-left: 0;"> </td></tr></table><ta=
+ble style=3D"border-collapse: collapse; border-spacing: 0; border-top-width=
+: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0;" =
+cellpadding=3D"0" cellspacing=3D"0"><tr><td colspan=3D"2" height=3D"1" styl=
+e=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; padding-t=
+op: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"> </td></tr></=
+table><table class=3D"table-container-section" border=3D"0" cellspacing=3D"=
+0" cellpadding=3D"0" style=3D"border-collapse: collapse; border-spacing: 0;=
+ width: 100%; min-width: 100%; border-top-width: 0; border-right-width: 0; =
+border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"white" width=3D"1=
+00%"><tr><td bgcolor=3D"#ffffff" width=3D"16" style=3D"line-height: 0px; fo=
+nt-size: 0px; border-collapse: collapse; padding-top: 0; padding-right: 0; =
+padding-bottom: 0; padding-left: 0;"><img width=3D"16" height=3D"1" border=
+=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0;" src=3D"https://d3g6=
+4w74of3jgu.cloudfront.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729=
+f14faadf37cd08cf30cc0fe0b72443e78cbffb.png"></td><td style=3D"line-height: =
+0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-rig=
+ht: 0; padding-bottom: 0; padding-left: 0;"><table class=3D"table-container=
+-section table-date-and-tenders" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" style=3D"border-collapse: collapse; border-spacing: 0; width: 100%; =
+min-width: 100%; border-top-width: 0; border-right-width: 0; border-bottom-=
+width: 0; border-left-width: 0;" bgcolor=3D"white" width=3D"100%"><tr><td a=
+lign=3D"center" valign=3D"top" style=3D"line-height: 0px; font-size: 0px; b=
+order-collapse: collapse; width: 140px; padding-top: 0; padding-right: 0; p=
+adding-bottom: 0; padding-left: 0;" width=3D"140"></td></tr><tr><td width=
+=3D"100%" height=3D"16" colspan=3D"1" style=3D"line-height: 0; font-size: 0=
+; border-collapse: collapse; width: 140px; padding-top: 0; padding-right: 0=
+; padding-bottom: 0; padding-left: 0;" valign=3D"top"> </td></tr><tr><td al=
+ign=3D"left" class=3D"half-col-left" style=3D"line-height: 0px; font-size: =
+0px; border-collapse: collapse; width: 140px; padding-top: 0; padding-right=
+: 0; padding-bottom: 0; padding-left: 0;" valign=3D"top" width=3D"140"><div=
+ class=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue=
+", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color:=
+ #85898c; font-weight: normal; vertical-align: top; letter-spacing: 0.2px; =
+margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-t=
+op: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>Visa =
+6507 (Chip)</div><div class=3D"p card-icon" style=3D'font-family: SQMarket,=
+ HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: =
+14px; line-height: 21px; color: #85898c; font-weight: normal; vertical-alig=
+n: top; letter-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-botto=
+m: 0; margin-left: 0; padding-top: 3px; padding-right: 0; padding-bottom: 3=
+.5px; padding-left: 0;'><img width=3D"40" height=3D"16" border=3D"0" valign=
+=3D"bottom" style=3D"display: block; vertical-align: top;" alt=3D"" src=3D"=
+https://d3g64w74of3jgu.cloudfront.net/receipts/assets/tender-visa-ddab2215b=
+19a00364be4cc3d615fb48fd1fd6c351851fc55ff2159e8fa443a58.png"></div><div cla=
+ss=3D"p name_on_card" style=3D'font-family: SQMarket, HelveticaNeue, "Helve=
+tica Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21p=
+x; color: #85898c; font-weight: normal; vertical-align: top; letter-spacing=
+: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; =
+padding-top: 3.5px; padding-right: 0; padding-bottom: 3.5px; padding-left: =
+0;'>JOSH KLEIN</div></td><td align=3D"right" class=3D"half-col-right" style=
+=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; width: 140=
+px; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" =
+valign=3D"top" width=3D"140"><div class=3D"p td-payment-time" x-apple-data-=
+detectors=3D"false" style=3D'font-family: SQMarket, HelveticaNeue, "Helveti=
+ca Neue", Helvetica, Arial, sans-serif; font-size: 14px; line-height: 21px;=
+ color: #85898c; font-weight: normal; vertical-align: top; letter-spacing: =
+0.2px; white-space: nowrap; margin-top: 0; margin-right: 0; margin-bottom: =
+0; margin-left: 0; padding-top: 3.5px; padding-right: 0; padding-bottom: 3.=
+5px; padding-left: 0;'>Jan 21 2020 at 1:45 PM</div><div class=3D"p" style=
+=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Aria=
+l, sans-serif; font-size: 14px; line-height: 21px; color: #85898c; font-wei=
+ght: normal; vertical-align: top; letter-spacing: 0.2px; margin-top: 0; mar=
+gin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; padding=
+-right: 0; padding-bottom: 3.5px; padding-left: 0;'>#bZsR</div><div class=
+=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Hel=
+vetica, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #8589=
+8c; font-weight: normal; vertical-align: top; letter-spacing: 0.2px; margin=
+-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.=
+5px; padding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>Auth code: =
+06653D</div></td></tr><tr><td align=3D"left" class=3D"half-col-left" colspa=
+n=3D"2" style=3D"line-height: 0px; font-size: 0px; border-collapse: collaps=
+e; width: 140px; padding-top: 0; padding-right: 0; padding-bottom: 0; paddi=
+ng-left: 0;" valign=3D"top" width=3D"140"></td></tr><tr><td width=3D"100%" =
+height=3D"11" colspan=3D"3" style=3D"line-height: 0px; font-size: 0px; bord=
+er-collapse: collapse; width: 140px; padding-top: 0; padding-right: 0; padd=
+ing-bottom: 0; padding-left: 0;" valign=3D"top"> </td></tr><tr><td colspan=
+=3D"3" style=3D"border-top-width: 1px; border-top-color: #e0e1e2; border-to=
+p-style: dashed; line-height: 0px; font-size: 0px; border-collapse: collaps=
+e; width: 140px; padding-top: 0; padding-right: 0; padding-bottom: 0; paddi=
+ng-left: 0;" height=3D"1" valign=3D"top" width=3D"140"><img width=3D"1" hei=
+ght=3D"1" border=3D"0" alt=3D"" style=3D"line-height: 0; font-size: 0; vert=
+ical-align: top;" src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/ass=
+ets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30cc0fe0b72443e78cbffb=
+.png"></td></tr><tr><td width=3D"100%" height=3D"11" colspan=3D"3" style=3D=
+"line-height: 0px; font-size: 0px; border-collapse: collapse; width: 140px;=
+ padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;" val=
+ign=3D"top"> </td></tr><tr class=3D"chip-application-id"><td align=3D"left"=
+ class=3D"half-col-left" style=3D"line-height: 0px; font-size: 0px; border-=
+collapse: collapse; width: 140px; padding-top: 0; padding-right: 0; padding=
+-bottom: 0; padding-left: 0;" valign=3D"top" width=3D"140"><div class=3D"p"=
+ style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica=
+, Arial, sans-serif; font-size: 14px; line-height: 21px; color: #85898c; fo=
+nt-weight: normal; vertical-align: top; letter-spacing: 0.2px; margin-top: =
+0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 3.5px; p=
+adding-right: 0; padding-bottom: 3.5px; padding-left: 0;'>AID: <span>A00000=
+00031010</span></div><div class=3D"p" style=3D'font-family: SQMarket, Helve=
+ticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 14px; =
+line-height: 21px; color: #85898c; font-weight: normal; vertical-align: top=
+; letter-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; =
+margin-left: 0; padding-top: 3.5px; padding-right: 0; padding-bottom: 3.5px=
+; padding-left: 0;'>Signature Verified</div></td><td align=3D"right" class=
+=3D"half-col-right" style=3D"line-height: 0px; font-size: 0px; border-colla=
+pse: collapse; width: 140px; padding-top: 0; padding-right: 0; padding-bott=
+om: 0; padding-left: 0;" valign=3D"top" width=3D"140"></td></tr></table></t=
+d><td bgcolor=3D"#ffffff" width=3D"16" style=3D"line-height: 0px; font-size=
+: 0px; border-collapse: collapse; padding-top: 0; padding-right: 0; padding=
+-bottom: 0; padding-left: 0;"><img width=3D"16" height=3D"1" border=3D"0" a=
+lt=3D"" style=3D"line-height: 0; font-size: 0;" src=3D"https://d3g64w74of3j=
+gu.cloudfront.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf=
+37cd08cf30cc0fe0b72443e78cbffb.png"></td></tr></table><table style=3D"borde=
+r-collapse: collapse; border-spacing: 0; border-top-width: 0; border-right-=
+width: 0; border-bottom-width: 0; border-left-width: 0;" cellpadding=3D"0" =
+cellspacing=3D"0"><tr><td colspan=3D"2" height=3D"1" style=3D"line-height: =
+0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-rig=
+ht: 0; padding-bottom: 0; padding-left: 0;"> </td></tr></table><table class=
+=3D"table-container-section" border=3D"0" cellspacing=3D"0" cellpadding=3D"=
+0" style=3D"border-collapse: collapse; border-spacing: 0; width: 100%; min-=
+width: 100%; border-top-width: 0; border-right-width: 0; border-bottom-widt=
+h: 0; border-left-width: 0;" bgcolor=3D"white" width=3D"100%"><tr><td bgcol=
+or=3D"#ffffff" width=3D"16" style=3D"line-height: 0px; font-size: 0px; bord=
+er-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0;=
+ padding-left: 0;"><img width=3D"16" height=3D"1" border=3D"0" alt=3D"" sty=
+le=3D"line-height: 0; font-size: 0;" src=3D"https://d3g64w74of3jgu.cloudfro=
+nt.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf30c=
+c0fe0b72443e78cbffb.png"></td><td style=3D"line-height: 0px; font-size: 0px=
+; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-bott=
+om: 0; padding-left: 0;"><table class=3D"table-container-section table-cust=
+om-text" border=3D"0" cellspacing=3D"0" cellpadding=3D"0" style=3D"border-c=
+ollapse: collapse; border-spacing: 0; width: 100%; min-width: 100%; table-l=
+ayout: fixed; word-wrap: break-word; border-top-width: 0; border-right-widt=
+h: 0; border-bottom-width: 0; border-left-width: 0;" bgcolor=3D"white" widt=
+h=3D"100%"><tr><td align=3D"center" valign=3D"top" style=3D"line-height: 0p=
+x; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-right=
+: 0; padding-bottom: 0; padding-left: 0;"></td></tr><tr><td width=3D"100%" =
+height=3D"20" colspan=3D"1" style=3D"line-height: 0; font-size: 0; border-c=
+ollapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; pad=
+ding-left: 0;"> </td></tr><tr><td class=3D"full_col" colspan=3D"2" style=3D=
+"line-height: 0px; font-size: 0px; border-collapse: collapse; padding-top: =
+0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><div class=3D"p" =
+style=3D'font-family: SQMarket, HelveticaNeue-Medium, "Helvetica Neue Mediu=
+m", Helvetica-Bold, Helvetica, Arial, sans-serif; font-size: 14px; line-hei=
+ght: 21px; color: #3d454d; font-weight: 500; letter-spacing: 0.2px; margin-=
+top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; =
+padding-right: 0; padding-bottom: 0; padding-left: 0;' align=3D"center"> <s=
+pan class=3D"p" style=3D'color: #3d454d; font-size: 14px; letter-spacing: 0=
+.2px; line-height: 21px; font-family: SQMarket, HelveticaNeue-Medium, "Helv=
+etica Neue Medium", Helvetica-Bold, Helvetica, Arial, sans-serif; font-weig=
+ht: 500; text-align: center;'>Stay curious.<br>@norwoodclub</span></div></t=
+d></tr><tr><td width=3D"100%" height=3D"20" colspan=3D"1" style=3D"line-hei=
+ght: 0; font-size: 0; border-collapse: collapse; padding-top: 0; padding-ri=
+ght: 0; padding-bottom: 0; padding-left: 0;"> </td></tr></table></td><td bg=
+color=3D"#ffffff" width=3D"16" style=3D"line-height: 0px; font-size: 0px; b=
+order-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom:=
+ 0; padding-left: 0;"><img width=3D"16" height=3D"1" border=3D"0" alt=3D"" =
+style=3D"line-height: 0; font-size: 0;" src=3D"https://d3g64w74of3jgu.cloud=
+front.net/receipts/assets/spacer-17af9e65317bbbfbbd0bcdc729f14faadf37cd08cf=
+30cc0fe0b72443e78cbffb.png"></td></tr></table><table class=3D"table-receipt=
+-bottom-edge" style=3D"border-collapse: collapse; border-spacing: 0; border=
+-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-w=
+idth: 0;" bgcolor=3D"#f2f4f5" cellpadding=3D"0" cellspacing=3D"0"><tr><td v=
+align=3D"top" style=3D"line-height: 0px; font-size: 0px; border-collapse: c=
+ollapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left:=
+ 0;"><img alt=3D"" width=3D"375" height=3D"4" class=3D"receipt-bottom-edge"=
+ src=3D"https://d3g64w74of3jgu.cloudfront.net/receipts/assets/receipt-botto=
+m-edge-9546851a9ee332ff84de94e1862dc33629fdbd525713db3affdd72287acb5ae7.png=
+" style=3D"border-top-width: 0; border-right-width: 0; border-bottom-width:=
+ 0; border-left-width: 0; display: block; max-width: 375px; width: 100%;"><=
+/td></tr></table><table class=3D"table-footer" style=3D"border-collapse: co=
+llapse; border-spacing: 0; border-top-width: 0; border-right-width: 0; bord=
+er-bottom-width: 0; border-left-width: 0;" bgcolor=3D"#f2f4f5" cellpadding=
+=3D"0" cellspacing=3D"0"><tr><td width=3D"100%" height=3D"24" colspan=3D"1"=
+ style=3D"line-height: 0; font-size: 0; border-collapse: collapse; padding-=
+top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"> </td></tr><=
+tr><td align=3D"center" valign=3D"top" style=3D"line-height: 0px; font-size=
+: 0px; border-collapse: collapse; padding-top: 0; padding-right: 0; padding=
+-bottom: 0; padding-left: 0;"></td></tr><tr><td width=3D"100%" height=3D"10=
+" colspan=3D"1" style=3D"line-height: 0; font-size: 0; border-collapse: col=
+lapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0=
+;"> </td></tr><tr><td align=3D"center" valign=3D"top" style=3D"line-height:=
+ 0px; font-size: 0px; border-collapse: collapse; padding-top: 0; padding-ri=
+ght: 0; padding-bottom: 0; padding-left: 0;"><div class=3D"p" style=3D'font=
+-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-=
+serif; font-size: 12px; line-height: 18px; color: #85898c; font-weight: nor=
+mal; letter-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: =
+0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; pad=
+ding-left: 0;'>=C2=A9 2020 Square, Inc.</div></td></tr><tr><td width=3D"100=
+%" height=3D"10" colspan=3D"1" style=3D"line-height: 0; font-size: 0; borde=
+r-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom: 0; =
+padding-left: 0;"> </td></tr><tr><td align=3D"center" valign=3D"top" style=
+=3D"line-height: 0px; font-size: 0px; border-collapse: collapse; padding-to=
+p: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"><div class=3D"=
+p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helveti=
+ca, Arial, sans-serif; font-size: 12px; line-height: 18px; color: #85898c; =
+font-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin-right: 0;=
+ margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; paddin=
+g-bottom: 0; padding-left: 0;'>1455 Market Street, Suite 600</div><div clas=
+s=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", He=
+lvetica, Arial, sans-serif; font-size: 12px; line-height: 18px; color: #858=
+98c; font-weight: normal; letter-spacing: 0.2px; margin-top: 0; margin-righ=
+t: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; p=
+adding-bottom: 0; padding-left: 0;'>San Francisco, CA 94103</div></td></tr>=
+<tr><td width=3D"100%" height=3D"10" colspan=3D"1" style=3D"line-height: 0;=
+ font-size: 0; border-collapse: collapse; padding-top: 0; padding-right: 0;=
+ padding-bottom: 0; padding-left: 0;"> </td></tr><tr><td align=3D"center" v=
+align=3D"top" style=3D"line-height: 0px; font-size: 0px; border-collapse: c=
+ollapse; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left:=
+ 0;"><div class=3D"p footer-link" style=3D'font-family: SQMarket, Helvetica=
+Neue, "Helvetica Neue", Helvetica, Arial, sans-serif; font-size: 12px; line=
+-height: 18px; color: #85898c; font-weight: normal; letter-spacing: 0.2px; =
+margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-t=
+op: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;'><a target=3D"=
+_BLANK" href=3D"https://a.squareupmessaging.com/CL0/https:%2F%2Fwww.mapbox.=
+com%2Fabout%2Fmaps%2F/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516=
+c6-000000/Ef1SAXL_6EbPZpAbdGcUscGY4deHdVvT2d7SCxu_HGA=3D124" style=3D"text-=
+decoration: underline !important; color: #85898c;">=C2=A9 Mapbox</a> <a tar=
+get=3D"_BLANK" href=3D"https://a.squareupmessaging.com/CL0/https:%2F%2Fwww.=
+openstreetmap.org%2Fcopyright/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f3=
+82984516c6-000000/964rbrb6cNxtYbrV01G3euxHtOfoSZQnLNyA-0p3s9o=3D124" style=
+=3D"text-decoration: underline !important; color: #85898c;">=C2=A9 OpenStre=
+etMap</a> <a target=3D"_BLANK" href=3D"https://a.squareupmessaging.com/CL0/=
+https:%2F%2Fwww.mapbox.com%2Fmap-feedback/1/0101016fc97007c6-2015d8fc-defc-=
+4dfe-959f-f382984516c6-000000/5I_-K7oB7DHNuDnBtW2Y1ncioSY26ugdFXd-W2UJgEU=
+=3D124" style=3D"text-decoration: underline !important; color: #85898c;">Im=
+prove this map</a> </div></td></tr><tr><td width=3D"100%" height=3D"10" col=
+span=3D"1" style=3D"line-height: 0; font-size: 0; border-collapse: collapse=
+; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0;"> <=
+/td></tr><tr><td align=3D"center" valign=3D"top" style=3D"line-height: 0px;=
+ font-size: 0px; border-collapse: collapse; padding-top: 0; padding-right: =
+0; padding-bottom: 0; padding-left: 0;"><div class=3D"p footer-link" style=
+=3D'font-family: SQMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Aria=
+l, sans-serif; font-size: 12px; line-height: 18px; color: #85898c; font-wei=
+ght: normal; letter-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-=
+bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom=
+: 0; padding-left: 0;'><a id=3D"privacy-policy" href=3D"https://a.squareupm=
+essaging.com/CL0/https:%2F%2Fsquareup.com%2Fus%2Fen%2Flegal%2Fprivacy-no-ac=
+count/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000/AaDFdW=
+Qx4nlXYIPuHv8G7_9pPQdrGCE1tZ1YhY1OHRM=3D124" style=3D"text-decoration: unde=
+rline !important; color: #85898c;">Square Privacy Policy</a> =C2=B7 <a id=
+=3D"not-your-receipt" href=3D"https://a.squareupmessaging.com/CL0/https:%2F=
+%2Faccount.squareup.com%2Fnot-your-receipt%2FarbZsRfEHJqjOzp9rnwjZiv5vquaB/=
+1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516c6-000000/382SzVDRed7G=
+V24H0ymHsBrmToDSaW7ymuLmafH45Ac=3D124" style=3D"text-decoration: underline =
+!important; color: #85898c;">Not your receipt?</a></div></td></tr><tr><td a=
+lign=3D"center" valign=3D"top" style=3D"line-height: 0px; font-size: 0px; b=
+order-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom:=
+ 0; padding-left: 0;"><span class=3D"p footer-link" style=3D'font-family: S=
+QMarket, HelveticaNeue, "Helvetica Neue", Helvetica, Arial, sans-serif; fon=
+t-size: 12px; line-height: 18px; color: #85898c; font-weight: normal; lette=
+r-spacing: 0.2px; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-=
+left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left:=
+ 0;'><a id=3D"manage-preferences" href=3D"https://a.squareupmessaging.com/C=
+L0/https:%2F%2Faccount.squareup.com%2Fmanage-receipt-preferences%2FarbZsRfE=
+HJqjOzp9rnwjZiv5vquaB/1/0101016fc97007c6-2015d8fc-defc-4dfe-959f-f382984516=
+c6-000000/Wq5X2qXSBk2uEXuGo1thm5tYFEEhDCzLXJakAKe7sL0=3D124" style=3D"text-=
+decoration: underline !important; color: #85898c;">Manage preferences</a></=
+span><span class=3D"p" style=3D'font-family: SQMarket, HelveticaNeue, "Helv=
+etica Neue", Helvetica, Arial, sans-serif; font-size: 12px; line-height: 18=
+px; color: #85898c; font-weight: normal; letter-spacing: 0.2px; margin-top:=
+ 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padd=
+ing-right: 0; padding-bottom: 0; padding-left: 0;'>=C2=A0 for digital recei=
+pts</span></td></tr><tr><td width=3D"100%" height=3D"20" colspan=3D"1" styl=
+e=3D"line-height: 0; font-size: 0; border-collapse: collapse; padding-top: =
+0; padding-right: 0; padding-bottom: 0; padding-left: 0;"> </td></tr><tr><t=
+d align=3D"center" valign=3D"top" style=3D"line-height: 0px; font-size: 0px=
+; border-collapse: collapse; padding-top: 0; padding-right: 0; padding-bott=
+om: 0; padding-left: 0;"><a id=3D"receipt-square-logo" href=3D"https://a.sq=
+uareupmessaging.com/CL0/https:%2F%2Fsquareup.com/1/0101016fc97007c6-2015d8f=
+c-defc-4dfe-959f-f382984516c6-000000/-_YVyYVFeUEvPZvNOJosqZ6BBUBOlebMitWtEP=
+7nP58=3D124" style=3D"text-decoration: none; color: #85898c;"><img width=3D=
+"24" height=3D"24" border=3D"0" src=3D"https://d3g64w74of3jgu.cloudfront.ne=
+t/receipts/assets/footer-logo-d354ee4f8b2a914ed1959eaa77323e1f444494f53a4d4=
+4f56b1abad8f028e8e8.png" alt=3D"Footer logo"></a></td></tr><tr><td width=3D=
+"100%" height=3D"30" colspan=3D"1" style=3D"line-height: 0; font-size: 0; b=
+order-collapse: collapse; padding-top: 0; padding-right: 0; padding-bottom:=
+ 0; padding-left: 0;"> </td></tr></table></td></tr></table><!--[if (gte mso=
+ 9)|(IE)]> </td> </tr> </table> <![endif]--></td></tr></table></div><img al=
+t=3D"" src=3D"http://a.squareupmessaging.com/CI0/0101016fc97007c6-2015d8fc-=
+defc-4dfe-959f-f382984516c6-000000/MQs97NmMptW3wfzaX8_RvvHjpeMQ0MVkWE8paf-2=
+zJI=3D124" style=3D"display: none; width: 1px; height: 1px;">
+</body></html>
+
+------=_Part_12342770_999928134.1579632560000--
+
+------=_Part_12342769_212203071.1579632560000--
+
+------=_Part_12342768_1871373769.1579632560000--

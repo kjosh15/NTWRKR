@@ -1,0 +1,946 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:501c:0:0:0:0:0 with SMTP id e28csp1934197ljb;
+        Tue, 24 Nov 2020 08:29:48 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJyJpj9dOqDJMGlnb3YtQjWNPzRmh+viScC3mEuSR24AcydwPQ5GE/P+8rmPEeWlpo/3tHV+
+X-Received: by 2002:a62:d11b:0:b029:18b:b3e:95aa with SMTP id z27-20020a62d11b0000b029018b0b3e95aamr4637663pfg.3.1606235388000;
+        Tue, 24 Nov 2020 08:29:48 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1606235387; cv=none;
+        d=google.com; s=arc-20160816;
+        b=T55UKyjaPl4114Ilf7yXzfLG7OMk3LkYb3P0YbrCXzOnXZOsxaj8gMQAUJ/aLH047d
+         MB09JnzDE2nSJ4Qzh7MWLao3a8O78GPS3p/hlgPEI1W70cYzIpAesPmXdtwYsCJKInOO
+         jjPiy+vkYzpEstLtv9j1N6otulik+pXHnlvCymBdBqOeJKrl3/lkPQnHyCDBHwq45kUo
+         bORFFokRnoOa0rOCwBtIV7XoCU/cfY9cU84SbMjJiCufK/bvUZqg3mbZGDdNnAuXFxWT
+         eWRb+TXQ3rlZ4uk2/kWlh4+qOtyuBNFops4W3UP7IUpuEwicj7qMT+9p9iGu4ANC0taP
+         1MDw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=auto-submitted:subject:references:in-reply-to:message-id
+         :content-language:date:to:from:mime-version:ironport-sdr
+         :ironport-sdr:dkim-signature;
+        bh=rln/7tiErpBCutw5acuQtKzrZDiaVP55GJfJP6/53NE=;
+        b=SOEoH2C17OPKdMNOeRZHg/tr8pf2YoSrFiuSz7pI+2LZllM4MadKNmg8O6AnTPw7ju
+         51PYjLseiwBsLZKUxsFnjZKLRLSkucrHleapQTUiVAt/x1R/j40XNbEzO/DInitN+7R4
+         sH2BiHZGBBrA/iWo+NEplN1qK49he6QSEU+0ur5c8igaQ6NOxasdK4LV4YATrrt2jMol
+         ofquEU4jB7b71DyWihOQLCIsxzBUpylVUa08atjx+mH5K0ks8ReyQoFp7gJ9c4TofiIM
+         6XulqdcSHEAFJ96myFsjxUpGGwglQOK7xhTMIQLs9glypiAZq/m+cCKQ9WSQ3fxrATLj
+         Hpbg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@seic.com header.s=seic-iphmx-102018 header.b=RxRgH9T7;
+       spf=pass (google.com: domain of postmaster@esa5.seic.iphmx.com designates 68.232.153.50 as permitted sender) smtp.helo=esa5.seic.iphmx.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=seic.com
+Return-Path: <>
+Received: from esa5.seic.iphmx.com (esa5.seic.iphmx.com. [68.232.153.50])
+        by mx.google.com with ESMTPS id i20si14116111pfr.293.2020.11.24.08.29.47
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 24 Nov 2020 08:29:47 -0800 (PST)
+Received-SPF: pass (google.com: domain of postmaster@esa5.seic.iphmx.com designates 68.232.153.50 as permitted sender) client-ip=68.232.153.50;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@seic.com header.s=seic-iphmx-102018 header.b=RxRgH9T7;
+       spf=pass (google.com: domain of postmaster@esa5.seic.iphmx.com designates 68.232.153.50 as permitted sender) smtp.helo=esa5.seic.iphmx.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=seic.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=seic.com; i=@seic.com; l=42894; q=dns/txt;
+  s=seic-iphmx-102018; t=1606235388; x=1637771388;
+  h=mime-version:from:to:date:message-id:in-reply-to:
+   references:subject;
+  bh=rln/7tiErpBCutw5acuQtKzrZDiaVP55GJfJP6/53NE=;
+  b=RxRgH9T7LnKikVVzr2Q1iH5RqpJPateomyp4e9sySrE3Fcw9BBK5k9No
+   82J0GnTBe/Gz9l/+vfVRb9XOcOidXfQl2xq2bQD/pBXonBVbNnDyqEmGJ
+   T+KE9zcppX7ua2kQDTvK2sxgbr3771TsJ+4i49xdjWB8gnHBSYi5Jl9EE
+   OvtA+m/Y3tUVjtwHOOaUMiEHH5xbVYzYQBGJeTs/mqGbCsaU9VkVgiRBO
+   W4FiaEa1gd7lJoHw2lz/IKKBrwidc7uzr2CH2bHoF52ZLu2XwAKuoJnEG
+   ywQ4HL0RP9f98MRS0RJnCPJ/XdL9z2A+1hiELeZvgNY5JNEwpxBlSv8c8
+   A==;
+IronPort-SDR: 1fBFVWAKdq17uXJCrdnmC5DUgYkG5HL4GpWPPEaGotgrt5w2sn1RLnP/ni6kzNylJOCNdCaRd2
+ JZxKdCndD+fPrsLKLbGHqb8gaFkOTXMvnwHnrqneBEGz3H4GdC3Y2bpYl0sIwniLfrKFU0F9dS
+ 9OzPu/LRLgm0v+BEjn0zHqKrqTlm9y5ypz+DivFRjAeuNDlodkT09sbO+4VFHlkd7FJWVOjNAV
+ RVikgspt72jEs0NNkcVYbyxu2Kz4Iu4VVHvSuVzRgv5YeD1dAHu5NeYKc4cyE/qkQKpHPUWnhY
+ t3U=
+X-IronPort-AV: E=Sophos;i="5.78,366,1599537600"; 
+   d="scan'208,217";a="28481442"
+Received: from unknown (HELO ip-mail-4.seic.com) ([12.20.48.76])
+  by esa5.seic.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 11:29:47 -0500
+IronPort-SDR: X426Wl8Kd+taqXh1Jz9kwISAm6qAMCRJOz+rAsiD33ngUbwopjh9LMDuY9FCmFjYWoGlgjl5Gq
+ ElSHNED1p25by5bpINUT9s5Z4YkHAtnsRkBVZDeIbtfwfdopIdFaCxWYOlMcntKSx6+fh0Au3P
+ FsjKfe+E2PL65YDNaNQf9/HpS6bSAyoa0xbae9FiKPLnivvxUaTPvpQYW59rnEVf8MF+NQRsxc
+ tpzpIIizd/5n6QSBcGrJxOeLijVpkIGlNDnHqMuK6vMSdXyBDaSRgTdjLgr2oAr7Dj4K5w/81B
+ p7w=
+MIME-Version: 1.0
+From: <postmaster@seic.com>
+To: <josh@josh.is>
+Date: Tue, 24 Nov 2020 11:29:45 -0500
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="0cd5f970-92c0-4a90-b9bd-8cb28198a080"
+X-MS-Exchange-Message-Is-Ndr:
+Content-Language: en-US
+Message-ID: <b617b681-7019-482f-9306-07288c2914f4@usoakex16mb07.corp.seic.com>
+In-Reply-To: <CACNgykMm94U2_LsQq_JE2n8ZqLCD-=OdR856f28RxPyiL-JGBg@mail.gmail.com>
+References: <CACNgykMm94U2_LsQq_JE2n8ZqLCD-=OdR856f28RxPyiL-JGBg@mail.gmail.com>
+Subject: Undeliverable: Reconnecting
+Auto-Submitted: auto-replied
+X-CFilter-Loop: Reflected
+
+--0cd5f970-92c0-4a90-b9bd-8cb28198a080
+Content-Type: multipart/alternative; differences=Content-Type;
+	boundary="7cd5e06b-8a6e-48ad-aa26-a16cf35b342b"
+
+--7cd5e06b-8a6e-48ad-aa26-a16cf35b342b
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Delivery has failed to these recipients or groups:
+
+Lezynski, Stephen (slezynski@seic.com)<mailto:slezynski@seic.com>
+The email address you entered couldn't be found. Please check the recipient=
+'s email address and try to resend the message. If the problem continues, p=
+lease contact your email admin.
+
+
+
+
+
+
+
+
+Diagnostic information for administrators:
+
+Generating server: usoakex16mb07.corp.seic.com
+
+slezynski@seic.com
+Remote Server returned '550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipien=
+t not found by SMTP address lookup'
+
+Original message headers:
+
+Received: from usoakex16mb07.corp.seic.com (10.50.42.139) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 24 Nov 2020 11:29:45 -0500
+Received: from ip-mail-2.seic.com (192.168.0.78) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server id
+ 15.1.2044.4 via Frontend Transport; Tue, 24 Nov 2020 11:29:45 -0500
+IronPort-SDR: oHdVTtV4SUOy7DOkEqsUhJwwiIiy3R7GtbuTwOVnpZqjgTj7uOhm9yBrpEHYx=
+K/VYaZXkGrxm0
+ yc+GGt8Fy8sFOHk9pbT1IEDx1n7hjJKMHDpsu5SKHrVGTPAJuNkXHYtTH4DILX8yJb98rc3eol
+ K/Jb7P5qjVZ+9gqDGaTB7JW/j6Yx+E5zYc37himCrP8msPoIq2++FlmgreNCXBIuXE12nRjp+p
+ QiAU6vDYeO+kWnuorQxh6XbP2AY0dwABYmGbFkIuDk5GGlbh5tMtulgHBPMUsjMlWFnehDPgre
+ pas=3D
+Received: from esa5.seic.iphmx.com ([68.232.153.50])
+  by ip-mail-2.seic.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov =
+2020 11:29:44 -0500
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of josh@josh.is)
+  identity=3Dpra; client-ip=3D209.85.167.44;
+  receiver=3Desa5.seic.iphmx.com; envelope-from=3D"josh@josh.is";
+  x-sender=3D"josh@josh.is"; x-conformance=3Dsidf_compatible
+Received-SPF: Pass (esa5.seic.iphmx.com: domain of josh@josh.is
+  designates 209.85.167.44 as permitted sender)
+  identity=3Dmailfrom; client-ip=3D209.85.167.44;
+  receiver=3Desa5.seic.iphmx.com; envelope-from=3D"josh@josh.is";
+  x-sender=3D"josh@josh.is"; x-conformance=3Dsidf_compatible;
+  x-record-type=3D"v=3Dspf1"; x-record-text=3D"v=3Dspf1
+  ip4:35.190.247.0/24 ip4:64.233.160.0/19 ip4:66.102.0.0/20
+  ip4:66.249.80.0/20 ip4:72.14.192.0/18 ip4:74.125.0.0/16
+  ip4:108.177.8.0/21 ip4:173.194.0.0/16 ip4:209.85.128.0/17
+  ip4:216.58.192.0/19 ip4:216.239.32.0/19 ~all"
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of
+  postmaster@mail-lf1-f44.google.com) identity=3Dhelo;
+  client-ip=3D209.85.167.44; receiver=3Desa5.seic.iphmx.com;
+  envelope-from=3D"josh@josh.is";
+  x-sender=3D"postmaster@mail-lf1-f44.google.com";
+  x-conformance=3Dsidf_compatible
+Authentication-Results: esa5.seic.iphmx.com; spf=3DNone smtp.pra=3Djosh@jos=
+h.is; spf=3DPass smtp.mailfrom=3Djosh@josh.is; spf=3DNone smtp.helo=3Dpostm=
+aster@mail-lf1-f44.google.com; dkim=3Dpass (signature verified) header.i=3D=
+@josh.is; dmarc=3Dpass (p=3Dnone dis=3Dnone) d=3Djosh.is
+IronPort-SDR: 59eTWqfSBhCn64cbhNycLeZCD7Q3JS5iuc7Htjnk2gl3FF1zLsicD9br7dE3K=
+J7R6gN3RxT7KN
+ ScZvICFSLFyapou5MK497x/N4bfdQyKl52JfPTn7L9anbfYf50GCH7eKFYiMtHnmfGVftn89/E
+ +6ZHxqAT3EC0avLl+hPctsr0uDhDDbqairPOBxVx9wjHxuvPJmXT3kd1RiShEoivIMHsAxuWy5
+ TMbRhwqDMzgGuZ7EqxfflhbMX7q6jFIAR+PCbN5X21Z3YrO6lvHkB/XPmEIVFq7qcdI+M69f0L
+ seG0/lt2xoWJMZ17jZU/bgOW
+X-IPAS-Result: =3D?us-ascii?q?A0GiNwCfNL1ffyynVdFigloBgSMEFAIBAQE4KHtVDhYEC=
+?=3D
+ =3D?us-ascii?q?y6EPYEfgi2EW4wJkQo/hQpWgT88CwEBAQEBAQEBAQkTFAgEAQEChEiCLwId=
+B?=3D
+ =3D?us-ascii?q?wEEOAINAgECAQEBAwIDAQEBAQEEAQEBAgEBAgMEAQECEAEBgQtgX4FHgXEG=
+B?=3D
+ =3D?us-ascii?q?DAMQwEMAYFmKRJiUAMzAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ4C=
+C?=3D
+ =3D?us-ascii?q?DoaOxMkFBEdAQExBxsBAgEGNwIkEgEFASI1gjlLAYMGD6BjAXQ0PgIQEwEp=
+F?=3D
+ =3D?us-ascii?q?wEMgQiKB4EygwQBAQV7OAETQYQKgTkJEoEPFQMBAQEBiSiEExuCAIFHglyD=
+G?=3D
+ =3D?us-ascii?q?wIBARdEgS+CaheCSJBup1+CeIEWh36SDCKBGaBtiXuEd49vg2ONW4Q6DyOB=
+X?=3D
+ =3D?us-ascii?q?wo6gSAsBxoIMDsxBoFlAQFLCUQBAgECAQwCAQIBAgECAggBAQKSDYJph29E=
+M?=3D
+ =3D?us-ascii?q?AI1AgYBCQEBAwmCXY1pAQE?=3D
+IronPort-PHdr: =3D?us-ascii?q?9a23=3D3AluqtchBX2RHR8jjm7IEtUyQJP3N1i/DPJgcQ=
+r6?=3D
+ =3D?us-ascii?q?AfoPdwSPX5ocbcNUDSrc9gkEXOFd2Cra4d1KyP7/CrCTdIyK3CmUhKSIZLW=
+R?=3D
+ =3D?us-ascii?q?4BhJdetC0bK+nBN3fGKuX3ZTcxBsVIWQwt1Xi6NU9IBJS2PAWK8TW94jEIB=
+x?=3D
+ =3D?us-ascii?q?rwKxd+KPjrFY7OlcS30P2594HObwlSizexfLF/IA+roQjetcQajohvJ6gsw=
+R?=3D
+ =3D?us-ascii?q?bVv3VEfPhby3l1LlyJhRb84cmw/J9n8ytOvv8q6tBNX6bncakmVLJUFDspP=
+X?=3D
+ =3D?us-ascii?q?w7683trhnDUBCA5mAAXWUMkxpHGBbK4RfnVZrsqCT6t+592C6HPc3qSL0/R=
+D?=3D
+ =3D?us-ascii?q?qv47t3RBLulSwKLCAy/n3JhcNsjaJbuBOhqAJ5w47Ie4GeKf5ycrrAcd8GW=
+W?=3D
+ =3D?us-ascii?q?ZNW8BcWCtcDIOhdIsPF/QOMvpEr4fzoFsOqAGxBQiqBOjyzjNFiXv70ag83=
+u?=3D
+ =3D?us-ascii?q?88Ew/JwRYgEsoBv3rUotv7N7ocX/6pw6TT1zrPc+lb1C3h5ITUcB0sp+yHU=
+7?=3D
+ =3D?us-ascii?q?JqccrWzEkiDwfLjlKLqYzlIjib0+ANvHaa7+pmSOmijGwnqwZqojiv3cosi=
+I?=3D
+ =3D?us-ascii?q?7JhpkVylze9CV52584KNulQ0F0fdCqCoFftz2GN4RoWMMiRXlltSUnx7Ebv=
+Z?=3D
+ =3D?us-ascii?q?O1cygExYg5yxPCZPGKfYiF7xLsWuuTPDp1hXxrda6xihuv70WuxeLxW8mo3=
+V?=3D
+ =3D?us-ascii?q?hFqidIjtjBu3QN2hHV98OJRPx9/kK71jaO0QDe8uBEIUYpmqraJJ4hxbswm=
+Y?=3D
+ =3D?us-ascii?q?QPsUTZHy/5hF72gLWKeUUj/+ik8+vnYrLhpp+TM497lBvyPbgpmsy6Geg4M=
+A?=3D
+ =3D?us-ascii?q?8OX3Ob+eim1b3j5kv0S6hJgP0uiqTVrozWKMABqqO6AwJZyJsv5he9Aju83=
+9?=3D
+ =3D?us-ascii?q?kVkn8KJ09fdh2dlYjmIVTOLej4Dfihh1Ssly9mx/XcMb3gBpXBN3zDkLn8c=
+b?=3D
+ =3D?us-ascii?q?pk5U5RxwU+wcpQ55JTDbEBL/bzVVHruNPECR85NhS4w+fhCNpjyoMTQXyDD=
+r?=3D
+ =3D?us-ascii?q?OdPa/IslKF5vgjL/SNaYIXojrwJPco6+brjXAjmF8deaep3YEQaHC9BvlmI=
+U?=3D
+ =3D?us-ascii?q?KZYWHsgtoaE2cKuRE+TOzwhF2DSj5ff2yyUL4k5jEnFIKmCp/ORpupgLOf3=
+S?=3D
+ =3D?us-ascii?q?a6HptWZntFClCNCnrobJuLW/YQZy6IPsBhlTkEBvCdTNpr8Ry8pQnhyLsjZ=
+t?=3D
+ =3D?us-ascii?q?HI9zUYuJSpnIxu4+DBhBcp9j1cFMmc2CeGSGQizU0SQDpj/qdkoQRezlqC1=
++?=3D
+ =3D?us-ascii?q?AsgftDFfRR4OhJFAYhY82Ph9dmAsz/D1qSNuyCT0yrF5D7WGhsHP4S4vpLT=
+l?=3D
+ =3D?us-ascii?q?h0H8irkhHE2XTzU+0LwuXYTJVh6LnVmmPxLpwglSWO3/w7gl0vUsZDcnerg=
+q?=3D
+ =3D?us-ascii?q?dv+gSAYuyB2w3R3+7iPahJ3inW9CGC1jnGpxRXVwl/VaiWOBJXLgOe5Zyxr=
+k?=3D
+ =3D?us-ascii?q?OXSr6rBPE5PxFayMmEeKVQbdi7gVxaSaXmNc/Fam283ma8Vw2VzLGBZ5a4Z=
+2?=3D
+ =3D?us-ascii?q?JOuUeVQABM20hbtXyGYBM0HQyjh2LSKj1VTgLef0Hh2s1OkVO6Sk8qwCvWc=
+F?=3D
+ =3D?us-ascii?q?NMzZyZ9zkWpfbFcsJGjddm8G9p4308VB63ivLODuW9pVtNZo9yZ5A/unlny=
+n?=3D
+ =3D?us-ascii?q?PT6lB7Jt+JJbJwql4fciVq/HHQ+A9QVqlvztEVnFox7zcqLaPBiX9+L2mXg=
+4?=3D
+ =3D?us-ascii?q?moPNi1YiG6tFjnI+aeg2H1/N3L5JcRzvBh91DJmRmVGm8v8HpK3vRzinKX7=
+5?=3D
+ =3D?us-ascii?q?f0LTMPD4upY14M0QBzjorQcnUx37vUi0N8C4CLlifa1d95GtlAqF7oN58Xe=
+O?=3D
+ =3D?us-ascii?q?vMXArdGZQEKsSVMcs2hkCbQxc2PPFK3ZRvIeSvdOeY6v6tOPxszA2lrUt63=
+q?=3D
+ =3D?us-ascii?q?Re80+i2AxNe8eL2bkLwfbFhjGrVmjN1AyE16K/0cgMLXlaViKWzzbZBMkON=
+u?=3D
+ =3D?us-ascii?q?p/coYEB2z1ec2G4tVXgK/CYlJ0/n2hBXg+1pfuc0GbdHn57ycAjlUqqiesh=
+C?=3D
+ =3D?us-ascii?q?GW1D5PrCsLhZjDznH3/YGAPFJPciYDDCEq03nnHLmSo9QGbWq5dFgplkf1w=
+2?=3D
+ =3D?us-ascii?q?ik/5cDgah7Ik33Sk1UIDGoJWtIWITq67+TSJ5X9NQ06B9Ucc+OXQuQGqHTm=
+B?=3D
+ =3D?us-ascii?q?dG4RyGfSMWjHhzP3ni8o26sjUv3THVPDNytn3fYcZq2VLF6cfBQeIExjMdX=
+3?=3D
+ =3D?us-ascii?q?ol2xXyL2KXZoHxr43Qu5LKqOuEWmmmTJEBOTG+y4SGuW/z/WZ2VETnx7T7g=
+c?=3D
+ =3D?us-ascii?q?WyVUAz3Sz60oxwEW3Btw7yN5Ovn76nOLdUPgZkAVbm4I9gF5l5iJcrrJMXw=
+n?=3D
+ =3D?us-ascii?q?hch47auTJeyTujbIoFgePLKHwKQzNRmYz8/RTl1Ut/L3mA24P+UDCnz9B8Y=
+8?=3D
+ =3D?us-ascii?q?WhODhNiC8m5p0ME6qV5/pFhStwshyzqgeCKeNlkGI7zv0joGUfn/lPoBAkm=
+y?=3D
+ =3D?us-ascii?q?eaGbA6H05DPWrtjEfA9Miw+Z1ef33nar2szAx7lNGlAquFp1ReX235UpUlB=
+i?=3D
+ =3D?us-ascii?q?82794seEnU3ijV7YfpMMLVccpVthCQlELYiPNJLZsqivcQrS9uOGa4uXN8j=
+u?=3D
+ =3D?us-ascii?q?Bn0Vph2pa1uIXBIGJor+q1AR9dYyX8fNhbuirsgqBXgtuM0sixE49gFDQGU=
+N?=3D
+ =3D?us-ascii?q?qgTf+hHD8I8/WyHwSJCz16q2zIUbbaFBWUvV9vtGmHU4j+MXaRKTEVzM43Q=
+h?=3D
+ =3D?us-ascii?q?6bKQ0XjFUWWy462J8iT1r4/sHqfUZn6zxU3WbW8EUSmMRvMRS3EmrErVruc=
+T?=3D
+ =3D?us-ascii?q?o1Q96eNBpT/kdJ4EKHecqZpvl+GS1V5NWosRCNJ2qHZg9JEXBsOATMBlbtO=
+a?=3D
+ =3D?us-ascii?q?Or7MXB9O7QD/S3Lv/Ha7GD4eJEUPLAyZWq24pgtzGCfseIJXlKDfog2gxCR=
+j?=3D
+ =3D?us-ascii?q?EceYyRmjkCTTAWizOYd9SS91+3/ix6qNz68ey+Alq+o9vSTeIMbpMzp0PT4=
++?=3D
+ =3D?us-ascii?q?/LLeObiSdnJCwN24gFmDnTxbkUml8KiyR+MTKqFOdIuCjTQabXgqISAQQcb=
+n?=3D
+ =3D?us-ascii?q?Y5NsxT74o+2RJNf8/AwICQtPYwnrsuBlFJWEa00MOufswiIWamNBXGHwzYf=
+K?=3D
+ =3D?us-ascii?q?TDLjrNzcbtZKq6QrAFl+RYuSq7vjODGlPiNDCOzmO7bR2kPOBSgS3eByRw5=
+d?=3D
+ =3D?us-ascii?q?3jIC5kEnOrDN/9Y0D9K9J2hns32b0xljXBMmtOeTR7dkpMqPWX42tahe5/M=
+2?=3D
+ =3D?us-ascii?q?5G9XojLPLh+W7R4+TDK5kQuOdmGWwuz7McsCl8kuUKqn0YDPVu0DPftNtvv=
+0?=3D
+ =3D?us-ascii?q?2rnqGUxzxrXQAPz1QDzIOHsEN+OLnIo5xJWHLK5hUIvi2bDxUHoccgC8W64=
+f?=3D
+ =3D?us-ascii?q?gBjIiS0vutd3Eer4Gxn4NUHcXfJcOZPWB0PAHgRXjPAQoOCz+zNWTPwUdal=
+a?=3D
+ =3D?us-ascii?q?La+3uLo5w9spWploAJT+oRVlsuFtsYDV9lWt0ZasQSPHtsgfuAgcgE6GDr5=
+h?=3D
+ =3D?us-ascii?q?vWX8VyvJfcVrSTGr+8YCbchr5CaRwSxLr+JolGLYz31XtpbVxilZjLEU7dD=
+r?=3D
+ =3D?us-ascii?q?Uv6mVxKxU5q0JX/D1iX3U+jgj7Pxi17iZZRrak2wQ7gQxkbaEx+Sfwth0pc=
+0?=3D
+ =3D?us-ascii?q?HSqnJV8gF5mM2502vMNmegdOHqAd4QU22u6wAwKs+pHVozN1bp2xU6bHGcA=
+O?=3D
+ =3D?us-ascii?q?sAx7p4KTI11kmF4cEJQbgECvccBX1YjfCPO6d2jxIG9nThlRcBvayfUdNjj=
+F?=3D
+ =3D?us-ascii?q?d4LsTq9i4GglM5KoZyfPyYJbIVnAcMwPvU42nwkLh2mVF7RQ5F8XvOKndQ6=
+A?=3D
+ =3D?us-ascii?q?pRaeZgd2zwubY1oQ2ax2kaJzNKDqt25KosrgRkZayB136yieYSbBDscbXFf=
++?=3D
+ =3D?us-ascii?q?XB/DGf8KzAClIoihFSzhcDoOgwiJZ5NRLTDhFnzaPNRU5Qa4yYclATNJAUr=
+D?=3D
+ =3D?us-ascii?q?+KLG6YuOHJi8svbb+wHe3pU+KC8Z0srBn9Q1QPGIIBpoQMBZDxllrVLMyhL=
+a?=3D
+ =3D?us-ascii?q?YFzAVr7wPudh2DC7xSdRSHnS1PqtyjzJJxwYhWJy0MZAc1eSSx6LHNowY2g=
+f?=3D
+ =3D?us-ascii?q?2FFN4oa3YeV4EAOzo4Qsq/0yJeun1BCnGw3Id7gECa6CTgoy3LEDTmR99qZ=
+f?=3D
+ =3D?us-ascii?q?PRYR01Td/qpXMw9K+5jVOR+ZLbZin7Odlkpt7T+LYaqpKAWJY2BfF2t0bRn=
+Z?=3D
+ =3D?us-ascii?q?UdRmT/CTaeV47oYcGuNM9wMY+8EHuxX12hhihgQtz4YZC2I6mDxwDwRYNE9=
+o?=3D
+ =3D?us-ascii?q?Kc2WNGV4f1GzcAFhN3v+xG6rh7YFhJYZ0gYTbqsB8+ca2kalT9sJ3mUyO2J=
+D?=3D
+ =3D?us-ascii?q?1aQuMKh/29fKBSxjEwY/WSzXIhStQ+wbDy/xJRAp4NiR7ayLCoYIwUAk2RU=
+j?=3D
+ =3D?us-ascii?q?RNPg7IoyQ+jW1oMO0/l/w+zB3/ul4ZKzmXdeZtZTUZ7eF5PkubJDBNMkR9R=
+1?=3D
+ =3D?us-ascii?q?KYitCesAul3rRX+yUE2tgIjatKt3/xupKZazWpCvTy+Mfl9hE4ZN1jmJVfd=
+I?=3D
+ =3D?us-ascii?q?nqI8+IrpTbz27dS4LQ9AyeAnfjS6hq3+NIKScde8Fm3Hk/MJ1Uu41a6QwwT=
+Z?=3D
+ =3D?us-ascii?q?VmKg=3D3D=3D3D?=3D
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=3DSophos;i=3D"5.78,366,1599537600";
+   d=3D"scan'208,217";a=3D"28481397"
+X-ESA-SENDERGROUP: UNKNOWNLIST
+Received: from mail-lf1-f44.google.com ([209.85.167.44])
+  by esa5.seic.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov=
+ 2020 11:29:23 -0500
+Received: by mail-lf1-f44.google.com with SMTP id a9so29737800lfh.2
+        for <slezynski@seic.com>; Tue, 24 Nov 2020 08:29:22 -0800 (PST)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dmime-version:from:date:message-id:subject:to;
+        bh=3DsbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=3D;
+        b=3DHpmWUj9DrBFn+j2FHwyb54np+AbzzDhiiIu+ZVGrO4DG7qWXAsKU0li11DW02g6=
+q0n
+         1XCDc5vXvNl14mBMpTdMekgEeEN1acajVIQu6q0YpSNpaASbx4dPPh6VxRAWLppfe8=
+vZ
+         mGb1vEdSqOtupZEmZhypAR3vOaktvZ8nlrd8WkHGUVLKIeFGNYYA+nGfjo50RDi7Y0=
+3M
+         AnvUh/78/eghgfc32hYLhAoYGQDDbKjjCPf0/b3asMlZB83yUc3cubFsjSWrJCZ4z5=
+QV
+         6FcUYNDltYJys8hj48NF6PW0MdleLLcbt7q6bbBbG25myC8pt/t1RkICZT3b8wFSd4=
+ZW
+         p+EA=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:mime-version:from:date:message-id:subject:to=
+;
+        bh=3DsbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=3D;
+        b=3DoVY8kmVWSqXDP9d5adh0s/egvNKtjR8OJCt/wVm4WMjh3944xIBjQJtkaPJbEpH=
+72b
+         JAl8bvnL5e8pdlEdUGPUUesr9o1UvdMjXdXzvh6bwWrAHHT3la2ChDoCfqTSWNtxQl=
+GQ
+         A17tljy0G1ZjbChBe1nWCjSDhOiLA9cNy8t5lxRuaHKNQCBK8KA4sszKkJV+V/9VlJ=
+yS
+         78aIe68djcUbr5B+Bd9XCgXPcvfDrfXZtZP8kIYTfbUZIr6YaAHzT9OG943H730fnf=
+Zz
+         8YpaTJz0vfL6dXbl8MK+vNK9vxo+wrLt7gNokKov6Xc2XAvZMIz6Ba4E1evBr8nvNQ=
+Q/
+         vfgQ=3D=3D
+X-Gm-Message-State: AOAM533MJoXCgQuLnUviyzxAeW8FEhrFUNVaEa772FF5TXPeRT2ed+U=
+l
+        xMG3K4jp/u+J2mS7o9cjolYftaj7KKmw+9JdNlw73EuO4z7Vg4NGAE9rIw=3D=3D
+X-Google-Smtp-Source: ABdhPJxpS4/PZMgOWRNx6Uwr9XYS8fdeuA67cix4Ht+/fS1M48n54=
+bnn50UtKhGxFzHYgP/yWmIGjP5sjlEvoLEJKuQ=3D
+X-Received: by 2002:ac2:44d2:: with SMTP id d18mr2120828lfm.103.16062353590=
+60;
+ Tue, 24 Nov 2020 08:29:19 -0800 (PST)
+MIME-Version: 1.0
+From: Josh Klein <josh@josh.is>
+Date: Tue, 24 Nov 2020 16:28:43 +0000
+Message-ID: <CACNgykMm94U2_LsQq_JE2n8ZqLCD-=3DOdR856f28RxPyiL-JGBg@mail.gma=
+il.com>
+Subject: Reconnecting
+To: "Lezynski, Stephen" <slezynski@seic.com>
+Content-Type: multipart/alternative; boundary=3D"00000000000000c3bf05b4dcd0=
+b6"
+Return-Path: josh@josh.is
+
+
+--7cd5e06b-8a6e-48ad-aa26-a16cf35b342b
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<Head></head><body>
+<p><b><font color=3D"#000066" size=3D"3" face=3D"Arial">Delivery has failed=
+ to these recipients or groups:</font></b></p>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><p><a href=3D"mailto:sle=
+zynski@seic.com">Lezynski, Stephen (slezynski@seic.com)</a><br>
+</font>
+<font color=3D"#000000" size=3D"3" face=3D"Arial">The email address you ent=
+ered couldn't be found. Please check the recipient's email address and try =
+to resend the message. If the problem continues, please contact your email =
+admin.<br>
+</font>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><br>
+</p>
+</font>
+<br><br><br><br><br><br>
+<font color=3D"#808080" size=3D"2" face=3D"Tahoma"><p><b>Diagnostic informa=
+tion for administrators:</b></p>
+<p>Generating server: usoakex16mb07.corp.seic.com<br>
+</p>
+<p>slezynski@seic.com<br>
+Remote Server  returned '550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipie=
+nt not found by SMTP address lookup'<br>
+</p>
+<p>Original message headers:</p>
+<pre>Received: from usoakex16mb07.corp.seic.com (10.50.42.139) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server
+ (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 24 Nov 2020 11:29:45 -0500
+Received: from ip-mail-2.seic.com (192.168.0.78) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server id
+ 15.1.2044.4 via Frontend Transport; Tue, 24 Nov 2020 11:29:45 -0500
+IronPort-SDR: oHdVTtV4SUOy7DOkEqsUhJwwiIiy3R7GtbuTwOVnpZqjgTj7uOhm9yBrpEHYx=
+K/VYaZXkGrxm0
+ yc+GGt8Fy8sFOHk9pbT1IEDx1n7hjJKMHDpsu5SKHrVGTPAJuNkXHYtTH4DILX8yJb98rc3eol
+ K/Jb7P5qjVZ+9gqDGaTB7JW/j6Yx+E5zYc37himCrP8msPoIq2++FlmgreNCXBIuXE12nRjp+p
+ QiAU6vDYeO+kWnuorQxh6XbP2AY0dwABYmGbFkIuDk5GGlbh5tMtulgHBPMUsjMlWFnehDPgre
+ pas=3D
+Received: from esa5.seic.iphmx.com ([68.232.153.50])
+  by ip-mail-2.seic.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov =
+2020 11:29:44 -0500
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of josh@josh.is)
+  identity=3Dpra; client-ip=3D209.85.167.44;
+  receiver=3Desa5.seic.iphmx.com; envelope-from=3D&quot;josh@josh.is&quot;;
+  x-sender=3D&quot;josh@josh.is&quot;; x-conformance=3Dsidf_compatible
+Received-SPF: Pass (esa5.seic.iphmx.com: domain of josh@josh.is
+  designates 209.85.167.44 as permitted sender)
+  identity=3Dmailfrom; client-ip=3D209.85.167.44;
+  receiver=3Desa5.seic.iphmx.com; envelope-from=3D&quot;josh@josh.is&quot;;
+  x-sender=3D&quot;josh@josh.is&quot;; x-conformance=3Dsidf_compatible;
+  x-record-type=3D&quot;v=3Dspf1&quot;; x-record-text=3D&quot;v=3Dspf1
+  ip4:35.190.247.0/24 ip4:64.233.160.0/19 ip4:66.102.0.0/20
+  ip4:66.249.80.0/20 ip4:72.14.192.0/18 ip4:74.125.0.0/16
+  ip4:108.177.8.0/21 ip4:173.194.0.0/16 ip4:209.85.128.0/17
+  ip4:216.58.192.0/19 ip4:216.239.32.0/19 ~all&quot;
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of
+  postmaster@mail-lf1-f44.google.com) identity=3Dhelo;
+  client-ip=3D209.85.167.44; receiver=3Desa5.seic.iphmx.com;
+  envelope-from=3D&quot;josh@josh.is&quot;;
+  x-sender=3D&quot;postmaster@mail-lf1-f44.google.com&quot;;
+  x-conformance=3Dsidf_compatible
+Authentication-Results: esa5.seic.iphmx.com; spf=3DNone smtp.pra=3Djosh@jos=
+h.is; spf=3DPass smtp.mailfrom=3Djosh@josh.is; spf=3DNone smtp.helo=3Dpostm=
+aster@mail-lf1-f44.google.com; dkim=3Dpass (signature verified) header.i=3D=
+@josh.is; dmarc=3Dpass (p=3Dnone dis=3Dnone) d=3Djosh.is
+IronPort-SDR: 59eTWqfSBhCn64cbhNycLeZCD7Q3JS5iuc7Htjnk2gl3FF1zLsicD9br7dE3K=
+J7R6gN3RxT7KN
+ ScZvICFSLFyapou5MK497x/N4bfdQyKl52JfPTn7L9anbfYf50GCH7eKFYiMtHnmfGVftn89/E
+ +6ZHxqAT3EC0avLl+hPctsr0uDhDDbqairPOBxVx9wjHxuvPJmXT3kd1RiShEoivIMHsAxuWy5
+ TMbRhwqDMzgGuZ7EqxfflhbMX7q6jFIAR+PCbN5X21Z3YrO6lvHkB/XPmEIVFq7qcdI+M69f0L
+ seG0/lt2xoWJMZ17jZU/bgOW
+X-IPAS-Result: =3D?us-ascii?q?A0GiNwCfNL1ffyynVdFigloBgSMEFAIBAQE4KHtVDhYEC=
+?=3D
+ =3D?us-ascii?q?y6EPYEfgi2EW4wJkQo/hQpWgT88CwEBAQEBAQEBAQkTFAgEAQEChEiCLwId=
+B?=3D
+ =3D?us-ascii?q?wEEOAINAgECAQEBAwIDAQEBAQEEAQEBAgEBAgMEAQECEAEBgQtgX4FHgXEG=
+B?=3D
+ =3D?us-ascii?q?DAMQwEMAYFmKRJiUAMzAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ4C=
+C?=3D
+ =3D?us-ascii?q?DoaOxMkFBEdAQExBxsBAgEGNwIkEgEFASI1gjlLAYMGD6BjAXQ0PgIQEwEp=
+F?=3D
+ =3D?us-ascii?q?wEMgQiKB4EygwQBAQV7OAETQYQKgTkJEoEPFQMBAQEBiSiEExuCAIFHglyD=
+G?=3D
+ =3D?us-ascii?q?wIBARdEgS+CaheCSJBup1+CeIEWh36SDCKBGaBtiXuEd49vg2ONW4Q6DyOB=
+X?=3D
+ =3D?us-ascii?q?wo6gSAsBxoIMDsxBoFlAQFLCUQBAgECAQwCAQIBAgECAggBAQKSDYJph29E=
+M?=3D
+ =3D?us-ascii?q?AI1AgYBCQEBAwmCXY1pAQE?=3D
+IronPort-PHdr: =3D?us-ascii?q?9a23=3D3AluqtchBX2RHR8jjm7IEtUyQJP3N1i/DPJgcQ=
+r6?=3D
+ =3D?us-ascii?q?AfoPdwSPX5ocbcNUDSrc9gkEXOFd2Cra4d1KyP7/CrCTdIyK3CmUhKSIZLW=
+R?=3D
+ =3D?us-ascii?q?4BhJdetC0bK+nBN3fGKuX3ZTcxBsVIWQwt1Xi6NU9IBJS2PAWK8TW94jEIB=
+x?=3D
+ =3D?us-ascii?q?rwKxd+KPjrFY7OlcS30P2594HObwlSizexfLF/IA+roQjetcQajohvJ6gsw=
+R?=3D
+ =3D?us-ascii?q?bVv3VEfPhby3l1LlyJhRb84cmw/J9n8ytOvv8q6tBNX6bncakmVLJUFDspP=
+X?=3D
+ =3D?us-ascii?q?w7683trhnDUBCA5mAAXWUMkxpHGBbK4RfnVZrsqCT6t+592C6HPc3qSL0/R=
+D?=3D
+ =3D?us-ascii?q?qv47t3RBLulSwKLCAy/n3JhcNsjaJbuBOhqAJ5w47Ie4GeKf5ycrrAcd8GW=
+W?=3D
+ =3D?us-ascii?q?ZNW8BcWCtcDIOhdIsPF/QOMvpEr4fzoFsOqAGxBQiqBOjyzjNFiXv70ag83=
+u?=3D
+ =3D?us-ascii?q?88Ew/JwRYgEsoBv3rUotv7N7ocX/6pw6TT1zrPc+lb1C3h5ITUcB0sp+yHU=
+7?=3D
+ =3D?us-ascii?q?JqccrWzEkiDwfLjlKLqYzlIjib0+ANvHaa7+pmSOmijGwnqwZqojiv3cosi=
+I?=3D
+ =3D?us-ascii?q?7JhpkVylze9CV52584KNulQ0F0fdCqCoFftz2GN4RoWMMiRXlltSUnx7Ebv=
+Z?=3D
+ =3D?us-ascii?q?O1cygExYg5yxPCZPGKfYiF7xLsWuuTPDp1hXxrda6xihuv70WuxeLxW8mo3=
+V?=3D
+ =3D?us-ascii?q?hFqidIjtjBu3QN2hHV98OJRPx9/kK71jaO0QDe8uBEIUYpmqraJJ4hxbswm=
+Y?=3D
+ =3D?us-ascii?q?QPsUTZHy/5hF72gLWKeUUj/+ik8+vnYrLhpp+TM497lBvyPbgpmsy6Geg4M=
+A?=3D
+ =3D?us-ascii?q?8OX3Ob+eim1b3j5kv0S6hJgP0uiqTVrozWKMABqqO6AwJZyJsv5he9Aju83=
+9?=3D
+ =3D?us-ascii?q?kVkn8KJ09fdh2dlYjmIVTOLej4Dfihh1Ssly9mx/XcMb3gBpXBN3zDkLn8c=
+b?=3D
+ =3D?us-ascii?q?pk5U5RxwU+wcpQ55JTDbEBL/bzVVHruNPECR85NhS4w+fhCNpjyoMTQXyDD=
+r?=3D
+ =3D?us-ascii?q?OdPa/IslKF5vgjL/SNaYIXojrwJPco6+brjXAjmF8deaep3YEQaHC9BvlmI=
+U?=3D
+ =3D?us-ascii?q?KZYWHsgtoaE2cKuRE+TOzwhF2DSj5ff2yyUL4k5jEnFIKmCp/ORpupgLOf3=
+S?=3D
+ =3D?us-ascii?q?a6HptWZntFClCNCnrobJuLW/YQZy6IPsBhlTkEBvCdTNpr8Ry8pQnhyLsjZ=
+t?=3D
+ =3D?us-ascii?q?HI9zUYuJSpnIxu4+DBhBcp9j1cFMmc2CeGSGQizU0SQDpj/qdkoQRezlqC1=
++?=3D
+ =3D?us-ascii?q?AsgftDFfRR4OhJFAYhY82Ph9dmAsz/D1qSNuyCT0yrF5D7WGhsHP4S4vpLT=
+l?=3D
+ =3D?us-ascii?q?h0H8irkhHE2XTzU+0LwuXYTJVh6LnVmmPxLpwglSWO3/w7gl0vUsZDcnerg=
+q?=3D
+ =3D?us-ascii?q?dv+gSAYuyB2w3R3+7iPahJ3inW9CGC1jnGpxRXVwl/VaiWOBJXLgOe5Zyxr=
+k?=3D
+ =3D?us-ascii?q?OXSr6rBPE5PxFayMmEeKVQbdi7gVxaSaXmNc/Fam283ma8Vw2VzLGBZ5a4Z=
+2?=3D
+ =3D?us-ascii?q?JOuUeVQABM20hbtXyGYBM0HQyjh2LSKj1VTgLef0Hh2s1OkVO6Sk8qwCvWc=
+F?=3D
+ =3D?us-ascii?q?NMzZyZ9zkWpfbFcsJGjddm8G9p4308VB63ivLODuW9pVtNZo9yZ5A/unlny=
+n?=3D
+ =3D?us-ascii?q?PT6lB7Jt+JJbJwql4fciVq/HHQ+A9QVqlvztEVnFox7zcqLaPBiX9+L2mXg=
+4?=3D
+ =3D?us-ascii?q?moPNi1YiG6tFjnI+aeg2H1/N3L5JcRzvBh91DJmRmVGm8v8HpK3vRzinKX7=
+5?=3D
+ =3D?us-ascii?q?f0LTMPD4upY14M0QBzjorQcnUx37vUi0N8C4CLlifa1d95GtlAqF7oN58Xe=
+O?=3D
+ =3D?us-ascii?q?vMXArdGZQEKsSVMcs2hkCbQxc2PPFK3ZRvIeSvdOeY6v6tOPxszA2lrUt63=
+q?=3D
+ =3D?us-ascii?q?Re80+i2AxNe8eL2bkLwfbFhjGrVmjN1AyE16K/0cgMLXlaViKWzzbZBMkON=
+u?=3D
+ =3D?us-ascii?q?p/coYEB2z1ec2G4tVXgK/CYlJ0/n2hBXg+1pfuc0GbdHn57ycAjlUqqiesh=
+C?=3D
+ =3D?us-ascii?q?GW1D5PrCsLhZjDznH3/YGAPFJPciYDDCEq03nnHLmSo9QGbWq5dFgplkf1w=
+2?=3D
+ =3D?us-ascii?q?ik/5cDgah7Ik33Sk1UIDGoJWtIWITq67+TSJ5X9NQ06B9Ucc+OXQuQGqHTm=
+B?=3D
+ =3D?us-ascii?q?dG4RyGfSMWjHhzP3ni8o26sjUv3THVPDNytn3fYcZq2VLF6cfBQeIExjMdX=
+3?=3D
+ =3D?us-ascii?q?ol2xXyL2KXZoHxr43Qu5LKqOuEWmmmTJEBOTG+y4SGuW/z/WZ2VETnx7T7g=
+c?=3D
+ =3D?us-ascii?q?WyVUAz3Sz60oxwEW3Btw7yN5Ovn76nOLdUPgZkAVbm4I9gF5l5iJcrrJMXw=
+n?=3D
+ =3D?us-ascii?q?hch47auTJeyTujbIoFgePLKHwKQzNRmYz8/RTl1Ut/L3mA24P+UDCnz9B8Y=
+8?=3D
+ =3D?us-ascii?q?WhODhNiC8m5p0ME6qV5/pFhStwshyzqgeCKeNlkGI7zv0joGUfn/lPoBAkm=
+y?=3D
+ =3D?us-ascii?q?eaGbA6H05DPWrtjEfA9Miw+Z1ef33nar2szAx7lNGlAquFp1ReX235UpUlB=
+i?=3D
+ =3D?us-ascii?q?82794seEnU3ijV7YfpMMLVccpVthCQlELYiPNJLZsqivcQrS9uOGa4uXN8j=
+u?=3D
+ =3D?us-ascii?q?Bn0Vph2pa1uIXBIGJor+q1AR9dYyX8fNhbuirsgqBXgtuM0sixE49gFDQGU=
+N?=3D
+ =3D?us-ascii?q?qgTf+hHD8I8/WyHwSJCz16q2zIUbbaFBWUvV9vtGmHU4j+MXaRKTEVzM43Q=
+h?=3D
+ =3D?us-ascii?q?6bKQ0XjFUWWy462J8iT1r4/sHqfUZn6zxU3WbW8EUSmMRvMRS3EmrErVruc=
+T?=3D
+ =3D?us-ascii?q?o1Q96eNBpT/kdJ4EKHecqZpvl+GS1V5NWosRCNJ2qHZg9JEXBsOATMBlbtO=
+a?=3D
+ =3D?us-ascii?q?Or7MXB9O7QD/S3Lv/Ha7GD4eJEUPLAyZWq24pgtzGCfseIJXlKDfog2gxCR=
+j?=3D
+ =3D?us-ascii?q?EceYyRmjkCTTAWizOYd9SS91+3/ix6qNz68ey+Alq+o9vSTeIMbpMzp0PT4=
++?=3D
+ =3D?us-ascii?q?/LLeObiSdnJCwN24gFmDnTxbkUml8KiyR+MTKqFOdIuCjTQabXgqISAQQcb=
+n?=3D
+ =3D?us-ascii?q?Y5NsxT74o+2RJNf8/AwICQtPYwnrsuBlFJWEa00MOufswiIWamNBXGHwzYf=
+K?=3D
+ =3D?us-ascii?q?TDLjrNzcbtZKq6QrAFl+RYuSq7vjODGlPiNDCOzmO7bR2kPOBSgS3eByRw5=
+d?=3D
+ =3D?us-ascii?q?3jIC5kEnOrDN/9Y0D9K9J2hns32b0xljXBMmtOeTR7dkpMqPWX42tahe5/M=
+2?=3D
+ =3D?us-ascii?q?5G9XojLPLh+W7R4+TDK5kQuOdmGWwuz7McsCl8kuUKqn0YDPVu0DPftNtvv=
+0?=3D
+ =3D?us-ascii?q?2rnqGUxzxrXQAPz1QDzIOHsEN+OLnIo5xJWHLK5hUIvi2bDxUHoccgC8W64=
+f?=3D
+ =3D?us-ascii?q?gBjIiS0vutd3Eer4Gxn4NUHcXfJcOZPWB0PAHgRXjPAQoOCz+zNWTPwUdal=
+a?=3D
+ =3D?us-ascii?q?La+3uLo5w9spWploAJT+oRVlsuFtsYDV9lWt0ZasQSPHtsgfuAgcgE6GDr5=
+h?=3D
+ =3D?us-ascii?q?vWX8VyvJfcVrSTGr+8YCbchr5CaRwSxLr+JolGLYz31XtpbVxilZjLEU7dD=
+r?=3D
+ =3D?us-ascii?q?Uv6mVxKxU5q0JX/D1iX3U+jgj7Pxi17iZZRrak2wQ7gQxkbaEx+Sfwth0pc=
+0?=3D
+ =3D?us-ascii?q?HSqnJV8gF5mM2502vMNmegdOHqAd4QU22u6wAwKs+pHVozN1bp2xU6bHGcA=
+O?=3D
+ =3D?us-ascii?q?sAx7p4KTI11kmF4cEJQbgECvccBX1YjfCPO6d2jxIG9nThlRcBvayfUdNjj=
+F?=3D
+ =3D?us-ascii?q?d4LsTq9i4GglM5KoZyfPyYJbIVnAcMwPvU42nwkLh2mVF7RQ5F8XvOKndQ6=
+A?=3D
+ =3D?us-ascii?q?pRaeZgd2zwubY1oQ2ax2kaJzNKDqt25KosrgRkZayB136yieYSbBDscbXFf=
++?=3D
+ =3D?us-ascii?q?XB/DGf8KzAClIoihFSzhcDoOgwiJZ5NRLTDhFnzaPNRU5Qa4yYclATNJAUr=
+D?=3D
+ =3D?us-ascii?q?+KLG6YuOHJi8svbb+wHe3pU+KC8Z0srBn9Q1QPGIIBpoQMBZDxllrVLMyhL=
+a?=3D
+ =3D?us-ascii?q?YFzAVr7wPudh2DC7xSdRSHnS1PqtyjzJJxwYhWJy0MZAc1eSSx6LHNowY2g=
+f?=3D
+ =3D?us-ascii?q?2FFN4oa3YeV4EAOzo4Qsq/0yJeun1BCnGw3Id7gECa6CTgoy3LEDTmR99qZ=
+f?=3D
+ =3D?us-ascii?q?PRYR01Td/qpXMw9K+5jVOR+ZLbZin7Odlkpt7T+LYaqpKAWJY2BfF2t0bRn=
+Z?=3D
+ =3D?us-ascii?q?UdRmT/CTaeV47oYcGuNM9wMY+8EHuxX12hhihgQtz4YZC2I6mDxwDwRYNE9=
+o?=3D
+ =3D?us-ascii?q?Kc2WNGV4f1GzcAFhN3v+xG6rh7YFhJYZ0gYTbqsB8+ca2kalT9sJ3mUyO2J=
+D?=3D
+ =3D?us-ascii?q?1aQuMKh/29fKBSxjEwY/WSzXIhStQ+wbDy/xJRAp4NiR7ayLCoYIwUAk2RU=
+j?=3D
+ =3D?us-ascii?q?RNPg7IoyQ+jW1oMO0/l/w+zB3/ul4ZKzmXdeZtZTUZ7eF5PkubJDBNMkR9R=
+1?=3D
+ =3D?us-ascii?q?KYitCesAul3rRX+yUE2tgIjatKt3/xupKZazWpCvTy+Mfl9hE4ZN1jmJVfd=
+I?=3D
+ =3D?us-ascii?q?nqI8+IrpTbz27dS4LQ9AyeAnfjS6hq3+NIKScde8Fm3Hk/MJ1Uu41a6QwwT=
+Z?=3D
+ =3D?us-ascii?q?VmKg=3D3D=3D3D?=3D
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=3DSophos;i=3D&quot;5.78,366,1599537600&quot;;=20
+   d=3D&quot;scan'208,217&quot;;a=3D&quot;28481397&quot;
+X-ESA-SENDERGROUP: UNKNOWNLIST
+Received: from mail-lf1-f44.google.com ([209.85.167.44])
+  by esa5.seic.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov=
+ 2020 11:29:23 -0500
+Received: by mail-lf1-f44.google.com with SMTP id a9so29737800lfh.2
+        for &lt;slezynski@seic.com&gt;; Tue, 24 Nov 2020 08:29:22 -0800 (PS=
+T)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh.is; s=3Dgoogle;
+        h=3Dmime-version:from:date:message-id:subject:to;
+        bh=3DsbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=3D;
+        b=3DHpmWUj9DrBFn+j2FHwyb54np+AbzzDhiiIu+ZVGrO4DG7qWXAsKU0li11DW02g6=
+q0n
+         1XCDc5vXvNl14mBMpTdMekgEeEN1acajVIQu6q0YpSNpaASbx4dPPh6VxRAWLppfe8=
+vZ
+         mGb1vEdSqOtupZEmZhypAR3vOaktvZ8nlrd8WkHGUVLKIeFGNYYA+nGfjo50RDi7Y0=
+3M
+         AnvUh/78/eghgfc32hYLhAoYGQDDbKjjCPf0/b3asMlZB83yUc3cubFsjSWrJCZ4z5=
+QV
+         6FcUYNDltYJys8hj48NF6PW0MdleLLcbt7q6bbBbG25myC8pt/t1RkICZT3b8wFSd4=
+ZW
+         p+EA=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:mime-version:from:date:message-id:subject:to=
+;
+        bh=3DsbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=3D;
+        b=3DoVY8kmVWSqXDP9d5adh0s/egvNKtjR8OJCt/wVm4WMjh3944xIBjQJtkaPJbEpH=
+72b
+         JAl8bvnL5e8pdlEdUGPUUesr9o1UvdMjXdXzvh6bwWrAHHT3la2ChDoCfqTSWNtxQl=
+GQ
+         A17tljy0G1ZjbChBe1nWCjSDhOiLA9cNy8t5lxRuaHKNQCBK8KA4sszKkJV+V/9VlJ=
+yS
+         78aIe68djcUbr5B+Bd9XCgXPcvfDrfXZtZP8kIYTfbUZIr6YaAHzT9OG943H730fnf=
+Zz
+         8YpaTJz0vfL6dXbl8MK+vNK9vxo+wrLt7gNokKov6Xc2XAvZMIz6Ba4E1evBr8nvNQ=
+Q/
+         vfgQ=3D=3D
+X-Gm-Message-State: AOAM533MJoXCgQuLnUviyzxAeW8FEhrFUNVaEa772FF5TXPeRT2ed+U=
+l
+	xMG3K4jp/u+J2mS7o9cjolYftaj7KKmw+9JdNlw73EuO4z7Vg4NGAE9rIw=3D=3D
+X-Google-Smtp-Source: ABdhPJxpS4/PZMgOWRNx6Uwr9XYS8fdeuA67cix4Ht+/fS1M48n54=
+bnn50UtKhGxFzHYgP/yWmIGjP5sjlEvoLEJKuQ=3D
+X-Received: by 2002:ac2:44d2:: with SMTP id d18mr2120828lfm.103.16062353590=
+60;
+ Tue, 24 Nov 2020 08:29:19 -0800 (PST)
+MIME-Version: 1.0
+From: Josh Klein &lt;josh@josh.is&gt;
+Date: Tue, 24 Nov 2020 16:28:43 +0000
+Message-ID: &lt;CACNgykMm94U2_LsQq_JE2n8ZqLCD-=3DOdR856f28RxPyiL-JGBg@mail.=
+gmail.com&gt;
+Subject: Reconnecting
+To: &quot;Lezynski, Stephen&quot; &lt;slezynski@seic.com&gt;
+Content-Type: multipart/alternative; boundary=3D&quot;00000000000000c3bf05b=
+4dcd0b6&quot;
+Return-Path: josh@josh.is
+</pre>
+</font>
+</body>
+</html>=
+
+--7cd5e06b-8a6e-48ad-aa26-a16cf35b342b--
+
+--0cd5f970-92c0-4a90-b9bd-8cb28198a080
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns;usoakex16mb07.corp.seic.com
+Received-From-MTA: dns;ip-mail-2.seic.com
+Arrival-Date: Tue, 24 Nov 2020 16:29:45 +0000
+
+Final-Recipient: rfc822;slezynski@seic.com
+Action: failed
+Status: 5.1.10
+Diagnostic-Code: smtp;550 5.1.10 RESOLVER.ADR.RecipientNotFound; Recipient not found by SMTP address lookup
+X-Display-Name: Lezynski, Stephen
+
+
+--0cd5f970-92c0-4a90-b9bd-8cb28198a080
+Content-Type: message/rfc822
+
+Received: from usoakex16mb07.corp.seic.com (10.50.42.139) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2044.4; Tue, 24 Nov 2020 11:29:45 -0500
+Received: from ip-mail-2.seic.com (192.168.0.78) by
+ usoakex16mb07.corp.seic.com (10.50.42.139) with Microsoft SMTP Server id
+ 15.1.2044.4 via Frontend Transport; Tue, 24 Nov 2020 11:29:45 -0500
+IronPort-SDR: oHdVTtV4SUOy7DOkEqsUhJwwiIiy3R7GtbuTwOVnpZqjgTj7uOhm9yBrpEHYxK/VYaZXkGrxm0
+ yc+GGt8Fy8sFOHk9pbT1IEDx1n7hjJKMHDpsu5SKHrVGTPAJuNkXHYtTH4DILX8yJb98rc3eol
+ K/Jb7P5qjVZ+9gqDGaTB7JW/j6Yx+E5zYc37himCrP8msPoIq2++FlmgreNCXBIuXE12nRjp+p
+ QiAU6vDYeO+kWnuorQxh6XbP2AY0dwABYmGbFkIuDk5GGlbh5tMtulgHBPMUsjMlWFnehDPgre
+ pas=
+Received: from esa5.seic.iphmx.com ([68.232.153.50])
+  by ip-mail-2.seic.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 11:29:44 -0500
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of josh@josh.is)
+  identity=pra; client-ip=209.85.167.44;
+  receiver=esa5.seic.iphmx.com; envelope-from="josh@josh.is";
+  x-sender="josh@josh.is"; x-conformance=sidf_compatible
+Received-SPF: Pass (esa5.seic.iphmx.com: domain of josh@josh.is
+  designates 209.85.167.44 as permitted sender)
+  identity=mailfrom; client-ip=209.85.167.44;
+  receiver=esa5.seic.iphmx.com; envelope-from="josh@josh.is";
+  x-sender="josh@josh.is"; x-conformance=sidf_compatible;
+  x-record-type="v=spf1"; x-record-text="v=spf1
+  ip4:35.190.247.0/24 ip4:64.233.160.0/19 ip4:66.102.0.0/20
+  ip4:66.249.80.0/20 ip4:72.14.192.0/18 ip4:74.125.0.0/16
+  ip4:108.177.8.0/21 ip4:173.194.0.0/16 ip4:209.85.128.0/17
+  ip4:216.58.192.0/19 ip4:216.239.32.0/19 ~all"
+Received-SPF: None (esa5.seic.iphmx.com: no sender authenticity
+  information available from domain of
+  postmaster@mail-lf1-f44.google.com) identity=helo;
+  client-ip=209.85.167.44; receiver=esa5.seic.iphmx.com;
+  envelope-from="josh@josh.is";
+  x-sender="postmaster@mail-lf1-f44.google.com";
+  x-conformance=sidf_compatible
+Authentication-Results: esa5.seic.iphmx.com; spf=None smtp.pra=josh@josh.is; spf=Pass smtp.mailfrom=josh@josh.is; spf=None smtp.helo=postmaster@mail-lf1-f44.google.com; dkim=pass (signature verified) header.i=@josh.is; dmarc=pass (p=none dis=none) d=josh.is
+IronPort-SDR: 59eTWqfSBhCn64cbhNycLeZCD7Q3JS5iuc7Htjnk2gl3FF1zLsicD9br7dE3KJ7R6gN3RxT7KN
+ ScZvICFSLFyapou5MK497x/N4bfdQyKl52JfPTn7L9anbfYf50GCH7eKFYiMtHnmfGVftn89/E
+ +6ZHxqAT3EC0avLl+hPctsr0uDhDDbqairPOBxVx9wjHxuvPJmXT3kd1RiShEoivIMHsAxuWy5
+ TMbRhwqDMzgGuZ7EqxfflhbMX7q6jFIAR+PCbN5X21Z3YrO6lvHkB/XPmEIVFq7qcdI+M69f0L
+ seG0/lt2xoWJMZ17jZU/bgOW
+X-IPAS-Result: =?us-ascii?q?A0GiNwCfNL1ffyynVdFigloBgSMEFAIBAQE4KHtVDhYEC?=
+ =?us-ascii?q?y6EPYEfgi2EW4wJkQo/hQpWgT88CwEBAQEBAQEBAQkTFAgEAQEChEiCLwIdB?=
+ =?us-ascii?q?wEEOAINAgECAQEBAwIDAQEBAQEEAQEBAgEBAgMEAQECEAEBgQtgX4FHgXEGB?=
+ =?us-ascii?q?DAMQwEMAYFmKRJiUAMzAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQ4CC?=
+ =?us-ascii?q?DoaOxMkFBEdAQExBxsBAgEGNwIkEgEFASI1gjlLAYMGD6BjAXQ0PgIQEwEpF?=
+ =?us-ascii?q?wEMgQiKB4EygwQBAQV7OAETQYQKgTkJEoEPFQMBAQEBiSiEExuCAIFHglyDG?=
+ =?us-ascii?q?wIBARdEgS+CaheCSJBup1+CeIEWh36SDCKBGaBtiXuEd49vg2ONW4Q6DyOBX?=
+ =?us-ascii?q?wo6gSAsBxoIMDsxBoFlAQFLCUQBAgECAQwCAQIBAgECAggBAQKSDYJph29EM?=
+ =?us-ascii?q?AI1AgYBCQEBAwmCXY1pAQE?=
+IronPort-PHdr: =?us-ascii?q?9a23=3AluqtchBX2RHR8jjm7IEtUyQJP3N1i/DPJgcQr6?=
+ =?us-ascii?q?AfoPdwSPX5ocbcNUDSrc9gkEXOFd2Cra4d1KyP7/CrCTdIyK3CmUhKSIZLWR?=
+ =?us-ascii?q?4BhJdetC0bK+nBN3fGKuX3ZTcxBsVIWQwt1Xi6NU9IBJS2PAWK8TW94jEIBx?=
+ =?us-ascii?q?rwKxd+KPjrFY7OlcS30P2594HObwlSizexfLF/IA+roQjetcQajohvJ6gswR?=
+ =?us-ascii?q?bVv3VEfPhby3l1LlyJhRb84cmw/J9n8ytOvv8q6tBNX6bncakmVLJUFDspPX?=
+ =?us-ascii?q?w7683trhnDUBCA5mAAXWUMkxpHGBbK4RfnVZrsqCT6t+592C6HPc3qSL0/RD?=
+ =?us-ascii?q?qv47t3RBLulSwKLCAy/n3JhcNsjaJbuBOhqAJ5w47Ie4GeKf5ycrrAcd8GWW?=
+ =?us-ascii?q?ZNW8BcWCtcDIOhdIsPF/QOMvpEr4fzoFsOqAGxBQiqBOjyzjNFiXv70ag83u?=
+ =?us-ascii?q?88Ew/JwRYgEsoBv3rUotv7N7ocX/6pw6TT1zrPc+lb1C3h5ITUcB0sp+yHU7?=
+ =?us-ascii?q?JqccrWzEkiDwfLjlKLqYzlIjib0+ANvHaa7+pmSOmijGwnqwZqojiv3cosiI?=
+ =?us-ascii?q?7JhpkVylze9CV52584KNulQ0F0fdCqCoFftz2GN4RoWMMiRXlltSUnx7EbvZ?=
+ =?us-ascii?q?O1cygExYg5yxPCZPGKfYiF7xLsWuuTPDp1hXxrda6xihuv70WuxeLxW8mo3V?=
+ =?us-ascii?q?hFqidIjtjBu3QN2hHV98OJRPx9/kK71jaO0QDe8uBEIUYpmqraJJ4hxbswmY?=
+ =?us-ascii?q?QPsUTZHy/5hF72gLWKeUUj/+ik8+vnYrLhpp+TM497lBvyPbgpmsy6Geg4MA?=
+ =?us-ascii?q?8OX3Ob+eim1b3j5kv0S6hJgP0uiqTVrozWKMABqqO6AwJZyJsv5he9Aju839?=
+ =?us-ascii?q?kVkn8KJ09fdh2dlYjmIVTOLej4Dfihh1Ssly9mx/XcMb3gBpXBN3zDkLn8cb?=
+ =?us-ascii?q?pk5U5RxwU+wcpQ55JTDbEBL/bzVVHruNPECR85NhS4w+fhCNpjyoMTQXyDDr?=
+ =?us-ascii?q?OdPa/IslKF5vgjL/SNaYIXojrwJPco6+brjXAjmF8deaep3YEQaHC9BvlmIU?=
+ =?us-ascii?q?KZYWHsgtoaE2cKuRE+TOzwhF2DSj5ff2yyUL4k5jEnFIKmCp/ORpupgLOf3S?=
+ =?us-ascii?q?a6HptWZntFClCNCnrobJuLW/YQZy6IPsBhlTkEBvCdTNpr8Ry8pQnhyLsjZt?=
+ =?us-ascii?q?HI9zUYuJSpnIxu4+DBhBcp9j1cFMmc2CeGSGQizU0SQDpj/qdkoQRezlqC1+?=
+ =?us-ascii?q?AsgftDFfRR4OhJFAYhY82Ph9dmAsz/D1qSNuyCT0yrF5D7WGhsHP4S4vpLTl?=
+ =?us-ascii?q?h0H8irkhHE2XTzU+0LwuXYTJVh6LnVmmPxLpwglSWO3/w7gl0vUsZDcnergq?=
+ =?us-ascii?q?dv+gSAYuyB2w3R3+7iPahJ3inW9CGC1jnGpxRXVwl/VaiWOBJXLgOe5Zyxrk?=
+ =?us-ascii?q?OXSr6rBPE5PxFayMmEeKVQbdi7gVxaSaXmNc/Fam283ma8Vw2VzLGBZ5a4Z2?=
+ =?us-ascii?q?JOuUeVQABM20hbtXyGYBM0HQyjh2LSKj1VTgLef0Hh2s1OkVO6Sk8qwCvWcF?=
+ =?us-ascii?q?NMzZyZ9zkWpfbFcsJGjddm8G9p4308VB63ivLODuW9pVtNZo9yZ5A/unlnyn?=
+ =?us-ascii?q?PT6lB7Jt+JJbJwql4fciVq/HHQ+A9QVqlvztEVnFox7zcqLaPBiX9+L2mXg4?=
+ =?us-ascii?q?moPNi1YiG6tFjnI+aeg2H1/N3L5JcRzvBh91DJmRmVGm8v8HpK3vRzinKX75?=
+ =?us-ascii?q?f0LTMPD4upY14M0QBzjorQcnUx37vUi0N8C4CLlifa1d95GtlAqF7oN58XeO?=
+ =?us-ascii?q?vMXArdGZQEKsSVMcs2hkCbQxc2PPFK3ZRvIeSvdOeY6v6tOPxszA2lrUt63q?=
+ =?us-ascii?q?Re80+i2AxNe8eL2bkLwfbFhjGrVmjN1AyE16K/0cgMLXlaViKWzzbZBMkONu?=
+ =?us-ascii?q?p/coYEB2z1ec2G4tVXgK/CYlJ0/n2hBXg+1pfuc0GbdHn57ycAjlUqqieshC?=
+ =?us-ascii?q?GW1D5PrCsLhZjDznH3/YGAPFJPciYDDCEq03nnHLmSo9QGbWq5dFgplkf1w2?=
+ =?us-ascii?q?ik/5cDgah7Ik33Sk1UIDGoJWtIWITq67+TSJ5X9NQ06B9Ucc+OXQuQGqHTmB?=
+ =?us-ascii?q?dG4RyGfSMWjHhzP3ni8o26sjUv3THVPDNytn3fYcZq2VLF6cfBQeIExjMdX3?=
+ =?us-ascii?q?ol2xXyL2KXZoHxr43Qu5LKqOuEWmmmTJEBOTG+y4SGuW/z/WZ2VETnx7T7gc?=
+ =?us-ascii?q?WyVUAz3Sz60oxwEW3Btw7yN5Ovn76nOLdUPgZkAVbm4I9gF5l5iJcrrJMXwn?=
+ =?us-ascii?q?hch47auTJeyTujbIoFgePLKHwKQzNRmYz8/RTl1Ut/L3mA24P+UDCnz9B8Y8?=
+ =?us-ascii?q?WhODhNiC8m5p0ME6qV5/pFhStwshyzqgeCKeNlkGI7zv0joGUfn/lPoBAkmy?=
+ =?us-ascii?q?eaGbA6H05DPWrtjEfA9Miw+Z1ef33nar2szAx7lNGlAquFp1ReX235UpUlBi?=
+ =?us-ascii?q?82794seEnU3ijV7YfpMMLVccpVthCQlELYiPNJLZsqivcQrS9uOGa4uXN8ju?=
+ =?us-ascii?q?Bn0Vph2pa1uIXBIGJor+q1AR9dYyX8fNhbuirsgqBXgtuM0sixE49gFDQGUN?=
+ =?us-ascii?q?qgTf+hHD8I8/WyHwSJCz16q2zIUbbaFBWUvV9vtGmHU4j+MXaRKTEVzM43Qh?=
+ =?us-ascii?q?6bKQ0XjFUWWy462J8iT1r4/sHqfUZn6zxU3WbW8EUSmMRvMRS3EmrErVrucT?=
+ =?us-ascii?q?o1Q96eNBpT/kdJ4EKHecqZpvl+GS1V5NWosRCNJ2qHZg9JEXBsOATMBlbtOa?=
+ =?us-ascii?q?Or7MXB9O7QD/S3Lv/Ha7GD4eJEUPLAyZWq24pgtzGCfseIJXlKDfog2gxCRj?=
+ =?us-ascii?q?EceYyRmjkCTTAWizOYd9SS91+3/ix6qNz68ey+Alq+o9vSTeIMbpMzp0PT4+?=
+ =?us-ascii?q?/LLeObiSdnJCwN24gFmDnTxbkUml8KiyR+MTKqFOdIuCjTQabXgqISAQQcbn?=
+ =?us-ascii?q?Y5NsxT74o+2RJNf8/AwICQtPYwnrsuBlFJWEa00MOufswiIWamNBXGHwzYfK?=
+ =?us-ascii?q?TDLjrNzcbtZKq6QrAFl+RYuSq7vjODGlPiNDCOzmO7bR2kPOBSgS3eByRw5d?=
+ =?us-ascii?q?3jIC5kEnOrDN/9Y0D9K9J2hns32b0xljXBMmtOeTR7dkpMqPWX42tahe5/M2?=
+ =?us-ascii?q?5G9XojLPLh+W7R4+TDK5kQuOdmGWwuz7McsCl8kuUKqn0YDPVu0DPftNtvv0?=
+ =?us-ascii?q?2rnqGUxzxrXQAPz1QDzIOHsEN+OLnIo5xJWHLK5hUIvi2bDxUHoccgC8W64f?=
+ =?us-ascii?q?gBjIiS0vutd3Eer4Gxn4NUHcXfJcOZPWB0PAHgRXjPAQoOCz+zNWTPwUdala?=
+ =?us-ascii?q?La+3uLo5w9spWploAJT+oRVlsuFtsYDV9lWt0ZasQSPHtsgfuAgcgE6GDr5h?=
+ =?us-ascii?q?vWX8VyvJfcVrSTGr+8YCbchr5CaRwSxLr+JolGLYz31XtpbVxilZjLEU7dDr?=
+ =?us-ascii?q?Uv6mVxKxU5q0JX/D1iX3U+jgj7Pxi17iZZRrak2wQ7gQxkbaEx+Sfwth0pc0?=
+ =?us-ascii?q?HSqnJV8gF5mM2502vMNmegdOHqAd4QU22u6wAwKs+pHVozN1bp2xU6bHGcAO?=
+ =?us-ascii?q?sAx7p4KTI11kmF4cEJQbgECvccBX1YjfCPO6d2jxIG9nThlRcBvayfUdNjjF?=
+ =?us-ascii?q?d4LsTq9i4GglM5KoZyfPyYJbIVnAcMwPvU42nwkLh2mVF7RQ5F8XvOKndQ6A?=
+ =?us-ascii?q?pRaeZgd2zwubY1oQ2ax2kaJzNKDqt25KosrgRkZayB136yieYSbBDscbXFf+?=
+ =?us-ascii?q?XB/DGf8KzAClIoihFSzhcDoOgwiJZ5NRLTDhFnzaPNRU5Qa4yYclATNJAUrD?=
+ =?us-ascii?q?+KLG6YuOHJi8svbb+wHe3pU+KC8Z0srBn9Q1QPGIIBpoQMBZDxllrVLMyhLa?=
+ =?us-ascii?q?YFzAVr7wPudh2DC7xSdRSHnS1PqtyjzJJxwYhWJy0MZAc1eSSx6LHNowY2gf?=
+ =?us-ascii?q?2FFN4oa3YeV4EAOzo4Qsq/0yJeun1BCnGw3Id7gECa6CTgoy3LEDTmR99qZf?=
+ =?us-ascii?q?PRYR01Td/qpXMw9K+5jVOR+ZLbZin7Odlkpt7T+LYaqpKAWJY2BfF2t0bRnZ?=
+ =?us-ascii?q?UdRmT/CTaeV47oYcGuNM9wMY+8EHuxX12hhihgQtz4YZC2I6mDxwDwRYNE9o?=
+ =?us-ascii?q?Kc2WNGV4f1GzcAFhN3v+xG6rh7YFhJYZ0gYTbqsB8+ca2kalT9sJ3mUyO2JD?=
+ =?us-ascii?q?1aQuMKh/29fKBSxjEwY/WSzXIhStQ+wbDy/xJRAp4NiR7ayLCoYIwUAk2RUj?=
+ =?us-ascii?q?RNPg7IoyQ+jW1oMO0/l/w+zB3/ul4ZKzmXdeZtZTUZ7eF5PkubJDBNMkR9R1?=
+ =?us-ascii?q?KYitCesAul3rRX+yUE2tgIjatKt3/xupKZazWpCvTy+Mfl9hE4ZN1jmJVfdI?=
+ =?us-ascii?q?nqI8+IrpTbz27dS4LQ9AyeAnfjS6hq3+NIKScde8Fm3Hk/MJ1Uu41a6QwwTZ?=
+ =?us-ascii?q?VmKg=3D=3D?=
+X-IronPort-Anti-Spam-Filtered: true
+X-IronPort-AV: E=Sophos;i="5.78,366,1599537600"; 
+   d="scan'208,217";a="28481397"
+X-ESA-SENDERGROUP: UNKNOWNLIST
+Received: from mail-lf1-f44.google.com ([209.85.167.44])
+  by esa5.seic.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 24 Nov 2020 11:29:23 -0500
+Received: by mail-lf1-f44.google.com with SMTP id a9so29737800lfh.2
+        for <slezynski@seic.com>; Tue, 24 Nov 2020 08:29:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=josh.is; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=sbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=;
+        b=HpmWUj9DrBFn+j2FHwyb54np+AbzzDhiiIu+ZVGrO4DG7qWXAsKU0li11DW02g6q0n
+         1XCDc5vXvNl14mBMpTdMekgEeEN1acajVIQu6q0YpSNpaASbx4dPPh6VxRAWLppfe8vZ
+         mGb1vEdSqOtupZEmZhypAR3vOaktvZ8nlrd8WkHGUVLKIeFGNYYA+nGfjo50RDi7Y03M
+         AnvUh/78/eghgfc32hYLhAoYGQDDbKjjCPf0/b3asMlZB83yUc3cubFsjSWrJCZ4z5QV
+         6FcUYNDltYJys8hj48NF6PW0MdleLLcbt7q6bbBbG25myC8pt/t1RkICZT3b8wFSd4ZW
+         p+EA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=sbsCjLhdNiS38YtjeCLXQHilhvgB4wvErNDeOkHb1QY=;
+        b=oVY8kmVWSqXDP9d5adh0s/egvNKtjR8OJCt/wVm4WMjh3944xIBjQJtkaPJbEpH72b
+         JAl8bvnL5e8pdlEdUGPUUesr9o1UvdMjXdXzvh6bwWrAHHT3la2ChDoCfqTSWNtxQlGQ
+         A17tljy0G1ZjbChBe1nWCjSDhOiLA9cNy8t5lxRuaHKNQCBK8KA4sszKkJV+V/9VlJyS
+         78aIe68djcUbr5B+Bd9XCgXPcvfDrfXZtZP8kIYTfbUZIr6YaAHzT9OG943H730fnfZz
+         8YpaTJz0vfL6dXbl8MK+vNK9vxo+wrLt7gNokKov6Xc2XAvZMIz6Ba4E1evBr8nvNQQ/
+         vfgQ==
+X-Gm-Message-State: AOAM533MJoXCgQuLnUviyzxAeW8FEhrFUNVaEa772FF5TXPeRT2ed+Ul
+	xMG3K4jp/u+J2mS7o9cjolYftaj7KKmw+9JdNlw73EuO4z7Vg4NGAE9rIw==
+X-Google-Smtp-Source: ABdhPJxpS4/PZMgOWRNx6Uwr9XYS8fdeuA67cix4Ht+/fS1M48n54bnn50UtKhGxFzHYgP/yWmIGjP5sjlEvoLEJKuQ=
+X-Received: by 2002:ac2:44d2:: with SMTP id d18mr2120828lfm.103.1606235359060;
+ Tue, 24 Nov 2020 08:29:19 -0800 (PST)
+MIME-Version: 1.0
+From: Josh Klein <josh@josh.is>
+Date: Tue, 24 Nov 2020 16:28:43 +0000
+Message-ID: <CACNgykMm94U2_LsQq_JE2n8ZqLCD-=OdR856f28RxPyiL-JGBg@mail.gmail.com>
+Subject: Reconnecting
+To: "Lezynski, Stephen" <slezynski@seic.com>
+Content-Type: multipart/alternative; boundary="00000000000000c3bf05b4dcd0b6"
+Return-Path: josh@josh.is
+
+--00000000000000c3bf05b4dcd0b6
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+W1sgU0VJIFdBUk5JTkcgKioqIFRoaXMgZW1haWwgd2FzIHNlbnQgZnJvbSBhbiBleHRlcm5hbCBz
+b3VyY2UuIERvIG5vdCBvcGVuIGF0dGFjaG1lbnRzIG9yIGNsaWNrIG9uIGxpbmtzIGZyb20gdW5r
+bm93biBvciBzdXNwaWNpb3VzIHNlbmRlcnMuICoqKiBdXQoKCkxvbmcgdGltZSBubyBzcGVhayAt
+IG5vdCBzaW5jZSB5b3VyIGV2ZW50IGluIDIwMTUhIEFzIHdlIGFwcHJvYWNoIHRoZSBlbmQKb2Yg
+MjAyMCwgYW5kIGxvb2sgd2l0aCBob3BlIGF0IDIwMjEsIEkgd2FudGVkIHRvIHRvdWNoIGJhc2Ug
+b24gd2hhdCB5b3UncmUKZG9pbmcgYW5kIGhvdy93aGVyZSB0ZWNobm9sb2d5IGlubm92YXRpb24g
+bWlnaHQgcGxheSBhIHJvbGUuCgpJJ3ZlIGluY2x1ZGVkIG15IGN1cnJlbnQgcHJvamVjdCBsaXN0
+IGJlbG93LCBidXQgd291bGQgd2VsY29tZSBhCmNvbnZlcnNhdGlvbiB3aXRoIHlvdSBhYm91dCB3
+aGF0IHlvdSdyZSB1cCB0by4gTGV0IG1lIGtub3cgaWYgSSBjYW4gaGVscCwKYW5kL29yIGlmIGl0
+J3Mgd29ydGggYSBjb252ZXJzYXRpb24hCgpTaW5jZXJlbHksCkpvc2ggS2xlaW4KCiMjIwoKSW5k
+aWdvTWV0cmljcyA8aHR0cDovL3d3dy5pbmRpZ29tZXRyaWNzLmNvbS9JbmRpZ29NZXRyaWNzX092
+ZXJ2aWV3LnBkZj47IGFuCkFJIHBsYXRmb3JtIGZvciBhdXRvbm9tb3VzbHkgbWFuYWdpbmcgYmVo
+YXZpb3IgYW5kIGJlbGllZnMgaW4gZW1wbG95ZWVzLgpTdXBlciB1c2VmdWwgaWYgeW91J3ZlIGdv
+dCBzdGFmZiB0aGF0IGFyZSBub3cgcmVtb3RlIQoKQ29udGludW91cyBHbHVjb3NlIE1vbml0b3Ig
+VGVzdGluZwo8aHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vcHJlc2VudGF0aW9uL2QvMWVwUmJGbk1U
+SzR4cFNUblRHWmtuLVVoMWFzQnZTbU9rZWxXZHo4Ri1LX2c+OwphIHByb2plY3QgdG8gdW5kZXJz
+dGFuZCBob3cgdG8gdXNlIHBoeXNpY2FsbHkgZW1iZWRkZWQgc2Vuc29ycyB0byByZWR1Y2UKdGhl
+IGhlYWx0aCBpbXBhY3RzIG9mIG9iZXNpdHksIGhlYXJ0IGRpc2Vhc2UsIGFuZCBkaWFiZXRlcyAo
+YW5kIGhlbmNlCkNvdmlkISkKUHJvZmVzc2lvbmFsIFNlcnZpY2VzIDxodHRwOi8vd3d3Lmpvc2gu
+aXMvPjogYXMgZXZlciwgSSBjb250aW51ZSB0byB3b3JrCndpdGggc2VuaW9yIGxlYWRlcnMgYW5k
+IHRlYW1zIG9uIHRlY2hub2xvZ3kgdHJhbnNmb3JtYXRpb24gYW5kIG5ldwppbm5vdmF0aW9uIC8g
+cHJvZHVjdCBkZXZlbG9wbWVudC4KCiMjIwrhkKcK
+
+--00000000000000c3bf05b4dcd0b6
+MIME-Version: 1.0
+Content-Type: text/html; charset="utf-8"
+Content-Transfer-Encoding: base64
+
+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTogMTRweDtjb2xvcjogcmVkIj48c3Ryb25nPltbPC9zdHJv
+bmc+IFNFSSBXQVJOSU5HICoqKiBUaGlzIGVtYWlsIHdhcyBzZW50IGZyb20gYW4gZXh0ZXJuYWwg
+c291cmNlLiBEbyBub3Qgb3BlbiBhdHRhY2htZW50cyBvciBjbGljayBvbiBsaW5rcyBmcm9tIHVu
+a25vd24gb3Igc3VzcGljaW91cyBzZW5kZXJzLiAqKiogPC9zcGFuPjxzcGFuIHN0eWxlPSJmb250
+LXNpemU6IDE0cHg7Y29sb3I6IHJlZCI+PHN0cm9uZz5dXTwvc3Ryb25nPjwvc3Bhbj48YnI+PGJy
+Pjxicj48ZGl2IGRpcj0ibHRyIj5Mb25nIHRpbWUgbm8gc3BlYWsgLSBub3Qgc2luY2UgeW91ciBl
+dmVudCBpbiAyMDE1ISBBcyB3ZSBhcHByb2FjaCB0aGUgZW5kIG9mIDIwMjAsIGFuZCBsb29rIHdp
+dGggaG9wZSBhdCAyMDIxLCBJIHdhbnRlZCB0byB0b3VjaCBiYXNlIG9uIHdoYXQgeW91JiMzOTty
+ZSBkb2luZyBhbmQgaG93L3doZXJlIHRlY2hub2xvZ3kgaW5ub3ZhdGlvbiBtaWdodCBwbGF5IGEg
+cm9sZS4gPGJyPjxicj5JJiMzOTt2ZSBpbmNsdWRlZCBteSBjdXJyZW50IHByb2plY3QgbGlzdCBi
+ZWxvdywgYnV0IHdvdWxkIHdlbGNvbWUgYSBjb252ZXJzYXRpb24gd2l0aCB5b3UgYWJvdXQgd2hh
+dCB5b3UmIzM5O3JlIHVwIHRvLiBMZXQgbWUga25vdyBpZiBJIGNhbiBoZWxwLCBhbmQvb3IgaWYg
+aXQmIzM5O3Mgd29ydGggYSBjb252ZXJzYXRpb24hPGJyPjxicj5TaW5jZXJlbHksPGJyPkpvc2gg
+S2xlaW48YnI+PHA+IyMjPC9wPgo8cD48YSBocmVmPSJodHRwOi8vd3d3LmluZGlnb21ldHJpY3Mu
+Y29tL0luZGlnb01ldHJpY3NfT3ZlcnZpZXcucGRmIj5JbmRpZ29NZXRyaWNzPC9hPjsgYW4gQUkg
+cGxhdGZvcm0gZm9yIGF1dG9ub21vdXNseSBtYW5hZ2luZyBiZWhhdmlvciBhbmQgYmVsaWVmcyBp
+biBlbXBsb3llZXMuIFN1cGVyIHVzZWZ1bCBpZiB5b3UmIzM5O3ZlIGdvdCBzdGFmZiB0aGF0IGFy
+ZSBub3cgcmVtb3RlITwvcD4KPHA+PGEgaHJlZj0iaHR0cHM6Ly9kb2NzLmdvb2dsZS5jb20vcHJl
+c2VudGF0aW9uL2QvMWVwUmJGbk1USzR4cFNUblRHWmtuLVVoMWFzQnZTbU9rZWxXZHo4Ri1LX2ci
+PkNvbnRpbnVvdXMgR2x1Y29zZSBNb25pdG9yIFRlc3Rpbmc8L2E+OyBhIHByb2plY3QgdG8gdW5k
+ZXJzdGFuZCBob3cgdG8gdXNlIHBoeXNpY2FsbHkgZW1iZWRkZWQgc2Vuc29ycyB0byByZWR1Y2Ug
+dGhlIGhlYWx0aCBpbXBhY3RzIG9mIG9iZXNpdHksIGhlYXJ0IGRpc2Vhc2UsIGFuZCBkaWFiZXRl
+cyAoYW5kIGhlbmNlIENvdmlkISk8L3A+CjxhIGhyZWY9Imh0dHA6Ly93d3cuam9zaC5pcy8iPlBy
+b2Zlc3Npb25hbCBTZXJ2aWNlczwvYT46IGFzIGV2ZXIsIEkgY29udGludWUgdG8gd29yayB3aXRo
+IHNlbmlvciBsZWFkZXJzIGFuZCB0ZWFtcyBvbiB0ZWNobm9sb2d5IHRyYW5zZm9ybWF0aW9uIGFu
+ZCBuZXcgaW5ub3ZhdGlvbiAvIHByb2R1Y3QgZGV2ZWxvcG1lbnQuPGJyPjxicj4jIyM8YnI+PC9k
+aXY+PGRpdiBoc3BhY2U9InN0cmVhay1wdC1tYXJrIiBzdHlsZT0ibWF4LWhlaWdodDoxcHgiPjxp
+bWcgYWx0PSIiIHN0eWxlPSJ3aWR0aDowcHg7bWF4LWhlaWdodDowcHg7b3ZlcmZsb3c6aGlkZGVu
+IiBzcmM9Imh0dHBzOi8vbWFpbGZvb2dhZS5hcHBzcG90LmNvbS90P3NlbmRlcj1hYW05emFFQnFi
+M05vTG1seiZhbXA7dHlwZT16ZXJvY29udGVudCZhbXA7Z3VpZD03ZTJkNjdiZC1jNGFkLTQxOWYt
+YThhYy0wYzY5MzhhMGY1OTQiPjxmb250IGNvbG9yPSIjZmZmZmZmIiBzaXplPSIxIj7hkKc8L2Zv
+bnQ+PC9kaXY+Cg==
+
+--00000000000000c3bf05b4dcd0b6--
+
+--0cd5f970-92c0-4a90-b9bd-8cb28198a080--

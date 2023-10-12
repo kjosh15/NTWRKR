@@ -1,0 +1,519 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b819:0:0:0:0:0 with SMTP id u25csp2662696ljo;
+        Mon, 11 May 2020 18:56:57 -0700 (PDT)
+X-Received: by 2002:a67:c58a:: with SMTP id h10mr13695308vsk.132.1589248617147;
+        Mon, 11 May 2020 18:56:57 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1589248617; cv=none;
+        d=google.com; s=arc-20160816;
+        b=Osx5LiM7w62IfM2cJdXyumNIz+QUZGJtJ8TNTxp2C0v4nqrov6nkSIZiXoUxx9cQpI
+         f0l/9YhcoR4nvfp9Ukyl0G2FkepsiJfzqzAH8aEuoxWMvccvptnEbWqV7zNCfu3mLDEe
+         bhByaTvcoVGIfJno29Q7Jh6H0L3JUe/VhKUO9U2tNOsc+xkLJ1PAj8jTbCVOXczNs9iZ
+         6NRB5iOxWowAHpTFPgXB+lM9oft9tjcNSNxP1Gd9dJoA1aoZuSm7qEX3mHhnzfXDOmhH
+         zoYDNPpzXwFCTiNV14T9RxhC07Mp06Locetq0chDE5WWIHIgr08ZADeeBkR2Fbcyt8Ls
+         DtTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:date:message-id:sender:reply-to:mime-version
+         :dkim-signature:dkim-signature;
+        bh=GtQt6UiIBqFWwzv3JGPEt1iqi6qTfe486ma9cAfbvos=;
+        b=YhlKAzx8hAOcUZ3UixphoE6dRPprQZIHV9m9zqunLJtBYLYa80NoXb9nBfHIIqDSGF
+         oTQvtxQolPKhk7s1KpYhB1lzrqohrVdOXKX9SoSSb+yEooN1sTH+qF5zf6HLqLw3IXgu
+         c0mpHqC0SZqE7hCY4R9tjj/q+fIzeEOW9ymK+mdvb/OMtMIs1V3f+gpyrujCYpf8ctRI
+         V9TcGWmFZTrHKeVSWM3GRJU1Y/HgYwy1ds1EwtMmNFyu8dQGkPk6K18BtILhsc8h4xKo
+         /ryAs5uyTyXQJR/78jnS8FRkKiYs7ry1sPgQBPG4ml95YhHcJJLznOQ89vv4NsNRndFU
+         9HMw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=hGgi2h7Q;
+       dkim=pass header.i=@ideo.com header.s=google header.b="iD1/FXlC";
+       spf=pass (google.com: domain of pbennett@ideo.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=pbennett@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+Return-Path: <pbennett@ideo.com>
+Received: from mail-sor-f73.google.com (mail-sor-f73.google.com. [209.85.220.73])
+        by mx.google.com with SMTPS id n22sor8661159vsm.27.2020.05.11.18.56.56
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 11 May 2020 18:56:57 -0700 (PDT)
+Received-SPF: pass (google.com: domain of pbennett@ideo.com designates 209.85.220.73 as permitted sender) client-ip=209.85.220.73;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=hGgi2h7Q;
+       dkim=pass header.i=@ideo.com header.s=google header.b="iD1/FXlC";
+       spf=pass (google.com: domain of pbennett@ideo.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=pbennett@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:reply-to:sender:message-id:date:subject:from:to;
+        bh=GtQt6UiIBqFWwzv3JGPEt1iqi6qTfe486ma9cAfbvos=;
+        b=hGgi2h7QFWbb6j1G+3MIMxiCpIhnrKGFQDYlZSM8e6RWaJcAGx0J0desreLLWjsvvH
+         t1PwsLIjlzIyqdu50lVHuQniB/byEOiwQFW67595+4ucwKzlmCkzY3gorODgLWnZVVLc
+         sn06HdVyinIITbDGc2Z5EId07CpCUdMIzaXpNSeHo7o1W18+SPm46YeBT3G4HeVkAGgO
+         YiSCDue6sw9S4ykBMqn7zLtDi+1BYX/kE4xwIvJwsNiVRKuhmWNyRegihbjH/jHOolPY
+         frdTFSYVQhiz+jf9y6UUzzwXLR4cK2N5FmUNUD1TmAIvSBESN8kMJ/7N3k8U9wZH9/6z
+         JBeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ideo.com; s=google;
+        h=mime-version:reply-to:sender:message-id:date:subject:from:to;
+        bh=GtQt6UiIBqFWwzv3JGPEt1iqi6qTfe486ma9cAfbvos=;
+        b=iD1/FXlC98ZKtJlPUOkg53xQR6H6VGKIPn93A2Fk1Xa841yj9TSu2uZHP2og5pLa00
+         j6I2k/dmau78weEiuEehgkuTEfwVDTK8aPhcbpbeu2Y0Do5itesVHUayL3lBzSYPldvw
+         Y2C88COw6XyaPi8Hq6NyU+twS1mNRTLYGKog8=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:message-id:date
+         :subject:from:to;
+        bh=GtQt6UiIBqFWwzv3JGPEt1iqi6qTfe486ma9cAfbvos=;
+        b=B07TFNIQJlYjm5350xPq5B8rwaDqEhzNXhQM/yaIw/2XWmB8s34rc1ctmKhjYS1Qny
+         mdK9/5YacXczHINJ1j4Ugk5JxWvHrJoyWgS22jdVnRB2nhWATA5VgIkkdbJXN1fBrIX1
+         Kw/PxmuOiN4+pwTwR0aPPVCIJxKAaHbgVEzZXQ1gT+QTCVWYgB5e4kpUJnW3t6DEK4zy
+         4UulQjDt8CI+iN1BCQRZjRZi5xoEiECWTKG53fw1nJEzQQtKTvCrHaviNEr15FJJzo/6
+         xtQZzK4t9vBTRnqlTPG+jns4LoXj58tLR3/emh7Y5aeYF/WzRoTJ77NvTmX60PUuaa20
+         XDHQ==
+X-Gm-Message-State: AOAM532hcox1kqsLVA8lnBZP8eQwXx266L125pkd/0ZzEwA4jubd/hy8
+	a29z3N9yZSbBwnJqdPmRc216DxJowb8Atu7BKNQgR7U=
+X-Google-Smtp-Source: ABdhPJx58wjj/Uy0ACxkxW0c9K6VBYOhvdQBSDiabdURapqqUQ3J5mWUKVTt0Ye4ItliTCDFSjV4cUgTineR4PN32afo
+MIME-Version: 1.0
+X-Received: by 2002:a67:ea45:: with SMTP id r5mr3599088vso.69.1589248616377;
+ Mon, 11 May 2020 18:56:56 -0700 (PDT)
+Reply-To: kmayo@ideo.com
+Sender: Google Calendar <calendar-notification@google.com>
+Message-ID: <0000000000003d5d8e05a569c746@google.com>
+Date: Tue, 12 May 2020 01:56:56 +0000
+Subject: Invitation: Innovation for Iceland  @ Wed May 13, 2020 1pm - 1:30pm
+ (EDT) (Josh Klein)
+From: Paul Bennett <pbennett@ideo.com>
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/mixed; boundary="0000000000003d5d7605a569c745"
+
+--0000000000003d5d7605a569c745
+Content-Type: multipart/alternative; boundary="0000000000003d5d7405a569c743"
+
+--0000000000003d5d7405a569c743
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+
+WW91IGhhdmUgYmVlbiBpbnZpdGVkIHRvIHRoZSBmb2xsb3dpbmcgZXZlbnQuDQoNClRpdGxlOiBJ
+bm5vdmF0aW9uIGZvciBJY2VsYW5kDQrilIDilIDilIDilIDilIDilIDilIDilIDilIDilIBZb3Un
+dmUgYmVlbiBpbnZpdGVkIHRvIGEgc2NoZWR1bGVkIFpvb20gbWVldGluZy4gICZsdDtiJmd0O1Rv
+ICANCkpvaW4gYnkgQ29tcHV0ZXIgb3IgTW9iaWxlIERldmljZSZsdDsvYiZndDtGcm9tIGFueSBk
+ZXZpY2UsIGdvIHRvICZsdDthICANCmhyZWY9Imh0dHBzOi8vaWRlby56b29tLnVzL2ovOTIwNTQz
+NzE0MDMiJmd0O2h0dHBzOi8vaWRlby56b29tLnVzL2ovOTIwNTQzNzE0MDMmbHQ7L2EmZ3Q7LiAg
+DQombHQ7aSZndDtTZWUgYmVsb3cgZm9yIHNvbWUgdGlwcyBvbiBlbnN1cmluZyBhIHF1YWxpdHkg
+Y29ubmVjdGlvbiBmcm9tIHlvdXIgIA0KY29tcHV0ZXIuJmx0Oy9pJmd0OyZsdDtiJmd0O1RvIEpv
+aW4gYnkgUGhvbmUmbHQ7L2ImZ3Q7aVBob25lIE9uZS1UYXAgKFVTICANClRvbGwpOiAgKzEzNDYy
+NDg3Nzk5LDkyMDU0MzcxNDAzIyAgb3IgKzE2Njk5MDA2ODMzLDkyMDU0MzcxNDAzIyBPciBkaWFs
+IG9uZSAgDQpvZiB0aGUgZm9sbG93aW5nIG51bWJlcnM6ICAgICArMSAzNDYgMjQ4IDc3OTkgKFVT
+IFRvbGwpICAgICArMSA2NjkgOTAwIDY4MzMgIA0KKFVTIFRvbGwpICAgICArMSAyNTMgMjE1IDg3
+ODIgKFVTIFRvbGwpICAgICArMSAzMTIgNjI2IDY3OTkgKFVTIFRvbGwpICAgICAgDQorMSA2NDYg
+NTU4IDg2NTYgKFVTIFRvbGwpICAgICArMSAzMDEgNzE1IDg1OTIgKFVTIFRvbGwpICAgICA4Nzcg
+MzY5IDA5MjYgIA0KKFVTIFRvbGwgRnJlZSkgICAgIDg1NSA4ODAgMTI0NiAoVVMgVG9sbCBGcmVl
+KSAgICAgKzEgNjQ3IDM3NCA0Njg1IChDQSAgDQpUb2xsKSAgICAgKzEgNjQ3IDU1OCAwNTg4IChD
+QSBUb2xsKSAgICAgKzEgNzc4IDkwNyAyMDcxIChDQSBUb2xsKSAgICAgKzEgIA0KNDM4IDgwOSA3
+Nzk5IChDQSBUb2xsKSAgICAgKzEgNTg3IDMyOCAxMDk5IChDQSBUb2xsKSAgICAgODU1IDcwMyA4
+OTg1IChDQSAgDQpUb2xsIEZyZWUpICAgICArNDQgMjAzIDQ4MSA1MjM3IChHQiBUb2xsKSAgICAg
+KzQ0IDIwMyA0ODEgNTI0MCAoR0IgIA0KVG9sbCkgICAgICs0NCAyMDggMDgwIDY1OTEgKEdCIFRv
+bGwpICAgICArNDQgMjA4IDA4MCA2NTkyIChHQiBUb2xsKSAgICAgKzQ0ICANCjMzMCAwODggNTgz
+MCAoR0IgVG9sbCkgICAgICs0NCAxMzEgNDYwIDExOTYgKEdCIFRvbGwpICAgICAwIDgwMCAwMzEg
+NTcxNyAgDQooR0IgVG9sbCBGcmVlKSAgICAgKzgxIDMgNDU3OCAxNDg4IChKUCBUb2xsKSAgICAg
+KzgxIDUyNCA1NjQgNDM5IChKUCAgDQpUb2xsKSAgICAgKzgxIDM0MiAzMzkgMjQxIChKUCBUb2xs
+KSAgICAgMCA4MDAgMTAwIDUwNDAgKEpQIFRvbGwgRnJlZSkgICAgICANCiZsdDtpJmd0O0FkZGl0
+aW9uYWwgSW50ZXJuYXRpb25hbCBudW1iZXJzIGF2YWlsYWJsZSAmbHQ7YiZndDsmbHQ7YSAgDQpo
+cmVmPSJodHRwczovL2lkZW8uem9vbS51cy91L2F5UXFFZDBseiImZ3Q7aGVyZSZsdDsvYSZndDsm
+bHQ7L2ImZ3Q7LiZsdDsvaSZndDthbmQgIA0KZW50ZXIgTWVldGluZyBJRDogOTIwIDU0MzcgMTQw
+MyZsdDtiJmd0O1RvIEpvaW4gYnkgSC4zMjMgb3IgU0lQIFJvb20gIA0KU3lzdGVtJmx0Oy9iJmd0
+O0guMzIzOiAxNjIuMjU1LjM3LjExIChVUyBXZXN0KSBvciAxNjIuMjU1LjM2LjExIChVUyBFYXN0
+KSAgDQpTSVA6IDkyMDU0MzcxNDAzQHpvb21jcmMuY29tTWVldGluZyBJRDogOTIwIDU0MzcgMTQw
+MyZsdDtiJmd0O1RvIEpvaW4gYnkgIA0KU2t5cGUgZm9yIEJ1c2luZXNzIChMeW5jKSZsdDsvYiZn
+dDtTSVA6ICANCjkyMDU0MzcxNDAzQGx5bmMuem9vbS51cyZsdDtiJmd0O1RpcHMgZm9yIGEgQmV0
+dGVyIEV4cGVyaWVuY2UgZnJvbSBhICANCkNvbXB1dGVyJmx0Oy9iJmd0OyZsdDt1bCZndDsmbHQ7
+bGkmZ3Q7Q29ubmVjdCB2aWEgRXRoZXJuZXQgIA0KKHdpcmUpJmx0O2xpJmd0O1F1aXQgb3V0IG9m
+IG90aGVyIGFwcGxpY2F0aW9ucyZsdDtsaSZndDtVc2UgIA0KbWljcm9waG9uZS1lcXVpcHBlZCBl
+YXJidWRzIHdoZW5ldmVyIHBvc3NpYmxlJmx0O2xpJmd0O011dGUgeW91ciBhdWRpbyAgDQp3aGVu
+ZXZlciB5b3UgYXJlbid0IHNwZWFraW5nJmx0Oy91bCZndDvilIDilIDilIDilIDilIDilIDilIDi
+lIDilIDilIANCldoZW46IFdlZCBNYXkgMTMsIDIwMjAgMXBtIOKAkyAxOjMwcG0gRWFzdGVybiBU
+aW1lIC0gTmV3IFlvcmsNCkNhbGVuZGFyOiBKb3NoIEtsZWluDQpXaG86DQogICAgICogUGF1bCBC
+ZW5uZXR0IC0gb3JnYW5pemVyDQogICAgICoga21heW9AaWRlby5jb20gLSBjcmVhdG9yDQogICAg
+ICogSm9zaCBLbGVpbg0KDQpFdmVudCBkZXRhaWxzOiAgDQpodHRwczovL3d3dy5nb29nbGUuY29t
+L2NhbGVuZGFyL2V2ZW50P2FjdGlvbj1WSUVXJmVpZD1ORzl0TnpVMGF6aG5iWEEzY21WdVpUTm1j
+bXAxYW1Nek5Ha2dhbTl6YUVCcWIzTm9MbWx6JnRvaz1NVGNqY0dKbGJtNWxkSFJBYVdSbGJ5NWpi
+MjAwT1RnNU1qVmxPV0kxWW1ZMU1ETTBPR0UyWVRRMk56WmpNelUyWlRWa05UQm1aalZrTkdNMCZj
+dHo9QW1lcmljYSUyRk5ld19Zb3JrJmhsPWVuJmVzPTENCg0KSW52aXRhdGlvbiBmcm9tIEdvb2ds
+ZSBDYWxlbmRhcjogaHR0cHM6Ly93d3cuZ29vZ2xlLmNvbS9jYWxlbmRhci8NCg0KWW91IGFyZSBy
+ZWNlaXZpbmcgdGhpcyBlbWFpbCBhdCB0aGUgYWNjb3VudCBqb3NoQGpvc2guaXMgYmVjYXVzZSB5
+b3UgYXJlICANCnN1YnNjcmliZWQgZm9yIGludml0YXRpb25zIG9uIGNhbGVuZGFyIEpvc2ggS2xl
+aW4uDQoNClRvIHN0b3AgcmVjZWl2aW5nIHRoZXNlIGVtYWlscywgcGxlYXNlIGxvZyBpbiB0byAg
+DQpodHRwczovL3d3dy5nb29nbGUuY29tL2NhbGVuZGFyLyBhbmQgY2hhbmdlIHlvdXIgbm90aWZp
+Y2F0aW9uIHNldHRpbmdzIGZvciAgDQp0aGlzIGNhbGVuZGFyLg0KDQpGb3J3YXJkaW5nIHRoaXMg
+aW52aXRhdGlvbiBjb3VsZCBhbGxvdyBhbnkgcmVjaXBpZW50IHRvIHNlbmQgYSByZXNwb25zZSB0
+byAgDQp0aGUgb3JnYW5pemVyIGFuZCBiZSBhZGRlZCB0byB0aGUgZ3Vlc3QgbGlzdCwgb3IgaW52
+aXRlIG90aGVycyByZWdhcmRsZXNzICANCm9mIHRoZWlyIG93biBpbnZpdGF0aW9uIHN0YXR1cywg
+b3IgdG8gbW9kaWZ5IHlvdXIgUlNWUC4gTGVhcm4gbW9yZSBhdCAgDQpodHRwczovL3N1cHBvcnQu
+Z29vZ2xlLmNvbS9jYWxlbmRhci9hbnN3ZXIvMzcxMzUjZm9yd2FyZGluZw0K
+--0000000000003d5d7405a569c743
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<span itemscope itemtype=3D"http://schema.org/InformAction"><span style=3D"=
+display:none" itemprop=3D"about" itemscope itemtype=3D"http://schema.org/Pe=
+rson"><meta itemprop=3D"description" content=3D"Invitation from Paul Bennet=
+t"/></span><span itemprop=3D"object" itemscope itemtype=3D"http://schema.or=
+g/Event"><div style=3D""><table cellspacing=3D"0" cellpadding=3D"8" border=
+=3D"0" summary=3D"" style=3D"width:100%;font-family:Arial,Sans-serif;border=
+:1px Solid #ccc;border-width:1px 2px 2px 1px;background-color:#fff;"><tr><t=
+d><meta itemprop=3D"eventStatus" content=3D"http://schema.org/EventSchedule=
+d"/><h4 style=3D"padding:6px 10px;margin:0 0 4px 0;font-family:Arial,Sans-s=
+erif;font-size:13px;line-height:1.4;border:1px Solid #d9f2db;background:#d9=
+f2db;color:#222;font-weight:normal"><strong>You have been invited to the fo=
+llowing event.</strong></h4><div style=3D"padding:2px"><span itemprop=3D"pu=
+blisher" itemscope itemtype=3D"http://schema.org/Organization"><meta itempr=
+op=3D"name" content=3D"Google Calendar"/></span><meta itemprop=3D"eventId/g=
+oogleCalendar" content=3D"4om754k8gmp7rene3frjujc34i"/><h3 style=3D"padding=
+:0 0 6px 0;margin:0;font-family:Arial,Sans-serif;font-size:16px;font-weight=
+:bold;color:#222"><span itemprop=3D"name">Innovation for Iceland </span></h=
+3><table style=3D"display:inline-table" cellpadding=3D"0" cellspacing=3D"0"=
+ border=3D"0" summary=3D"Event details"><tr><td style=3D"padding:0 1em 10px=
+ 0;font-family:Arial,Sans-serif;font-size:13px;color:#888;white-space:nowra=
+p" valign=3D"top"><div><i style=3D"font-style:normal">When</i></div></td><t=
+d style=3D"padding-bottom:10px;font-family:Arial,Sans-serif;font-size:13px;=
+color:#222" valign=3D"top"><time itemprop=3D"startDate" datetime=3D"2020051=
+3T170000Z"></time><time itemprop=3D"endDate" datetime=3D"20200513T173000Z">=
+</time>Wed May 13, 2020 1pm =E2=80=93 1:30pm <span style=3D"color:#888">Eas=
+tern Time - New York</span></td></tr><tr><td style=3D"padding:0 1em 10px 0;=
+font-family:Arial,Sans-serif;font-size:13px;color:#888;white-space:nowrap" =
+valign=3D"top"><div><i style=3D"font-style:normal">Calendar</i></div></td><=
+td style=3D"padding-bottom:10px;font-family:Arial,Sans-serif;font-size:13px=
+;color:#222" valign=3D"top">Josh Klein</td></tr><tr><td style=3D"padding:0 =
+1em 10px 0;font-family:Arial,Sans-serif;font-size:13px;color:#888;white-spa=
+ce:nowrap" valign=3D"top"><div><i style=3D"font-style:normal">Who</i></div>=
+</td><td style=3D"padding-bottom:10px;font-family:Arial,Sans-serif;font-siz=
+e:13px;color:#222" valign=3D"top"><table cellspacing=3D"0" cellpadding=3D"0=
+"><tr><td style=3D"padding-right:10px;font-family:Arial,Sans-serif;font-siz=
+e:13px;color:#222"><span style=3D"font-family:Courier New,monospace">&#x202=
+2;</span></td><td style=3D"padding-right:10px;font-family:Arial,Sans-serif;=
+font-size:13px;color:#222"><div><div style=3D"margin:0 0 0.3em 0"><span ite=
+mprop=3D"attendee" itemscope itemtype=3D"http://schema.org/Person"><span it=
+emprop=3D"name" class=3D"notranslate">Paul Bennett</span><meta itemprop=3D"=
+email" content=3D"pbennett@ideo.com"/></span><span itemprop=3D"organizer" i=
+temscope itemtype=3D"http://schema.org/Person"><meta itemprop=3D"name" cont=
+ent=3D"Paul Bennett"/><meta itemprop=3D"email" content=3D"pbennett@ideo.com=
+"/></span><span style=3D"font-size:11px;color:#888"> - organizer</span></di=
+v></div></td></tr><tr><td style=3D"padding-right:10px;font-family:Arial,San=
+s-serif;font-size:13px;color:#222"><span style=3D"font-family:Courier New,m=
+onospace">&#x2022;</span></td><td style=3D"padding-right:10px;font-family:A=
+rial,Sans-serif;font-size:13px;color:#222"><div><div style=3D"margin:0 0 0.=
+3em 0"><span class=3D"notranslate">kmayo@ideo.com</span><span style=3D"font=
+-size:11px;color:#888"> - creator</span></div></div></td></tr><tr><td style=
+=3D"padding-right:10px;font-family:Arial,Sans-serif;font-size:13px;color:#2=
+22"><span style=3D"font-family:Courier New,monospace">&#x2022;</span></td><=
+td style=3D"padding-right:10px;font-family:Arial,Sans-serif;font-size:13px;=
+color:#222"><div><div style=3D"margin:0 0 0.3em 0"><span itemprop=3D"attend=
+ee" itemscope itemtype=3D"http://schema.org/Person"><span itemprop=3D"name"=
+ class=3D"notranslate">Josh Klein</span><meta itemprop=3D"email" content=3D=
+"josh@josh.is"/></span></div></div></td></tr></table></td></tr></table><div=
+ style=3D"float:right;font-weight:bold;font-size:13px"> <a href=3D"https://=
+www.google.com/calendar/event?action=3DVIEW&amp;eid=3DNG9tNzU0azhnbXA3cmVuZ=
+TNmcmp1amMzNGkgam9zaEBqb3NoLmlz&amp;tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5M=
+jVlOWI1YmY1MDM0OGE2YTQ2NzZjMzU2ZTVkNTBmZjVkNGM0&amp;ctz=3DAmerica%2FNew_Yor=
+k&amp;hl=3Den&amp;es=3D1" style=3D"color:#20c;white-space:nowrap" itemprop=
+=3D"url">more details &raquo;</a><br></div><div style=3D"padding-bottom:15p=
+x;font-family:Arial,Sans-serif;font-size:13px;color:#222;white-space:pre-wr=
+ap!important;white-space:-moz-pre-wrap!important;white-space:-pre-wrap!impo=
+rtant;white-space:-o-pre-wrap!important;white-space:pre;word-wrap:break-wor=
+d"><span><br>=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80<br><br>You&#39;ve been invited to a schedule=
+d Zoom meeting. <br> <br>&lt;b&gt;To Join by Computer or Mobile Device&lt;/=
+b&gt;<br>From any device, go to &lt;a href=3D&quot;<a href=3D"https://www.g=
+oogle.com/url?q=3Dhttps%3A%2F%2Fideo.zoom.us%2Fj%2F92054371403&amp;sa=3DD&a=
+mp;ust=3D1589680616341000&amp;usg=3DAOvVaw3hoQe0Oix-wsqH3xcSK6R5" target=3D=
+"_blank">https://ideo.zoom.us/j/92054371403</a>&quot;&gt;<a href=3D"https:/=
+/www.google.com/url?q=3Dhttps%3A%2F%2Fideo.zoom.us%2Fj%2F92054371403&amp;sa=
+=3DD&amp;ust=3D1589680616342000&amp;usg=3DAOvVaw00RyNF8GvJQ6pZvcEoO9kP" tar=
+get=3D"_blank">https://ideo.zoom.us/j/92054371403</a>&lt;/a&gt;. <br><br>&l=
+t;i&gt;See below for some tips on ensuring a quality connection from your c=
+omputer.&lt;/i&gt;<br><br>&lt;b&gt;To Join by Phone&lt;/b&gt;<br>iPhone One=
+-Tap (US Toll):  +13462487799,92054371403#  or +16699006833,92054371403# <b=
+r><br>Or dial one of the following numbers:<br><br>     +1 346 248 7799 (US=
+ Toll)<br>     +1 669 900 6833 (US Toll)<br>     +1 253 215 8782 (US Toll)<=
+br>     +1 312 626 6799 (US Toll)<br>     +1 646 558 8656 (US Toll)<br>    =
+ +1 301 715 8592 (US Toll)<br>     877 369 0926 (US Toll Free)<br>     855 =
+880 1246 (US Toll Free)<br>     +1 647 374 4685 (CA Toll)<br>     +1 647 55=
+8 0588 (CA Toll)<br>     +1 778 907 2071 (CA Toll)<br>     +1 438 809 7799 =
+(CA Toll)<br>     +1 587 328 1099 (CA Toll)<br>     855 703 8985 (CA Toll F=
+ree)<br>     +44 203 481 5237 (GB Toll)<br>     +44 203 481 5240 (GB Toll)<=
+br>     +44 208 080 6591 (GB Toll)<br>     +44 208 080 6592 (GB Toll)<br>  =
+   +44 330 088 5830 (GB Toll)<br>     +44 131 460 1196 (GB Toll)<br>     0 =
+800 031 5717 (GB Toll Free)<br>     +81 3 4578 1488 (JP Toll)<br>     +81 5=
+24 564 439 (JP Toll)<br>     +81 342 339 241 (JP Toll)<br>     0 800 100 50=
+40 (JP Toll Free)<br>     &lt;i&gt;Additional International numbers availab=
+le &lt;b&gt;&lt;a href=3D&quot;<a href=3D"https://www.google.com/url?q=3Dht=
+tps%3A%2F%2Fideo.zoom.us%2Fu%2FayQqEd0lz&amp;sa=3DD&amp;ust=3D1589680616342=
+000&amp;usg=3DAOvVaw1S1IGcRxORd1eKHskEr2-_" target=3D"_blank">https://ideo.=
+zoom.us/u/ayQqEd0lz</a>&quot;&gt;here&lt;/a&gt;&lt;/b&gt;.&lt;/i&gt;<br><br=
+>and enter Meeting ID: 920 5437 1403<br><br>&lt;b&gt;To Join by H.323 or SI=
+P Room System&lt;/b&gt;<br>H.323: 162.255.37.11 (US West) or 162.255.36.11 =
+(US East) <br>SIP: <a href=3D"mailto:92054371403@zoomcrc.com" target=3D"_bl=
+ank">92054371403@zoomcrc.com</a><br><br>Meeting ID: 920 5437 1403<br><br>&l=
+t;b&gt;To Join by Skype for Business (Lync)&lt;/b&gt;<br>SIP: <a href=3D"ma=
+ilto:92054371403@lync.zoom.us" target=3D"_blank">92054371403@lync.zoom.us</=
+a><br><br>&lt;b&gt;Tips for a Better Experience from a Computer&lt;/b&gt;<b=
+r>&lt;ul&gt;&lt;li&gt;Connect via Ethernet (wire)<br>&lt;li&gt;Quit out of =
+other applications<br>&lt;li&gt;Use microphone-equipped earbuds whenever po=
+ssible<br>&lt;li&gt;Mute your audio whenever you aren&#39;t speaking&lt;/ul=
+&gt;<br><br>=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80</span><meta itemprop=3D"description" content=3D=
+"=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80You&#39;ve been invited to a scheduled Zoom meeting.  &am=
+p;lt;b&amp;gt;To Join by Computer or Mobile Device&amp;lt;/b&amp;gt;From an=
+y device, go to &amp;lt;a href=3D&quot;https://ideo.zoom.us/j/92054371403&q=
+uot;&amp;gt;https://ideo.zoom.us/j/92054371403&amp;lt;/a&amp;gt;. &amp;lt;i=
+&amp;gt;See below for some tips on ensuring a quality connection from your =
+computer.&amp;lt;/i&amp;gt;&amp;lt;b&amp;gt;To Join by Phone&amp;lt;/b&amp;=
+gt;iPhone One-Tap (US Toll):  +13462487799,92054371403#  or +16699006833,92=
+054371403# Or dial one of the following numbers:     +1 346 248 7799 (US To=
+ll)     +1 669 900 6833 (US Toll)     +1 253 215 8782 (US Toll)     +1 312 =
+626 6799 (US Toll)     +1 646 558 8656 (US Toll)     +1 301 715 8592 (US To=
+ll)     877 369 0926 (US Toll Free)     855 880 1246 (US Toll Free)     +1 =
+647 374 4685 (CA Toll)     +1 647 558 0588 (CA Toll)     +1 778 907 2071 (C=
+A Toll)     +1 438 809 7799 (CA Toll)     +1 587 328 1099 (CA Toll)     855=
+ 703 8985 (CA Toll Free)     +44 203 481 5237 (GB Toll)     +44 203 481 524=
+0 (GB Toll)     +44 208 080 6591 (GB Toll)     +44 208 080 6592 (GB Toll)  =
+   +44 330 088 5830 (GB Toll)     +44 131 460 1196 (GB Toll)     0 800 031 =
+5717 (GB Toll Free)     +81 3 4578 1488 (JP Toll)     +81 524 564 439 (JP T=
+oll)     +81 342 339 241 (JP Toll)     0 800 100 5040 (JP Toll Free)     &a=
+mp;lt;i&amp;gt;Additional International numbers available &amp;lt;b&amp;gt;=
+&amp;lt;a href=3D&quot;https://ideo.zoom.us/u/ayQqEd0lz&quot;&amp;gt;here&a=
+mp;lt;/a&amp;gt;&amp;lt;/b&amp;gt;.&amp;lt;/i&amp;gt;and enter Meeting ID: =
+920 5437 1403&amp;lt;b&amp;gt;To Join by H.323 or SIP Room System&amp;lt;/b=
+&amp;gt;H.323: 162.255.37.11 (US West) or 162.255.36.11 (US East) SIP: 9205=
+4371403@zoomcrc.comMeeting ID: 920 5437 1403&amp;lt;b&amp;gt;To Join by Sky=
+pe for Business (Lync)&amp;lt;/b&amp;gt;SIP: 92054371403@lync.zoom.us&amp;l=
+t;b&amp;gt;Tips for a Better Experience from a Computer&amp;lt;/b&amp;gt;&a=
+mp;lt;ul&amp;gt;&amp;lt;li&amp;gt;Connect via Ethernet (wire)&amp;lt;li&amp=
+;gt;Quit out of other applications&amp;lt;li&amp;gt;Use microphone-equipped=
+ earbuds whenever possible&amp;lt;li&amp;gt;Mute your audio whenever you ar=
+en&#39;t speaking&amp;lt;/ul&amp;gt;=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80"/></div></div><p style=
+=3D"color:#222;font-size:13px;margin:0"><span style=3D"color:#888">Going (j=
+osh@josh.is)?&nbsp;&nbsp;&nbsp;</span><wbr><strong><span itemprop=3D"potent=
+ialaction" itemscope itemtype=3D"http://schema.org/RsvpAction"><meta itempr=
+op=3D"attendance" content=3D"http://schema.org/RsvpAttendance/Yes"/><span i=
+temprop=3D"handler" itemscope itemtype=3D"http://schema.org/HttpActionHandl=
+er"><link itemprop=3D"method" href=3D"http://schema.org/HttpRequestMethod/G=
+ET"/><a href=3D"https://www.google.com/calendar/event?action=3DRESPOND&amp;=
+eid=3DNG9tNzU0azhnbXA3cmVuZTNmcmp1amMzNGkgam9zaEBqb3NoLmlz&amp;rst=3D1&amp;=
+tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5MjVlOWI1YmY1MDM0OGE2YTQ2NzZjMzU2ZTVkN=
+TBmZjVkNGM0&amp;ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" style=3D"c=
+olor:#20c;white-space:nowrap" itemprop=3D"url">Yes</a></span></span><span s=
+tyle=3D"margin:0 0.4em;font-weight:normal"> - </span><span itemprop=3D"pote=
+ntialaction" itemscope itemtype=3D"http://schema.org/RsvpAction"><meta item=
+prop=3D"attendance" content=3D"http://schema.org/RsvpAttendance/Maybe"/><sp=
+an itemprop=3D"handler" itemscope itemtype=3D"http://schema.org/HttpActionH=
+andler"><link itemprop=3D"method" href=3D"http://schema.org/HttpRequestMeth=
+od/GET"/><a href=3D"https://www.google.com/calendar/event?action=3DRESPOND&=
+amp;eid=3DNG9tNzU0azhnbXA3cmVuZTNmcmp1amMzNGkgam9zaEBqb3NoLmlz&amp;rst=3D3&=
+amp;tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5MjVlOWI1YmY1MDM0OGE2YTQ2NzZjMzU2Z=
+TVkNTBmZjVkNGM0&amp;ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" style=
+=3D"color:#20c;white-space:nowrap" itemprop=3D"url">Maybe</a></span></span>=
+<span style=3D"margin:0 0.4em;font-weight:normal"> - </span><span itemprop=
+=3D"potentialaction" itemscope itemtype=3D"http://schema.org/RsvpAction"><m=
+eta itemprop=3D"attendance" content=3D"http://schema.org/RsvpAttendance/No"=
+/><span itemprop=3D"handler" itemscope itemtype=3D"http://schema.org/HttpAc=
+tionHandler"><link itemprop=3D"method" href=3D"http://schema.org/HttpReques=
+tMethod/GET"/><a href=3D"https://www.google.com/calendar/event?action=3DRES=
+POND&amp;eid=3DNG9tNzU0azhnbXA3cmVuZTNmcmp1amMzNGkgam9zaEBqb3NoLmlz&amp;rst=
+=3D2&amp;tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5MjVlOWI1YmY1MDM0OGE2YTQ2NzZj=
+MzU2ZTVkNTBmZjVkNGM0&amp;ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" s=
+tyle=3D"color:#20c;white-space:nowrap" itemprop=3D"url">No</a></span></span=
+></strong>&nbsp;&nbsp;&nbsp;&nbsp;<wbr><a href=3D"https://www.google.com/ca=
+lendar/event?action=3DVIEW&amp;eid=3DNG9tNzU0azhnbXA3cmVuZTNmcmp1amMzNGkgam=
+9zaEBqb3NoLmlz&amp;tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5MjVlOWI1YmY1MDM0OG=
+E2YTQ2NzZjMzU2ZTVkNTBmZjVkNGM0&amp;ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp=
+;es=3D1" style=3D"color:#20c;white-space:nowrap" itemprop=3D"url">more opti=
+ons &raquo;</a></p></td></tr><tr><td style=3D"background-color:#f6f6f6;colo=
+r:#888;border-top:1px Solid #ccc;font-family:Arial,Sans-serif;font-size:11p=
+x"><p>Invitation from <a href=3D"https://www.google.com/calendar/" target=
+=3D"_blank" style=3D"">Google Calendar</a></p><p>You are receiving this ema=
+il at the account josh@josh.is because you are subscribed for invitations o=
+n calendar Josh Klein.</p><p>To stop receiving these emails, please log in =
+to https://www.google.com/calendar/ and change your notification settings f=
+or this calendar.</p><p>Forwarding this invitation could allow any recipien=
+t to send a response to the organizer and be added to the guest list, or in=
+vite others regardless of their own invitation status, or to modify your RS=
+VP. <a href=3D"https://support.google.com/calendar/answer/37135#forwarding"=
+>Learn More</a>.</p></td></tr></table></div></span></span>
+--0000000000003d5d7405a569c743
+Content-Type: text/calendar; charset="UTF-8"; method=REQUEST
+Content-Transfer-Encoding: quoted-printable
+
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+DTSTART:20200513T170000Z
+DTEND:20200513T173000Z
+DTSTAMP:20200512T015656Z
+ORGANIZER;CN=3DPaul Bennett:mailto:pbennett@ideo.com
+UID:4om754k8gmp7rene3frjujc34i@google.com
+ATTENDEE;CUTYPE=3DINDIVIDUAL;ROLE=3DREQ-PARTICIPANT;PARTSTAT=3DACCEPTED;RSV=
+P=3DTRUE
+ ;CN=3DPaul Bennett;X-NUM-GUESTS=3D0:mailto:pbennett@ideo.com
+ATTENDEE;CUTYPE=3DINDIVIDUAL;ROLE=3DREQ-PARTICIPANT;PARTSTAT=3DNEEDS-ACTION=
+;RSVP=3D
+ TRUE;CN=3DJosh Klein;X-NUM-GUESTS=3D0:mailto:josh@josh.is
+X-MICROSOFT-CDO-OWNERAPPTID:-1931544778
+CREATED:20200511T184426Z
+DESCRIPTION:<br>=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80<br><br>You've been invited to a scheduled=
+ Zoom m
+ eeting. <br> <br>&lt\;b&gt\;To Join by Computer or Mobile Device&lt\;/b&gt=
+\
+ ;<br>From any device\, go to &lt\;a href=3D"https://ideo.zoom.us/j/9205437=
+140
+ 3"&gt\;https://ideo.zoom.us/j/92054371403&lt\;/a&gt\;. <br><br>&lt\;i&gt\;=
+S
+ ee below for some tips on ensuring a quality connection from your computer=
+.
+ &lt\;/i&gt\;<br><br>&lt\;b&gt\;To Join by Phone&lt\;/b&gt\;<br>iPhone One-=
+T
+ ap (US Toll):  +13462487799\,92054371403#  or +16699006833\,92054371403# <=
+b
+ r><br>Or dial one of the following numbers:<br><br>     +1 346 248 7799 (U=
+S
+  Toll)<br>     +1 669 900 6833 (US Toll)<br>     +1 253 215 8782 (US Toll)=
+<
+ br>     +1 312 626 6799 (US Toll)<br>     +1 646 558 8656 (US Toll)<br>   =
+=20
+  +1 301 715 8592 (US Toll)<br>     877 369 0926 (US Toll Free)<br>     855=
+=20
+ 880 1246 (US Toll Free)<br>     +1 647 374 4685 (CA Toll)<br>     +1 647 5=
+5
+ 8 0588 (CA Toll)<br>     +1 778 907 2071 (CA Toll)<br>     +1 438 809 7799=
+=20
+ (CA Toll)<br>     +1 587 328 1099 (CA Toll)<br>     855 703 8985 (CA Toll =
+F
+ ree)<br>     +44 203 481 5237 (GB Toll)<br>     +44 203 481 5240 (GB Toll)=
+<
+ br>     +44 208 080 6591 (GB Toll)<br>     +44 208 080 6592 (GB Toll)<br> =
+=20
+    +44 330 088 5830 (GB Toll)<br>     +44 131 460 1196 (GB Toll)<br>     0=
+=20
+ 800 031 5717 (GB Toll Free)<br>     +81 3 4578 1488 (JP Toll)<br>     +81 =
+5
+ 24 564 439 (JP Toll)<br>     +81 342 339 241 (JP Toll)<br>     0 800 100 5=
+0
+ 40 (JP Toll Free)<br>     &lt\;i&gt\;Additional International numbers avai=
+l
+ able &lt\;b&gt\;&lt\;a href=3D"https://ideo.zoom.us/u/ayQqEd0lz"&gt\;here&=
+lt\
+ ;/a&gt\;&lt\;/b&gt\;.&lt\;/i&gt\;<br><br>and enter Meeting ID: 920 5437 14=
+0
+ 3<br><br>&lt\;b&gt\;To Join by H.323 or SIP Room System&lt\;/b&gt\;<br>H.3=
+2
+ 3: 162.255.37.11 (US West) or 162.255.36.11 (US East) <br>SIP: 92054371403=
+@
+ zoomcrc.com<br><br>Meeting ID: 920 5437 1403<br><br>&lt\;b&gt\;To Join by =
+S
+ kype for Business (Lync)&lt\;/b&gt\;<br>SIP: 92054371403@lync.zoom.us<br><=
+b
+ r>&lt\;b&gt\;Tips for a Better Experience from a Computer&lt\;/b&gt\;<br>&=
+l
+ t\;ul&gt\;&lt\;li&gt\;Connect via Ethernet (wire)<br>&lt\;li&gt\;Quit out =
+o
+ f other applications<br>&lt\;li&gt\;Use microphone-equipped earbuds whenev=
+e
+ r possible<br>&lt\;li&gt\;Mute your audio whenever you aren't speaking&lt\=
+;
+ /ul&gt\;<br><br>=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80\n\n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:=
+~:~:~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:~::-\nPlease do not edit this sectio=
+n
+  of the description.\n\nView your event at https://www.google.com/calendar=
+/
+ event?action=3DVIEW&eid=3DNG9tNzU0azhnbXA3cmVuZTNmcmp1amMzNGkgam9zaEBqb3No=
+Lmlz&
+ tok=3DMTcjcGJlbm5ldHRAaWRlby5jb200OTg5MjVlOWI1YmY1MDM0OGE2YTQ2NzZjMzU2ZTVk=
+NTB
+ mZjVkNGM0&ctz=3DAmerica%2FNew_York&hl=3Den&es=3D1.\n-::~:~::~:~:~:~:~:~:~:=
+~:~:~:~
+ :~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:~::-
+LAST-MODIFIED:20200512T015654Z
+LOCATION:
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Innovation for Iceland=20
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR
+
+--0000000000003d5d7405a569c743--
+--0000000000003d5d7605a569c745
+Content-Type: application/ics; name="invite.ics"
+Content-Disposition: attachment; filename="invite.ics"
+Content-Transfer-Encoding: base64
+
+QkVHSU46VkNBTEVOREFSDQpQUk9ESUQ6LS8vR29vZ2xlIEluYy8vR29vZ2xlIENhbGVuZGFyIDcw
+LjkwNTQvL0VODQpWRVJTSU9OOjIuMA0KQ0FMU0NBTEU6R1JFR09SSUFODQpNRVRIT0Q6UkVRVUVT
+VA0KQkVHSU46VkVWRU5UDQpEVFNUQVJUOjIwMjAwNTEzVDE3MDAwMFoNCkRURU5EOjIwMjAwNTEz
+VDE3MzAwMFoNCkRUU1RBTVA6MjAyMDA1MTJUMDE1NjU2Wg0KT1JHQU5JWkVSO0NOPVBhdWwgQmVu
+bmV0dDptYWlsdG86cGJlbm5ldHRAaWRlby5jb20NClVJRDo0b203NTRrOGdtcDdyZW5lM2ZyanVq
+YzM0aUBnb29nbGUuY29tDQpBVFRFTkRFRTtDVVRZUEU9SU5ESVZJRFVBTDtST0xFPVJFUS1QQVJU
+SUNJUEFOVDtQQVJUU1RBVD1BQ0NFUFRFRDtSU1ZQPVRSVUUNCiA7Q049UGF1bCBCZW5uZXR0O1gt
+TlVNLUdVRVNUUz0wOm1haWx0bzpwYmVubmV0dEBpZGVvLmNvbQ0KQVRURU5ERUU7Q1VUWVBFPUlO
+RElWSURVQUw7Uk9MRT1SRVEtUEFSVElDSVBBTlQ7UEFSVFNUQVQ9TkVFRFMtQUNUSU9OO1JTVlA9
+DQogVFJVRTtDTj1Kb3NoIEtsZWluO1gtTlVNLUdVRVNUUz0wOm1haWx0bzpqb3NoQGpvc2guaXMN
+ClgtTUlDUk9TT0ZULUNETy1PV05FUkFQUFRJRDotMTkzMTU0NDc3OA0KQ1JFQVRFRDoyMDIwMDUx
+MVQxODQ0MjZaDQpERVNDUklQVElPTjo8YnI+4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA4pSA
+PGJyPjxicj5Zb3UndmUgYmVlbiBpbnZpdGVkIHRvIGEgc2NoZWR1bGVkIFpvb20gbQ0KIGVldGlu
+Zy4gPGJyPiA8YnI+Jmx0XDtiJmd0XDtUbyBKb2luIGJ5IENvbXB1dGVyIG9yIE1vYmlsZSBEZXZp
+Y2UmbHRcOy9iJmd0XA0KIDs8YnI+RnJvbSBhbnkgZGV2aWNlXCwgZ28gdG8gJmx0XDthIGhyZWY9
+Imh0dHBzOi8vaWRlby56b29tLnVzL2ovOTIwNTQzNzE0MA0KIDMiJmd0XDtodHRwczovL2lkZW8u
+em9vbS51cy9qLzkyMDU0MzcxNDAzJmx0XDsvYSZndFw7LiA8YnI+PGJyPiZsdFw7aSZndFw7Uw0K
+IGVlIGJlbG93IGZvciBzb21lIHRpcHMgb24gZW5zdXJpbmcgYSBxdWFsaXR5IGNvbm5lY3Rpb24g
+ZnJvbSB5b3VyIGNvbXB1dGVyLg0KICZsdFw7L2kmZ3RcOzxicj48YnI+Jmx0XDtiJmd0XDtUbyBK
+b2luIGJ5IFBob25lJmx0XDsvYiZndFw7PGJyPmlQaG9uZSBPbmUtVA0KIGFwIChVUyBUb2xsKTog
+ICsxMzQ2MjQ4Nzc5OVwsOTIwNTQzNzE0MDMjICBvciArMTY2OTkwMDY4MzNcLDkyMDU0MzcxNDAz
+IyA8Yg0KIHI+PGJyPk9yIGRpYWwgb25lIG9mIHRoZSBmb2xsb3dpbmcgbnVtYmVyczo8YnI+PGJy
+PiAgICAgKzEgMzQ2IDI0OCA3Nzk5IChVUw0KICBUb2xsKTxicj4gICAgICsxIDY2OSA5MDAgNjgz
+MyAoVVMgVG9sbCk8YnI+ICAgICArMSAyNTMgMjE1IDg3ODIgKFVTIFRvbGwpPA0KIGJyPiAgICAg
+KzEgMzEyIDYyNiA2Nzk5IChVUyBUb2xsKTxicj4gICAgICsxIDY0NiA1NTggODY1NiAoVVMgVG9s
+bCk8YnI+ICAgIA0KICArMSAzMDEgNzE1IDg1OTIgKFVTIFRvbGwpPGJyPiAgICAgODc3IDM2OSAw
+OTI2IChVUyBUb2xsIEZyZWUpPGJyPiAgICAgODU1IA0KIDg4MCAxMjQ2IChVUyBUb2xsIEZyZWUp
+PGJyPiAgICAgKzEgNjQ3IDM3NCA0Njg1IChDQSBUb2xsKTxicj4gICAgICsxIDY0NyA1NQ0KIDgg
+MDU4OCAoQ0EgVG9sbCk8YnI+ICAgICArMSA3NzggOTA3IDIwNzEgKENBIFRvbGwpPGJyPiAgICAg
+KzEgNDM4IDgwOSA3Nzk5IA0KIChDQSBUb2xsKTxicj4gICAgICsxIDU4NyAzMjggMTA5OSAoQ0Eg
+VG9sbCk8YnI+ICAgICA4NTUgNzAzIDg5ODUgKENBIFRvbGwgRg0KIHJlZSk8YnI+ICAgICArNDQg
+MjAzIDQ4MSA1MjM3IChHQiBUb2xsKTxicj4gICAgICs0NCAyMDMgNDgxIDUyNDAgKEdCIFRvbGwp
+PA0KIGJyPiAgICAgKzQ0IDIwOCAwODAgNjU5MSAoR0IgVG9sbCk8YnI+ICAgICArNDQgMjA4IDA4
+MCA2NTkyIChHQiBUb2xsKTxicj4gIA0KICAgICs0NCAzMzAgMDg4IDU4MzAgKEdCIFRvbGwpPGJy
+PiAgICAgKzQ0IDEzMSA0NjAgMTE5NiAoR0IgVG9sbCk8YnI+ICAgICAwIA0KIDgwMCAwMzEgNTcx
+NyAoR0IgVG9sbCBGcmVlKTxicj4gICAgICs4MSAzIDQ1NzggMTQ4OCAoSlAgVG9sbCk8YnI+ICAg
+ICArODEgNQ0KIDI0IDU2NCA0MzkgKEpQIFRvbGwpPGJyPiAgICAgKzgxIDM0MiAzMzkgMjQxIChK
+UCBUb2xsKTxicj4gICAgIDAgODAwIDEwMCA1MA0KIDQwIChKUCBUb2xsIEZyZWUpPGJyPiAgICAg
+Jmx0XDtpJmd0XDtBZGRpdGlvbmFsIEludGVybmF0aW9uYWwgbnVtYmVycyBhdmFpbA0KIGFibGUg
+Jmx0XDtiJmd0XDsmbHRcO2EgaHJlZj0iaHR0cHM6Ly9pZGVvLnpvb20udXMvdS9heVFxRWQwbHoi
+Jmd0XDtoZXJlJmx0XA0KIDsvYSZndFw7Jmx0XDsvYiZndFw7LiZsdFw7L2kmZ3RcOzxicj48YnI+
+YW5kIGVudGVyIE1lZXRpbmcgSUQ6IDkyMCA1NDM3IDE0MA0KIDM8YnI+PGJyPiZsdFw7YiZndFw7
+VG8gSm9pbiBieSBILjMyMyBvciBTSVAgUm9vbSBTeXN0ZW0mbHRcOy9iJmd0XDs8YnI+SC4zMg0K
+IDM6IDE2Mi4yNTUuMzcuMTEgKFVTIFdlc3QpIG9yIDE2Mi4yNTUuMzYuMTEgKFVTIEVhc3QpIDxi
+cj5TSVA6IDkyMDU0MzcxNDAzQA0KIHpvb21jcmMuY29tPGJyPjxicj5NZWV0aW5nIElEOiA5MjAg
+NTQzNyAxNDAzPGJyPjxicj4mbHRcO2ImZ3RcO1RvIEpvaW4gYnkgUw0KIGt5cGUgZm9yIEJ1c2lu
+ZXNzIChMeW5jKSZsdFw7L2ImZ3RcOzxicj5TSVA6IDkyMDU0MzcxNDAzQGx5bmMuem9vbS51czxi
+cj48Yg0KIHI+Jmx0XDtiJmd0XDtUaXBzIGZvciBhIEJldHRlciBFeHBlcmllbmNlIGZyb20gYSBD
+b21wdXRlciZsdFw7L2ImZ3RcOzxicj4mbA0KIHRcO3VsJmd0XDsmbHRcO2xpJmd0XDtDb25uZWN0
+IHZpYSBFdGhlcm5ldCAod2lyZSk8YnI+Jmx0XDtsaSZndFw7UXVpdCBvdXQgbw0KIGYgb3RoZXIg
+YXBwbGljYXRpb25zPGJyPiZsdFw7bGkmZ3RcO1VzZSBtaWNyb3Bob25lLWVxdWlwcGVkIGVhcmJ1
+ZHMgd2hlbmV2ZQ0KIHIgcG9zc2libGU8YnI+Jmx0XDtsaSZndFw7TXV0ZSB5b3VyIGF1ZGlvIHdo
+ZW5ldmVyIHlvdSBhcmVuJ3Qgc3BlYWtpbmcmbHRcOw0KIC91bCZndFw7PGJyPjxicj7ilIDilIDi
+lIDilIDilIDilIDilIDilIDilIDilIBcblxuLTo6fjp+Ojp+On46fjp+On46fjp+On46fjp+On46
+fjp+On46fjp+On46fjp+DQogOn46fjp+On46fjp+On46fjp+On46fjp+On46fjp+On46fjo6fjp+
+OjotXG5QbGVhc2UgZG8gbm90IGVkaXQgdGhpcyBzZWN0aW9uDQogIG9mIHRoZSBkZXNjcmlwdGlv
+bi5cblxuVmlldyB5b3VyIGV2ZW50IGF0IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vY2FsZW5kYXIv
+DQogZXZlbnQ/YWN0aW9uPVZJRVcmZWlkPU5HOXROelUwYXpobmJYQTNjbVZ1WlRObWNtcDFhbU16
+TkdrZ2FtOXphRUJxYjNOb0xtbHomDQogdG9rPU1UY2pjR0psYm01bGRIUkFhV1JsYnk1amIyMDBP
+VGc1TWpWbE9XSTFZbVkxTURNME9HRTJZVFEyTnpaak16VTJaVFZrTlRCDQogbVpqVmtOR00wJmN0
+ej1BbWVyaWNhJTJGTmV3X1lvcmsmaGw9ZW4mZXM9MS5cbi06On46fjo6fjp+On46fjp+On46fjp+
+On46fjp+DQogOn46fjp+On46fjp+On46fjp+On46fjp+On46fjp+On46fjp+On46fjp+On46fjp+
+On46On46fjo6LQ0KTEFTVC1NT0RJRklFRDoyMDIwMDUxMlQwMTU2NTRaDQpMT0NBVElPTjoNClNF
+UVVFTkNFOjANClNUQVRVUzpDT05GSVJNRUQNClNVTU1BUlk6SW5ub3ZhdGlvbiBmb3IgSWNlbGFu
+ZCANClRSQU5TUDpPUEFRVUUNCkVORDpWRVZFTlQNCkVORDpWQ0FMRU5EQVINCg==
+--0000000000003d5d7605a569c745--

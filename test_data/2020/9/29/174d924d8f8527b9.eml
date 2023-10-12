@@ -1,0 +1,832 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:a173:0:0:0:0:0 with SMTP id u19csp3880366ljl;
+        Tue, 29 Sep 2020 02:15:04 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpNjqKE4HU6OMCY8Qw4PjFLXzzqvTq4W2Sf6YiiQTOwPSYW3z/vnkPXLhIVqn8L30K24eU
+X-Received: by 2002:a62:16cd:0:b029:13e:d13d:a13f with SMTP id 196-20020a6216cd0000b029013ed13da13fmr3166379pfw.39.1601370904690;
+        Tue, 29 Sep 2020 02:15:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1601370904; cv=none;
+        d=google.com; s=arc-20160816;
+        b=inefL5BSjSgn0MUn8W0W2ulZqN4qdIMNRq73CvaN+xtM1KssMY2Ps58F+0dYfW7HOP
+         21QFS2O8yIlgY+MOfvFyXcInQZ5DG5g6py4BC7BWCFDfSvoU/nPFCb0fYVVuYn1sTFbE
+         fKHM1OYov3v6y6DuQpk2A5b8qvzn3cznFwzDrUUq10SA3ZXL29bMqltfBSDu8xsSCeOW
+         JIPIxtgBeaBv+i6Fn04fx6r0j8ZSO31MZS5vacnq3goKCsIfshLBF4u1G43TZSBbAfrQ
+         4io37ENeFoq6VF5aQVPtwCScVRzSADJ8dBG2Pjd5A8yp16sSpcKTSbG2W+ssLNV4NScE
+         c+VA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=subject:auto-submitted:references:in-reply-to:message-id
+         :content-language:date:to:from:mime-version;
+        bh=RRQvPCjE2KCXfJQ5+mfOs3uKyuKAA+ah/uxbzL50NCM=;
+        b=Ojsqa4tSHQRrtcKBm0qX4JNCGUMqIMj+YZMDie/Xp5MJWjMCJRBzTgsz76SYltb/Zb
+         r2WqvnZxsn2XCOxzzLh9dTpTLXTj9F7vY3QWV9yN1kBOumhhROtDtVzf79csH/5yP98Y
+         tIHwzGZupNtCXxPDMEfY1DYx+lnx/HGcEbXSqtYQf/Gfyd94J99SDQDGA4cbxSU5myIT
+         tQ4yidaBSAl378rjuQG2NCQXc4hwP9HEYWratk5e/irBdEuSfsaa2gbfDm+xwUOc8c5v
+         31I/eoKtWCcqDOri4eAixF4DL1FhrWxR/Em0X+T9ZFqo8+uiqAWzVZOrDtch/WEXzqU8
+         JVpg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: best guess record for domain of postmaster@mx0b-00010702.pphosted.com designates 148.163.156.75 as permitted sender) smtp.helo=mx0b-00010702.pphosted.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=ni.com
+Return-Path: <>
+Received: from mx0b-00010702.pphosted.com (mx0a-00010702.pphosted.com. [148.163.156.75])
+        by mx.google.com with ESMTPS id f3si2735185plb.422.2020.09.29.02.15.04
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Sep 2020 02:15:04 -0700 (PDT)
+Received-SPF: pass (google.com: best guess record for domain of postmaster@mx0b-00010702.pphosted.com designates 148.163.156.75 as permitted sender) client-ip=148.163.156.75;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: best guess record for domain of postmaster@mx0b-00010702.pphosted.com designates 148.163.156.75 as permitted sender) smtp.helo=mx0b-00010702.pphosted.com;
+       dmarc=fail (p=NONE sp=NONE dis=NONE) header.from=ni.com
+Received: from pps.filterd (m0098780.ppops.net [127.0.0.1])
+	by mx0a-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08T9D2DW018764
+	for <josh@josh.is>; Tue, 29 Sep 2020 04:15:04 -0500
+Received: from ni.com (skprod3.natinst.com [130.164.80.24])
+	by mx0a-00010702.pphosted.com with ESMTP id 33t35uebyk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Tue, 29 Sep 2020 04:15:03 -0500
+Received: from us-aus-exhub1.ni.corp.natinst.com (us-aus-exhub1.ni.corp.natinst.com [130.164.68.41])
+	by us-aus-skprod3.natinst.com (8.16.0.42/8.16.0.42) with ESMTPS id 08T9F2Yb006023
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Tue, 29 Sep 2020 04:15:02 -0500
+Received: from us-aus-exch4.ni.corp.natinst.com (130.164.68.14) by
+ us-aus-exhub1.ni.corp.natinst.com (130.164.68.41) with Microsoft SMTP Server
+ (TLS) id 15.0.1395.4; Tue, 29 Sep 2020 04:15:02 -0500
+MIME-Version: 1.0
+From: <postmaster@ni.com>
+To: <josh@josh.is>
+Date: Tue, 29 Sep 2020 04:15:02 -0500
+Content-Type: multipart/report; report-type=delivery-status;
+	boundary="29621ac2-8239-491b-8ee7-1826a3480373"
+X-MS-Exchange-Message-Is-Ndr: 
+Content-Language: en-US
+Message-ID: <8be5284c-7f60-4937-9be0-f870f415ee95@us-aus-exch4.ni.corp.natinst.com>
+In-Reply-To: <CACNgykMzm3dQTbWS81mLnJ942Xwy+oLWDhAjSGXOvVPvyDmKqw@mail.gmail.com>
+References: <CACNgykMzm3dQTbWS81mLnJ942Xwy+oLWDhAjSGXOvVPvyDmKqw@mail.gmail.com>
+Auto-Submitted: auto-replied
+Subject: Undeliverable: I can help with that
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Reason: orgsafe
+
+--29621ac2-8239-491b-8ee7-1826a3480373
+Content-Type: multipart/alternative; differences=Content-Type;
+	boundary="1f84d013-a0a0-43ea-9511-47075e992c1b"
+
+--1f84d013-a0a0-43ea-9511-47075e992c1b
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Delivery has failed to these recipients or groups:
+
+areli.meza@ni.com<mailto:areli.meza@ni.com>
+The email address you entered couldn't be found. Please check the recipient=
+'s email address and try to resend the message. If the problem continues, p=
+lease contact your helpdesk.
+
+
+
+
+
+
+
+
+Diagnostic information for administrators:
+
+Generating server: us-aus-exch4.ni.corp.natinst.com
+
+areli.meza@ni.com
+Remote Server returned '550 5.1.1 RESOLVER.ADR.RecipNotFound; not found'
+
+Original message headers:
+
+Received: from us-aus-exch2.ni.corp.natinst.com (130.164.68.12) by
+ us-aus-exch4.ni.corp.natinst.com (130.164.68.14) with Microsoft SMTP Serve=
+r
+ (TLS) id 15.0.1395.4; Tue, 29 Sep 2020 04:15:02 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (172.18.68.32)=
+ by
+ us-aus-exch2.ni.corp.natinst.com (130.164.68.12) with Microsoft SMTP Serve=
+r
+ (TLS) id 15.0.1395.4 via Frontend Transport; Tue, 29 Sep 2020 04:15:02 -05=
+00
+Received: from BL0PR02CA0021.namprd02.prod.outlook.com (2603:10b6:207:3c::3=
+4)
+ by MWHPR04MB0799.namprd04.prod.outlook.com (2603:10b6:300:f2::21) with
+ Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Tue, 29 =
+Sep
+ 2020 09:15:00 +0000
+Received: from BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:207:3c:cafe::d2) by BL0PR02CA0021.outlook.office365.com
+ (2603:10b6:207:3c::34) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Front=
+end
+ Transport; Tue, 29 Sep 2020 09:15:00 +0000
+Authentication-Results: spf=3Dtemperror (sender IP is 148.163.158.57)
+ smtp.mailfrom=3Djosh.is; ni.com; dkim=3Dfail (signature did not verify)
+ header.d=3Djosh-is.20150623.gappssmtp.com;ni.com; dmarc=3Dtemperror action=
+=3Dnone
+ header.from=3Djosh.is;compauth=3Dnone reason=3D405
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx0b-00010702.pphosted.com (148.163.158.57) by
+ BL2NAM02FT015.mail.protection.outlook.com (10.152.77.167) with Microsoft S=
+MTP
+ Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) =
+id
+ 15.20.3412.21 via Frontend Transport; Tue, 29 Sep 2020 09:14:59 +0000
+Received: from pps.filterd (m0098779.ppops.net [127.0.0.1])
+        by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08=
+T9Ew6p024110
+        for <areli.meza@ni.com>; Tue, 29 Sep 2020 04:14:59 -0500
+Authentication-Results-Original: ppops.net;     spf=3Dpass
+ smtp.mailfrom=3Djosh@josh.is;    dkim=3Dpass header.s=3D20150623
+ header.d=3Djosh-is.20150623.gappssmtp.com
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167=
+.41])
+        by mx0b-00010702.pphosted.com with ESMTP id 33t3f75v6b-1
+        (version=3DTLSv1.2 cipher=3DECDHE-RSA-AES128-GCM-SHA256 bits=3D128 =
+verify=3DNOT)
+        for <areli.meza@ni.com>; Tue, 29 Sep 2020 04:14:58 -0500
+Received: by mail-lf1-f41.google.com with SMTP id u8so4677740lff.1
+        for <areli.meza@ni.com>; Tue, 29 Sep 2020 02:14:58 -0700 (PDT)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh-is.20150623.gappssmtp.com; s=3D20150623;
+        h=3Dfrom:mime-version:date:message-id:subject:to;
+        bh=3D6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=3D;
+        b=3DwEnP8DW8bfvQ+Ho6cLjDuI+jwBAYmwWxZXsqidMeZnc9zm5kENTTYmydr0tA83y=
+QOJ
+         m2+fO3HJjSF3reNoXGhEmAK69x9rr5WJGQ72BLR2t3rUxCEYMtdr498fZVHPexrK0H=
+23
+         FALQE5GldUU8zAKLfWrqLmGsiraRugCEmALvD6JFMkOZPoW9Cs60dvON5EfBdZwoWO=
+f7
+         8uHQcRWpZWNkOEpLeMSCFIlimhx2jClG9QwkF/y90nweT/rthEKmqxm1PE8jjy4evt=
+cW
+         9Iv3gvGQ7G/mkJes32kyPiEEIP+XxpyOIN9yH/YmLqKWcixwzKMCsT3zIdVDuOrVi5=
+S2
+         VmOg=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:from:mime-version:date:message-id:subject:to=
+;
+        bh=3D6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=3D;
+        b=3DtIbXZn5HcR2nEXGeS+ydv3IC5be6KsKzOMisvIwPhqYFJ0ZYiAFINJIqmCzpogL=
+CeS
+         0SakykWaj4I/azZCMzn3maZBN7Ern/ierRL4SucOCjTmuFPy47wwmI4T5jRvCfFCUS=
+Vm
+         /GoevuMigxcs1fXW20CW9QUJpRAuTA4iax/Qu/JBufQpkLOWyNgg2ksQw6CRsJvLRx=
+fy
+         D30k07WZmDz2rBYj4sStnbOIHdy3O3LTCIU+32VVk8tqAeyyVIByUPV11yswoK/VnO=
+hY
+         INWVyC6ZYHg9bowPJi3hUPeBMTUjorD+E/VI6RZ6+p225C41pCXlaYCQ2xGIni5bZw=
+6O
+         yrkg=3D=3D
+X-Gm-Message-State: AOAM532Gk8yoRQhSRNbg7oA5f9yQslhv/EEJt/op9utv53hz83gb8N5=
+G
+        eLpf1tnbYaZ3Coy9PBLEhe9W6HJ0DSbR1xMQVgjr9RG5DhY=3D
+X-Google-Smtp-Source: ABdhPJwe2DNjFnofP5PTabGQeUUpGBRf9BYDw3Wzsi6tcWOzFDlKL=
+4gLaYdYKVF21eYk2A6avjX4U17Xk+MleCkGIYM=3D
+X-Received: by 2002:ac2:529c:: with SMTP id q28mr960418lfm.104.160137089665=
+7;
+ Tue, 29 Sep 2020 02:14:56 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 29 Sep 2020 02:14:56 -0700
+From: Josh Klein <josh@josh.is>
+Date: Tue, 29 Sep 2020 02:14:56 -0700
+Message-ID: <CACNgykMzm3dQTbWS81mLnJ942Xwy+oLWDhAjSGXOvVPvyDmKqw@mail.gmail=
+.com>
+To: <areli.meza@ni.com>
+Content-Type: multipart/alternative; boundary=3D"00000000000073037905b07037=
+bd"
+X-CLX-Shades: MLX
+X-CLX-Response: 1TFkXGxMYEQpMehcbHhkRCllEF2d/QxtcYGVoZE57EQpYWBdmZEhEGHJkUn=
+9 TQBEKeE4XZlJyYUFZGkFuXRMRCnlMF21ESUxHbF1TRRJsEQpDSBcHHh0dEQpDWRcbGhkRCkNJ=
+Fx oEGhoaEQpZTRdnZnIRCllJFxpxGhAadwYbHRhxGxofEBp3BhgaBhoRClleF2hjeREKSUYXRE=
+teQ
+ 0VES0ZDRFledUJFWV5PThEKQ04XZkROH01JQ2Z+bmhCUkIdTB1+WGhQQ1h/YU9lRnVbaB0RClh=
+c Fx8EGgQYGx8FGxoEGxsaBB8aBBseGBAbHhofGhEKXlkXfVtgAV8RCk1cFxsbGREKTFoXbGlNT=
+Ws RCkJPF2JkT10eZHxNX1JcEQpDWhcYGhMEEh8EGxwdBB4bEQpCXhcbEQpCXBcaEQpCRRdgQk5=
+HXU
+ NBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn1ieREK=
+Q kAXa35gHWhOcGBLYFgRCkJYF254ZWAYeFAeZxgfEQpNXhcbEQpaWBcbEQp5QxdmHUxuYFNJcn=
+9T WREKWUsXHhkbHBEKcGgXaQFPExhpZ0gFeAEQGRoRCnBoF2MZRURNZGhnUnMZEBkaEQpwaBdj=
+R2M
+ ZHRpsYkxyUBAZGhEKcGgXbnxpZh5HQVNvXHMQGRoRCnBoF2scTmdcfEt+Xh0FEBkaEQpwfRdle=
+k VoeQETewFCSBAZGhEKcH0XbEVhAR99XlBoWxIQGRoRCnB9F2QTYVNTHGRJGk9NEBkaEQpwfRd=
+mU 2toU3hQaXheeRAZGhEKcH0XYEtOUwFLcG1pbGUQGRoRCnB/F3oeBVlaWxp6TBNvEB4ZEQpwX=
+xdg
+ RXkbBX0bRV8BeRAZGhEKcF8XZk1yTGxSRxNYfU4QGRoRCnBfF2EbcH9QXHpuUHJyEBkaEQpwXx=
+d rSH5Fa3MbU3JJUxAZGhEKcF8XbQFjZ3BdHl9dRl4QGRoRCnBsF2hdQGNNWmUfR0xwEB0SEQpt=
+fh cbEQpYTRdLESA=3D
+MIME-Version: 1.0
+Subject: [EXTERNAL] I can help with that
+X-Proofpoint-Virus-Version: vendor=3Dfsecure engine=3D2.50.10434:6.0.235,18=
+.0.687
+ definitions=3D2020-09-29_01:2020-09-29,2020-09-29 signatures=3D0
+X-Proofpoint-Spam-Details: rule=3Dinbound_policy_notspam policy=3Dinbound_p=
+olicy score=3D0 suspectscore=3D10
+ lowpriorityscore=3D0 phishscore=3D0 mlxscore=3D0 mlxlogscore=3D944 imposto=
+rscore=3D0
+ malwarescore=3D0 bulkscore=3D0 spamscore=3D0 clxscore=3D192 adultscore=3D0
+ priorityscore=3D143 classifier=3Dspam adjust=3D0 reason=3Dmlx scancount=3D=
+1
+ engine=3D8.12.0-2006250000 definitions=3Dmain-2009290083
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70f586e9-4e4f-44a5-f566-08d8645823=
+f6
+X-MS-TrafficTypeDiagnostic: MWHPR04MB0799:
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =3D?utf-8?B?a0VHSVVDcG5nVlRadndFVFVJd09l=
+MjVZMHRRYzI1NEtlV0xZUFJvRzVWb2JU?=3D
+ =3D?utf-8?B?alUzblR3NnRDYjVMNWYwUTJaVE1TNGV1czVnMU9sZjVxeHNvOFRJTGJ5Y0Y3?=
+=3D
+ =3D?utf-8?B?UWM3c2ZiT3FYRVFIQ0RkdVNUTXpWNnBDclpsWWNMV3Y0NFUyTHBNMVg2VkVI?=
+=3D
+ =3D?utf-8?B?ZEJkVkxOR1l4cmQ2V2tGSXhuZHlIV1lnWHN5QlpicUY5eFJCL25SZDNtNGhG?=
+=3D
+ =3D?utf-8?B?MDh6dk5ZUDZVdW9UWlVKWjA4M042V3hhRS9QRVZEUld0d1BOY2JBWUJNVi8y?=
+=3D
+ =3D?utf-8?B?cGs0aDBOSnE5eEhDRUZEOEVhSzNZdk56ZS9UbmpheDMrTG9xQnhxS2UwTUw3?=
+=3D
+ =3D?utf-8?B?a3FjeGZoNGltUnpFazVQWnhadEx6ZjVURnQ2amxVdkQrZUNNOXpKb0V2enQ5?=
+=3D
+ =3D?utf-8?B?L25CZDZvOS9uTDJyN0Q3Vyt5TGVYdGM1U2k0VFFpTmtnQUhobFA1Ti8zcEZn?=
+=3D
+ =3D?utf-8?B?eGlzUjhmV2ZMQU9VSjlaejNuY053SjR5cGlwM0ZsaFA3c045cTRXdjJncVVW?=
+=3D
+ =3D?utf-8?B?RlQ2L2RPbDJ5NnRvQ3E4V3gyNmNmcmdjeUlYRzZCMXZ1dzV2VzhhdUh2NXR3?=
+=3D
+ =3D?utf-8?B?RFVKb3ZzVXlhMnM1Qnd5OFpvREFSTC9Zc01aN2doQnBUTG5jaUpjZ21CZUxR?=
+=3D
+ =3D?utf-8?B?dnpzZ29nSE0yak9sWElwb0RDcnppNm1XK0hKUU9weG93OGxqclFwS0pCbEdG?=
+=3D
+ =3D?utf-8?B?Sks4Yk0yRkFJbHYxYUxQcDJray80Ym9Nd0lUTys0R09iL2hBN2p4VUlBRG04?=
+=3D
+ =3D?utf-8?B?aXZyNzVjM2hxb1JqWnJFVy9JRE83SDRZVG9PbzhwaDN3Y2ZPbFZEQXQ3WjRw?=
+=3D
+ =3D?utf-8?B?S1I1U2VoUlg0UFg1b1RBUlBrTStsYWdFL2U4Y3h0WDA5OHRKKzgrRTRiWjBm?=
+=3D
+ =3D?utf-8?B?S2xRTmtSc0dBdk5CeU5TcDBlYXVmcGpUNkI0ekF3SDAvb3V4YnBQUTZ0RE52?=
+=3D
+ =3D?utf-8?B?UlFMcnV5eXR2WU1aalFzbnNkOUYyM3RCRzNGakJvOEluaEdHQVJLMFpMS3hp?=
+=3D
+ =3D?utf-8?B?K1pqN1o3YWkyZGk5bEZpNWZIckt0WDc5T3JiUGdtMG5PbUVWby8xQ2hvRGNv?=
+=3D
+ =3D?utf-8?B?US9odlRBSmpXRlRHaG9taXRUYWNKM3ZGMWNBMjZDVXcxWlFJWjFITHBVK1Q1?=
+=3D
+ =3D?utf-8?B?ZjM3b1dLKzJxNHoreWV1Nll1c2FtOTVVSG9vUzlrRzVqQjNGWnR6b1RZWE5P?=
+=3D
+ =3D?utf-8?B?YVF0c054YVl5ZVZHZURZMFNXT0w5bnh3ajZ4c2I4dnRFelRUS0p1R2U1d3ZW?=
+=3D
+ =3D?utf-8?B?R1dPRSt1YnE0eUZCOCt5MVNabHE4WHlFRzZUVVFEdC9ncFBhRjBQYzNjVElP?=
+=3D
+ =3D?utf-8?B?L1JmaWJJcExNOUlSYjdrS0s3dDZLWjRlanFhOXdUalR5MlZxa2NYNGRQYUhP?=
+=3D
+ =3D?utf-8?B?OW4wQnlVd2xLajJkOVdsTGVYNUNLdzMyRlVIVHZmNEFWOFc5UXc2cHJvajhQ?=
+=3D
+ =3D?utf-8?B?bUNtUFlrY1JucWVQaXdkL2dJV0pDajdhRHd0YVd1eFlBL3lFN2lrcy9FQU1F?=
+=3D
+ =3D?utf-8?B?TDV6NFZRZyt0dWVGYVRPMGNDWTBSKytxT3ZYTTJJUmtoRE41TlZicUZhbm1s?=
+=3D
+ =3D?utf-8?B?UTRzWGo3UGRkakhmUHY0dUplTGsybkdPdGhiTVducmtDYnM2TDN5YkdJNkly?=
+=3D
+ =3D?utf-8?B?QysvWFlISEFRSGFGMmV5T3hBL1BNNXpzTG1UK0VPRVpwRSt6R216VGdrVDA3?=
+=3D
+ =3D?utf-8?B?NjZHUlp6MWMwaVB6ZGx4NGRlaUdPM0tGR3FPTFRDL3pFL3Y5SjVNOG1mN1Rs?=
+=3D
+ =3D?utf-8?Q?ZEz0VtMYL20nq7KZBw=3D3D?=3D
+X-Forefront-Antispam-Report: CIP:148.163.158.57;CTRY:US;LANG:en;SCL:-1;SRV:=
+;IPV:CAL;SFV:SKN;H:mx0b-00010702.pphosted.com;PTR:mx0b-00010702.pphosted.co=
+m;CAT:NONE;SFS:;DIR:INB;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 09:14:59.5292
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70f586e9-4e4f-44a5-f566-08d86=
+45823f6
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT015.eop-nam02.prod.protecti=
+on.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR04MB0799
+X-OrganizationHeadersPreserved: MWHPR04MB0799.namprd04.prod.outlook.com
+X-CrossPremisesHeadersPromoted: us-aus-exch2.ni.corp.natinst.com
+X-CrossPremisesHeadersFiltered: us-aus-exch2.ni.corp.natinst.com
+X-OriginatorOrg: nio365.onmicrosoft.com
+
+
+--1f84d013-a0a0-43ea-9511-47075e992c1b
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<Head></head><body>
+<p><b><font color=3D"#000066" size=3D"3" face=3D"Arial">Delivery has failed=
+ to these recipients or groups:</font></b></p>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><p><a href=3D"mailto:are=
+li.meza@ni.com">areli.meza@ni.com</a><br>
+</font>
+<font color=3D"#000000" size=3D"3" face=3D"Arial">The email address you ent=
+ered couldn't be found. Please check the recipient's email address and try =
+to resend the message. If the problem continues, please contact your helpde=
+sk.<br>
+</font>
+<font color=3D"#000000" size=3D"2" face=3D"Tahoma"><br>
+</p>
+</font>
+<br><br><br><br><br><br>
+<font color=3D"#808080" size=3D"2" face=3D"Tahoma"><p><b>Diagnostic informa=
+tion for administrators:</b></p>
+<p>Generating server: us-aus-exch4.ni.corp.natinst.com<br>
+</p>
+<p>areli.meza@ni.com<br>
+Remote Server  returned '550 5.1.1 RESOLVER.ADR.RecipNotFound; not found'<b=
+r>
+</p>
+<p>Original message headers:</p>
+<pre>Received: from us-aus-exch2.ni.corp.natinst.com (130.164.68.12) by
+ us-aus-exch4.ni.corp.natinst.com (130.164.68.14) with Microsoft SMTP Serve=
+r
+ (TLS) id 15.0.1395.4; Tue, 29 Sep 2020 04:15:02 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (172.18.68.32)=
+ by
+ us-aus-exch2.ni.corp.natinst.com (130.164.68.12) with Microsoft SMTP Serve=
+r
+ (TLS) id 15.0.1395.4 via Frontend Transport; Tue, 29 Sep 2020 04:15:02 -05=
+00
+Received: from BL0PR02CA0021.namprd02.prod.outlook.com (2603:10b6:207:3c::3=
+4)
+ by MWHPR04MB0799.namprd04.prod.outlook.com (2603:10b6:300:f2::21) with
+ Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Tue, 29 =
+Sep
+ 2020 09:15:00 +0000
+Received: from BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:207:3c:cafe::d2) by BL0PR02CA0021.outlook.office365.com
+ (2603:10b6:207:3c::34) with Microsoft SMTP Server (version=3DTLS1_2,
+ cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Front=
+end
+ Transport; Tue, 29 Sep 2020 09:15:00 +0000
+Authentication-Results: spf=3Dtemperror (sender IP is 148.163.158.57)
+ smtp.mailfrom=3Djosh.is; ni.com; dkim=3Dfail (signature did not verify)
+ header.d=3Djosh-is.20150623.gappssmtp.com;ni.com; dmarc=3Dtemperror action=
+=3Dnone
+ header.from=3Djosh.is;compauth=3Dnone reason=3D405
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx0b-00010702.pphosted.com (148.163.158.57) by
+ BL2NAM02FT015.mail.protection.outlook.com (10.152.77.167) with Microsoft S=
+MTP
+ Server (version=3DTLS1_2, cipher=3DTLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) =
+id
+ 15.20.3412.21 via Frontend Transport; Tue, 29 Sep 2020 09:14:59 +0000
+Received: from pps.filterd (m0098779.ppops.net [127.0.0.1])
+	by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08T9Ew6p0=
+24110
+	for &lt;areli.meza@ni.com&gt;; Tue, 29 Sep 2020 04:14:59 -0500
+Authentication-Results-Original: ppops.net;	spf=3Dpass
+ smtp.mailfrom=3Djosh@josh.is;	dkim=3Dpass header.s=3D20150623
+ header.d=3Djosh-is.20150623.gappssmtp.com
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167=
+.41])
+	by mx0b-00010702.pphosted.com with ESMTP id 33t3f75v6b-1
+	(version=3DTLSv1.2 cipher=3DECDHE-RSA-AES128-GCM-SHA256 bits=3D128 verify=
+=3DNOT)
+	for &lt;areli.meza@ni.com&gt;; Tue, 29 Sep 2020 04:14:58 -0500
+Received: by mail-lf1-f41.google.com with SMTP id u8so4677740lff.1
+        for &lt;areli.meza@ni.com&gt;; Tue, 29 Sep 2020 02:14:58 -0700 (PDT=
+)
+DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3Djosh-is.20150623.gappssmtp.com; s=3D20150623;
+        h=3Dfrom:mime-version:date:message-id:subject:to;
+        bh=3D6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=3D;
+        b=3DwEnP8DW8bfvQ+Ho6cLjDuI+jwBAYmwWxZXsqidMeZnc9zm5kENTTYmydr0tA83y=
+QOJ
+         m2+fO3HJjSF3reNoXGhEmAK69x9rr5WJGQ72BLR2t3rUxCEYMtdr498fZVHPexrK0H=
+23
+         FALQE5GldUU8zAKLfWrqLmGsiraRugCEmALvD6JFMkOZPoW9Cs60dvON5EfBdZwoWO=
+f7
+         8uHQcRWpZWNkOEpLeMSCFIlimhx2jClG9QwkF/y90nweT/rthEKmqxm1PE8jjy4evt=
+cW
+         9Iv3gvGQ7G/mkJes32kyPiEEIP+XxpyOIN9yH/YmLqKWcixwzKMCsT3zIdVDuOrVi5=
+S2
+         VmOg=3D=3D
+X-Google-DKIM-Signature: v=3D1; a=3Drsa-sha256; c=3Drelaxed/relaxed;
+        d=3D1e100.net; s=3D20161025;
+        h=3Dx-gm-message-state:from:mime-version:date:message-id:subject:to=
+;
+        bh=3D6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=3D;
+        b=3DtIbXZn5HcR2nEXGeS+ydv3IC5be6KsKzOMisvIwPhqYFJ0ZYiAFINJIqmCzpogL=
+CeS
+         0SakykWaj4I/azZCMzn3maZBN7Ern/ierRL4SucOCjTmuFPy47wwmI4T5jRvCfFCUS=
+Vm
+         /GoevuMigxcs1fXW20CW9QUJpRAuTA4iax/Qu/JBufQpkLOWyNgg2ksQw6CRsJvLRx=
+fy
+         D30k07WZmDz2rBYj4sStnbOIHdy3O3LTCIU+32VVk8tqAeyyVIByUPV11yswoK/VnO=
+hY
+         INWVyC6ZYHg9bowPJi3hUPeBMTUjorD+E/VI6RZ6+p225C41pCXlaYCQ2xGIni5bZw=
+6O
+         yrkg=3D=3D
+X-Gm-Message-State: AOAM532Gk8yoRQhSRNbg7oA5f9yQslhv/EEJt/op9utv53hz83gb8N5=
+G
+	eLpf1tnbYaZ3Coy9PBLEhe9W6HJ0DSbR1xMQVgjr9RG5DhY=3D
+X-Google-Smtp-Source: ABdhPJwe2DNjFnofP5PTabGQeUUpGBRf9BYDw3Wzsi6tcWOzFDlKL=
+4gLaYdYKVF21eYk2A6avjX4U17Xk+MleCkGIYM=3D
+X-Received: by 2002:ac2:529c:: with SMTP id q28mr960418lfm.104.160137089665=
+7;
+ Tue, 29 Sep 2020 02:14:56 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 29 Sep 2020 02:14:56 -0700
+From: Josh Klein &lt;josh@josh.is&gt;
+Date: Tue, 29 Sep 2020 02:14:56 -0700
+Message-ID: &lt;CACNgykMzm3dQTbWS81mLnJ942Xwy+oLWDhAjSGXOvVPvyDmKqw@mail.gm=
+ail.com&gt;
+To: &lt;areli.meza@ni.com&gt;
+Content-Type: multipart/alternative; boundary=3D&quot;00000000000073037905b=
+07037bd&quot;
+X-CLX-Shades: MLX
+X-CLX-Response: 1TFkXGxMYEQpMehcbHhkRCllEF2d/QxtcYGVoZE57EQpYWBdmZEhEGHJkUn=
+9 TQBEKeE4XZlJyYUFZGkFuXRMRCnlMF21ESUxHbF1TRRJsEQpDSBcHHh0dEQpDWRcbGhkRCkNJ=
+Fx oEGhoaEQpZTRdnZnIRCllJFxpxGhAadwYbHRhxGxofEBp3BhgaBhoRClleF2hjeREKSUYXRE=
+teQ
+ 0VES0ZDRFledUJFWV5PThEKQ04XZkROH01JQ2Z+bmhCUkIdTB1+WGhQQ1h/YU9lRnVbaB0RClh=
+c Fx8EGgQYGx8FGxoEGxsaBB8aBBseGBAbHhofGhEKXlkXfVtgAV8RCk1cFxsbGREKTFoXbGlNT=
+Ws RCkJPF2JkT10eZHxNX1JcEQpDWhcYGhMEEh8EGxwdBB4bEQpCXhcbEQpCXBcaEQpCRRdgQk5=
+HXU
+ NBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn1ieREK=
+Q kAXa35gHWhOcGBLYFgRCkJYF254ZWAYeFAeZxgfEQpNXhcbEQpaWBcbEQp5QxdmHUxuYFNJcn=
+9T WREKWUsXHhkbHBEKcGgXaQFPExhpZ0gFeAEQGRoRCnBoF2MZRURNZGhnUnMZEBkaEQpwaBdj=
+R2M
+ ZHRpsYkxyUBAZGhEKcGgXbnxpZh5HQVNvXHMQGRoRCnBoF2scTmdcfEt+Xh0FEBkaEQpwfRdle=
+k VoeQETewFCSBAZGhEKcH0XbEVhAR99XlBoWxIQGRoRCnB9F2QTYVNTHGRJGk9NEBkaEQpwfRd=
+mU 2toU3hQaXheeRAZGhEKcH0XYEtOUwFLcG1pbGUQGRoRCnB/F3oeBVlaWxp6TBNvEB4ZEQpwX=
+xdg
+ RXkbBX0bRV8BeRAZGhEKcF8XZk1yTGxSRxNYfU4QGRoRCnBfF2EbcH9QXHpuUHJyEBkaEQpwXx=
+d rSH5Fa3MbU3JJUxAZGhEKcF8XbQFjZ3BdHl9dRl4QGRoRCnBsF2hdQGNNWmUfR0xwEB0SEQpt=
+fh cbEQpYTRdLESA=3D
+MIME-Version: 1.0
+Subject: [EXTERNAL] I can help with that
+X-Proofpoint-Virus-Version: vendor=3Dfsecure engine=3D2.50.10434:6.0.235,18=
+.0.687
+ definitions=3D2020-09-29_01:2020-09-29,2020-09-29 signatures=3D0
+X-Proofpoint-Spam-Details: rule=3Dinbound_policy_notspam policy=3Dinbound_p=
+olicy score=3D0 suspectscore=3D10
+ lowpriorityscore=3D0 phishscore=3D0 mlxscore=3D0 mlxlogscore=3D944 imposto=
+rscore=3D0
+ malwarescore=3D0 bulkscore=3D0 spamscore=3D0 clxscore=3D192 adultscore=3D0
+ priorityscore=3D143 classifier=3Dspam adjust=3D0 reason=3Dmlx scancount=3D=
+1
+ engine=3D8.12.0-2006250000 definitions=3Dmain-2009290083
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70f586e9-4e4f-44a5-f566-08d8645823=
+f6
+X-MS-TrafficTypeDiagnostic: MWHPR04MB0799:
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =3D?utf-8?B?a0VHSVVDcG5nVlRadndFVFVJd09l=
+MjVZMHRRYzI1NEtlV0xZUFJvRzVWb2JU?=3D
+ =3D?utf-8?B?alUzblR3NnRDYjVMNWYwUTJaVE1TNGV1czVnMU9sZjVxeHNvOFRJTGJ5Y0Y3?=
+=3D
+ =3D?utf-8?B?UWM3c2ZiT3FYRVFIQ0RkdVNUTXpWNnBDclpsWWNMV3Y0NFUyTHBNMVg2VkVI?=
+=3D
+ =3D?utf-8?B?ZEJkVkxOR1l4cmQ2V2tGSXhuZHlIV1lnWHN5QlpicUY5eFJCL25SZDNtNGhG?=
+=3D
+ =3D?utf-8?B?MDh6dk5ZUDZVdW9UWlVKWjA4M042V3hhRS9QRVZEUld0d1BOY2JBWUJNVi8y?=
+=3D
+ =3D?utf-8?B?cGs0aDBOSnE5eEhDRUZEOEVhSzNZdk56ZS9UbmpheDMrTG9xQnhxS2UwTUw3?=
+=3D
+ =3D?utf-8?B?a3FjeGZoNGltUnpFazVQWnhadEx6ZjVURnQ2amxVdkQrZUNNOXpKb0V2enQ5?=
+=3D
+ =3D?utf-8?B?L25CZDZvOS9uTDJyN0Q3Vyt5TGVYdGM1U2k0VFFpTmtnQUhobFA1Ti8zcEZn?=
+=3D
+ =3D?utf-8?B?eGlzUjhmV2ZMQU9VSjlaejNuY053SjR5cGlwM0ZsaFA3c045cTRXdjJncVVW?=
+=3D
+ =3D?utf-8?B?RlQ2L2RPbDJ5NnRvQ3E4V3gyNmNmcmdjeUlYRzZCMXZ1dzV2VzhhdUh2NXR3?=
+=3D
+ =3D?utf-8?B?RFVKb3ZzVXlhMnM1Qnd5OFpvREFSTC9Zc01aN2doQnBUTG5jaUpjZ21CZUxR?=
+=3D
+ =3D?utf-8?B?dnpzZ29nSE0yak9sWElwb0RDcnppNm1XK0hKUU9weG93OGxqclFwS0pCbEdG?=
+=3D
+ =3D?utf-8?B?Sks4Yk0yRkFJbHYxYUxQcDJray80Ym9Nd0lUTys0R09iL2hBN2p4VUlBRG04?=
+=3D
+ =3D?utf-8?B?aXZyNzVjM2hxb1JqWnJFVy9JRE83SDRZVG9PbzhwaDN3Y2ZPbFZEQXQ3WjRw?=
+=3D
+ =3D?utf-8?B?S1I1U2VoUlg0UFg1b1RBUlBrTStsYWdFL2U4Y3h0WDA5OHRKKzgrRTRiWjBm?=
+=3D
+ =3D?utf-8?B?S2xRTmtSc0dBdk5CeU5TcDBlYXVmcGpUNkI0ekF3SDAvb3V4YnBQUTZ0RE52?=
+=3D
+ =3D?utf-8?B?UlFMcnV5eXR2WU1aalFzbnNkOUYyM3RCRzNGakJvOEluaEdHQVJLMFpMS3hp?=
+=3D
+ =3D?utf-8?B?K1pqN1o3YWkyZGk5bEZpNWZIckt0WDc5T3JiUGdtMG5PbUVWby8xQ2hvRGNv?=
+=3D
+ =3D?utf-8?B?US9odlRBSmpXRlRHaG9taXRUYWNKM3ZGMWNBMjZDVXcxWlFJWjFITHBVK1Q1?=
+=3D
+ =3D?utf-8?B?ZjM3b1dLKzJxNHoreWV1Nll1c2FtOTVVSG9vUzlrRzVqQjNGWnR6b1RZWE5P?=
+=3D
+ =3D?utf-8?B?YVF0c054YVl5ZVZHZURZMFNXT0w5bnh3ajZ4c2I4dnRFelRUS0p1R2U1d3ZW?=
+=3D
+ =3D?utf-8?B?R1dPRSt1YnE0eUZCOCt5MVNabHE4WHlFRzZUVVFEdC9ncFBhRjBQYzNjVElP?=
+=3D
+ =3D?utf-8?B?L1JmaWJJcExNOUlSYjdrS0s3dDZLWjRlanFhOXdUalR5MlZxa2NYNGRQYUhP?=
+=3D
+ =3D?utf-8?B?OW4wQnlVd2xLajJkOVdsTGVYNUNLdzMyRlVIVHZmNEFWOFc5UXc2cHJvajhQ?=
+=3D
+ =3D?utf-8?B?bUNtUFlrY1JucWVQaXdkL2dJV0pDajdhRHd0YVd1eFlBL3lFN2lrcy9FQU1F?=
+=3D
+ =3D?utf-8?B?TDV6NFZRZyt0dWVGYVRPMGNDWTBSKytxT3ZYTTJJUmtoRE41TlZicUZhbm1s?=
+=3D
+ =3D?utf-8?B?UTRzWGo3UGRkakhmUHY0dUplTGsybkdPdGhiTVducmtDYnM2TDN5YkdJNkly?=
+=3D
+ =3D?utf-8?B?QysvWFlISEFRSGFGMmV5T3hBL1BNNXpzTG1UK0VPRVpwRSt6R216VGdrVDA3?=
+=3D
+ =3D?utf-8?B?NjZHUlp6MWMwaVB6ZGx4NGRlaUdPM0tGR3FPTFRDL3pFL3Y5SjVNOG1mN1Rs?=
+=3D
+ =3D?utf-8?Q?ZEz0VtMYL20nq7KZBw=3D3D?=3D
+X-Forefront-Antispam-Report: CIP:148.163.158.57;CTRY:US;LANG:en;SCL:-1;SRV:=
+;IPV:CAL;SFV:SKN;H:mx0b-00010702.pphosted.com;PTR:mx0b-00010702.pphosted.co=
+m;CAT:NONE;SFS:;DIR:INB;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 09:14:59.5292
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70f586e9-4e4f-44a5-f566-08d86=
+45823f6
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT015.eop-nam02.prod.protecti=
+on.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR04MB0799
+X-OrganizationHeadersPreserved: MWHPR04MB0799.namprd04.prod.outlook.com
+X-CrossPremisesHeadersPromoted: us-aus-exch2.ni.corp.natinst.com
+X-CrossPremisesHeadersFiltered: us-aus-exch2.ni.corp.natinst.com
+X-OriginatorOrg: nio365.onmicrosoft.com
+</pre>
+</font>
+</body>
+</html>=
+
+--1f84d013-a0a0-43ea-9511-47075e992c1b--
+
+--29621ac2-8239-491b-8ee7-1826a3480373
+Content-Type: message/delivery-status
+
+Reporting-MTA: dns;us-aus-exch4.ni.corp.natinst.com
+Received-From-MTA: dns;NAM10-DM6-obe.outbound.protection.outlook.com
+Arrival-Date: Tue, 29 Sep 2020 09:15:02 +0000
+
+Final-Recipient: rfc822;areli.meza@ni.com
+Action: failed
+Status: 5.1.1
+Diagnostic-Code: smtp;550 5.1.1 RESOLVER.ADR.RecipNotFound; not found
+
+
+--29621ac2-8239-491b-8ee7-1826a3480373
+Content-Type: message/rfc822
+
+Received: from us-aus-exch2.ni.corp.natinst.com (130.164.68.12) by
+ us-aus-exch4.ni.corp.natinst.com (130.164.68.14) with Microsoft SMTP Server
+ (TLS) id 15.0.1395.4; Tue, 29 Sep 2020 04:15:02 -0500
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (172.18.68.32) by
+ us-aus-exch2.ni.corp.natinst.com (130.164.68.12) with Microsoft SMTP Server
+ (TLS) id 15.0.1395.4 via Frontend Transport; Tue, 29 Sep 2020 04:15:02 -0500
+Received: from BL0PR02CA0021.namprd02.prod.outlook.com (2603:10b6:207:3c::34)
+ by MWHPR04MB0799.namprd04.prod.outlook.com (2603:10b6:300:f2::21) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.22; Tue, 29 Sep
+ 2020 09:15:00 +0000
+Received: from BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:207:3c:cafe::d2) by BL0PR02CA0021.outlook.office365.com
+ (2603:10b6:207:3c::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3412.20 via Frontend
+ Transport; Tue, 29 Sep 2020 09:15:00 +0000
+Authentication-Results: spf=temperror (sender IP is 148.163.158.57)
+ smtp.mailfrom=josh.is; ni.com; dkim=fail (signature did not verify)
+ header.d=josh-is.20150623.gappssmtp.com;ni.com; dmarc=temperror action=none
+ header.from=josh.is;compauth=none reason=405
+Received-SPF: TempError (protection.outlook.com: error in processing during
+ lookup of josh.is: DNS Timeout)
+Received: from mx0b-00010702.pphosted.com (148.163.158.57) by
+ BL2NAM02FT015.mail.protection.outlook.com (10.152.77.167) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3412.21 via Frontend Transport; Tue, 29 Sep 2020 09:14:59 +0000
+Received: from pps.filterd (m0098779.ppops.net [127.0.0.1])
+	by mx0b-00010702.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 08T9Ew6p024110
+	for <areli.meza@ni.com>; Tue, 29 Sep 2020 04:14:59 -0500
+Authentication-Results-Original: ppops.net;	spf=pass
+ smtp.mailfrom=josh@josh.is;	dkim=pass header.s=20150623
+ header.d=josh-is.20150623.gappssmtp.com
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	by mx0b-00010702.pphosted.com with ESMTP id 33t3f75v6b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
+	for <areli.meza@ni.com>; Tue, 29 Sep 2020 04:14:58 -0500
+Received: by mail-lf1-f41.google.com with SMTP id u8so4677740lff.1
+        for <areli.meza@ni.com>; Tue, 29 Sep 2020 02:14:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=josh-is.20150623.gappssmtp.com; s=20150623;
+        h=from:mime-version:date:message-id:subject:to;
+        bh=6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=;
+        b=wEnP8DW8bfvQ+Ho6cLjDuI+jwBAYmwWxZXsqidMeZnc9zm5kENTTYmydr0tA83yQOJ
+         m2+fO3HJjSF3reNoXGhEmAK69x9rr5WJGQ72BLR2t3rUxCEYMtdr498fZVHPexrK0H23
+         FALQE5GldUU8zAKLfWrqLmGsiraRugCEmALvD6JFMkOZPoW9Cs60dvON5EfBdZwoWOf7
+         8uHQcRWpZWNkOEpLeMSCFIlimhx2jClG9QwkF/y90nweT/rthEKmqxm1PE8jjy4evtcW
+         9Iv3gvGQ7G/mkJes32kyPiEEIP+XxpyOIN9yH/YmLqKWcixwzKMCsT3zIdVDuOrVi5S2
+         VmOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:mime-version:date:message-id:subject:to;
+        bh=6Ef5arMAFFlZsWpqp8QPiLwWxWLvRhxnLiZCQdaNrIY=;
+        b=tIbXZn5HcR2nEXGeS+ydv3IC5be6KsKzOMisvIwPhqYFJ0ZYiAFINJIqmCzpogLCeS
+         0SakykWaj4I/azZCMzn3maZBN7Ern/ierRL4SucOCjTmuFPy47wwmI4T5jRvCfFCUSVm
+         /GoevuMigxcs1fXW20CW9QUJpRAuTA4iax/Qu/JBufQpkLOWyNgg2ksQw6CRsJvLRxfy
+         D30k07WZmDz2rBYj4sStnbOIHdy3O3LTCIU+32VVk8tqAeyyVIByUPV11yswoK/VnOhY
+         INWVyC6ZYHg9bowPJi3hUPeBMTUjorD+E/VI6RZ6+p225C41pCXlaYCQ2xGIni5bZw6O
+         yrkg==
+X-Gm-Message-State: AOAM532Gk8yoRQhSRNbg7oA5f9yQslhv/EEJt/op9utv53hz83gb8N5G
+	eLpf1tnbYaZ3Coy9PBLEhe9W6HJ0DSbR1xMQVgjr9RG5DhY=
+X-Google-Smtp-Source: ABdhPJwe2DNjFnofP5PTabGQeUUpGBRf9BYDw3Wzsi6tcWOzFDlKL4gLaYdYKVF21eYk2A6avjX4U17Xk+MleCkGIYM=
+X-Received: by 2002:ac2:529c:: with SMTP id q28mr960418lfm.104.1601370896657;
+ Tue, 29 Sep 2020 02:14:56 -0700 (PDT)
+Received: from 968012905573 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 29 Sep 2020 02:14:56 -0700
+From: Josh Klein <josh@josh.is>
+Date: Tue, 29 Sep 2020 02:14:56 -0700
+Message-ID: <CACNgykMzm3dQTbWS81mLnJ942Xwy+oLWDhAjSGXOvVPvyDmKqw@mail.gmail.com>
+To: <areli.meza@ni.com>
+Content-Type: multipart/alternative; boundary="00000000000073037905b07037bd"
+X-CLX-Shades: MLX
+X-CLX-Response: 1TFkXGxMYEQpMehcbHhkRCllEF2d/QxtcYGVoZE57EQpYWBdmZEhEGHJkUn9 TQBEKeE4XZlJyYUFZGkFuXRMRCnlMF21ESUxHbF1TRRJsEQpDSBcHHh0dEQpDWRcbGhkRCkNJFx oEGhoaEQpZTRdnZnIRCllJFxpxGhAadwYbHRhxGxofEBp3BhgaBhoRClleF2hjeREKSUYXREteQ
+ 0VES0ZDRFledUJFWV5PThEKQ04XZkROH01JQ2Z+bmhCUkIdTB1+WGhQQ1h/YU9lRnVbaB0RClhc Fx8EGgQYGx8FGxoEGxsaBB8aBBseGBAbHhofGhEKXlkXfVtgAV8RCk1cFxsbGREKTFoXbGlNTWs RCkJPF2JkT10eZHxNX1JcEQpDWhcYGhMEEh8EGxwdBB4bEQpCXhcbEQpCXBcaEQpCRRdgQk5HXU
+ NBaGlQTBEKQk4XZlJyYUFZGkFuXRMRCkJMF2ZkSEQYcmRSf1NAEQpCbBdub0EBblMfTn1ieREKQ kAXa35gHWhOcGBLYFgRCkJYF254ZWAYeFAeZxgfEQpNXhcbEQpaWBcbEQp5QxdmHUxuYFNJcn9T WREKWUsXHhkbHBEKcGgXaQFPExhpZ0gFeAEQGRoRCnBoF2MZRURNZGhnUnMZEBkaEQpwaBdjR2M
+ ZHRpsYkxyUBAZGhEKcGgXbnxpZh5HQVNvXHMQGRoRCnBoF2scTmdcfEt+Xh0FEBkaEQpwfRdlek VoeQETewFCSBAZGhEKcH0XbEVhAR99XlBoWxIQGRoRCnB9F2QTYVNTHGRJGk9NEBkaEQpwfRdmU 2toU3hQaXheeRAZGhEKcH0XYEtOUwFLcG1pbGUQGRoRCnB/F3oeBVlaWxp6TBNvEB4ZEQpwXxdg
+ RXkbBX0bRV8BeRAZGhEKcF8XZk1yTGxSRxNYfU4QGRoRCnBfF2EbcH9QXHpuUHJyEBkaEQpwXxd rSH5Fa3MbU3JJUxAZGhEKcF8XbQFjZ3BdHl9dRl4QGRoRCnBsF2hdQGNNWmUfR0xwEB0SEQptfh cbEQpYTRdLESA=
+MIME-Version: 1.0
+Subject: [EXTERNAL] I can help with that
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_01:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=inbound_policy_notspam policy=inbound_policy score=0 suspectscore=10
+ lowpriorityscore=0 phishscore=0 mlxscore=0 mlxlogscore=944 impostorscore=0
+ malwarescore=0 bulkscore=0 spamscore=0 clxscore=192 adultscore=0
+ priorityscore=143 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2006250000 definitions=main-2009290083
+Return-Path: josh@josh.is
+X-EOPAttributedMessage: 0
+X-EOPTenantAttributedMessage: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e:0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 70f586e9-4e4f-44a5-f566-08d8645823f6
+X-MS-TrafficTypeDiagnostic: MWHPR04MB0799:
+X-MS-Exchange-AtpMessageProperties: SA
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: =?utf-8?B?a0VHSVVDcG5nVlRadndFVFVJd09lMjVZMHRRYzI1NEtlV0xZUFJvRzVWb2JU?=
+ =?utf-8?B?alUzblR3NnRDYjVMNWYwUTJaVE1TNGV1czVnMU9sZjVxeHNvOFRJTGJ5Y0Y3?=
+ =?utf-8?B?UWM3c2ZiT3FYRVFIQ0RkdVNUTXpWNnBDclpsWWNMV3Y0NFUyTHBNMVg2VkVI?=
+ =?utf-8?B?ZEJkVkxOR1l4cmQ2V2tGSXhuZHlIV1lnWHN5QlpicUY5eFJCL25SZDNtNGhG?=
+ =?utf-8?B?MDh6dk5ZUDZVdW9UWlVKWjA4M042V3hhRS9QRVZEUld0d1BOY2JBWUJNVi8y?=
+ =?utf-8?B?cGs0aDBOSnE5eEhDRUZEOEVhSzNZdk56ZS9UbmpheDMrTG9xQnhxS2UwTUw3?=
+ =?utf-8?B?a3FjeGZoNGltUnpFazVQWnhadEx6ZjVURnQ2amxVdkQrZUNNOXpKb0V2enQ5?=
+ =?utf-8?B?L25CZDZvOS9uTDJyN0Q3Vyt5TGVYdGM1U2k0VFFpTmtnQUhobFA1Ti8zcEZn?=
+ =?utf-8?B?eGlzUjhmV2ZMQU9VSjlaejNuY053SjR5cGlwM0ZsaFA3c045cTRXdjJncVVW?=
+ =?utf-8?B?RlQ2L2RPbDJ5NnRvQ3E4V3gyNmNmcmdjeUlYRzZCMXZ1dzV2VzhhdUh2NXR3?=
+ =?utf-8?B?RFVKb3ZzVXlhMnM1Qnd5OFpvREFSTC9Zc01aN2doQnBUTG5jaUpjZ21CZUxR?=
+ =?utf-8?B?dnpzZ29nSE0yak9sWElwb0RDcnppNm1XK0hKUU9weG93OGxqclFwS0pCbEdG?=
+ =?utf-8?B?Sks4Yk0yRkFJbHYxYUxQcDJray80Ym9Nd0lUTys0R09iL2hBN2p4VUlBRG04?=
+ =?utf-8?B?aXZyNzVjM2hxb1JqWnJFVy9JRE83SDRZVG9PbzhwaDN3Y2ZPbFZEQXQ3WjRw?=
+ =?utf-8?B?S1I1U2VoUlg0UFg1b1RBUlBrTStsYWdFL2U4Y3h0WDA5OHRKKzgrRTRiWjBm?=
+ =?utf-8?B?S2xRTmtSc0dBdk5CeU5TcDBlYXVmcGpUNkI0ekF3SDAvb3V4YnBQUTZ0RE52?=
+ =?utf-8?B?UlFMcnV5eXR2WU1aalFzbnNkOUYyM3RCRzNGakJvOEluaEdHQVJLMFpMS3hp?=
+ =?utf-8?B?K1pqN1o3YWkyZGk5bEZpNWZIckt0WDc5T3JiUGdtMG5PbUVWby8xQ2hvRGNv?=
+ =?utf-8?B?US9odlRBSmpXRlRHaG9taXRUYWNKM3ZGMWNBMjZDVXcxWlFJWjFITHBVK1Q1?=
+ =?utf-8?B?ZjM3b1dLKzJxNHoreWV1Nll1c2FtOTVVSG9vUzlrRzVqQjNGWnR6b1RZWE5P?=
+ =?utf-8?B?YVF0c054YVl5ZVZHZURZMFNXT0w5bnh3ajZ4c2I4dnRFelRUS0p1R2U1d3ZW?=
+ =?utf-8?B?R1dPRSt1YnE0eUZCOCt5MVNabHE4WHlFRzZUVVFEdC9ncFBhRjBQYzNjVElP?=
+ =?utf-8?B?L1JmaWJJcExNOUlSYjdrS0s3dDZLWjRlanFhOXdUalR5MlZxa2NYNGRQYUhP?=
+ =?utf-8?B?OW4wQnlVd2xLajJkOVdsTGVYNUNLdzMyRlVIVHZmNEFWOFc5UXc2cHJvajhQ?=
+ =?utf-8?B?bUNtUFlrY1JucWVQaXdkL2dJV0pDajdhRHd0YVd1eFlBL3lFN2lrcy9FQU1F?=
+ =?utf-8?B?TDV6NFZRZyt0dWVGYVRPMGNDWTBSKytxT3ZYTTJJUmtoRE41TlZicUZhbm1s?=
+ =?utf-8?B?UTRzWGo3UGRkakhmUHY0dUplTGsybkdPdGhiTVducmtDYnM2TDN5YkdJNkly?=
+ =?utf-8?B?QysvWFlISEFRSGFGMmV5T3hBL1BNNXpzTG1UK0VPRVpwRSt6R216VGdrVDA3?=
+ =?utf-8?B?NjZHUlp6MWMwaVB6ZGx4NGRlaUdPM0tGR3FPTFRDL3pFL3Y5SjVNOG1mN1Rs?=
+ =?utf-8?Q?ZEz0VtMYL20nq7KZBw=3D?=
+X-Forefront-Antispam-Report: CIP:148.163.158.57;CTRY:US;LANG:en;SCL:-1;SRV:;IPV:CAL;SFV:SKN;H:mx0b-00010702.pphosted.com;PTR:mx0b-00010702.pphosted.com;CAT:NONE;SFS:;DIR:INB;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 29 Sep 2020 09:14:59.5292
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 70f586e9-4e4f-44a5-f566-08d8645823f6
+X-MS-Exchange-CrossTenant-Id: 87ba1f9a-44cd-43a6-b008-6fdb45a5204e
+X-MS-Exchange-CrossTenant-AuthSource: BL2NAM02FT015.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR04MB0799
+X-OrganizationHeadersPreserved: MWHPR04MB0799.namprd04.prod.outlook.com
+X-CrossPremisesHeadersPromoted: us-aus-exch2.ni.corp.natinst.com
+X-CrossPremisesHeadersFiltered: us-aus-exch2.ni.corp.natinst.com
+X-OriginatorOrg: nio365.onmicrosoft.com
+
+--00000000000073037905b07037bd
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: Quoted-printable
+
+ I can help with that
+Everyone I know is trying to figure out how to build worthwhile
+relationships in the pandemic. But with virtualization, 99% of everything
+is turning out to be spam.
+
+I figured I'd try something different. We've worked together before, and
+more importantly you're someone I *enjoyed* working with, and would work
+with again. Below is a shortlist of my current projects; reply with an
+update on your current projects, or schedule a time
+<https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf24e-b602-4065-9=
+e1f-dfedc10f61e8/50db035b-4bf6-4cf7-82b8-285cbdfbb7d7__;!!FbZ0ZwI3Qg!7ecH8Z=
+KbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3Ql8GKr05$ >
+and let's chat!
+
+Looking forward to reconnecting,
+Josh
+
+###
+
+*Current Projects:*
+
+IndigoMetrics
+<https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf24e-b602-4065-9=
+e1f-dfedc10f61e8/ffc0c9a5-680c-4a3d-8118-632342a07350__;!!FbZ0ZwI3Qg!7ecH8Z=
+KbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3QkUlhNzg$ >;
+an AI platform for autonomously managing behavior and beliefs in employees.
+Super useful if you've got staff that are now remote!
+
+Continuous Glucose Monitor Testing
+<https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf24e-b602-4065-9=
+e1f-dfedc10f61e8/1940fbce-7f11-433e-b64e-ac0e7ea91f6f__;!!FbZ0ZwI3Qg!7ecH8Z=
+KbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3Qv8teaWz$ >;
+a project to understand how to use physically embedded sensors to reduce
+the health impacts of obesity, heart disease, and diabetes (and hence
+Covid!)
+
+Professional Services
+<https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf24e-b602-4065-9=
+e1f-dfedc10f61e8/6af1cb5d-78eb-4fef-91a0-24e0e557f502__;!!FbZ0ZwI3Qg!7ecH8Z=
+KbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3QiFAWhoB$ >:
+as ever, I continue to work with senior leaders and teams on technology
+strategy and new innovation / product development.
+
+--00000000000073037905b07037bd
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: Quoted-printable
+
+
+      <html>
+      <head>
+        <title>I can help with that</title>
+        <meta content=3D"text/html;" charset=3D"utf-8" http-equiv=3D"Conten=
+t-Type">
+      </head>
+      <body><div>Everyone I know is trying to figure out how to build worth=
+while relationships in the pandemic. But with virtualization, 99% of everyt=
+hing is turning out to be spam.</div>
+<div>=C2=A0</div>
+<div>I figured I&#39;d try something different. We&#39;ve worked together b=
+efore, and more importantly you&#39;re someone I *enjoyed* working with, an=
+d would work with again.=C2=A0Below is a shortlist of my current projects; =
+reply with an update on your current projects, or <a href=3D"https://urldef=
+ense.com/v3/__http://w1.mssktd.com/prod/c8fbf24e-b602-4065-9e1f-dfedc10f61e=
+8/50db035b-4bf6-4cf7-82b8-285cbdfbb7d7__;!!FbZ0ZwI3Qg!7ecH8ZKbSxS6rskVV9gY9=
+63PzCR6d7BmsBsJeTf_LH4vZkGfl1A3Ql8GKr05$">schedule a time</a> and let&#39;s=
+ chat!</div>
+<div>=C2=A0</div>
+<div>Looking forward to reconnecting,</div>
+<div>Josh</div>
+<div><br>###<br><br>
+<div><strong>Current Projects:</strong></div>
+<div>=C2=A0</div>
+<div><a href=3D"https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf=
+24e-b602-4065-9e1f-dfedc10f61e8/ffc0c9a5-680c-4a3d-8118-632342a07350__;!!Fb=
+Z0ZwI3Qg!7ecH8ZKbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3QkUlhNzg$">Ind=
+igoMetrics</a>; an AI platform for autonomously managing behavior and belie=
+fs in employees. Super useful if you&#39;ve got staff that are now remote!<=
+/div>
+<div>=C2=A0</div>
+<div><a href=3D"https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf=
+24e-b602-4065-9e1f-dfedc10f61e8/1940fbce-7f11-433e-b64e-ac0e7ea91f6f__;!!Fb=
+Z0ZwI3Qg!7ecH8ZKbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3Qv8teaWz$">Con=
+tinuous Glucose Monitor Testing</a>; a project to understand how to use phy=
+sically embedded sensors to reduce the health impacts of obesity, heart dis=
+ease, and diabetes (and hence Covid!)</div>
+<div>=C2=A0</div>
+<div><a href=3D"https://urldefense.com/v3/__http://w1.mssktd.com/prod/c8fbf=
+24e-b602-4065-9e1f-dfedc10f61e8/6af1cb5d-78eb-4fef-91a0-24e0e557f502__;!!Fb=
+Z0ZwI3Qg!7ecH8ZKbSxS6rskVV9gY963PzCR6d7BmsBsJeTf_LH4vZkGfl1A3QiFAWhoB$">Pro=
+fessional Services</a>: as ever, I continue to work with senior leaders and=
+ teams on technology strategy and new innovation / product development.</di=
+v>
+</div><img alt=3D"" width=3D"1" height=3D"1" class=3D"beacon-o" src=3D"http=
+://w1.mssktd.com/prod/open/c8fbf24e-b602-4065-9e1f-dfedc10f61e8" style=3D"f=
+loat:left;margin-left:-1px;position:absolute;"></body>
+      </html>
+
+--00000000000073037905b07037bd--
+
+--29621ac2-8239-491b-8ee7-1826a3480373--

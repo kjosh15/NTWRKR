@@ -1,0 +1,766 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1041:0:0:0:0 with SMTP id x1csp1253883ljm;
+        Thu, 29 Oct 2020 22:56:35 -0700 (PDT)
+X-Received: by 2002:a92:c84e:: with SMTP id b14mr720916ilq.295.1604037395194;
+        Thu, 29 Oct 2020 22:56:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1604037395; cv=none;
+        d=google.com; s=arc-20160816;
+        b=iFmOONvP4p3L69OM8n6m+a5JO1aM8b5HNVhBbEgjpWO99HmRB0T5ADQqUY/+EsCbeB
+         sTO/LXz2hvblA6/I4ILXiqx+DBwpUjyCGSD1mtdgxfNBsI1+8uVMJP289lbYPttjT5Nz
+         pj11Ym2NxAFZTclbpye81U5YCLiDkuVI67fvw6GkYf2AKUUVgLbGhA9vUXiUngBmtkMh
+         QxDVXTC/oPGzN5uxiSl7WJ0KiHPkki1GE4MyhGhM+vr1qnBpm3d1S9bG7efOhirnY+0t
+         CMfrgV7mbcp1uTfGX3vkqNp4DJvEHPOKuGA4O9n8umkB/S3aup7P1UgRdLB7La0ckkgT
+         zh1g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:date:message-id:auto-submitted:reply-to
+         :mime-version:dkim-signature;
+        bh=fPWQjaLnnhek7hug+A+IyNz34je8FzoPLKAI51lZBQg=;
+        b=wxm2zm8/JeURiQEgcURnr0hgT1lelDTKtzjDL2uk9YkYwAp/7BxBMeFHnuTFx1B1Kj
+         Mn8padRUBygXl4EmZcHqU/Lf5OeFCm3CpK+aPQ8mA7tyft4YBcAcBMFh+w2x6ZKTaUOd
+         Pmv0539Jq4TK0HbFDkVPKNH5zgv0tTTYw8hQxrkqDplbrBKgQ22OAlsUaAQizxGN25MY
+         p9Hd1a02ELBbb/MKH1D56tzOh8tu0YLQz6yA5lYt8uo4c0AimT0ZtESvj/MB/qLiahEy
+         o1MpNc6zz2eJZsnSS/skVdUOZk/u/MwzCZtZVBpIaP09J1UALE9/2gbIYlwXcxLnfTHs
+         MJIg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=KsM3pEyT;
+       spf=pass (google.com: domain of 3equbxwqhbnkejncejnc.dnejncejnc.dn@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=3EqubXwQHBNkEJNCEJNC.DNEJNCEJNC.DN@calendar-server.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=google.com
+Return-Path: <3EqubXwQHBNkEJNCEJNC.DNEJNCEJNC.DN@calendar-server.bounces.google.com>
+Received: from mail-sor-f73.google.com (mail-sor-f73.google.com. [209.85.220.73])
+        by mx.google.com with SMTPS id p67sor2966470iod.57.2020.10.29.22.56.35
+        for <josh@josh.is>
+        (Google Transport Security);
+        Thu, 29 Oct 2020 22:56:35 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 3equbxwqhbnkejncejnc.dnejncejnc.dn@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) client-ip=209.85.220.73;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@google.com header.s=20161025 header.b=KsM3pEyT;
+       spf=pass (google.com: domain of 3equbxwqhbnkejncejnc.dnejncejnc.dn@calendar-server.bounces.google.com designates 209.85.220.73 as permitted sender) smtp.mailfrom=3EqubXwQHBNkEJNCEJNC.DNEJNCEJNC.DN@calendar-server.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=google.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:reply-to:auto-submitted:message-id:date:subject:from
+         :to;
+        bh=fPWQjaLnnhek7hug+A+IyNz34je8FzoPLKAI51lZBQg=;
+        b=KsM3pEyTKGvWno6oj8dixNSgAGEnjfUK3mCgLzqqAD565+HZKrwxp9fEz4/ILwsMNU
+         VfJP8yTZZxLwxdBmMt+w1XeaTyX7FhRAfFNdDJwlMALQW7FCmpHzhkbQw7QC5V55CB2Y
+         3YabxozrSlCrJ0Kj4knFl3vnHCydMp/qyNH0OE8sBxodyGZ0g9Uae6rN82pDQ3VCbs/I
+         VBmTKibjwnPN/cs0lpHWLlFEqWag5X3Zn9DcPJnC/tYnQDt7ZVVLXaBHMt4ZCYow7/QJ
+         9K5S5JAJ6anUqYAOYi6pJwetgBbbTOlBZqUMpHLpBP2wQIvyFsjXzTbmMfJKUr4xplng
+         VKDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:auto-submitted:message-id
+         :date:subject:from:to;
+        bh=fPWQjaLnnhek7hug+A+IyNz34je8FzoPLKAI51lZBQg=;
+        b=eJkQDb6urOXSqyCko3teYB5TvCOz1WccfbgZVnh/89dz31Zs8VAX+JdoTB+Fc+KIsn
+         H7rqrX6M9BsKviRtdX3z+etqfEYHXhjEjYePL2tg8Bwv4pO1icN5L4BfEoNp5n15N0yU
+         Az1pwIixH0b0xB3KZHIsF99hGXpmrt2C4GKtxMe8a99VCxsnd/ao2zuJIHqAChNNSrD0
+         crV762T7nypXSuICqJVnn213ZiAkjgG2GshGbOLRXsQB53BEvGM3uhZm69e+4CYg8iXs
+         GCD1+u8/PbB0OGvabGR27ILIpXmdpcqePP47x/fiI51HndlD6oy9oJyi3zGBUJ99Dfct
+         yu3A==
+X-Gm-Message-State: AOAM5335KXK4phV3txUp8N19mHrJhzLSgyBDTj0h03u39ovUeS6iRdwD
+	0WG8JRLSpmYDZlGFoxJE7CahUBdd+TBfo7doycA1AN0=
+X-Google-Smtp-Source: ABdhPJy9Zqzie+c3PUYO2AhzvSaq3B5VK52fKhwDD62GNRBYFRpOhVUluF9PzQSGzoCJdnQuXFErz29czfuKAYrGGteG
+MIME-Version: 1.0
+X-Received: by 2002:a5e:9618:: with SMTP id a24mr700226ioq.27.1604037394402;
+ Thu, 29 Oct 2020 22:56:34 -0700 (PDT)
+Reply-To: Josh Klein <josh@josh.is>
+Auto-Submitted: auto-generated
+Message-ID: <00000000000019a82d05b2dd0ffb@google.com>
+Date: Fri, 30 Oct 2020 05:56:34 +0000
+Subject: Daily Agenda for Josh Klein as of 5am
+From: Google Calendar <calendar-notification@google.com>
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="00000000000019a81805b2dd0ff8"
+
+--00000000000019a81805b2dd0ff8
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+Content-Transfer-Encoding: base64
+
+am9zaEBqb3NoLmlzLCBoZXJlIGlzIHlvdXIgc2NoZWR1bGUgZm9yIEZyaSBPY3QgMzAsIDIwMjAN
+Cg0KOWFtIOKAkyA5OjMwYW0JRW1haWwgMSBQZXJzb24gZnJvbSBJbm5lciBDaXJjbGUgIA0KaHR0
+cHM6Ly9kb2NzLmdvb2dsZS5jb20vc3ByZWFkc2hlZXRzL2QvMTdJeVI3NlhFX2lrcnlkYnpMbTEy
+N0dERlVZX1JibmNFQzFfQmZMZUpleEUvZWRpdCNnaWQ9MjAzODQ2NDk3MgkgDQpKb3NoDQoxMjoz
+MHBtIOKAkyAxOjMwcG0JTW9ybmluZyBtZWV0aW5nIDIvMwlIdWxkYSBhbmQgSm9zaA0KMTozMHBt
+IOKAkyAyOjMwcG0JVVBLIG1vcm5pbmcgbWVldGluZwlIdWxkYSBhbmQgSm9zaA0KMTozMHBtIOKA
+kyAyOjMwcG0JTWF0aCBvciBsaXRlcmFjeSAyLzMJSHVsZGEgYW5kIEpvc2gNCjJwbSDigJMgM3Bt
+CUpvc2ggPD4gS2hhdGRpamEgIA0KaHR0cHM6Ly96b29tLnVzL2ovOTM4MjUzMDYwMjY/cHdkPVZY
+ZE9ObTVhWnpoSlVYaFpjRmx1U2psVlJEbE1kejA5CUpvc2gNCjI6MzBwbSDigJMgMzozMHBtCXNt
+YWxsIGdyb3VwIFVQSwlIdWxkYSBhbmQgSm9zaA0KMjozMHBtIOKAkyAzOjMwcG0JTWF0aCBvciBs
+aXRlcmFjeSAyLzMJSHVsZGEgYW5kIEpvc2gNCjNwbSDigJMgMzo1MHBtCUpvc2ggPD4gTWF0dGhl
+dyA8PiBKb24JSm9zaA0KM3BtIOKAkyAzOjQ1cG0JQnVpbGRpbmcgUmVzaWxpZW5jZSBUaHJvdWdo
+IENyaXNpcyBXaXRoIEthcmVuIFJlaXZpY2ggOjogQSAgDQpXb3JsZCA1MCBFbmdhZ2UgQ2FsbCB6
+b29tIGRldGFpbHMgZW5jbG9zZWQJSm9zaA0KNHBtIOKAkyA0OjQ1cG0JQ2FzZXkgUmllZGVyIGFu
+ZCBKb3NoIEtsZWluICANCmh0dHBzOi8vem9vbS51cy9qLzk2NjUyMjI5NDQwP3B3ZD1LMmwyVTNF
+d2IySlRValJLV0RKcGExZFdOelpGWnowOQlKb3NoDQo0cG0g4oCTIDQ6MzBwbQlKb3NoIEtsZWlu
+IGFuZCBUcm95IFRob21wc29uIEdvb2dsZSBNZWV0IChpbnN0cnVjdGlvbnMgaW4gIA0KZGVzY3Jp
+cHRpb24pCUpvc2gNCjVwbSDigJMgNnBtCVdob2xlIGdyb3VwIG1lZXRpbmcgMi8zCUh1bGRhIGFu
+ZCBKb3NoDQoNCg0KVmlldyB5b3VyIGNhbGVuZGFyIGF0IGh0dHBzOi8vd3d3Lmdvb2dsZS5jb20v
+Y2FsZW5kYXIvDQoNCllvdSBhcmUgcmVjZWl2aW5nIHRoaXMgZW1haWwgYXQgdGhlIGFjY291bnQg
+am9zaEBqb3NoLmlzIGJlY2F1c2UgeW91IGFyZSAgDQpzdWJzY3JpYmVkIHRvIHJlY2VpdmUgZGFp
+bHkgYWdlbmRhcyBmb3IgdGhlIGZvbGxvd2luZyBjYWxlbmRhcnM6IEh1bGRhIGFuZCAgDQpKb3No
+LCBKb3NoLg0KDQpUbyBjaGFuZ2Ugd2hpY2ggY2FsZW5kYXJzIHlvdSByZWNlaXZlIGRhaWx5IGFn
+ZW5kYXMgZm9yLCBwbGVhc2UgbG9nIGluIHRvICANCmh0dHBzOi8vd3d3Lmdvb2dsZS5jb20vY2Fs
+ZW5kYXIvIGFuZCBjaGFuZ2UgeW91ciBub3RpZmljYXRpb24gc2V0dGluZ3MgZm9yICANCmVhY2gg
+Y2FsZW5kYXIuDQo=
+--00000000000019a81805b2dd0ff8
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div style=3D"padding:10px 7px;font-size:14px;line-height:1.4;font-family:A=
+rial,Sans-serif;text-align:left;bgcolor=3D#ffffff"><a href=3D"https://www.g=
+oogle.com/calendar"><img alt=3D"Google Calendar" src=3D"https://calendar.go=
+ogle.com/googlecalendar/images/calendarlogo/calendar_logo_en_41px_1x_r1.png=
+"></a>
+<p style=3D"margin:0;color:#0">josh@josh.is,&nbsp;here is your schedule for=
+:
+<h2 style=3D"margin:5px 0;font-size:18px;line-height:1.4;color:#0">Fri Oct =
+30, 2020</h2></p>
+<table cellspacing=3D"0" cellpadding=3D"0" style=3D"font-size:14px;line-hei=
+ght:1.4;font-family:Arial,Sans-serif;text-align:left;"><tr style=3D"line-he=
+ight:1.4;"><td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Em=
+ail 1 Person from In... (https://docs.google.com/spreadsheets/d/17IyR76XE_i=
+krydbzLm127GDFUY_RbncEC1_BfLeJexE/edit#gid=3D2038464972)"><a href=3D"https:=
+//www.google.com/calendar/r?eid=3DNjFoZGhhcGsybm5uYXA0dDg5MTNxOGRxN2VfMjAyM=
+DEwMzBUMDkwMDAwWiBqb3NoQGpvc2guaXM" style=3D"text-decoration:none">&nbsp;</=
+a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">9am &ndash; 9:30am</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DNjFoZGhhcGsybm5uYXA0dDg5MTNxOGRxN2VfMjAyMDEwMzBUMDkwMDAwWiBqb3NoQG=
+pvc2guaXM" style=3D"color:#373AD7;text-decoration:none;">Email 1 Person fro=
+m In... (https://docs.google.com/spreadsheets/d/17IyR76XE_ikrydbzLm127GDFUY=
+_RbncEC1_BfLeJexE/edit#gid=3D2038464972)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Email 1 Person from In... (https://docs.google.com/spreadsheets/d/17IyR=
+76XE_ikrydbzLm127GDFUY_RbncEC1_BfLeJexE/edit#gid=3D2038464972)"><a href=3D"=
+https://www.google.com/calendar/r?eid=3DNjFoZGhhcGsybm5uYXA0dDg5MTNxOGRxN2V=
+fMjAyMDEwMzBUMDkwMDAwWiBqb3NoQGpvc2guaXM" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Morning meeti=
+ng 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DNHMyYmFlcDc0dGI3=
+YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMzBUMTIzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">12:30pm &ndash; 1:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMzBUMTIzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Morning meeting 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"Morning meeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMzBUMTIzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Morning meeti=
+ng 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DNHMyYmFlcDc0dGI3=
+YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMzBUMTIzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Morning meeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNHMyYmFlcDc0dGI3YzhwZDJtaHFsamJ1ZjVfMjAyMDEwMzBUMTIzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"UPK morning m=
+eeting"><a href=3D"https://www.google.com/calendar/r?eid=3DN2lqNXQ5ZmRqYzll=
+dWgxbzlycTNxN2libHRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMG=
+s4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfM=
+jAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-=
+decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">1:30pm &ndash; 2:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">UPK morning meeting</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"UPK morning meeting"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMGs4ZGhqNzBvMzJi=
+OW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfMjAyMDEwMzBUMTM=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">1:30pm &ndash; 2:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DXzhwMGs4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwaz=
+ZoMjMyZTltODRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn"=
+ style=3D"color:#33B694;text-decoration:none;">Math or literacy 2/3</a></td=
+>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"UPK morning m=
+eeting"><a href=3D"https://www.google.com/calendar/r?eid=3DN2lqNXQ5ZmRqYzll=
+dWgxbzlycTNxN2libHRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE=
+0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMG=
+s4ZGhqNzBvMzJiOW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfM=
+jAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-=
+decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Josh=
+ &lt;&gt; Khatdija (https://zoom.us/j/93825306026?pwd=3DVXdONm5aZzhJUXhZcFl=
+uSjlVRDlMdz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DM2trYWpl=
+c3BjZHJmbG1qamdnMGViajh2YnQgam9zaEBqb3NoLmlz" style=3D"text-decoration:none=
+">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">2pm &ndash; 3pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DM2trYWplc3BjZHJmbG1qamdnMGViajh2YnQgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Josh &lt;&gt; Khatdija (https://zoom.us/j=
+/93825306026?pwd=3DVXdONm5aZzhJUXhZcFluSjlVRDlMdz09)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"UPK morning meeting"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DN2lqNXQ5ZmRqYzlldWgxbzlycTNxN2libHRfMjAyMDEwMzBUMTMzMDAwWiA3cTJkNnB2YTB0=
+aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhwMGs4ZGhqNzBvMzJi=
+OW42MHM0NGI5azY0czNjYmEyOG9xazZiOW02b3IzY2dwazZoMjMyZTltODRfMjAyMDEwMzBUMTM=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" title=3D"Josh &lt;&gt; Khat=
+dija (https://zoom.us/j/93825306026?pwd=3DVXdONm5aZzhJUXhZcFluSjlVRDlMdz09)=
+"><a href=3D"https://www.google.com/calendar/r?eid=3DM2trYWplc3BjZHJmbG1qam=
+dnMGViajh2YnQgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&nbsp;</a></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"small group U=
+PK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhjcTNhZDFoNmwxNGNi=
+YTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNjBfMjAyMDEwMzBUMTQ=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm=
+1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tO=
+TNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Josh=
+ &lt;&gt; Khatdija (https://zoom.us/j/93825306026?pwd=3DVXdONm5aZzhJUXhZcFl=
+uSjlVRDlMdz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DM2trYWpl=
+c3BjZHJmbG1qamdnMGViajh2YnQgam9zaEBqb3NoLmlz" style=3D"text-decoration:none=
+">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">2:30pm &ndash; 3:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DXzhjcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMj=
+g5MTQ2Y3BuNjBfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn"=
+ style=3D"color:#33B694;text-decoration:none;">small group UPK</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"small group UPK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzh=
+jcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNj=
+BfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"te=
+xt-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm1mcHVmN25jMGlz=
+YTFxZWYyOGkwbXZfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0B=
+n" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Josh &lt;&gt; Khat=
+dija (https://zoom.us/j/93825306026?pwd=3DVXdONm5aZzhJUXhZcFluSjlVRDlMdz09)=
+"><a href=3D"https://www.google.com/calendar/r?eid=3DM2trYWplc3BjZHJmbG1qam=
+dnMGViajh2YnQgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&nbsp;</a></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">2:30pm &ndash; 3:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DdGNmdm1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Math or literacy 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"small group U=
+PK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzhjcTNhZDFoNmwxNGNi=
+YTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNjBfMjAyMDEwMzBUMTQ=
+zMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:non=
+e">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Math=
+ or literacy 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm=
+1mcHVmN25jMGlzYTFxZWYyOGkwbXZfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tO=
+TNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Josh=
+ &lt;&gt; Matthew &lt;&gt; Jon"><a href=3D"https://www.google.com/calendar/=
+r?eid=3DMzJqYTd0c2RqMWFiZDluM2JmZmNiY2hhODUgam9zaEBqb3NoLmlz" style=3D"text=
+-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Buil=
+ding Resilience Through Crisis With Karen Reivich :: A World 50 Engage Call=
+ (zoom details enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNzBjZTN2ZWdlYmNqb2lyN2xsZGlxMHM5Z20gam9zaEBqb3NoLmlz" style=3D"text-deco=
+ration:none">&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">3pm &ndash; 3:50pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DMzJqYTd0c2RqMWFiZDluM2JmZmNiY2hhODUgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Josh &lt;&gt; Matthew &lt;&gt; Jon</a></t=
+d>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"small group UPK"><a href=3D"https://www.google.com/calendar/r?eid=3DXzh=
+jcTNhZDFoNmwxNGNiYTM2ZDEzZ2I5azY5MjNpYjlwOG9xMzJiOXA2b3FqNmMyMjg5MTQ2Y3BuNj=
+BfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"te=
+xt-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Math or literacy 2=
+/3"><a href=3D"https://www.google.com/calendar/r?eid=3DdGNmdm1mcHVmN25jMGlz=
+YTFxZWYyOGkwbXZfMjAyMDEwMzBUMTQzMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ1MWE0Z0B=
+n" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" title=3D"Josh &lt;&gt; Matt=
+hew &lt;&gt; Jon"><a href=3D"https://www.google.com/calendar/r?eid=3DMzJqYT=
+d0c2RqMWFiZDluM2JmZmNiY2hhODUgam9zaEBqb3NoLmlz" style=3D"text-decoration:no=
+ne">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" title=3D"Building Resilienc=
+e Through Crisis With Karen Reivich :: A World 50 Engage Call (zoom details=
+ enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=3DNzBjZTN2ZWdl=
+YmNqb2lyN2xsZGlxMHM5Z20gam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">3pm &ndash; 3:45pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DNzBjZTN2ZWdlYmNqb2lyN2xsZGlxMHM5Z20gam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Building Resilience Through Crisis With K=
+aren Reivich :: A World 50 Engage Call (zoom details enclosed)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Josh=
+ &lt;&gt; Matthew &lt;&gt; Jon"><a href=3D"https://www.google.com/calendar/=
+r?eid=3DMzJqYTd0c2RqMWFiZDluM2JmZmNiY2hhODUgam9zaEBqb3NoLmlz" style=3D"text=
+-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Buil=
+ding Resilience Through Crisis With Karen Reivich :: A World 50 Engage Call=
+ (zoom details enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=
+=3DNzBjZTN2ZWdlYmNqb2lyN2xsZGlxMHM5Z20gam9zaEBqb3NoLmlz" style=3D"text-deco=
+ration:none">&nbsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Josh &lt;&gt; Matt=
+hew &lt;&gt; Jon"><a href=3D"https://www.google.com/calendar/r?eid=3DMzJqYT=
+d0c2RqMWFiZDluM2JmZmNiY2hhODUgam9zaEBqb3NoLmlz" style=3D"text-decoration:no=
+ne">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Building Resilienc=
+e Through Crisis With Karen Reivich :: A World 50 Engage Call (zoom details=
+ enclosed)"><a href=3D"https://www.google.com/calendar/r?eid=3DNzBjZTN2ZWdl=
+YmNqb2lyN2xsZGlxMHM5Z20gam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Casey Rieder =
+and Josh Klein (https://zoom.us/j/96652229440?pwd=3DK2l2U3Ewb2JTUjRKWDJpa1d=
+WNzZFZz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DN2RicGwzdGxn=
+cDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Josh=
+ Klein and Troy Thompson (Google Meet (instructions in description))"><a hr=
+ef=3D"https://www.google.com/calendar/r?eid=3Dc3VuMWM3a3JwcjN2ZWoyam9ycDMwb=
+2dzazQgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">4pm &ndash; 4:45pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Casey Rieder and Josh Klein (https://zoom=
+.us/j/96652229440?pwd=3DK2l2U3Ewb2JTUjRKWDJpa1dWNzZFZz09)</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#9A9CFF" title=
+=3D"Casey Rieder and Josh Klein (https://zoom.us/j/96652229440?pwd=3DK2l2U3=
+Ewb2JTUjRKWDJpa1dWNzZFZz09)"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-de=
+coration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D"Josh Klein and Tro=
+y Thompson (Google Meet (instructions in description))"><a href=3D"https://=
+www.google.com/calendar/r?eid=3Dc3VuMWM3a3JwcjN2ZWoyam9ycDMwb2dzazQgam9zaEB=
+qb3NoLmlz" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">4pm &ndash; 4:30pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3Dc3VuMWM3a3JwcjN2ZWoyam9ycDMwb2dzazQgam9zaEBqb3NoLmlz" style=3D"col=
+or:#373AD7;text-decoration:none;">Josh Klein and Troy Thompson (Google Meet=
+ (instructions in description))</a></td>
+<td style=3D"color:#373AD7;;padding-left:11px;">Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#FFFFFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#9A9CFF" width=3D"8px" title=3D"Casey Rieder =
+and Josh Klein (https://zoom.us/j/96652229440?pwd=3DK2l2U3Ewb2JTUjRKWDJpa1d=
+WNzZFZz09)"><a href=3D"https://www.google.com/calendar/r?eid=3DN2RicGwzdGxn=
+cDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-decoration:none">&n=
+bsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Casey Rieder and Josh Klein (https://zoom.us/j/96652229440?pwd=3DK2l2U3=
+Ewb2JTUjRKWDJpa1dWNzZFZz09)"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DN2RicGwzdGxncDRoM2Fwczhqa2VhbnRsZ3Mgam9zaEBqb3NoLmlz" style=3D"text-de=
+coration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Whole group m=
+eeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DMm05cTNjNmxz=
+MXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMzBUMTcwMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ=
+1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;">5pm &ndash; 6pm</td>
+<td style=3D"padding-left:11px;"><a href=3D"https://www.google.com/calendar=
+/r?eid=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMzBUMTcwMDAwWiA3cTJkNn=
+B2YTB0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"color:#33B694;text-decoration:none=
+;">Whole group meeting 2/3</a></td>
+<td style=3D"color:#33B694;;padding-left:11px;">Hulda and Josh</td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#92E1C0" title=
+=3D"Whole group meeting 2/3"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMzBUMTcwMDAwWiA3cTJkNnB2YT=
+B0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#92E1C0" width=3D"8px" title=3D"Whole group m=
+eeting 2/3"><a href=3D"https://www.google.com/calendar/r?eid=3DMm05cTNjNmxz=
+MXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMzBUMTcwMDAwWiA3cTJkNnB2YTB0aWk2OG1tOTNsbDJ=
+1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#FFFFFF" title=
+=3D"Whole group meeting 2/3"><a href=3D"https://www.google.com/calendar/r?e=
+id=3DMm05cTNjNmxzMXJib2Y3dTdxMjQ5ajNxOGVfMjAyMDEwMzBUMTcwMDAwWiA3cTJkNnB2YT=
+B0aWk2OG1tOTNsbDJ1MWE0Z0Bn" style=3D"text-decoration:none">&nbsp;</a></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr> <tr style=3D"line-height:1.4;">=
+<td>&nbsp;</td><td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" width=3D"8px" title=3D""></=
+td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr>
+<tr style=3D"line-height:0.2;"><td>&nbsp;</td><td bgcolor=3D"#E0ECFF" title=
+=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td> <td bgcolor=3D"#E0ECFF" title=3D""></td>
+<td width=3D"2px"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td>
+<td style=3D"padding-left:11px;"></td></tr></table>
+<a href=3D"https://www.google.com/calendar"><img alt=3D"Google Calendar" sr=
+c=3D"https://calendar.google.com/googlecalendar/images/calendarlogo/calenda=
+r_logo_en_41px_1x_r1.png"></a>
+<p style=3D"font-family:Arial,Sans-serif;color:#666;font-size:11px">You are=
+ receiving this email at the account josh@josh.is because you are subscribe=
+d to receive daily agendas for the following calendars: <a href=3D"https://=
+www.google.com/calendar/render?cid=3D7q2d6pva0tii68mm93ll2u1a4g%40group.cal=
+endar.google.com">Hulda and Josh</a>, <a href=3D"https://www.google.com/cal=
+endar/render?cid=3Djosh%40josh.is">Josh</a>.</p>
+<p style=3D"font-family:Arial,Sans-serif;color:#666;font-size:11px">To chan=
+ge which calendars you receive daily agendas for, please log in to https://=
+www.google.com/calendar/ and change your notification settings for each cal=
+endar.</p></div>
+--00000000000019a81805b2dd0ff8--

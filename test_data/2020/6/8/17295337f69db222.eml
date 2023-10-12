@@ -1,0 +1,940 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9149:0:0:0:0:0 with SMTP id q9csp4965814ljg;
+        Mon, 8 Jun 2020 11:31:19 -0700 (PDT)
+X-Received: by 2002:aa7:9686:: with SMTP id f6mr8812225pfk.132.1591641079537;
+        Mon, 08 Jun 2020 11:31:19 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1591641079; cv=none;
+        d=google.com; s=arc-20160816;
+        b=mKYv9sN0f5dtTSrtVYojF6DrbUK1w3only08RnfapGY2x0ZrHsi6kuqime62rG3mry
+         +aaLzteeFBWxrVD+/ljnZlS/TowrGAXfNT8XuJ+qWAcB4jBfQtDn69Zu/ljgXtQJGAfr
+         DH+U3JxaHhus2ud4yFE585rbaG3H3yi6h2ez1TekLOUWVu1y1v6tvpIaERyf0wFK19ex
+         YokqYaP07bXq4XEhTxm55bZd78MCLFUeqscHBOMSVT4smygYPGbA4Frpk1JuTi3yhWXz
+         L8Dl9RgKAMnq3uYzd2vftFVZInBiQtpCKYW4BaKHD6TYHomoIs4d0SMCcBM0Et4jt8hU
+         8r6w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature;
+        bh=R7LAwckCCDX5t+Xc6MaxSmiB0XY0VeIK4wJp7M7FWdU=;
+        b=WbQk8avKP8tJe2PQNi5yHjal16NVCaWIeGUQDFwYebzsFENhLMVAhmIdt98txMWEqq
+         UMG2r6JPsjs+GUgTviUnjvsyyxTTbNkNQpZKOb4l1sQD3KszcNci1FMed0bN7MKjz9EJ
+         SmVncu/LSHRaspBBgmh9IHfwNkmFWYxKBcxMxJJRsCmrgryX2/BsMjOxBtJhPZqRLypt
+         4P3vyyFXwsedgYHSUTbgG2tqqiJfdsfp6hURaMDZ8J2aID9aU07NHHntlBNnvCgyjv+X
+         8Vxz7u11ErPgPaNhJM0SJ5LaqUIC/8JVNDrVw+dliVIUV3IawjBEuTskPtYbkHOUpeKf
+         JxnA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@averydennison.com header.s=google header.b=Zkw0QUIQ;
+       spf=pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=frederick.bleckmann@averydennison.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=averydennison.com
+Return-Path: <frederick.bleckmann@averydennison.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id bj8sor11453638plb.68.2020.06.08.11.31.19
+        for <josh@josh.is>
+        (Google Transport Security);
+        Mon, 08 Jun 2020 11:31:19 -0700 (PDT)
+Received-SPF: pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@averydennison.com header.s=google header.b=Zkw0QUIQ;
+       spf=pass (google.com: domain of frederick.bleckmann@averydennison.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=frederick.bleckmann@averydennison.com;
+       dmarc=pass (p=QUARANTINE sp=NONE dis=NONE) header.from=averydennison.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=averydennison.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=R7LAwckCCDX5t+Xc6MaxSmiB0XY0VeIK4wJp7M7FWdU=;
+        b=Zkw0QUIQwqaBl3em6Axk+B6aojqD/+7giX8rx0STl9ytSwI948ujenBm7iMM5jzK2W
+         TgW5ES9K20V/LpURP8mYA3C3gOv9uK56ldG4jXRCEKNsu+J5RJaA9eQEtpHYSSjEtFga
+         y8ZuT5KUNLR7nqDuacUV1Rng2Oio+T6KnvAw0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=R7LAwckCCDX5t+Xc6MaxSmiB0XY0VeIK4wJp7M7FWdU=;
+        b=lELMdkKa/opWgBdr0TsB98U+AORW4B1OtrPSIhdvLyssXHFkza76tguVYvMcC42m3d
+         0FfZYfqXJzIGaMb0tSudxz5Um5xDA+sPNN1rkIo1dybS39etElM27FqjbdxoykdI79NA
+         dnitjafU5UbXeNNoGu+iJ8PWjtrBD0osiCp54X+wh3Zs4R5fNq5mV7FnsrQohILEvHUk
+         iYuBwx3LSF6OftZjRXjW40scsyuyckIiL/xeYOhJZdiczwdsI4RieeKlX67R57DUY2ZJ
+         k7ENUkfxfWq5IP66MWgGwv2kw59/6vd6pkUUC5EkJE5O4yplE9mmOK5A0lv6zSonj+uH
+         BYUQ==
+X-Gm-Message-State: AOAM530SQtwAR5aETmHt7bq5oeie2qcbLY1/KhvMhaW2y8I+oedcDdz7
+	56QYQGInJyiO6N1m8yYlmKWG6btthgQqGHyo4ukkDdgBitm3m/+2J3AVIxdZA232Me83HPy3YKu
+	as0jdgjxsYTJSuUY=
+X-Google-Smtp-Source: ABdhPJwrHXAzCtbJdpggeOTM3l5ANyefe+f3DMmBngX/Dj9/aKPCmYmz/wUZJVhwc2ReYc7IZWhqH2Ku1XMRHKhQ3K4=
+X-Received: by 2002:a17:902:9889:: with SMTP id s9mr84355plp.299.1591641078312;
+ Mon, 08 Jun 2020 11:31:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAO77uv=EZk0741u0_aO5dDMR3HwS9cXP5CEeadvVFtfg5QXHgQ@mail.gmail.com>
+ <CACNgykPxtS5YQFbL9szKs8yWfwWXFPek8g+X9WYTECaob_kH3Q@mail.gmail.com>
+ <CAO77uvkpLn2Wt3FAQeS=kY82z=AnTmNLSq2JOd7zpWa48XS9BA@mail.gmail.com>
+ <CACNgykMyKS7aNhyvFx8Ee+wno4b6G9_rOO1Vy+_M=arEHd3eHw@mail.gmail.com>
+ <CAO77uvnVqgRxuB1mT4PPHVLnj+XKZKBWLPLtCJwAVK8vvinLJA@mail.gmail.com>
+ <CACNgykPiX168ateSh5UFXAi-iLQ0fBy2abCbxmSA6tLdwVYx7A@mail.gmail.com>
+ <CAO77uvkctuPsTjMOFmG=e2M_Ti1orNLNCUmSnvQieD-Giftt2w@mail.gmail.com>
+ <CACNgykN8PgdtHKdSEkX4A9xN6S4bxLJ6AQ4Ve2=C3UPxeJ2uEQ@mail.gmail.com>
+ <CAO77uvkqisaw65S-ZhuR0+wY_NXZqs-TGJvSFejPQO3T8KMRNQ@mail.gmail.com>
+ <CACNgykMWgRaiJoGL7XpW-zjSF43MXSH3A26_byaSvz_C-61ybw@mail.gmail.com>
+ <CACNgykNW52rqapy-W9qVpWYgpRercaTu8m8AP98iSiNg7N_eKg@mail.gmail.com> <CAO77uvkb_uKxZq-F8CtjQjgx-5aoJ+uP-wbfO4vPJrBt1RGwjw@mail.gmail.com>
+In-Reply-To: <CAO77uvkb_uKxZq-F8CtjQjgx-5aoJ+uP-wbfO4vPJrBt1RGwjw@mail.gmail.com>
+From: Frederick Bleckmann <frederick.bleckmann@averydennison.com>
+Date: Mon, 8 Jun 2020 14:31:08 -0400
+Message-ID: <CAO77uvnRPJS_41vsLbBg8A8R+CEzG0gSk1kP+VFa0k9=JR6E6A@mail.gmail.com>
+Subject: Re: touch base
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="000000000000156af605a796d1ae"
+
+--000000000000156af605a796d1ae
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Josh,
+
+Thanks for the time last week and bringing this all to Carl's attention.
+While at AD we have a few COVID focused initiatives such as test kit
+tracking, and medical item use tracking for direct medical applications. We
+also have an initiative with the Google team and the LiA product for
+helping shoppers prepare for a visit and frictionless retail options. These
+solutions do not feel like the direct hit you are looking for with Carl in
+the short term. We do however feel that there are changes happening to the
+supply chain such as seasonless fashion, compounding of disrupting
+activities due to climate and politics alike, practices that will drive
+over supply and surplus due to the lack of agility to adjust. We feel the
+best impact we can offer Estee Lauder is a longer term view centered on
+defined and clear data paths supported by data confidence and visibility.
+If there is a short term opportunity for us to help drive something forward
+we will commit, but it looks clear that our role is helping to set the
+foundation to position the company to be more agile in the future. I will
+put together a short deck over the next week and a half to outline this
+view and sync back.
+
+all the best to you and thanks for your support.
+
+Fred
+
+On Mon, Jun 1, 2020 at 2:09 PM Frederick Bleckmann <
+frederick.bleckmann@averydennison.com> wrote:
+
+> Josh,
+> Thanks for the feedback - are you available for a call tomorrow to
+> review?  2pm ET?
+>
+> On Mon, Jun 1, 2020 at 12:39 PM Josh Klein <josh@josh.is> wrote:
+>
+>> Just got off the phone with Carl; he's very heads-down on a project he
+>> kicked up around aggregating data on COVID-19 and using that to structur=
+e a
+>> data-led response on reopening where, when, and how. I'd suggest you and=
+ I
+>> get on a call to see if Avery can make a pitch to them immediately to
+>> contribute - could be very good PR as well as a hedge into a new set of
+>> services; Carl is very bullish on expanding the platform to serve all
+>> other industries.
+>>
+>> Otherwise we spoke briefly about the other initiatives you and I
+>> discussed and he asked me to send him some summaries in writing, which I
+>> have done. I'll follow up on this to see if we can get more traction -
+>> right now I'm pushing for an intro to Chris Clark to see if we can
+>> piggyback on his project to test more solutions as part of the overall
+>> project.
+>>
+>> So, a good first step. Carl's attention is clearly focused on this
+>> COVID-19 initiative, but seems amiable to reviewing the solutions you
+>> suggested and hopefully will get us to the right stakeholders to drive t=
+he
+>> next conversation.
+>>
+>> Let me know if I can fill in any more detail, let me know what you think
+>> about Avery and COVID, and I hope you and yours are well!
+>>
+>> All best,
+>> Josh
+>>
+>>
+>> =E1=90=A7
+>>
+>> On Fri, May 29, 2020 at 11:57 AM Josh Klein <josh@josh.is> wrote:
+>>
+>>> Thanks!! I'm good for the moment; Carl just pushed us to Monday. We'll
+>>> see!!
+>>>
+>>> - J
+>>> =E1=90=A7
+>>>
+>>> On Fri, May 29, 2020 at 11:49 AM Frederick Bleckmann <
+>>> frederick.bleckmann@averydennison.com> wrote:
+>>>
+>>>> Update for you-
+>>>>
+>>>> The Atma digital ID management cloud platform we have discussed has
+>>>> seen recent traction with MAC brand (ELC). We are deploying 83 locatio=
+ns in
+>>>> Turkey.  To dive into details there is a bit of ground to cover so if =
+you
+>>>> think it is interesting I can set up a call with you, Max and myself. =
+ (Max
+>>>> runs the Atma team)
+>>>>
+>>>> let me know-
+>>>>
+>>>> On Fri, May 8, 2020 at 4:57 PM Josh Klein <josh@josh.is> wrote:
+>>>>
+>>>>> I=E2=80=99m no specialist and I can see dozens of ways this wouldn=E2=
+=80=99t work IRL.
+>>>>> Will be happy to nudge Carl on this; he=E2=80=99ll be pleased to get =
+an inside
+>>>>> insight.
+>>>>>
+>>>>> - J
+>>>>>
+>>>>>
+>>>>> On Fri, May 8, 2020 at 4:55 PM Frederick Bleckmann <
+>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>
+>>>>>> Just keeping you in the loop on what I know -
+>>>>>> Kind of sounds like they got a smoke and mirrors show from someone o=
+n
+>>>>>> using PUF as a Digital ID tool.  Cool stuff but not practical for da=
+ta
+>>>>>> heavy applications.
+>>>>>>
+>>>>>> On Fri, May 8, 2020 at 4:48 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>
+>>>>>>> Genius!! Very very helpful. On my end Carl pushed back our mtg
+>>>>>>> again, so hopefully we=E2=80=99ll close in on this date.
+>>>>>>>
+>>>>>>> Hope you=E2=80=99re well,
+>>>>>>> Josh
+>>>>>>>
+>>>>>>>
+>>>>>>> On Fri, May 8, 2020 at 4:10 PM Frederick Bleckmann <
+>>>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>>>
+>>>>>>>> Josh,
+>>>>>>>> Hope all is well - wanted to drop some additional info.
+>>>>>>>> From what we understand one of the teams at Estee is seriously
+>>>>>>>> considering vision as a tool for unique identity and track and tra=
+ce. The
+>>>>>>>> tech they are proposing is a PUF or Physically Unclonable
+>>>>>>>> Function. If you are not aware of the approach - it is basically w=
+orking on
+>>>>>>>> the premise that there are natural imperfections in packaging and =
+printing
+>>>>>>>> or for pretty much everything. Some use diamond dust or manufactur=
+e
+>>>>>>>> imperfections into the print or package to compensate for the requ=
+ired
+>>>>>>>> resolution to get to multiple bit ID's. Take a picture of this thi=
+ng at
+>>>>>>>> high res whether it's diamond dust spread over a surface or just t=
+he
+>>>>>>>> natural imperfections in a package and Wa-La... unique identifier.
+>>>>>>>>
+>>>>>>>> Although these technologies are very interesting for brand
+>>>>>>>> protection and detecting counterfeits, I do not believe this techn=
+ology is
+>>>>>>>> developed to the point it can be leveraged for track and trace, ch=
+ain of
+>>>>>>>> custody or consumer interaction. We use these technologies at time=
+s as
+>>>>>>>> well, but for brand protection.  I might not have the full picture=
+ but from
+>>>>>>>> what I understand there is interest from the EL team to use this t=
+ech as a
+>>>>>>>> true unique identity technology for consumer interaction and track=
+ and
+>>>>>>>> trace. From a practical standpoint I can't say I agree with that a=
+pproach.
+>>>>>>>>
+>>>>>>>> Obviously we feel RFID/NFC/even QR is a strong choice, but most
+>>>>>>>> importantly I wanted to allow you the opportunity to research the =
+PUF
+>>>>>>>> vision tech and the provider prior to your call in case the subjec=
+t comes
+>>>>>>>> up.
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> https://www.arjo-solutions.com/en/our-solutions/anti-diversion-sol=
+ution/
+>>>>>>>> <https://www.google.com/url?q=3Dhttps://www.arjo-solutions.com/en/=
+our-solutions/anti-diversion-solution/&sa=3DD&source=3Dhangouts&ust=3D15890=
+52060445000&usg=3DAFQjCNEYeFiUQ_GX50Jt95eI7ylEhGN6gg>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> On Wed, Apr 29, 2020 at 10:01 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>
+>>>>>>>>> Perfect, this is exactly what I needed. I'll let you know how it
+>>>>>>>>> goes!
+>>>>>>>>>
+>>>>>>>>> All best,
+>>>>>>>>> Josh
+>>>>>>>>>
+>>>>>>>>> On Tue, Apr 28, 2020 at 4:42 PM Frederick Bleckmann <
+>>>>>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>>>>>
+>>>>>>>>>> There are a couple of RFID plays for Estee that help get the mos=
+t
+>>>>>>>>>> out of the new normal headed our way due to COVID.
+>>>>>>>>>> 1) BOPIS - buy online pick up in store is traditionally stronger
+>>>>>>>>>> in segments other than beauty but it is likely to see an uptick.=
+ Knowing
+>>>>>>>>>> how much inventory you have where and when is key for BOPIS, the=
+ value of a
+>>>>>>>>>> good inventory in magnified when you broadcast to a customer tha=
+t they can
+>>>>>>>>>> come and pick it up.
+>>>>>>>>>> 2) Ship from store also has significant inventory visibility
+>>>>>>>>>> advantage particularly if there is an unforeseen ecomm bump. UHF=
+ RFID
+>>>>>>>>>> enables accurate local inventory counts
+>>>>>>>>>> 3) Store to Store - better management and allocation of inventor=
+y
+>>>>>>>>>> 4) Not sure there is a direct correlation but in apparel for
+>>>>>>>>>> fitting rooms UHF is being explored as a way to confirm to
+>>>>>>>>>> customers/consumers that a garment has been treated, sterilized =
+or not yet
+>>>>>>>>>> tried on.
+>>>>>>>>>> 5) LiA - we have been working with Google on the LiA (local
+>>>>>>>>>> inventory ads) initiative. this allows for local search online v=
+ia google
+>>>>>>>>>> for inventory and in stock items within brick and mortar.  simil=
+ar to BOPIS
+>>>>>>>>>> but more verify that it is available before I head into the reta=
+il space.
+>>>>>>>>>> 6) What is in your supply chain and where is another obvious one
+>>>>>>>>>> we already covered.
+>>>>>>>>>>
+>>>>>>>>>> There is an RFID project kicking off at Estee called Secure and
+>>>>>>>>>> Connect, I believe this is being initiated by Chris Clark VP of =
+GLobal
+>>>>>>>>>> Supply Chain at Estee Lauder. Sounds like it is in the early
+>>>>>>>>>> exploratory stages.
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Let me know if you have any questions
+>>>>>>>>>>
+>>>>>>>>>> On Tue, Apr 28, 2020 at 4:18 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Thanks for the followup! Yes, dinner has been pushed back
+>>>>>>>>>>> several times but as of now we're slated to drink wine virtuall=
+y together
+>>>>>>>>>>> week after next. Anything you had that was likely to be of COVI=
+D specific
+>>>>>>>>>>> interest would be helpful; otherwise we'll see what he says to =
+what we're
+>>>>>>>>>>> already discussed!
+>>>>>>>>>>>
+>>>>>>>>>>> Glad you're doing well,
+>>>>>>>>>>> Josh
+>>>>>>>>>>>
+>>>>>>>>>>>
+>>>>>>>>>>> On Tue, Apr 28, 2020 at 4:16 PM Frederick Bleckmann <
+>>>>>>>>>>> frederick.bleckmann@averydennison.com> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>> Josh,
+>>>>>>>>>>>> I hope all is well and the family is taking the Covid-isolatio=
+n
+>>>>>>>>>>>> in stride.
+>>>>>>>>>>>>
+>>>>>>>>>>>> I wanted to reach out and touch base on the Estee Lauder front
+>>>>>>>>>>>> with Carl.  I imagine dinner is no longer on the agenda but I =
+am curious if
+>>>>>>>>>>>> you still plan to connect in the short term. There has been so=
+me minor
+>>>>>>>>>>>> advancements on our side, mostly just continuing to build on t=
+he UHF RFID
+>>>>>>>>>>>> picture.  The pilot project is completed and the MAC team is w=
+riting up
+>>>>>>>>>>>> results to share internally. Other RFID efforts have early mov=
+ement also.
+>>>>>>>>>>>>
+>>>>>>>>>>>> All the best,
+>>>>>>>>>>>> Frederick
+>>>>>>>>>>>>
+>>>>>>>>>>>> --
+>>>>>>>>>>>> Frederick Bleckmann
+>>>>>>>>>>>> Ecosystems Market Development Director
+>>>>>>>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>>>>>>>> 646.901.4071
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>>> --------------------------------------------------------------=
+-----------------------------------------------
+>>>>>>>>>>>> The information transmitted is intended only for the person or
+>>>>>>>>>>>> entity to which it is addressed and may contain confidential a=
+nd/or
+>>>>>>>>>>>> privileged material. Any review, retransmission, dissemination=
+ or other use
+>>>>>>>>>>>> of, or taking of any action in reliance upon, this information=
+ by persons
+>>>>>>>>>>>> or entities other than the intended recipient is prohibited. I=
+f you
+>>>>>>>>>>>> received this in error, please contact the sender and delete t=
+he material
+>>>>>>>>>>>> from any computer.
+>>>>>>>>>>>>
+>>>>>>>>>>>> For details about the personal information we process and why,
+>>>>>>>>>>>> please see our Privacy Notice
+>>>>>>>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notic=
+es.html>
+>>>>>>>>>>>>
+>>>>>>>>>>>> --------------------------------------------------------------=
+-----------------------------------------------
+>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> --
+>>>>>>>>>> Frederick Bleckmann
+>>>>>>>>>> Ecosystems Market Development Director
+>>>>>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>>>>>> 646.901.4071
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> ----------------------------------------------------------------=
+---------------------------------------------
+>>>>>>>>>> The information transmitted is intended only for the person or
+>>>>>>>>>> entity to which it is addressed and may contain confidential and=
+/or
+>>>>>>>>>> privileged material. Any review, retransmission, dissemination o=
+r other use
+>>>>>>>>>> of, or taking of any action in reliance upon, this information b=
+y persons
+>>>>>>>>>> or entities other than the intended recipient is prohibited. If =
+you
+>>>>>>>>>> received this in error, please contact the sender and delete the=
+ material
+>>>>>>>>>> from any computer.
+>>>>>>>>>>
+>>>>>>>>>> For details about the personal information we process and why,
+>>>>>>>>>> please see our Privacy Notice
+>>>>>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices=
+.html>
+>>>>>>>>>>
+>>>>>>>>>> ----------------------------------------------------------------=
+---------------------------------------------
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>
+>>>>>>>> --
+>>>>>>>> Frederick Bleckmann
+>>>>>>>> Ecosystems Market Development Director
+>>>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>>>> 646.901.4071
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>>
+>>>>>>>> ------------------------------------------------------------------=
+-------------------------------------------
+>>>>>>>> The information transmitted is intended only for the person or
+>>>>>>>> entity to which it is addressed and may contain confidential and/o=
+r
+>>>>>>>> privileged material. Any review, retransmission, dissemination or =
+other use
+>>>>>>>> of, or taking of any action in reliance upon, this information by =
+persons
+>>>>>>>> or entities other than the intended recipient is prohibited. If yo=
+u
+>>>>>>>> received this in error, please contact the sender and delete the m=
+aterial
+>>>>>>>> from any computer.
+>>>>>>>>
+>>>>>>>> For details about the personal information we process and why,
+>>>>>>>> please see our Privacy Notice
+>>>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.h=
+tml>
+>>>>>>>>
+>>>>>>>> ------------------------------------------------------------------=
+-------------------------------------------
+>>>>>>>>
+>>>>>>>>
+>>>>>>
+>>>>>> --
+>>>>>> Frederick Bleckmann
+>>>>>> Ecosystems Market Development Director
+>>>>>> RFID / Intelligent Labels, Avery Dennison
+>>>>>> 646.901.4071
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>>
+>>>>>> --------------------------------------------------------------------=
+-----------------------------------------
+>>>>>> The information transmitted is intended only for the person or entit=
+y
+>>>>>> to which it is addressed and may contain confidential and/or privile=
+ged
+>>>>>> material. Any review, retransmission, dissemination or other use of,=
+ or
+>>>>>> taking of any action in reliance upon, this information by persons o=
+r
+>>>>>> entities other than the intended recipient is prohibited. If you rec=
+eived
+>>>>>> this in error, please contact the sender and delete the material fro=
+m any
+>>>>>> computer.
+>>>>>>
+>>>>>> For details about the personal information we process and why, pleas=
+e
+>>>>>> see our Privacy Notice
+>>>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.htm=
+l>
+>>>>>>
+>>>>>> --------------------------------------------------------------------=
+-----------------------------------------
+>>>>>>
+>>>>>>
+>>>>
+>>>> --
+>>>> Frederick Bleckmann
+>>>> Ecosystems Market Development Director
+>>>> RFID / Intelligent Labels, Avery Dennison
+>>>> 646.901.4071
+>>>>
+>>>>
+>>>>
+>>>>
+>>>>
+>>>> ----------------------------------------------------------------------=
+---------------------------------------
+>>>> The information transmitted is intended only for the person or entity
+>>>> to which it is addressed and may contain confidential and/or privilege=
+d
+>>>> material. Any review, retransmission, dissemination or other use of, o=
+r
+>>>> taking of any action in reliance upon, this information by persons or
+>>>> entities other than the intended recipient is prohibited. If you recei=
+ved
+>>>> this in error, please contact the sender and delete the material from =
+any
+>>>> computer.
+>>>>
+>>>> For details about the personal information we process and why, please
+>>>> see our Privacy Notice
+>>>> <https://www.averydennison.com/en/home/legal-and-privacy-notices.html>
+>>>>
+>>>> ----------------------------------------------------------------------=
+---------------------------------------
+>>>>
+>>>>
+>
+> --
+> Frederick Bleckmann
+> Ecosystems Market Development Director
+> RFID / Intelligent Labels, Avery Dennison
+> 646.901.4071
+>
+>
+>
+
+--=20
+Frederick Bleckmann
+Ecosystems Market Development Director
+RFID / Intelligent Labels, Avery Dennison
+646.901.4071
+
+--=20
+
+
+
+---------------------------------------------------------------------------=
+----------------------------------
+
+The information transmitted is intended only for the person or entity to=20
+which it is addressed and may contain confidential and/or privileged=20
+material. Any review, retransmission, dissemination or other use of, or=20
+taking of any action in reliance upon, this information by persons or=20
+entities other than the intended recipient is prohibited. If you received=
+=20
+this in error, please contact the sender and delete the material from any=
+=20
+computer.
+
+
+For details about the personal information we process and why,=20
+please see our=C2=A0Privacy Notice=20
+<https://www.averydennison.com/en/home/legal-and-privacy-notices.html>
+
+
+---------------------------------------------------------------------------=
+----------------------------------
+
+
+--000000000000156af605a796d1ae
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Josh,<div><br></div><div>Thanks for the time last week and=
+ bringing this all to Carl&#39;s attention. While at AD we have a few COVID=
+ focused initiatives such as test kit tracking, and medical item use tracki=
+ng for direct medical applications. We also have an initiative=C2=A0with th=
+e Google team and the LiA product for helping shoppers prepare for a visit =
+and frictionless retail options. These solutions do not feel like the direc=
+t hit you are looking for with Carl in the short term. We do however feel t=
+hat there are changes happening to the supply chain such as seasonless fash=
+ion, compounding of disrupting activities due to climate and politics alike=
+, practices that will drive over supply and surplus due to the lack of agil=
+ity to adjust. We feel the best impact we can offer Estee Lauder is a longe=
+r term view centered on defined and clear data paths supported by data conf=
+idence and visibility. If there is a short term opportunity for us to help =
+drive something=C2=A0forward we will commit, but it looks clear that our ro=
+le is helping to set the foundation to position the company to be more agil=
+e in the future. I will put together a short deck over the next week and a =
+half to outline this view and sync back.</div><div><br></div><div>all the b=
+est to you and thanks for your support.</div><div><br></div><div>Fred</div>=
+</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">=
+On Mon, Jun 1, 2020 at 2:09 PM Frederick Bleckmann &lt;<a href=3D"mailto:fr=
+ederick.bleckmann@averydennison.com">frederick.bleckmann@averydennison.com<=
+/a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0=
+px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><=
+div dir=3D"ltr">Josh,<div>Thanks for the feedback - are you available for a=
+ call tomorrow to review?=C2=A0 2pm ET?</div></div><br><div class=3D"gmail_=
+quote"><div dir=3D"ltr" class=3D"gmail_attr">On Mon, Jun 1, 2020 at 12:39 P=
+M Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@jos=
+h.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"mar=
+gin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1=
+ex"><div dir=3D"ltr">Just got off the phone with Carl; he&#39;s very heads-=
+down on a project he kicked up around aggregating data on COVID-19 and usin=
+g that to structure a data-led response on reopening where, when, and how. =
+I&#39;d suggest you and I get on a call to see if Avery can make a pitch to=
+ them immediately to contribute - could be very good PR as well as a hedge =
+into a new set of services; Carl is very bullish on expanding the platform =
+to serve all other=C2=A0industries.<div><br></div><div>Otherwise we spoke b=
+riefly about the other initiatives you and I discussed and he asked me to s=
+end him some summaries in writing, which I have done. I&#39;ll follow up on=
+ this to see if we can get more traction - right now I&#39;m pushing for an=
+ intro to Chris Clark to see if we can piggyback on his project to test mor=
+e solutions as part of the overall project.</div><div><br></div><div>So, a =
+good first step. Carl&#39;s attention is clearly focused on this COVID-19 i=
+nitiative, but seems amiable to reviewing the solutions you suggested and h=
+opefully will get us to the right stakeholders to drive the next conversati=
+on.</div><div><br></div><div>Let me know if I can fill in any more detail, =
+let me know what you think about Avery and COVID, and I hope you and yours =
+are well!</div><div><br></div><div>All best,<br>Josh</div><div><br></div><d=
+iv><br></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px">=
+<img alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=
+=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3D=
+zerocontent&amp;guid=3Dd2a040be-a0a7-4c24-80d2-6caf8ff1d527"><font color=3D=
+"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><=
+div dir=3D"ltr" class=3D"gmail_attr">On Fri, May 29, 2020 at 11:57 AM Josh =
+Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a=
+>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px=
+ 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><di=
+v dir=3D"ltr">Thanks!! I&#39;m good for the moment; Carl just pushed us to =
+Monday. We&#39;ll see!!<div><br></div><div>- J</div></div><div hspace=3D"st=
+reak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; m=
+ax-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?=
+sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dd97d9b6d-ed34-=
+48e5-853f-1cc9a6847aef"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font>=
+</div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">=
+On Fri, May 29, 2020 at 11:49 AM Frederick Bleckmann &lt;<a href=3D"mailto:=
+frederick.bleckmann@averydennison.com" target=3D"_blank">frederick.bleckman=
+n@averydennison.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex"><div dir=3D"ltr">Update for you-<div><br></div><div>The =
+Atma digital ID management cloud platform we have discussed has seen recent=
+ traction with MAC brand (ELC). We are deploying=C2=A083 locations in Turke=
+y.=C2=A0 To dive into details there is a bit of ground to cover so if you t=
+hink it is interesting I can set up a call with you, Max and myself.=C2=A0 =
+(Max runs the Atma team)</div><div><br></div><div>let me know-</div></div><=
+br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri,=
+ May 8, 2020 at 4:57 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" targ=
+et=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gma=
+il_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,2=
+04,204);padding-left:1ex"><div><div dir=3D"auto">I=E2=80=99m no specialist =
+and I can see dozens of ways this wouldn=E2=80=99t work IRL. Will be happy =
+to nudge Carl on this; he=E2=80=99ll be pleased to get an inside insight.</=
+div><div dir=3D"auto"><br></div><div dir=3D"auto">- J</div><div dir=3D"auto=
+"><br></div></div><div><br><div class=3D"gmail_quote"><div dir=3D"ltr" clas=
+s=3D"gmail_attr">On Fri, May 8, 2020 at 4:55 PM Frederick Bleckmann &lt;<a =
+href=3D"mailto:frederick.bleckmann@averydennison.com" target=3D"_blank">fre=
+derick.bleckmann@averydennison.com</a>&gt; wrote:<br></div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Just keeping you in the =
+loop on what I know -<div>Kind of sounds like they got a smoke and mirrors =
+show from someone on using PUF as a Digital ID tool.=C2=A0 Cool stuff but n=
+ot practical=C2=A0for data heavy applications.</div></div><br><div class=3D=
+"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, May 8, 2020 at =
+4:48 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">jo=
+sh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=
+=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding=
+-left:1ex"><div><div dir=3D"auto">Genius!! Very very helpful. On my end Car=
+l pushed back our mtg again, so hopefully we=E2=80=99ll close in on this da=
+te.</div><div dir=3D"auto"><br></div><div dir=3D"auto">Hope you=E2=80=99re =
+well,</div><div dir=3D"auto">Josh</div><div dir=3D"auto"><br></div></div><d=
+iv><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On =
+Fri, May 8, 2020 at 4:10 PM Frederick Bleckmann &lt;<a href=3D"mailto:frede=
+rick.bleckmann@averydennison.com" target=3D"_blank">frederick.bleckmann@ave=
+rydennison.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div dir=3D"ltr">Josh,=C2=A0<div>Hope all is well - wanted to=
+ drop some additional info.=C2=A0</div><div>From what we understand one of =
+the teams at Estee is seriously considering vision as a tool for unique ide=
+ntity and track and trace. The tech they are proposing is a PUF or=C2=A0<sp=
+an style=3D"font-family:Roboto,arial,sans-serif">Physically Unclonable Func=
+tion. If you are not aware of the approach - it is basically working on the=
+=C2=A0premise that there are natural imperfections in packaging and printin=
+g or for pretty=C2=A0much everything. Some use diamond dust or manufacture =
+imperfections into the print or package to compensate for the required reso=
+lution to get to multiple bit=C2=A0ID&#39;s. Take a picture of this thing a=
+t high res whether=C2=A0it&#39;s diamond dust spread over a surface or just=
+ the natural imperfections in a package=C2=A0and Wa-La... unique identifier=
+.=C2=A0=C2=A0</span></div><div><span style=3D"font-family:Roboto,arial,sans=
+-serif"><br></span></div><div><span style=3D"font-family:Roboto,arial,sans-=
+serif">Although these technologies are very interesting for brand protectio=
+n and detecting counterfeits, I do not believe this technology is developed=
+ to the point it can be leveraged for track and trace, chain of custody or =
+consumer interaction. We use these technologies at times as well, but for b=
+rand protection.=C2=A0 I might not have the full picture but from what I un=
+derstand there is interest from the EL team to use this tech as a true uniq=
+ue identity technology for consumer interaction and track and trace. From a=
+ practical=C2=A0standpoint I can&#39;t say I agree with that approach.</spa=
+n></div><div><span style=3D"font-family:Roboto,arial,sans-serif"><br></span=
+></div><div><span style=3D"font-family:Roboto,arial,sans-serif">Obviously w=
+e feel RFID/NFC/even QR is a strong choice, but most importantly I wanted t=
+o allow you the opportunity to research the PUF vision tech and the provide=
+r prior to your call in case the subject comes up.=C2=A0</span></div><div><=
+span style=3D"font-family:Roboto,arial,sans-serif"><br></span></div><div>=
+=C2=A0<a rel=3D"nofollow noreferrer noopener" href=3D"https://www.google.co=
+m/url?q=3Dhttps://www.arjo-solutions.com/en/our-solutions/anti-diversion-so=
+lution/&amp;sa=3DD&amp;source=3Dhangouts&amp;ust=3D1589052060445000&amp;usg=
+=3DAFQjCNEYeFiUQ_GX50Jt95eI7ylEhGN6gg" dir=3D"ltr" style=3D"font-size:13px;=
+unicode-bidi:isolate;outline:none;font-family:Roboto,Arial,sans-serif;color=
+:rgb(38,50,56)" target=3D"_blank">https://www.arjo-solutions.com/en/our-sol=
+utions/anti-diversion-solution/</a><span style=3D"font-size:13px;font-famil=
+y:Roboto,Arial,sans-serif;color:rgb(38,50,56)">=C2=A0 =C2=A0</span><br></di=
+v></div><br><div class=3D"gmail_quote"></div><div class=3D"gmail_quote"><di=
+v dir=3D"ltr" class=3D"gmail_attr">On Wed, Apr 29, 2020 at 10:01 AM Josh Kl=
+ein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&=
+gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div =
+dir=3D"ltr"><div>Perfect, this is exactly what I needed. I&#39;ll let you k=
+now how it goes!</div><div><br></div><div>All best,</div><div>Josh<br></div=
+></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr"=
+>On Tue, Apr 28, 2020 at 4:42 PM Frederick Bleckmann &lt;<a href=3D"mailto:=
+frederick.bleckmann@averydennison.com" target=3D"_blank">frederick.bleckman=
+n@averydennison.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quot=
+e" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204)=
+;padding-left:1ex"><div dir=3D"ltr">There are a couple of RFID plays for Es=
+tee that help get the most out of the new normal headed our way due to COVI=
+D.=C2=A0=C2=A0<div>1) BOPIS - buy online pick up in store is traditionally =
+stronger in segments other than beauty=C2=A0but it is likely to see an upti=
+ck. Knowing how much inventory you have where and when is key for BOPIS, th=
+e value of a good inventory in magnified when you broadcast to a customer t=
+hat they can come and pick it up.</div><div>2) Ship from store also has sig=
+nificant inventory visibility advantage particularly if there is an unfores=
+een=C2=A0ecomm bump. UHF RFID enables accurate local inventory counts</div>=
+<div>3) Store to Store - better management and allocation of inventory=C2=
+=A0</div><div>4) Not sure there is a direct correlation=C2=A0but in apparel=
+ for fitting rooms UHF is being explored as a way to confirm to customers/c=
+onsumers that a garment has been treated, sterilized or not yet tried on.=
+=C2=A0</div><div>5) LiA - we have been working with Google on the LiA (loca=
+l inventory ads) initiative. this allows for local search online via google=
+ for inventory and in stock items within brick and mortar.=C2=A0 similar to=
+ BOPIS but more verify that it is available before I head into the retail s=
+pace.</div><div>6) What is in your supply chain and where is another obviou=
+s one we already covered.</div><div><br></div><div>There is an RFID project=
+ kicking off at Estee called Secure and Connect, I believe this is being in=
+itiated by Chris Clark VP of GLobal Supply Chain at Estee Lauder. Sounds li=
+ke it is in the early exploratory=C2=A0stages.</div><div><br></div><div><br=
+></div><div>Let me know if you have any questions</div></div><br><div class=
+=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Apr 28, 2020=
+ at 4:18 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank=
+">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" st=
+yle=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padd=
+ing-left:1ex"><div dir=3D"ltr"><div>Thanks for the followup! Yes, dinner ha=
+s been pushed back several times but as of now we&#39;re slated to drink wi=
+ne virtually together week after next. Anything you had that was likely to =
+be of COVID specific interest would be helpful; otherwise we&#39;ll see wha=
+t he says to what we&#39;re already discussed!</div><div><br></div><div>Gla=
+d you&#39;re doing well,</div><div>Josh</div><div><br></div></div><br><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Apr 28,=
+ 2020 at 4:16 PM Frederick Bleckmann &lt;<a href=3D"mailto:frederick.bleckm=
+ann@averydennison.com" target=3D"_blank">frederick.bleckmann@averydennison.=
+com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"marg=
+in:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1e=
+x"><div dir=3D"ltr">Josh,<div>I hope all is well and the family is taking t=
+he Covid-isolation in stride.=C2=A0=C2=A0</div><div><br></div><div>I wanted=
+ to reach out and touch base on the Estee Lauder front with Carl.=C2=A0 I i=
+magine dinner is no longer on the agenda but I am curious if you still plan=
+ to connect in the short term. There has been some minor advancements on ou=
+r side, mostly just continuing to build on the UHF RFID picture.=C2=A0 The =
+pilot project is completed and the MAC team is writing=C2=A0up results to s=
+hare internally. Other RFID efforts have early movement also.</div><div><br=
+></div><div>All the best,</div><div>Frederick<br clear=3D"all"><div><br></d=
+iv>-- <br><div dir=3D"ltr"><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr">Frederick Bleckmann<br></div><div dir=
+=3D"ltr"><div>Ecosystems Market Development Director</div><div>RFID / Intel=
+ligent Labels, Avery Dennison</div><div>646.901.4071<br></div><div><br></di=
+v><div><br></div></div></div></div></div></div></div></div></div></div></di=
+v></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif" style=3D"font-family:Arial,Helv=
+etica,sans-serif;color:rgb(0,0,0)">The information transmitted is intended =
+only for the person or entity to which it is addressed and may contain conf=
+idential and/or privileged material. Any review, retransmission, disseminat=
+ion or other use of, or taking of any action in reliance upon, this informa=
+tion by persons or entities other than the intended recipient is prohibited=
+. If you received this in error, please contact the sender and delete the m=
+aterial from any computer.</font></div><div><font face=3D"Arial, Helvetica,=
+ sans-serif" style=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,=
+0)"><br></font></div><div><font face=3D"Arial, Helvetica, sans-serif" style=
+=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,0)">For details ab=
+out the personal information we process and why, please see our=C2=A0<a hre=
+f=3D"https://www.averydennison.com/en/home/legal-and-privacy-notices.html" =
+style=3D"font-family:Arial,Helvetica,sans-serif" target=3D"_blank">Privacy =
+Notice</a></font></div></div><div>-----------------------------------------=
+--------------------------------------------------------------------</div><=
+/div><div><br></div></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif" style=3D"font-family:Arial,Helv=
+etica,sans-serif;color:rgb(0,0,0)">The information transmitted is intended =
+only for the person or entity to which it is addressed and may contain conf=
+idential and/or privileged material. Any review, retransmission, disseminat=
+ion or other use of, or taking of any action in reliance upon, this informa=
+tion by persons or entities other than the intended recipient is prohibited=
+. If you received this in error, please contact the sender and delete the m=
+aterial from any computer.</font></div><div><font face=3D"Arial, Helvetica,=
+ sans-serif" style=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,=
+0)"><br></font></div><div><font face=3D"Arial, Helvetica, sans-serif" style=
+=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,0)">For details ab=
+out the personal information we process and why, please see our=C2=A0<a hre=
+f=3D"https://www.averydennison.com/en/home/legal-and-privacy-notices.html" =
+style=3D"font-family:Arial,Helvetica,sans-serif" target=3D"_blank">Privacy =
+Notice</a></font></div></div><div>-----------------------------------------=
+--------------------------------------------------------------------</div><=
+/div><div><br></div></blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif" style=3D"font-family:Arial,Helv=
+etica,sans-serif;color:rgb(0,0,0)">The information transmitted is intended =
+only for the person or entity to which it is addressed and may contain conf=
+idential and/or privileged material. Any review, retransmission, disseminat=
+ion or other use of, or taking of any action in reliance upon, this informa=
+tion by persons or entities other than the intended recipient is prohibited=
+. If you received this in error, please contact the sender and delete the m=
+aterial from any computer.</font></div><div><font face=3D"Arial, Helvetica,=
+ sans-serif" style=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,=
+0)"><br></font></div><div><font face=3D"Arial, Helvetica, sans-serif" style=
+=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,0)">For details ab=
+out the personal information we process and why, please see our=C2=A0<a hre=
+f=3D"https://www.averydennison.com/en/home/legal-and-privacy-notices.html" =
+style=3D"font-family:Arial,Helvetica,sans-serif" target=3D"_blank">Privacy =
+Notice</a></font></div></div><div>-----------------------------------------=
+--------------------------------------------------------------------</div><=
+/div><div><br></div></blockquote></div></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif" style=3D"font-family:Arial,Helv=
+etica,sans-serif;color:rgb(0,0,0)">The information transmitted is intended =
+only for the person or entity to which it is addressed and may contain conf=
+idential and/or privileged material. Any review, retransmission, disseminat=
+ion or other use of, or taking of any action in reliance upon, this informa=
+tion by persons or entities other than the intended recipient is prohibited=
+. If you received this in error, please contact the sender and delete the m=
+aterial from any computer.</font></div><div><font face=3D"Arial, Helvetica,=
+ sans-serif" style=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,=
+0)"><br></font></div><div><font face=3D"Arial, Helvetica, sans-serif" style=
+=3D"font-family:Arial,Helvetica,sans-serif;color:rgb(0,0,0)">For details ab=
+out the personal information we process and why, please see our=C2=A0<a hre=
+f=3D"https://www.averydennison.com/en/home/legal-and-privacy-notices.html" =
+style=3D"font-family:Arial,Helvetica,sans-serif" target=3D"_blank">Privacy =
+Notice</a></font></div></div><div>-----------------------------------------=
+--------------------------------------------------------------------</div><=
+/div><div><br></div></blockquote></div></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+
+<br>
+<div><br></div><div><div>--------------------------------------------------=
+-----------------------------------------------------------</div><div><div>=
+<font face=3D"Arial, Helvetica, sans-serif">The information transmitted is =
+intended only for the person or entity to which it is addressed and may con=
+tain confidential and/or privileged material. Any review, retransmission, d=
+issemination or other use of, or taking of any action in reliance upon, thi=
+s information by persons or entities other than the intended recipient is p=
+rohibited. If you received this in error, please contact the sender and del=
+ete the material from any computer.</font></div><div><font face=3D"Arial, H=
+elvetica, sans-serif"><br></font></div><div><font face=3D"Arial, Helvetica,=
+ sans-serif">For details about the personal information we process and why,=
+ please see our=C2=A0<a href=3D"https://www.averydennison.com/en/home/legal=
+-and-privacy-notices.html" target=3D"_blank">Privacy Notice</a></font></div=
+></div><div>---------------------------------------------------------------=
+----------------------------------------------</div></div><div><br></div></=
+blockquote></div>
+</blockquote></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><=
+div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=
+=3D"ltr">Frederick Bleckmann<br></div><div dir=3D"ltr"><div>Ecosystems Mark=
+et Development Director</div><div>RFID / Intelligent Labels, Avery Dennison=
+</div><div>646.901.4071<br></div><div><br></div><div><br></div></div></div>=
+</div></div></div></div></div></div></div></div></div>
+</blockquote></div><br clear=3D"all"><div><br></div>-- <br><div dir=3D"ltr"=
+ class=3D"gmail_signature"><div dir=3D"ltr"><div><div dir=3D"ltr"><div dir=
+=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr=
+"><div dir=3D"ltr"><div dir=3D"ltr">Frederick Bleckmann<br></div><div dir=
+=3D"ltr"><div>Ecosystems Market Development Director</div><div>RFID / Intel=
+ligent Labels, Avery Dennison</div><div>646.901.4071<br></div><div><br></di=
+v><div><br></div></div></div></div></div></div></div></div></div></div></di=
+v></div>
+
+<br>
+<div><br></div><div><div>------------------------------<wbr>---------------=
+---------------<wbr>------------------------------<wbr>-------------------<=
+/div><div><div><font face=3D"Arial, Helvetica, sans-serif">The information =
+transmitted is intended only for the person or entity to which it is addres=
+sed and may contain confidential and/or privileged material. Any review, re=
+transmission, dissemination or other use of, or taking of any action in rel=
+iance upon, this information by persons or entities other than the intended=
+ recipient is prohibited. If you received this in error, please contact the=
+ sender and delete the material from any computer.</font></div><div><font f=
+ace=3D"Arial, Helvetica, sans-serif"><br></font></div><div><font face=3D"Ar=
+ial, Helvetica, sans-serif">For details about the personal information we p=
+rocess and why, please see our=C2=A0<a href=3D"https://www.averydennison.co=
+m/en/home/legal-and-privacy-notices.html" target=3D"_blank">Privacy Notice<=
+/a></font></div></div><div>------------------------------<wbr>-------------=
+-----------------<wbr>------------------------------<wbr>------------------=
+-</div></div><div><br></div>
+--000000000000156af605a796d1ae--

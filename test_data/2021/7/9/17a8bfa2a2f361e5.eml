@@ -1,0 +1,621 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:28a:0:0:0:0 with SMTP id b10csp625062ljo;
+        Fri, 9 Jul 2021 08:54:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxbTCgq6OkJpcfisoL90LalBIfLOdCKIcW9HTd+H/YNOR22nVCH7YjHb77plYxKBsQvRiPq
+X-Received: by 2002:a17:90a:c89:: with SMTP id v9mr39671520pja.175.1625846065956;
+        Fri, 09 Jul 2021 08:54:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1625846065; cv=none;
+        d=google.com; s=arc-20160816;
+        b=GkFrgCQ5IPU4nmIQLLl9nfqXgj/syaiG1vg5xEcqGj7ZL4NXX+1Hri8+zPZOUU4iSV
+         iWUGP0Kwup1p6w/nXhJEIhf3ofdsZ+zOuASeXdIrQz5UZ1FJp/ge+m8KPGODq3oeYLal
+         xM38GlzL0YrS+vy2Z6PZs49kkDbAWv6VCkzw9Mj9oic6vnDxhsby8yi04pQvWdOu4GOI
+         t5OmaHgm1uPNBdFdxGsP7z0mvRdsvlFiuXT6R7bgRCTYh0FhLU6t6TLFguqnTsXuovV0
+         t7ik6M4HU0/eD1/zvrNhATHTYfYky224CVSQ/2sI+mx4CgCqVipUO49lwWkjCb5nxdw8
+         4xDQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :dkim-signature:dkim-signature;
+        bh=8MSFDLBPFm7KkmuX8gKzrIvwMyq8kCwQXWT7rova0aQ=;
+        b=ORFgoj2n1RWa7PaQr1kMlTVLeS94eTslD8ffFcWJMKMq3ya1G/e++S6b9it9al+R1Y
+         RT777Fsbx67Y+S/YE3FuzJdiCDyzm+Va2zMXZ+r2LihafFPXe94OC95kTr6vWISn1tUB
+         QylbxBZooY8EldzRIbZtg0JO5TiN1nDRpaK6AGMN0z2Ro/qNhHC+7rB1joLa3bjknGRs
+         UomvfxRIWBxid5oY2rfeb8I+jCqxckhSVlFNKONKgYBg5NwIanW7U1aKzS6IzUaOo9Z8
+         KHmCY7tkaj0vJ69dYpAdqjPh72fWXNPwsqUN4CeIOO/EFETs5nHVkObDAP2WYP7jnXyF
+         HndQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@motorolasolutions.com header.s=PPS--2020-03-17 header.b=AaI+WZRV;
+       dkim=pass header.i=@motorolasolutions.com header.s=google-prod-022221 header.b="N7PaFLm/";
+       spf=pass (google.com: domain of prvs=2824e16617=patricia.thoman@motorolasolutions.com designates 67.231.149.242 as permitted sender) smtp.mailfrom="prvs=2824e16617=patricia.thoman@motorolasolutions.com";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=motorolasolutions.com
+Return-Path: <prvs=2824e16617=patricia.thoman@motorolasolutions.com>
+Received: from mx0b-0019e102.pphosted.com (mx0a-0019e102.pphosted.com. [67.231.149.242])
+        by mx.google.com with ESMTPS id j10si19179917pjl.155.2021.07.09.08.54.25
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 09 Jul 2021 08:54:25 -0700 (PDT)
+Received-SPF: pass (google.com: domain of prvs=2824e16617=patricia.thoman@motorolasolutions.com designates 67.231.149.242 as permitted sender) client-ip=67.231.149.242;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@motorolasolutions.com header.s=PPS--2020-03-17 header.b=AaI+WZRV;
+       dkim=pass header.i=@motorolasolutions.com header.s=google-prod-022221 header.b="N7PaFLm/";
+       spf=pass (google.com: domain of prvs=2824e16617=patricia.thoman@motorolasolutions.com designates 67.231.149.242 as permitted sender) smtp.mailfrom="prvs=2824e16617=patricia.thoman@motorolasolutions.com";
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=motorolasolutions.com
+Received: from pps.filterd (m0074409.ppops.net [127.0.0.1])
+	by mx0a-0019e102.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 169FrvPU030854
+	for <josh@josh.is>; Fri, 9 Jul 2021 10:54:25 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=motorolasolutions.com;
+ h=mime-version : references : in-reply-to : from : date : message-id :
+ subject : to : content-type; s=PPS--2020-03-17;
+ bh=8MSFDLBPFm7KkmuX8gKzrIvwMyq8kCwQXWT7rova0aQ=;
+ b=AaI+WZRVB7JvJI5uygvSsd1NlmFwSTVzq/Bza3NUB77ak17QlnR3/zYKE1bC/3iMg6yT
+ lqGg29hhlmb+fJ056COCg0kLnWKTbD1IMQvy9IUhthz2ntVXNQqvDtoFl6BPDmFLRuq6
+ VIQ1qdT2E1/zmzb33bhKs1S6rW0DZOODdtYxzcGxHE96mC1g34gJZX/FC7Ghtb+vJpNS
+ C8JGclEw7jtore4tssOkb4+jtQnmBx0oY9qpnjCXD9bzv0AeLS0ho2OQ1JSbzOr9tIM7
+ JsjnKNOboQ/FuhyIKFr2QRYfvbKm1epmN+R2fJy7Ve5uqnbagb0p5vK07FXm4J4AIcB7 ow== 
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com [209.85.219.199])
+	by mx0a-0019e102.pphosted.com with ESMTP id 39psgmg02d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=OK)
+	for <josh@josh.is>; Fri, 09 Jul 2021 10:54:25 -0500
+Received: by mail-yb1-f199.google.com with SMTP id x5-20020a0569021025b029055b9b68cd3eso12024128ybt.8
+        for <josh@josh.is>; Fri, 09 Jul 2021 08:54:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=motorolasolutions.com; s=google-prod-022221;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=8MSFDLBPFm7KkmuX8gKzrIvwMyq8kCwQXWT7rova0aQ=;
+        b=N7PaFLm/yYDX+DJSodZP0ruCvKJvn8B7mSPg7UMFFdFEzHMZbEFlAEQpa4SErXp0QD
+         Uqa95BdxDOCW+lHHqcwu42Ea/WqM9aScUXPCetLOKN7ZjxgnaKqpJV1/KcOAoomegVMs
+         lPrRhbQSRozP2Mv8pz3oBllrjyvN4PtlSWVTAYJqa+6qsq2M7bY5/p9+pnXRElLN+QNH
+         bhaN1BZ5oilGE9iO0rWZrsfh7dyodYntZyM21RmEtD8R+9+qLNNL082YAfCeptqHSvmZ
+         FAevPE1ARBmEdzCxAwTp4Upkr3zirnVK+Iwyhi1UUvkxC93840OQpBYjyx9Von65z4bo
+         ZEOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=8MSFDLBPFm7KkmuX8gKzrIvwMyq8kCwQXWT7rova0aQ=;
+        b=ICes9gEGKga5/vB1kcuD7hcx1mYHL7K4Ddmi+0Lcq04L4TQ5f9X93qvhDgR6eItKvT
+         ewcrUnBb0f6+8lRewtESWydu7JpGmLcemNSek3SSOIEvTEkJQvVcvQVgKPj1iO3J9QHW
+         AeGBOo7LeAy00/fQvQqHfPlbOZW6J5WA5ec96WVu44l56ne3UVGPn6NwlAW4CeQEgbu6
+         qO4Q4a0dWpfFU31yliQS9k6ETQGOnWn7xbpkQu/YJGkhndyGQfToMR3R/bZDpFY+aqxT
+         CUGf3Wvs0mdd1iSHeBIKv54L1HX+ikNqReHizVBuHA390HtqCHX8a7qfAYAt6ozEbRz5
+         23nA==
+X-Gm-Message-State: AOAM530GZyw50LlBeJM5dysWjEyMWFv3GuvOH3LSKiiNLskSm4IYcm48
+	0V/YE059fu3GEq9CBUhhjqLOBNoSN59AvnyGUMm2zh24r1V7w3I6mTeRkJ07giULAc9VTlVU0Ps
+	f1OU+CIEVi3zOBkPdVVU=
+X-Received: by 2002:a25:a20a:: with SMTP id b10mr12304306ybi.478.1625846063650;
+        Fri, 09 Jul 2021 08:54:23 -0700 (PDT)
+X-Received: by 2002:a25:a20a:: with SMTP id b10mr12304280ybi.478.1625846063351;
+ Fri, 09 Jul 2021 08:54:23 -0700 (PDT)
+MIME-Version: 1.0
+References: <CAA7CW9k=n9cXd_NbcAZ2qhKPf7DCPR=uEeKyKJyH97MoTWiVEQ@mail.gmail.com>
+ <CACNgykPATj-Uz__B61DiU2tmf6iVjVg85HiXBqmFpFo6oRsEVg@mail.gmail.com>
+ <CAO-AXY3Lr29AxTN19Tpj_6zWqzaMof4D5oLQHooK6RK6AzHe3A@mail.gmail.com>
+ <CACNgykP40qo78VWhys-b-p6i8KzcY9P53GnJw7tnj5RJVO6Q6A@mail.gmail.com>
+ <CA+a20TdH1pasXmCk=StYCkPt28wNdjM0yG_B7i0EeDHAN9ZUvg@mail.gmail.com>
+ <CACNgykN7AA7KCP=4TWxmgnrckvh+vEZ4Kr-MaLf2C7LmhGM+dw@mail.gmail.com>
+ <CA+a20TeZWYXjDTcpLWxZaV20pu2Cxz2imUDMueuHVeBLez1L4w@mail.gmail.com>
+ <CACNgykPPWEfWCm_hFvT5hh59_3BEMX-PyvV-xAFC32-MaFmS8w@mail.gmail.com>
+ <CA+a20TeZ_RhRkq_QZNLEavxqi9_mgd7iFjVLy+4k7B8rfbS4qQ@mail.gmail.com>
+ <CACNgykOmCwAejf5CJbDVxCixPOh+dTUnK0JxZz+pY3ZAsG-sbg@mail.gmail.com>
+ <CA+a20TeXVUWiCPQgop86=pMq82RihqZDTpLz1R=nBae9yVonCA@mail.gmail.com>
+ <CA+a20Tch9XPjABotK3LwGondJ9nZjEANrqoTSwvJXFydDyVMcw@mail.gmail.com> <CACNgykNrGLAfMvitqXa_7=opUeLQPSBMRtuQSjO7o+61yksc0A@mail.gmail.com>
+In-Reply-To: <CACNgykNrGLAfMvitqXa_7=opUeLQPSBMRtuQSjO7o+61yksc0A@mail.gmail.com>
+From: Patti Thoman <patricia.thoman@motorolasolutions.com>
+Date: Fri, 9 Jul 2021 10:53:56 -0500
+Message-ID: <CA+a20TeYqyzg=YoENVJmTbXnghbVp1SLi1jTKorCzFAKiGf35A@mail.gmail.com>
+Subject: Re: Motorola Solutions/IndigoMetrics Intro
+To: Josh Klein <josh@josh.is>
+Content-Type: multipart/alternative; boundary="00000000000010e2f505c6b2c9ad"
+X-Proofpoint-ORIG-GUID: O-rLpvaFJwA1LXNxctzofWp-sOQCIoiv
+X-Proofpoint-GUID: O-rLpvaFJwA1LXNxctzofWp-sOQCIoiv
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1015 mlxscore=0
+ impostorscore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 mlxlogscore=544 adultscore=0 spamscore=0 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2107090079
+
+--00000000000010e2f505c6b2c9ad
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Done!
+
+On Fri, Jul 9, 2021 at 10:49 AM Josh Klein <josh@josh.is> wrote:
+
+> Monday, July 26, 2:00pm GMT (for Tinisha-9am) works fine. Can you send an
+> invite? Thanks!
+>
+> - J
+>
+> =E1=90=A7
+>
+> On Fri, Jul 9, 2021 at 2:47 PM Patti Thoman <
+> patricia.thoman@motorolasolutions.com> wrote:
+>
+>> Hi Josh,
+>> So sorry, AGAIN.  That time slot just got blocked by someone else.
+>> (Tinisha's calendar fills up fast.)
+>> I have a couple of alternative dates/times:
+>> Monday, July 26, 2:00pm GMT (for Tinisha-9am)
+>> Thurs, July 29, 2:00pm GMT (for Tinisha-9am)
+>> Monday, Aug 2, 2:00pm GMT (for Tinisha-9am)
+>> Please let me know if any of these times work for you
+>>
+>> On Fri, Jul 9, 2021 at 8:47 AM Patti Thoman <
+>> patricia.thoman@motorolasolutions.com> wrote:
+>>
+>>> Hi Josh,
+>>> Sorry, but when I said 10am, I was looking at Central time.... it would
+>>> actually be 11:00am EST, and 4:00pm your time.
+>>> Is that still alright with you?
+>>>
+>>> On Fri, Jul 9, 2021 at 8:26 AM Josh Klein <josh@josh.is> wrote:
+>>>
+>>>> If I can get an hour that=E2=80=99d be better; it=E2=80=99s an interes=
+ting topic that
+>>>> usually generates a lot of discussion!
+>>>>
+>>>> - J
+>>>>
+>>>>
+>>>> On Fri, Jul 9, 2021 at 1:19 PM Patti Thoman <
+>>>> patricia.thoman@motorolasolutions.com> wrote:
+>>>>
+>>>>> Yes, I will.  How much time do you need?
+>>>>>
+>>>>> On Fri, Jul 9, 2021 at 4:32 AM Josh Klein <josh@josh.is> wrote:
+>>>>>
+>>>>>> July 21 10:00am EST works for me! Can you send an invite?
+>>>>>>
+>>>>>> Thanks!
+>>>>>> Josh
+>>>>>>
+>>>>>> On Thu, Jul 8, 2021 at 9:59 PM Patti Thoman <
+>>>>>> patricia.thoman@motorolasolutions.com> wrote:
+>>>>>>
+>>>>>>> Hello Josh,
+>>>>>>> If by "earlier" you mean earlier in the week... Tinisha is out of
+>>>>>>> the office until the 12th, back on the 13th, and her calendar is pr=
+etty
+>>>>>>> packed next week.
+>>>>>>> We can look at the following week.  Would one of these dates work
+>>>>>>> for you?
+>>>>>>> July 20  8:30am EST / 2:30pm GMT
+>>>>>>> July 21  10:00am EST / 3:00pm GMT
+>>>>>>>
+>>>>>>> ~Patti
+>>>>>>>
+>>>>>>> On Thu, Jul 8, 2021 at 6:17 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>
+>>>>>>>> I'll be travelling to NY on the 15th - 22nd, if there's a f2f in
+>>>>>>>> NYC that works then. Otherwise do you have an earlier time that co=
+uld work
+>>>>>>>> GMT?
+>>>>>>>>
+>>>>>>>> Thanks!
+>>>>>>>> Josh
+>>>>>>>> =E1=90=A7
+>>>>>>>>
+>>>>>>>> On Wed, Jul 7, 2021 at 9:24 PM Patti Thoman <
+>>>>>>>> patricia.thoman@motorolasolutions.com> wrote:
+>>>>>>>>
+>>>>>>>>> Hello Josh Klein,
+>>>>>>>>> Tinisha is available next week on the 13th, 3:30-5:00pm EST.
+>>>>>>>>> Also on the 15th, 3:00-5:00pm EST
+>>>>>>>>> Please let me know if you need more times.
+>>>>>>>>> ~Patti Thoman
+>>>>>>>>>
+>>>>>>>>>
+>>>>>>>>> On Wed, Jul 7, 2021 at 12:57 PM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>
+>>>>>>>>>> Tinisha,
+>>>>>>>>>>
+>>>>>>>>>> Thanks so much for the call today; I had a blast and especially
+>>>>>>>>>> appreciated your candor and insight about the opportunity! Let m=
+e know when
+>>>>>>>>>> would work well for a quick walkthrough of our platform so you'r=
+e
+>>>>>>>>>> comfortable extending an invite to your boss + following up w/ M=
+ahesh.
+>>>>>>>>>>
+>>>>>>>>>> I've attached our overview deck, and you can find a short summar=
+y
+>>>>>>>>>> video here
+>>>>>>>>>> <https://urldefense.proofpoint.com/v2/url?u=3Dhttp-3A__www.indig=
+ometrics.com&d=3DDwMFaQ&c=3Dq3cDpHe1hF8lXU5EFjNM_A&r=3DW-sw8dppZ609Z8dL4x_F=
+x3hS8cVr8tgF7BRGUGKX0IVDMu3LhecGbyuW9ZIqJu7L&m=3Dzu9aL3-FCG_wYzPDsDahMifF0v=
+4OFeJ9Xb-j9gN7ccI&s=3D8Tybad1tul4suZSgSzU6xKw8SFUOmf9PpvLau4UbVSk&e=3D>.
+>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>>> Looking forward to it,
+>>>>>>>>>> Josh
+>>>>>>>>>>
+>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>
+>>>>>>>>>> On Thu, Jun 3, 2021 at 10:26 PM Tinisha Agramonte <
+>>>>>>>>>> tinisha.agramonte@motorolasolutions.com> wrote:
+>>>>>>>>>>
+>>>>>>>>>>> Josh,
+>>>>>>>>>>> I was doing a search for an email from Mahesh and came across
+>>>>>>>>>>> this email. Please accept my profuse apologies for the non/dela=
+yed
+>>>>>>>>>>> response. I'm not sure how this fell off my radar.
+>>>>>>>>>>>
+>>>>>>>>>>> To ensure that we definitely connect this time, I'm including
+>>>>>>>>>>> Patti who helps with my calendar.
+>>>>>>>>>>>
+>>>>>>>>>>> I look forward to finally meeting you.
+>>>>>>>>>>>
+>>>>>>>>>>> Best,
+>>>>>>>>>>> Tinisha
+>>>>>>>>>>>
+>>>>>>>>>>> On Tue, Mar 9, 2021 at 4:32 AM Josh Klein <josh@josh.is> wrote:
+>>>>>>>>>>>
+>>>>>>>>>>>> Thanks so much, Mahesh! To bcc. to save your inbox.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Tinisha, very pleased to meet you! Do you have time for a brie=
+f
+>>>>>>>>>>>> call in the next couple of weeks? Let me know what works for y=
+ou; I'm GMT
+>>>>>>>>>>>> but am flexible.
+>>>>>>>>>>>>
+>>>>>>>>>>>> Looking forward to connecting,
+>>>>>>>>>>>> Josh
+>>>>>>>>>>>> =E1=90=A7
+>>>>>>>>>>>>
+>>>>>>>>>>>> On Mon, Mar 8, 2021 at 5:32 PM Mahesh Saptharishi <
+>>>>>>>>>>>> mahesh.saptharishi@motorolasolutions.com> wrote:
+>>>>>>>>>>>>
+>>>>>>>>>>>>> Josh and Tinisha,
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> As discussed, just want to use this email to introduce the tw=
+o
+>>>>>>>>>>>>> of you.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> @Josh Klein <josh@josh.is>: Tinisha is the Chief Diversity
+>>>>>>>>>>>>> Officer at Motorola Solutions. She is the right person to eng=
+age in the DEI
+>>>>>>>>>>>>> focused work you described to me.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> @Tinisha Agramonte <tinisha.agramonte@motorolasolutions.com>:
+>>>>>>>>>>>>> Josh is the founder and CEO of IndigoMetrics
+>>>>>>>>>>>>> <https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__indig=
+ometrics.com_&d=3DDwMFaQ&c=3Dq3cDpHe1hF8lXU5EFjNM_A&r=3DK1l8TnDY_aL_gbHKnzD=
+oIqQNsxXr-BkGy7pr0gvRTsG4miMMMqkyQXj2aoz58OFv&m=3DAnHVUxdWSO34AD4KgoXwbyLX7=
+Ccaqj15JzkB1HlBUEE&s=3DicqpNGpxcG9D4VFKrOv8snCFJXHEhrJnjUAxXRaImU0&e=3D> an=
+d
+>>>>>>>>>>>>> is building an interesting platform for measuring workplace c=
+ulture.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> I am happy to help in any way I can, but I'll leave it up to
+>>>>>>>>>>>>> both of you to take it from here.
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> Thanks,
+>>>>>>>>>>>>> -Mahesh
+>>>>>>>>>>>>>
+>>>>>>>>>>>>> *For more information on how and why we collect your personal
+>>>>>>>>>>>>> information, please visit our Privacy Policy
+>>>>>>>>>>>>> <https://www.motorolasolutions.com/en_us/about/privacy-policy=
+.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2=
+#privacystatement>.*
+>>>>>>>>>>>>>
+>>>>>>>>>>>>
+>>>>>>>>>>> *For more information on how and why we collect your personal
+>>>>>>>>>>> information, please visit our Privacy Policy
+>>>>>>>>>>> <https://www.motorolasolutions.com/en_us/about/privacy-policy.h=
+tml?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#p=
+rivacystatement>.*
+>>>>>>>>>>>
+>>>>>>>>>>
+>>>>>>>>> *For more information on how and why we collect your personal
+>>>>>>>>> information, please visit our Privacy Policy
+>>>>>>>>> <https://www.motorolasolutions.com/en_us/about/privacy-policy.htm=
+l?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#pri=
+vacystatement>.*
+>>>>>>>>>
+>>>>>>>>
+>>>>>>> *For more information on how and why we collect your personal
+>>>>>>> information, please visit our Privacy Policy
+>>>>>>> <https://www.motorolasolutions.com/en_us/about/privacy-policy.html?=
+elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#priva=
+cystatement>.*
+>>>>>>>
+>>>>>> =E1=90=A7
+>>>>>>
+>>>>>
+>>>>> *For more information on how and why we collect your personal
+>>>>> information, please visit our Privacy Policy
+>>>>> <https://www.motorolasolutions.com/en_us/about/privacy-policy.html?el=
+qTrackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#privacy=
+statement>.*
+>>>>>
+>>>>
+>> *For more information on how and why we collect your personal
+>> information, please visit our Privacy Policy
+>> <https://www.motorolasolutions.com/en_us/about/privacy-policy.html?elqTr=
+ackId=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#privacysta=
+tement>.*
+>>
+>
+
+--=20
+
+
+*For more information on how and why we collect your personal=20
+information, please visit our Privacy Policy=20
+<https://www.motorolasolutions.com/en_us/about/privacy-policy.html?elqTrack=
+Id=3D8980d888905940e39a2613a7a3dcb0a7&elqaid=3D2786&elqat=3D2#privacystatem=
+ent>.*
+
+--00000000000010e2f505c6b2c9ad
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr"><div class=3D"gmail_default" style=3D"font-size:small">Don=
+e!=C2=A0<br></div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" cla=
+ss=3D"gmail_attr">On Fri, Jul 9, 2021 at 10:49 AM Josh Klein &lt;<a href=3D=
+"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:<br></div><blockquote clas=
+s=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid r=
+gb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_defa=
+ult">Monday, July 26, 2:00pm GMT (for Tinisha-9am) works fine. Can you send=
+ an invite? Thanks!</div><div class=3D"gmail_default"><br></div><div class=
+=3D"gmail_default">- J</div><br></div><div hspace=3D"streak-pt-mark" style=
+=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height: 0px; ove=
+rflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb=
+3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Df7ac5e76-b749-4bd2-b26b-63e2116dd=
+74e"><font color=3D"#ffffff" size=3D"1">=E1=90=A7</font></div><br><div clas=
+s=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jul 9, 2021=
+ at 2:47 PM Patti Thoman &lt;<a href=3D"mailto:patricia.thoman@motorolasolu=
+tions.com" target=3D"_blank">patricia.thoman@motorolasolutions.com</a>&gt; =
+wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0=
+px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=
+=3D"ltr"><div class=3D"gmail_default" style=3D"font-size:small">Hi Josh,</d=
+iv><div class=3D"gmail_default" style=3D"font-size:small">So sorry, AGAIN.=
+=C2=A0 That time slot just got blocked by someone else.</div><div class=3D"=
+gmail_default" style=3D"font-size:small">(Tinisha&#39;s calendar fills up f=
+ast.)</div><div class=3D"gmail_default" style=3D"font-size:small">I have a =
+couple of alternative dates/times:</div><div class=3D"gmail_default" style=
+=3D"font-size:small">Monday, July 26, 2:00pm GMT (for Tinisha-9am)</div><di=
+v class=3D"gmail_default" style=3D"font-size:small">Thurs, July 29, 2:00pm =
+GMT (for Tinisha-9am)</div><div class=3D"gmail_default" style=3D"font-size:=
+small">Monday, Aug 2, 2:00pm GMT (for Tinisha-9am)</div><div class=3D"gmail=
+_default" style=3D"font-size:small">Please let me know if any of these time=
+s work for you</div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" c=
+lass=3D"gmail_attr">On Fri, Jul 9, 2021 at 8:47 AM Patti Thoman &lt;<a href=
+=3D"mailto:patricia.thoman@motorolasolutions.com" target=3D"_blank">patrici=
+a.thoman@motorolasolutions.com</a>&gt; wrote:<br></div><blockquote class=3D=
+"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(2=
+04,204,204);padding-left:1ex"><div dir=3D"ltr"><div class=3D"gmail_default"=
+ style=3D"font-size:small">Hi Josh,</div><div class=3D"gmail_default" style=
+=3D"font-size:small">Sorry, but when I said 10am, I was looking at Central =
+time.... it would actually be 11:00am EST, and 4:00pm your time.</div><div =
+class=3D"gmail_default" style=3D"font-size:small">Is that still alright wit=
+h you?</div></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"=
+gmail_attr">On Fri, Jul 9, 2021 at 8:26 AM Josh Klein &lt;<a href=3D"mailto=
+:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<br></div><bloc=
+kquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:=
+1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"auto">If I can get=
+ an hour that=E2=80=99d be better; it=E2=80=99s an interesting topic that u=
+sually generates a lot of discussion!</div><div dir=3D"auto"><br></div><div=
+ dir=3D"auto">- J</div><div dir=3D"auto"><br></div><div><br><div class=3D"g=
+mail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jul 9, 2021 at 1:=
+19 PM Patti Thoman &lt;<a href=3D"mailto:patricia.thoman@motorolasolutions.=
+com" target=3D"_blank">patricia.thoman@motorolasolutions.com</a>&gt; wrote:=
+<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8=
+ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr=
+"><div class=3D"gmail_default" style=3D"font-size:small">Yes, I will.=C2=A0=
+ How much time do=C2=A0you need?</div></div><br><div class=3D"gmail_quote">=
+<div dir=3D"ltr" class=3D"gmail_attr">On Fri, Jul 9, 2021 at 4:32 AM Josh K=
+lein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>=
+&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div=
+ dir=3D"ltr"><div dir=3D"ltr">July 21 10:00am EST works for me! Can you sen=
+d an invite?<br></div><div dir=3D"ltr"><br></div><div>Thanks!<br>Josh</div>=
+<br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Thu=
+, Jul 8, 2021 at 9:59 PM Patti Thoman &lt;<a href=3D"mailto:patricia.thoman=
+@motorolasolutions.com" target=3D"_blank">patricia.thoman@motorolasolutions=
+.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"mar=
+gin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1=
+ex"><div dir=3D"ltr"><div style=3D"font-size:small">Hello Josh,</div><div s=
+tyle=3D"font-size:small">If by &quot;earlier&quot; you mean earlier in the =
+week... Tinisha is out of the office until the 12th, back on the 13th, and =
+her calendar is pretty packed next week.</div><div style=3D"font-size:small=
+">We can look at the following week.=C2=A0 Would one of these=C2=A0dates wo=
+rk for you?</div><div style=3D"font-size:small">July 20=C2=A0 8:30am EST / =
+2:30pm GMT</div><div style=3D"font-size:small">July 21=C2=A0 10:00am EST / =
+3:00pm GMT</div><div style=3D"font-size:small"><br></div><div style=3D"font=
+-size:small">~Patti</div></div><br><div class=3D"gmail_quote"><div dir=3D"l=
+tr" class=3D"gmail_attr">On Thu, Jul 8, 2021 at 6:17 AM Josh Klein &lt;<a h=
+ref=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; wrote:<b=
+r></div><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex=
+;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">=
+I&#39;ll be travelling to NY on the 15th - 22nd, if there&#39;s a f2f in NY=
+C that works then. Otherwise do you have an earlier time that could work GM=
+T?<div><br></div><div>Thanks!<br>Josh</div></div><div hspace=3D"streak-pt-m=
+ark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: 0px; max-height=
+: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.com/t?sender=3D=
+aam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Dc8345682-53e2-4cba-ab85=
+-8d3ecaa26cb1"><font size=3D"1" style=3D"color:rgb(255,255,255)">=E1=90=A7<=
+/font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_=
+attr">On Wed, Jul 7, 2021 at 9:24 PM Patti Thoman &lt;<a href=3D"mailto:pat=
+ricia.thoman@motorolasolutions.com" target=3D"_blank">patricia.thoman@motor=
+olasolutions.com</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" =
+style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);pa=
+dding-left:1ex"><div dir=3D"ltr"><div style=3D"font-size:small">Hello Josh =
+Klein,</div><div style=3D"font-size:small">Tinisha is available next week o=
+n the 13th, 3:30-5:00pm EST.</div><div style=3D"font-size:small">Also on th=
+e 15th, 3:00-5:00pm EST</div><div style=3D"font-size:small">Please let me k=
+now if you need more times.</div><div style=3D"font-size:small">~Patti Thom=
+an</div><div style=3D"font-size:small"><br></div></div><br><div class=3D"gm=
+ail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Wed, Jul 7, 2021 at 12:=
+57 PM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh=
+@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D=
+"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-le=
+ft:1ex"><div dir=3D"ltr">Tinisha,<br><br>Thanks so much for the call today;=
+ I had a blast and especially appreciated your candor and insight about the=
+=C2=A0opportunity! Let me know when would work well for a quick walkthrough=
+ of our platform so you&#39;re comfortable extending an invite to your boss=
+ + following up w/ Mahesh. <br><br>I&#39;ve attached our overview deck, and=
+ you can find a short summary video <a href=3D"https://urldefense.proofpoin=
+t.com/v2/url?u=3Dhttp-3A__www.indigometrics.com&amp;d=3DDwMFaQ&amp;c=3Dq3cD=
+pHe1hF8lXU5EFjNM_A&amp;r=3DW-sw8dppZ609Z8dL4x_Fx3hS8cVr8tgF7BRGUGKX0IVDMu3L=
+hecGbyuW9ZIqJu7L&amp;m=3Dzu9aL3-FCG_wYzPDsDahMifF0v4OFeJ9Xb-j9gN7ccI&amp;s=
+=3D8Tybad1tul4suZSgSzU6xKw8SFUOmf9PpvLau4UbVSk&amp;e=3D" target=3D"_blank">=
+here</a>. <br><br>Looking forward to it,<br>Josh<br><div><br></div></div><d=
+iv hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=
+=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfoog=
+ae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=
+=3Dfbe91b41-f09b-481c-a7bc-04d975d68eb5"><font size=3D"1" style=3D"color:rg=
+b(255,255,255)">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div d=
+ir=3D"ltr" class=3D"gmail_attr">On Thu, Jun 3, 2021 at 10:26 PM Tinisha Agr=
+amonte &lt;<a href=3D"mailto:tinisha.agramonte@motorolasolutions.com" targe=
+t=3D"_blank">tinisha.agramonte@motorolasolutions.com</a>&gt; wrote:<br></di=
+v><blockquote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;borde=
+r-left:1px solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr">Josh,<=
+div>I was doing a search for an email from Mahesh and came across this emai=
+l. Please accept my profuse apologies for the non/delayed response. I&#39;m=
+ not sure how this fell off my radar.</div><div><br></div><div>To ensure th=
+at we definitely connect this time, I&#39;m including Patti who helps with=
+=C2=A0my calendar.</div><div><br></div><div>I look forward to finally meeti=
+ng you.</div><div><br></div><div>Best,</div><div>Tinisha</div></div><br><di=
+v class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Mar 9=
+, 2021 at 4:32 AM Josh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"=
+_blank">josh@josh.is</a>&gt; wrote:<br></div><blockquote class=3D"gmail_quo=
+te" style=3D"margin:0px 0px 0px 0.8ex;border-left:1px solid rgb(204,204,204=
+);padding-left:1ex"><div dir=3D"ltr">Thanks so much, Mahesh! To bcc. to sav=
+e your inbox.=C2=A0<div><br></div><div>Tinisha, very pleased to meet you! D=
+o you have time for a brief call in the next couple=C2=A0of weeks? Let me k=
+now what works for you; I&#39;m GMT but am flexible.<br></div><div><br></di=
+v><div>Looking forward to connecting,</div><div>Josh</div></div><div hspace=
+=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D"" style=3D"width: =
+0px; max-height: 0px; overflow: hidden;" src=3D"https://mailfoogae.appspot.=
+com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3Da481f75c=
+-ea02-4c31-9b0c-d27a7fdc933b"><font size=3D"1" style=3D"color:rgb(255,255,2=
+55)">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"ltr" =
+class=3D"gmail_attr">On Mon, Mar 8, 2021 at 5:32 PM Mahesh Saptharishi &lt;=
+<a href=3D"mailto:mahesh.saptharishi@motorolasolutions.com" target=3D"_blan=
+k">mahesh.saptharishi@motorolasolutions.com</a>&gt; wrote:<br></div><blockq=
+uote class=3D"gmail_quote" style=3D"margin:0px 0px 0px 0.8ex;border-left:1p=
+x solid rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr"><div style=3D"f=
+ont-size:small">Josh and Tinisha,</div><div style=3D"font-size:small"><br><=
+/div><div style=3D"font-size:small">As discussed, just want to use this ema=
+il to introduce the two of you.</div><div style=3D"font-size:small"><br></d=
+iv><div style=3D"font-size:small"><a class=3D"gmail_plusreply" id=3D"gmail-=
+m_7852932696979247953gmail-m_-4832622546543233165gmail-m_-15183585237858529=
+85gmail-m_6822532791991299455m_-2647545861700920415gmail-m_7942162824097661=
+935gmail-m_-2988733509124796350gmail-m_-1454074646397347283gmail-m_18348878=
+62076135662gmail-m_1148519755745886561gmail-m_-561947924451882041gmail-m_-8=
+853560546485790201gmail-m_-7413534064318028370plusReplyChip-0" href=3D"mail=
+to:josh@josh.is" target=3D"_blank">@Josh Klein</a>: Tinisha is the Chief Di=
+versity Officer at Motorola Solutions. She is the right person to engage in=
+ the DEI focused work you described to me.</div><div style=3D"font-size:sma=
+ll"><br></div><div style=3D"font-size:small"><a class=3D"gmail_plusreply" i=
+d=3D"gmail-m_7852932696979247953gmail-m_-4832622546543233165gmail-m_-151835=
+8523785852985gmail-m_6822532791991299455m_-2647545861700920415gmail-m_79421=
+62824097661935gmail-m_-2988733509124796350gmail-m_-1454074646397347283gmail=
+-m_1834887862076135662gmail-m_1148519755745886561gmail-m_-56194792445188204=
+1gmail-m_-8853560546485790201gmail-m_-7413534064318028370plusReplyChip-1" h=
+ref=3D"mailto:tinisha.agramonte@motorolasolutions.com" target=3D"_blank">@T=
+inisha Agramonte</a>: Josh is the founder and CEO of <a href=3D"https://url=
+defense.proofpoint.com/v2/url?u=3Dhttps-3A__indigometrics.com_&amp;d=3DDwMF=
+aQ&amp;c=3Dq3cDpHe1hF8lXU5EFjNM_A&amp;r=3DK1l8TnDY_aL_gbHKnzDoIqQNsxXr-BkGy=
+7pr0gvRTsG4miMMMqkyQXj2aoz58OFv&amp;m=3DAnHVUxdWSO34AD4KgoXwbyLX7Ccaqj15Jzk=
+B1HlBUEE&amp;s=3DicqpNGpxcG9D4VFKrOv8snCFJXHEhrJnjUAxXRaImU0&amp;e=3D" targ=
+et=3D"_blank">IndigoMetrics</a>=C2=A0and is building an interesting platfor=
+m for measuring workplace culture.</div><div style=3D"font-size:small"><br>=
+</div><div style=3D"font-size:small">I am happy to help in any way I can, b=
+ut I&#39;ll leave it=C2=A0up to both of you to take it from=C2=A0here.</div=
+><div style=3D"font-size:small"><br></div><div style=3D"font-size:small">Th=
+anks,</div><div style=3D"font-size:small">-Mahesh</div></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2" style=3D"color:rgb(0,0,0)"><i><span style=3D"font-family:Ar=
+ial;white-space:pre-wrap;background-color:rgb(255,255,255)">For more inform=
+ation on how and why we collect your personal information, please visit our=
+ </span><span style=3D"white-space:pre-wrap;font-family:Roboto,sans-serif;c=
+olor:rgb(38,50,56)"><a href=3D"https://www.motorolasolutions.com/en_us/abou=
+t/privacy-policy.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elq=
+aid=3D2786&amp;elqat=3D2#privacystatement" style=3D"font-family:Roboto,sans=
+-serif" target=3D"_blank">Privacy Policy</a>.</span></i></font></p></blockq=
+uote></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2" style=3D"color:rgb(0,0,0)"><i><span style=3D"font-family:Ar=
+ial;white-space:pre-wrap;background-color:rgb(255,255,255)">For more inform=
+ation on how and why we collect your personal information, please visit our=
+ </span><span style=3D"white-space:pre-wrap;font-family:Roboto,sans-serif;c=
+olor:rgb(38,50,56)"><a href=3D"https://www.motorolasolutions.com/en_us/abou=
+t/privacy-policy.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elq=
+aid=3D2786&amp;elqat=3D2#privacystatement" style=3D"font-family:Roboto,sans=
+-serif" target=3D"_blank">Privacy Policy</a>.</span></i></font></p></blockq=
+uote></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2" style=3D"color:rgb(0,0,0)"><i><span style=3D"font-family:Ar=
+ial;white-space:pre-wrap;background-color:rgb(255,255,255)">For more inform=
+ation on how and why we collect your personal information, please visit our=
+ </span><span style=3D"white-space:pre-wrap;font-family:Roboto,sans-serif;c=
+olor:rgb(38,50,56)"><a href=3D"https://www.motorolasolutions.com/en_us/abou=
+t/privacy-policy.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elq=
+aid=3D2786&amp;elqat=3D2#privacystatement" style=3D"font-family:Roboto,sans=
+-serif" target=3D"_blank">Privacy Policy</a>.</span></i></font></p></blockq=
+uote></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2" style=3D"color:rgb(0,0,0)"><i><span style=3D"font-family:Ar=
+ial;white-space:pre-wrap;background-color:rgb(255,255,255)">For more inform=
+ation on how and why we collect your personal information, please visit our=
+ </span><span style=3D"white-space:pre-wrap;font-family:Roboto,sans-serif;c=
+olor:rgb(38,50,56)"><a href=3D"https://www.motorolasolutions.com/en_us/abou=
+t/privacy-policy.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elq=
+aid=3D2786&amp;elqat=3D2#privacystatement" style=3D"font-family:Roboto,sans=
+-serif" target=3D"_blank">Privacy Policy</a>.</span></i></font></p></blockq=
+uote></div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><i=
+mg alt=3D"" style=3D"width: 0px; max-height: 0px; overflow: hidden;" src=3D=
+"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzer=
+ocontent&amp;guid=3Df98c6f0c-d57f-4ced-ad44-1ce0c265676d"><font size=3D"1" =
+style=3D"color:rgb(255,255,255)">=E1=90=A7</font></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2" style=3D"color:rgb(0,0,0)"><i><span style=3D"font-family:Ar=
+ial;white-space:pre-wrap;background-color:rgb(255,255,255)">For more inform=
+ation on how and why we collect your personal information, please visit our=
+ </span><span style=3D"white-space:pre-wrap;font-family:Roboto,sans-serif;c=
+olor:rgb(38,50,56)"><a href=3D"https://www.motorolasolutions.com/en_us/abou=
+t/privacy-policy.html?elqTrackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elq=
+aid=3D2786&amp;elqat=3D2#privacystatement" style=3D"font-family:Roboto,sans=
+-serif" target=3D"_blank">Privacy Policy</a>.</span></i></font></p></blockq=
+uote></div></div>
+</blockquote></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2"><i><span style=3D"background-color:rgb(255,255,255);font-fa=
+mily:Arial;white-space:pre-wrap">For more information on how and why we col=
+lect your personal information, please visit our </span><span style=3D"whit=
+e-space:pre-wrap;color:rgb(38,50,56);font-family:Roboto,sans-serif"><a href=
+=3D"https://www.motorolasolutions.com/en_us/about/privacy-policy.html?elqTr=
+ackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elqaid=3D2786&amp;elqat=3D2#pr=
+ivacystatement" target=3D"_blank">Privacy Policy</a>.</span></i></font></p>=
+</blockquote></div>
+</blockquote></div>
+
+<br>
+<p dir=3D"ltr" style=3D"line-height:1.8;margin-top:0pt;margin-bottom:0pt"><=
+font size=3D"2"><i><span style=3D"background-color:rgb(255,255,255);font-fa=
+mily:Arial;white-space:pre-wrap">For more information on how and why we col=
+lect your personal information, please visit our </span><span style=3D"whit=
+e-space:pre-wrap;color:rgb(38,50,56);font-family:Roboto,sans-serif"><a href=
+=3D"https://www.motorolasolutions.com/en_us/about/privacy-policy.html?elqTr=
+ackId=3D8980d888905940e39a2613a7a3dcb0a7&amp;elqaid=3D2786&amp;elqat=3D2#pr=
+ivacystatement" target=3D"_blank">Privacy Policy</a>.</span></i></font></p>
+--00000000000010e2f505c6b2c9ad--

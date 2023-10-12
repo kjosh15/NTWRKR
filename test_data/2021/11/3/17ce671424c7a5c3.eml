@@ -1,0 +1,558 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp5779905vqp;
+        Wed, 3 Nov 2021 08:35:55 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyQ+HorFgKq71LYBi5oDuAb/bnZSTPbW4MvwXpKLwzTnwP8L/DowL+I6KbITPVI60WELs/t
+X-Received: by 2002:a25:3fc1:: with SMTP id m184mr49718457yba.236.1635953754739;
+        Wed, 03 Nov 2021 08:35:54 -0700 (PDT)
+Return-Path: <prvs=19413bc9f9=adam_moser@jackmorton.com>
+Received: from mx0b-00198c03.pphosted.com (mx0b-00198c03.pphosted.com. [148.163.141.38])
+        by mx.google.com with ESMTPS id r3si3340031ybo.360.2021.11.03.08.35.54
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 03 Nov 2021 08:35:54 -0700 (PDT)
+Received-SPF: pass (google.com: domain of prvs=19413bc9f9=adam_moser@jackmorton.com designates 148.163.141.38 as permitted sender) client-ip=148.163.141.38;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@jackmorton.com header.s=ipgdkim02012019armz7ef6cwb5 header.b=UKg4zLh8;
+       arc=fail (body hash mismatch);
+       spf=pass (google.com: domain of prvs=19413bc9f9=adam_moser@jackmorton.com designates 148.163.141.38 as permitted sender) smtp.mailfrom="prvs=19413bc9f9=adam_moser@jackmorton.com";
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=jackmorton.com
+Received: from pps.filterd (m0151574.ppops.net [127.0.0.1])
+	by mx0b-00198c03.pphosted.com (8.16.1.2/8.16.1.2) with SMTP id 1A3FWpjQ028882
+	for <josh@josh.is>; Wed, 3 Nov 2021 15:35:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=jackmorton.com; h=from : to : date
+ : message-id : references : in-reply-to : content-type : mime-version :
+ subject; s=ipgdkim02012019armz7ef6cwb5;
+ bh=gAatyc05ERKPFrAKH4vmm2DkVbh0xtrpWktJEmaTfkE=;
+ b=UKg4zLh8ztimhyzDefZt6Rdtkxgb7kptMFjgwZaWR4B3lw29DVH5w3MH8EDEekEVJa0Q
+ 4i8VGXc46taUT7Glo8FBpweTdy3QRhnIzSV8wfWuQVNrQnvbWMVAFR12ViEwh/1g8lX2
+ 9kg8Axo1wdL7Vcp8qy8+CM5T6jC8vR/AcTFb3ib3qenxDY1wimTK5iffRvNOXcUArkFy
+ vgRchAjICU250DgCF0gpsQCAmE8vCfK0hwye3+IR09s/Of3s7rjAiu8NKs14KEJjbuIY
+ G41AgEb4wQ9K8iE/Vd+AJdsP0XzkBV2dy4qyyOX8UbW1Jbjg+k9kT1UJr525Xf8O6p8O yw== 
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2101.outbound.protection.outlook.com [104.47.70.101])
+	by mx0b-00198c03.pphosted.com with ESMTP id 3c3dbx8jgg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Wed, 03 Nov 2021 15:35:54 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=biYNpFcFVD/noTdVACdSaj+d2yoR+2AVJMTIpQ4M/ol30Wy5pQ1S7pdIX5Hv8dYwkufQAl2ztoPkTUfpc2TkF+y0xFj1bAiC8YSg7vhY6W6X4I4mKd/mvuf48CsB5pTajfo/d4BIWCbvZ5JFpaRVM8yhn8PGmcJgDfdX3i5k5m6X3r+nTb+GDejCK1YzngRhqbXJkz9LdrPB3VEwvK+d9ilRxCI4qrDasuelBBye9I5M9OrMgopMaQg2sAYlqDgQNpJ+CQH62eiNhC0GEJnYyt1ErkuGL2qJmgSpuyUnCj28m1Et/hl1LyZ5PT6xenXJEI4L5DzlBF6/obbYzkau1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=S53yo0tgSBVxhO0Jnnh+Z6hUggUi5jBH7YgS1ZkcrFM=;
+ b=O+7vq5MOTPscR4Dmni/8sp/NPUxornKvIWk33MVGtNQy+oB/2ryZ/AwF/JOQ7TbVkB5+nt6BWvP/VSwEM5IgF0razNSF4Yx7FyK1QwbUrYcdJjFCxgdQJHQDbZjIvfny3v6TAE/e1jI4KIq7Y8b/2J5U1AY0RO+yqAUE6/IL0LZeOK8L2zzYmTuYtoOeBsxmc9V2gp953op4lj3vEOWq6GEA1WcKdT6ynusneKtck0HnMXikfLJxzaGtk+nnEiTWSSa7KUt3ZsMfjXibKLdRv2DSgmqnILIA8WvmhvvWA0hHV8xU9hOTrVXgsKlc9t/aXYn6vNvBm5OC816LIJM54g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=jackmorton.com; dmarc=pass action=none
+ header.from=jackmorton.com; dkim=pass header.d=jackmorton.com; arc=none
+Received: from SJ0PR06MB8460.namprd06.prod.outlook.com (2603:10b6:a03:391::11)
+ by SJ0PR06MB8440.namprd06.prod.outlook.com (2603:10b6:a03:391::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4669.10; Wed, 3 Nov
+ 2021 15:35:52 +0000
+Received: from SJ0PR06MB8460.namprd06.prod.outlook.com
+ ([fe80::b4d6:6cac:649a:4a39]) by SJ0PR06MB8460.namprd06.prod.outlook.com
+ ([fe80::b4d6:6cac:649a:4a39%7]) with mapi id 15.20.4649.019; Wed, 3 Nov 2021
+ 15:35:52 +0000
+From: "Moser, Adam (NYC-JMW)" <Adam_Moser@jackmorton.com>
+To: Josh Klein <josh@josh.is>
+Thread-Topic: [EXTERNAL] Files uploaded via link
+Thread-Index: AQHX0LxipeUOhmLWu0qG+uyM8ZAB16vx72w7
+Date: Wed, 3 Nov 2021 15:35:52 +0000
+Message-ID: 
+ <SJ0PR06MB84604171B9C90BFBABDED33A838C9@SJ0PR06MB8460.namprd06.prod.outlook.com>
+References: <1789255929.3661.1635948548676.JavaMail.support@egnyte.com>
+In-Reply-To: <1789255929.3661.1635948548676.JavaMail.support@egnyte.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+suggested_attachment_session_id: ac3cd206-d081-551a-4d9f-30d204fc8aed
+authentication-results: josh.is; dkim=none (message not signed)
+ header.d=none;josh.is; dmarc=none action=none header.from=jackmorton.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 1e1e92e9-d965-4929-000f-08d99edf9ea1
+x-ms-traffictypediagnostic: SJ0PR06MB8440:
+x-microsoft-antispam-prvs: 
+ <SJ0PR06MB84401CF33FB9CA3D29AC6D87838C9@SJ0PR06MB8440.namprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:4714;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ A0VoEg+ffY/x7dAUd2nMFAEY32yZElcIdKPPKKi2NX2NRu/Fnvsh5thUf1zVAH6xPijojiDb3oZJlyJhtR+pp1DWSsQrl8Dk9IZyOybiM6ZE/BqTLB/y6AZ0qeRqfjzqm3egKkvRMhTH3GJRTkVuYHx7eM8hxGXx6qE694rjnZv/SP2zLX4vun+0ArJuUrg+u5fIkFOlGCiIB6jsgtOpSauar6rwdcxX5+TlZC4RRd4OjXWTKu8mPdyp9k390iQJdsfEt7wJAK1I8PtOWrqTkYuw7xQ5cPTisMer/VIzDnCzm6/B0GnG3Ev/Rg/Dql8L3Kf/DMM9LREdMcUfvTg8HlzzhjauGhrX5i5AGLRpWcgUtAxu4perekufpb1ZcNqDu5RveRLGYk8KLbV5v2FSDUTvQT0Snk+Gc/fAqiyNnmNnQ/YbOOtwYE6THf3yhV9pWmGKTd0SyIJ5UKFa4QICCRT6B8ywpeTYFVPqleizLZK7PVZ+ey/GsDY8rnM4dr/yT7H5ePtICXq5dFI4qfMSeS3jNCeoqIBP9+mXboN66SC29hyMo9ADEQk7YcqYJ22nmhsyvy2gY4ISWtQ6cViUA4OTbJDyVUw7GWtpEIGRacD0W4hQIz2TREpLh/t2tceGftc54WPQMHas9X1RnhTg7tiTVm8rA55zjJsNzMvi6OjrLeWvaFxk6PE6mZ4r/F92p6BRrFzoSiIMz17EE07JE4YAuK5LOjbsct0AzMJ53dvuCqk6tpN/l/nXuVHj6Va+v90GyzDiTtcajdwK7YAeNz8yi299LAm2tWtDVMRblLKYlcV7p9SjNYKqvF86dZEoi7EDO7crugZT9i6pSZXKbw==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR06MB8460.namprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(9686003)(55016002)(316002)(166002)(83380400001)(2906002)(19627235002)(19627405001)(86362001)(26005)(7696005)(66556008)(66476007)(76116006)(66946007)(53546011)(8676002)(8936002)(6506007)(186003)(6916009)(33656002)(5660300002)(64756008)(52536014)(40140700001)(66446008)(38070700005)(38100700002)(122000001)(76236003)(508600001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?Windows-1252?Q?Cyc190ib+KT36UmqOFRBLVRB7vVDlmZkXRhjw90EwO71B6eqGAj2QdZF?=
+ =?Windows-1252?Q?gPD5f6kaI0fFsQXaPFEfLe5ppI7D3h58Ysh8s93vYmdS9LqgP3I74Syk?=
+ =?Windows-1252?Q?Qxg6ltDN8GHR6SXhTYNMpkpAIS2OYtI7cRp7il4PvHKq1u4rRNNgTqlk?=
+ =?Windows-1252?Q?/N0zdNBoWMfUfea7IumKFpMlQhCeFNH7LG04wKvxmDC8GZw/tdW/W+dk?=
+ =?Windows-1252?Q?Z65Ss9LKRuYWrgc6SF6gwPJ4V4TdT+rCtqgY4aCsHrmcVaa0ZAOmkskG?=
+ =?Windows-1252?Q?V1pM0c9I0kH9043HLf4a3wRa9ov+o7mX35SGVouWqRFoNEa77/DM+Y9q?=
+ =?Windows-1252?Q?0jLbpK6yRwMx46Yb3MM99H8Wa/1r1EA0A8HKrnriojgM8rVtieAYgSHD?=
+ =?Windows-1252?Q?XkYvi/LSUmLZbHkaXfB41EBPpcrZvBqE85+ZeuV+trcqUjNHKGwtSVGT?=
+ =?Windows-1252?Q?I/3Pia9rKrU8Nbfxa057em6IMWDi4N0//QdRnXH0ZdJSt0vJYO1EaGSm?=
+ =?Windows-1252?Q?t46IzKtwnvbObCbky0sUaFtBZi0eTWd22E30tFg6TWeYeSfHCPO2csCG?=
+ =?Windows-1252?Q?5h6cpq9EaIcy/IZ8y4PYAEwLqwTtK/uVRgc2JBpyWN5nTKn/wyU+LNNS?=
+ =?Windows-1252?Q?y3eXUcrrxO4ivEO2/IFnLGDS8pnoxg1sLyyGEbdiQZkGVK4oMJBKpYWO?=
+ =?Windows-1252?Q?+2RKIu4z7xEKNm3PknUjD7Wa6kLl+ReK6jOde4Y/zyiKNdst4RdegP+/?=
+ =?Windows-1252?Q?9H24NazUSU4I8WVDT1NaPcEDvdGxaV1RegxN+yo3rUYb5UPMe9YfGYby?=
+ =?Windows-1252?Q?2iu18Qc+OIVi9oizjyY6o/pryAt/bAAlxWDQSkJyG4zibQqWTeXwXyKP?=
+ =?Windows-1252?Q?DThRHoP1uRuhlj5OsvRkGo1xQyp8ZwSIDEy0IgRXJ62jXAljvtlq3pyJ?=
+ =?Windows-1252?Q?oiBEAmQcVei1ynlGaOf+cvIXj7XE6pJ/cGjP0jumaozqcVFtmoKKqyW7?=
+ =?Windows-1252?Q?81biqYT+wqvmjRgdmOgK9hWtYeM9uCzX4egaT32lqwEM9gySvyj1AooN?=
+ =?Windows-1252?Q?zyp+Zj4Zx9W492ACY55VprbSKFyW4iu3Tw5IfB4SsPFhRcQiizREg7VE?=
+ =?Windows-1252?Q?S2ONtraW/u2JhLkIxYEhszLMTd32d6Dwhu+qZ5VjCH4wHejcPTwEk6h2?=
+ =?Windows-1252?Q?G72T9olTAfLuWEYYobS2frHLAPtNMojP5OvU2NWw40HDi+drB3IiEtps?=
+ =?Windows-1252?Q?aO3A9HRCKKheFctk7w+9+c7u7NJlB3GRxwmLxlXElIbA5HhJ6Y7dhvW4?=
+ =?Windows-1252?Q?ZMjW8RBGjPUYQUk+Lt1LLHZz2ZuGDAN+zlTAAksYARYlxYBFkRNNVEV2?=
+ =?Windows-1252?Q?+LWTk0dviwuzK4CMJgjPkOfOYlgrMKskBlz9/xT8DbmDuZMFjGRgX3tC?=
+ =?Windows-1252?Q?WTVAoDNzpL74EFCkeIL9Xcpf+77BbVxlzFytowHii/YemWnwTlETjdSp?=
+ =?Windows-1252?Q?6sqpn5cCBmKddHf7PagJDv0LAajcMQSNg/FgIpv+yQ7xTtSR4G72f4d0?=
+ =?Windows-1252?Q?gaZTTfrgIvdxQ1y3GecZcJVXSkJ2GSMLeDBudLMAx772dm1bs54oe4zX?=
+ =?Windows-1252?Q?GlPDVRmOmlrf8UXaeBCds3MIM3Zyvc2aTFaSJXnQzuZnybfCLOkbRie+?=
+ =?Windows-1252?Q?0rqSwUUFpCjK99d+/B9xlPvv1czQmZvsxt8rgypMsao22ivmyWSK1UFw?=
+ =?Windows-1252?Q?bYw0HjngT6DECMpOp7h6Mp+VRUpljyTjvdNEGAIwVT4oVnGnUw17d+pQ?=
+ =?Windows-1252?Q?6FdJmA=3D=3D?=
+Content-Type: multipart/alternative;
+	boundary="_000_SJ0PR06MB84604171B9C90BFBABDED33A838C9SJ0PR06MB8460namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: jackmorton.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR06MB8460.namprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1e1e92e9-d965-4929-000f-08d99edf9ea1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 03 Nov 2021 15:35:52.4956
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d026e4c1-5892-497a-b9da-ee493c9f0364
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /luF1Mhids+qeKcnlKzGeQOaMw0o136FRYIowUVB9A0TypxBDPMxZUvtWNj0IfeWg8fPSqmzFUgA5ngDlzdrJHJwJBeMcyFfWT2j3BZP0jc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR06MB8440
+X-Proofpoint-ORIG-GUID: bQRNTEMWtsiKskD9wgGmSQ33N82_PcY4
+X-Proofpoint-GUID: bQRNTEMWtsiKskD9wgGmSQ33N82_PcY4
+Subject: Re: Files uploaded via link
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.205,Aquarius:18.0.790,Hydra:6.0.425,FMLib:17.0.607.475
+ definitions=2021-11-03_05,2021-11-03_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ spamscore=0 impostorscore=0 priorityscore=1501 malwarescore=0 adultscore=0
+ clxscore=1015 phishscore=0 mlxscore=0 lowpriorityscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2110150000
+ definitions=main-2111030089
+
+--_000_SJ0PR06MB84604171B9C90BFBABDED33A838C9SJ0PR06MB8460namp_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="windows-1252"
+
+Sounds awesome!
+
+Thanks for today!
+
+Adam
+
+
+Adam Moser
+
+Production Coordinator
+
+Pronouns: He/Him (what=92s this<https://www.inclusiveatwork.com/pride>?)
+
+M / +1 502.550.4976
+jackmorton.com<http://jackmorton.com/>
+
+________________________________
+From: Egnyte Team <notify@egnyte.com>
+Sent: Wednesday, November 3, 2021 10:09 AM
+To: Moser, Adam (NYC-JMW) <Adam_Moser@jackmorton.com>
+Subject: [EXTERNAL] Files uploaded via link
+
+
+[JackCloud]
+Josh
+( josh@josh.is<mailto:josh@josh.is>* )
+has uploaded 2 file(s) using the link you shared.
+Thanks again for such a seamless recording - stoked to see how you put it a=
+ll together!!
+/Shared/1-NYCJMW/NYC Projects/New York Times DealBook/_110203_New York Time=
+s DealBook_/Jack Team Workplace/05 - Production and Ops/Sponsorship/Accentu=
+re/Josh - Wednesday Audio<https://jackcloud.jackmorton.com/egnyteSearch.noa=
+uth?sourceType=3Dfolder&search=3D%2FShared%2F1-NYCJMW%2FNYC+Projects%2FNew+=
+York+Times+DealBook%2F_110203_New+York+Times+DealBook_%2FJack+Team+Workplac=
+e%2F05+-+Production+and+Ops%2FSponsorship%2FAccenture%2FJosh+-+Wednesday+Au=
+dio>
+[add]   MixPre-072.WAV
+[add]   MixPre-073.WAV
+All files have been scanned for viruses - none were detected.
+* Note that this name and email address were provided by the uploader and h=
+ave not been verified by Egnyte. Do not use this information for audit purp=
+oses. These files were sent from Akureyri, Northeast, Iceland (88.149.82.25=
+2).
+JackCloud (https://jackcloud.jackmorton.com)
+=A9 2021 Egnyte, Inc.
+
+Discover New Features<https://urldefense.com/v3/__https://exchange.egnyte.c=
+om/category/product-updates?ref=3Demail_footer__;!!N96JrnIq8IfO5w!wzrEprpAX=
+n7FxlqS8BxzlTw_UNWKRDQwB-wGGcjrowZTakfbQrncFGfuigwjF3t3Czd1$>    |    Ask t=
+he Community<https://urldefense.com/v3/__https://exchange.egnyte.com/?ref=
+=3Demail_footer__;!!N96JrnIq8IfO5w!wzrEprpAXn7FxlqS8BxzlTw_UNWKRDQwB-wGGcjr=
+owZTakfbQrncFGfuigwjF-EHJNvb$>
+
+This message contains information which may be confidential and privileged.=
+ Unless you are the intended recipient (or authorized to receive this messa=
+ge for the intended recipient), you may not use, copy, disseminate or discl=
+ose to anyone the message or any information contained in the message.  If =
+you have received the message in error, please advise the sender by reply e=
+-mail, and delete the message.  Thank you very much.
+
+--_000_SJ0PR06MB84604171B9C90BFBABDED33A838C9SJ0PR06MB8460namp_
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset="windows-1252"
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<style type=3D"text/css" style=3D"display:none;"> P {margin-top:0;margin-bo=
+ttom:0;} </style>
+</head>
+<body dir=3D"ltr">
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+Sounds awesome!</div>
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+Thanks for today!</div>
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+Adam</div>
+<div>
+<div style=3D"font-family: &quot;Segoe UI&quot;, &quot;Helvetica Neue&quot;=
+, sans-serif; font-size: 12pt; color: rgb(0, 0, 0);">
+<br>
+</div>
+<div id=3D"Signature">
+<div>
+<div style=3D"font-family:&quot;Segoe UI&quot;,&quot;Helvetica Neue&quot;,s=
+ans-serif; font-size:12pt; color:rgb(0,0,0)">
+<p style=3D"font-size:15px; text-align:start; background-color:rgb(255,255,=
+255)"><b><span style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-=
+serif; color:rgb(255,80,0); background-color:white">Adam Moser</span></b><b=
+><span style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-serif; c=
+olor:rgb(31,73,125)"><br>
+</span></b></p>
+<p style=3D"font-size:15px; text-align:start; background-color:rgb(255,255,=
+255)"><b><span style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-=
+serif; color:rgb(100,100,100)">Production Coordinator</span></b><span style=
+=3D"margin:0px; color:rgb(50,49,48)"></span></p>
+<p style=3D"font-size:15px; text-align:start; background-color:rgb(255,255,=
+255)"><span style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-ser=
+if; color:rgb(100,100,100)">Pronouns: He/Him (</span><span style=3D"margin:=
+0px; color:rgb(31,73,125)"><a href=3D"https://www.inclusiveatwork.com/pride=
+" target=3D"_blank" rel=3D"noopener noreferrer" style=3D"margin:0px"><span =
+style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-serif; color:rg=
+b(100,100,100)">what=92s
+ this</span></a></span><span style=3D"margin:0px; font-size:10pt; font-fami=
+ly:Arial,sans-serif; color:rgb(100,100,100)">?)</span><span style=3D"color:=
+rgb(50,49,48); font-size:11.5pt">&nbsp;</span></p>
+<p style=3D"font-size:15px; text-align:start; background-color:rgb(255,255,=
+255)"><span style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-ser=
+if; color:rgb(100,100,100)">M&nbsp;</span><span style=3D"margin:0px; font-s=
+ize:10pt; font-family:Arial,sans-serif; color:rgb(255,80,0)">/</span><span =
+style=3D"margin:0px; font-size:10pt; font-family:Arial,sans-serif; color:rg=
+b(100,100,100)">&nbsp;+1
+ 502.550.4976<br>
+</span><span style=3D"margin:0px; color:black"><a href=3D"http://jackmorton=
+.com/" target=3D"_blank" rel=3D"noopener noreferrer" title=3D"http://jackmo=
+rton.com/" style=3D"margin:0px"><span style=3D"margin:0px; font-size:10pt; =
+font-family:Arial,sans-serif; color:rgb(100,100,100)">jackmorton.com</span>=
+</a></span></p>
+<br>
+</div>
+</div>
+</div>
+</div>
+<div id=3D"appendonsend"></div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>From:</b> Egnyte Team &lt;notif=
+y@egnyte.com&gt;<br>
+<b>Sent:</b> Wednesday, November 3, 2021 10:09 AM<br>
+<b>To:</b> Moser, Adam (NYC-JMW) &lt;Adam_Moser@jackmorton.com&gt;<br>
+<b>Subject:</b> [EXTERNAL] Files uploaded via link</font>
+<div>&nbsp;</div>
+</div>
+<style media=3D"all" type=3D"text/css">
+<!--
+-->
+</style>
+<div style=3D"margin:0; font-family:Open Sans,helvetica,arial,sans-serif; b=
+ox-sizing:border-box; font-size:14px; padding:0; background-color:#f6f6f6; =
+line-height:1.4; height:100%; width:100%!important">
+<table class=3D"x_body-wrap x_send-link" width=3D"100%" style=3D"margin:0; =
+padding:0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:bor=
+der-box; font-size:14px; background-color:#f6f6f6; width:100%!important">
+<tbody>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px; vertical-align:top">
+</td>
+<td class=3D"x_container" width=3D"600" style=3D"padding:0; font-family:Ope=
+n Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; v=
+ertical-align:top; margin:0 auto!important; display:block!important; max-wi=
+dth:600px!important; clear:both!important">
+<div class=3D"x_content" style=3D"font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px; margin:0 auto; padding:5px;=
+ max-width:600px; display:block">
+<table class=3D"x_main" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" =
+style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,sans-se=
+rif; box-sizing:border-box; font-size:14px; background:#fff; border:1px sol=
+id #dbdbdb; border-radius:0px">
+<tbody>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_border-top" style=3D"margin:0; padding:0; font-family:Open S=
+ans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; vert=
+ical-align:top; border-top:6px solid; padding-bottom:10px; border-top-color=
+:#00968f">
+&nbsp;</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_logo" style=3D"margin:0; padding:0; font-family:Open Sans,he=
+lvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; vertical-a=
+lign:top; text-align:center; padding-bottom:0px">
+<img border=3D"0" alt=3D"JackCloud" style=3D"margin:0; padding:0; font-fami=
+ly:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:1=
+4px; max-width:100%; text-align:center" src=3D"https://jackcloud.jackmorton=
+.com/serveDomainLogo?originalLogo=3Dfalse&amp;rand=3D-7346101870203280420">
+</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-wrap" style=3D"margin:0; font-family:Open Sans,helve=
+tica,arial,sans-serif; box-sizing:border-box; font-size:14px; vertical-alig=
+n:top; padding:20px">
+<table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" style=3D"margin:0=
+; padding:0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:b=
+order-box; font-size:14px">
+<tbody>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-block" style=3D"margin:0; font-family:Open Sans,helv=
+etica,arial,sans-serif; box-sizing:border-box; font-size:14px; vertical-ali=
+gn:top; padding:0 0 20px; color:#686868; text-align:center">
+<h1 class=3D"x_noBottomMargin" style=3D"margin:0; padding:0; box-sizing:bor=
+der-box; font-family:Open Sans,helvetica,arial,sans-serif; font-size:30px; =
+color:#686868; line-height:1.2; font-weight:400; text-align:center; margin-=
+bottom:0">
+Josh</h1>
+(<span class=3D"x_font12 x_belowh1" style=3D"margin:0; padding:0; font-fami=
+ly:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:1=
+2px">
+<a href=3D"mailto:josh@josh.is" style=3D"margin:0; padding:0; font-family:O=
+pen Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px;=
+ color:#2b82d9; text-decoration:none">
+josh@josh.is</a>* </span>)
+<h2 style=3D"margin:0; padding:0; box-sizing:border-box; font-family:Open S=
+ans,helvetica,arial,sans-serif; font-size:19px; color:#686868; line-height:=
+1.2; font-weight:300; text-align:center">
+has uploaded 2 file(s) using the link you shared. </h2>
+</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-block x_custom-message-container" style=3D"margin:0;=
+ font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; f=
+ont-size:14px; vertical-align:top; padding:0 0 20px; color:#686868; text-al=
+ign:center; padding-bottom:0">
+<table class=3D"x_customMessageBox" style=3D"margin:0; padding:0; font-fami=
+ly:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:1=
+4px; border-top:1px solid #dbdbdb; border-bottom:1px solid #dbdbdb; backgro=
+und-color:#fcfcfc; margin-top:10px; width:100%!important">
+<tbody style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,=
+sans-serif; box-sizing:border-box; font-size:14px">
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td style=3D"margin:0; font-family:Open Sans,helvetica,arial,sans-serif; bo=
+x-sizing:border-box; font-size:14px; vertical-align:top; padding:20px">
+<div class=3D"x_customMessage" style=3D"margin:0; padding:0; font-family:Op=
+en Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:12px; =
+font-weight:400; color:#6f6f6f; text-align:left; max-width:560px; overflow:=
+auto">
+Thanks again for such a seamless recording - stoked to see how you put it a=
+ll together!!
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-block x_padding-left20 x_padding-top20" style=3D"mar=
+gin:0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-=
+box; font-size:14px; vertical-align:top; padding:0 0 20px; color:#686868; t=
+ext-align:center; padding-left:20px; padding-top:20px">
+<table class=3D"x_invoice x_fullWidth" style=3D"padding:0; font-family:Open=
+ Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; ma=
+rgin:0px auto 0px; text-align:left; width:100%!important">
+<tbody>
+<tr class=3D"x_total" style=3D"margin:0; padding:0; font-family:Open Sans,h=
+elvetica,arial,sans-serif; box-sizing:border-box; font-size:14px">
+<td style=3D"margin:0; font-family:Open Sans,helvetica,arial,sans-serif; bo=
+x-sizing:border-box; font-size:14px; vertical-align:top; padding:5px 0">
+<a href=3D"https://jackcloud.jackmorton.com/egnyteSearch.noauth?sourceType=
+=3Dfolder&amp;search=3D%2FShared%2F1-NYCJMW%2FNYC+Projects%2FNew+York+Times=
++DealBook%2F_110203_New+York+Times+DealBook_%2FJack+Team+Workplace%2F05+-+P=
+roduction+and+Ops%2FSponsorship%2FAccenture%2FJosh+-+Wednesday+Audio" style=
+=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,sans-serif; =
+box-sizing:border-box; font-size:14px; color:#2b82d9; text-decoration:none"=
+>/Shared/1-NYCJMW/NYC
+ Projects/New York Times DealBook/_110203_New York Times DealBook_/Jack Tea=
+m Workplace/05 - Production and Ops/Sponsorship/Accenture/Josh - Wednesday =
+Audio</a>
+</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td style=3D"margin:0; font-family:Open Sans,helvetica,arial,sans-serif; bo=
+x-sizing:border-box; font-size:14px; vertical-align:top; padding:5px 0">
+<table class=3D"x_invoice-items" cellpadding=3D"0" cellspacing=3D"0" style=
+=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,sans-serif; =
+box-sizing:border-box; font-size:14px; width:100%!important">
+<tbody>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_alignleft" style=3D"margin:0; font-family:Open Sans,helvetic=
+a,arial,sans-serif; box-sizing:border-box; font-size:14px; vertical-align:t=
+op; text-align:left; padding:5px 0; border-top:#eee 1px solid">
+<img height=3D"19px" width=3D"15px" alt=3D"add" style=3D"margin:0; padding:=
+0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box;=
+ font-size:14px; max-width:100%" src=3D"https://pages.egnyte.com/rs/egnytei=
+nc/images/add-icon-prod-email.png"></td>
+<td class=3D"x_alignleft" width=3D"94%" style=3D"margin:0; font-family:Open=
+ Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; ve=
+rtical-align:top; text-align:left; padding:5px 0; border-top:#eee 1px solid=
+">
+<a rel=3D"nofollow" class=3D"x_nolink" style=3D"margin:0; padding:0; font-f=
+amily:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-siz=
+e:14px; text-decoration:none; color:#686868">MixPre-072.WAV</a></td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_alignleft" style=3D"margin:0; font-family:Open Sans,helvetic=
+a,arial,sans-serif; box-sizing:border-box; font-size:14px; vertical-align:t=
+op; text-align:left; padding:5px 0; border-top:#eee 1px solid">
+<img height=3D"19px" width=3D"15px" alt=3D"add" style=3D"margin:0; padding:=
+0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box;=
+ font-size:14px; max-width:100%" src=3D"https://pages.egnyte.com/rs/egnytei=
+nc/images/add-icon-prod-email.png"></td>
+<td class=3D"x_alignleft" width=3D"94%" style=3D"margin:0; font-family:Open=
+ Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px; ve=
+rtical-align:top; text-align:left; padding:5px 0; border-top:#eee 1px solid=
+">
+<a rel=3D"nofollow" class=3D"x_nolink" style=3D"margin:0; padding:0; font-f=
+amily:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box; font-siz=
+e:14px; text-decoration:none; color:#686868">MixPre-073.WAV</a></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-block x_alignleft x_padding-left20" style=3D"margin:=
+0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box;=
+ font-size:14px; vertical-align:top; padding:0 0 20px; color:#686868; text-=
+align:left; padding-left:20px">
+All files have been scanned for viruses - none were detected. </td>
+</tr>
+<tr style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<td class=3D"x_content-block x_alignleft x_padding-left20" style=3D"margin:=
+0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box;=
+ font-size:14px; vertical-align:top; padding:0 0 20px; color:#686868; text-=
+align:left; padding-left:20px">
+<span class=3D"x_footnote" style=3D"margin:0; padding:0; font-family:Open S=
+ans,helvetica,arial,sans-serif; box-sizing:border-box; font-size:12px; colo=
+r:#bdbdbd"><a rel=3D"nofollow" class=3D"x_nolink" style=3D"margin:0; paddin=
+g:0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-bo=
+x; text-decoration:none; font-size:12px; color:#bdbdbd">*
+ Note that this name and email address were provided by the uploader and ha=
+ve not been verified by Egnyte. Do not use this information for audit purpo=
+ses. These files were sent from Akureyri, Northeast, Iceland (88.149.82.252=
+).
+</a></span></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<div class=3D"x_footer" style=3D"margin:0; font-family:Open Sans,helvetica,=
+arial,sans-serif; box-sizing:border-box; padding:12px; font-size:12px; text=
+-align:center; color:#acacac; line-height:18px">
+JackCloud (https://jackcloud.jackmorton.com)<br style=3D"margin:0; padding:=
+0; font-family:Open Sans,helvetica,arial,sans-serif; box-sizing:border-box;=
+ font-size:14px">
+=A9 2021 Egnyte, Inc. <br style=3D"margin:0; padding:0; font-family:Open Sa=
+ns,helvetica,arial,sans-serif; box-sizing:border-box; font-size:14px">
+<br style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px">
+<a class=3D"x_new-features" href=3D"https://urldefense.com/v3/__https://exc=
+hange.egnyte.com/category/product-updates?ref=3Demail_footer__;!!N96JrnIq8I=
+fO5w!wzrEprpAXn7FxlqS8BxzlTw_UNWKRDQwB-wGGcjrowZTakfbQrncFGfuigwjF3t3Czd1$"=
+ style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,sans-s=
+erif; box-sizing:border-box; font-size:12px; line-height:18px; text-decorat=
+ion:none; color:#2b82d9">Discover
+ New Features</a> &nbsp;&nbsp; | &nbsp;&nbsp; <a class=3D"x_new-features" h=
+ref=3D"https://urldefense.com/v3/__https://exchange.egnyte.com/?ref=3Demail=
+_footer__;!!N96JrnIq8IfO5w!wzrEprpAXn7FxlqS8BxzlTw_UNWKRDQwB-wGGcjrowZTakfb=
+QrncFGfuigwjF-EHJNvb$" style=3D"margin:0; padding:0; font-family:Open Sans,=
+helvetica,arial,sans-serif; box-sizing:border-box; font-size:12px; line-hei=
+ght:18px; text-decoration:none; color:#2b82d9">
+Ask the Community</a> </div>
+</div>
+</td>
+<td style=3D"margin:0; padding:0; font-family:Open Sans,helvetica,arial,san=
+s-serif; box-sizing:border-box; font-size:14px; vertical-align:top">
+</td>
+</tr>
+</tbody>
+</table>
+<img alt=3D"" width=3D"1" height=3D"1" border=3D"0" style=3D"height:1px!imp=
+ortant; width:1px!important; border-width:0!important; margin-top:0!importa=
+nt; margin-bottom:0!important; margin-right:0!important; margin-left:0!impo=
+rtant; padding-top:0!important; padding-bottom:0!important; padding-right:0=
+!important; padding-left:0!important" src=3D"https://u10960211.ct.sendgrid.=
+net/wf/open?upn=3Dnii9Bg5dFFBP6S7lJ68MJPqV9unJHKxCsdt02TpDv6qR8ayT3vdVq0IgW=
+3YL2XnLvu1eJ6MiLfaZqdBKK-2BFq8bv0ZCDogAHfI31idOJcYzPL1CZefqDcACP6m90FdZOrfp=
+Yh22cb-2BK0y4BNV9lez2zHOviLpgSDLUYH1sGdbsxl47wTNN90PxlUGHuWprLRqdd-2FSAfWLw=
+QrGfZuFu9DEkcuV4kPTpH9rkQp3N4FF2XENEfNAVALL8FntHEPPBFvg">
+</div>
+
+<DIV>
+This message contains information which may be confidential and privileged.=
+ Unless you are the intended recipient (or authorized to receive this messa=
+ge for the intended recipient), you may not use, copy, disseminate or discl=
+ose to anyone the message or any information contained in the message.  If =
+you have received the message in error, please advise the sender by reply e=
+-mail, and delete the message.  Thank you very much.<BR>
+</DIV></body>
+</html>
+
+--_000_SJ0PR06MB84604171B9C90BFBABDED33A838C9SJ0PR06MB8460namp_--

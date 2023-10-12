@@ -1,0 +1,565 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1041:0:0:0:0 with SMTP id x1csp338178ljm;
+        Thu, 5 Nov 2020 02:03:22 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJzrkvQd9caai6ExHIiLqGweB+RJA1ZWkNc+G9HKrEMYgto0y3D4i4sq3XN0jCaAev8QvQ+V
+X-Received: by 2002:a05:620a:1514:: with SMTP id i20mr1189781qkk.15.1604570602524;
+        Thu, 05 Nov 2020 02:03:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1604570602; cv=none;
+        d=google.com; s=arc-20160816;
+        b=PmEC8YkfpzyrJIVwyAolC/3p6I+uAMWwBBXjqtLEam54sfQw8mHbes2znhP0wWlgPa
+         kfCMj7sRvk2hzA7HT3lr6chWMa8459boxxmVzMQaVJZUJ2RJyvRjVBevO/zT5YOtzM2g
+         rVkVY0YRk76G81oztMrWEluDKc03seF6TU3Qjjb3fravO4WjWg65DaXAF6QjmHzXYYWq
+         h5pna/NSY1ah8tMAtIZWyc8by25p8bBcko981n3+TpsPBOqDmIP2/xm85J97uxVO7d4c
+         nSByl3TKDocPmHwRPCsohuDaLxHulIBWkqIrYZqLX65HHlMpqNLB0lXl3pOlKTa1fkxR
+         FUpw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=content-language:thread-index:mime-version:message-id:date:subject
+         :in-reply-to:references:to:from;
+        bh=FUMere7xH2AuqJXkK4/cCvLvcNbrQRg6Rkk8yfAog6A=;
+        b=Qsp34jYMLUKSsAj6nTBzfpogKbRvZ28AQoGBis19Mo+86j8NMsnTZLT5Ys1ScPdx36
+         W6GLHIqswKezlP0Kiy22gX/V2/XKGsodf9AjIZ27Y2Yb2UuuYBR+IkZ4AMcaBTFmcDNo
+         I5+D9Nsj31PqFFO+mT/h3HdDbCGJv+N1VBJfXBfVTQu6OHeePi+XErJmdG3AtZmu3uP6
+         OcyZh5hnyRdVDNT66FEsQCyqHibfruU29RasZAYAUQAN4CnECzhJrZHfwCY3/A0Mfaw3
+         TvZZMHmgJHZ4QyT6QWO91ODbzBTCsaAjaJqEI1Hk2kilUHltypKv//mGAkj6vIlbDrmh
+         Mx4g==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.225.38 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Return-Path: <chris@indigometrics.com>
+Received: from a2nlsmtp01-04.prod.iad2.secureserver.net (a2nlsmtp01-04.prod.iad2.secureserver.net. [198.71.225.38])
+        by mx.google.com with ESMTPS id d15si549234qtm.194.2020.11.05.02.03.22
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 05 Nov 2020 02:03:22 -0800 (PST)
+Received-SPF: pass (google.com: domain of chris@indigometrics.com designates 198.71.225.38 as permitted sender) client-ip=198.71.225.38;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of chris@indigometrics.com designates 198.71.225.38 as permitted sender) smtp.mailfrom=chris@indigometrics.com
+Received: from mailout01.c01 ([64.207.129.78])
+	by : HOSTING RELAY : with ESMTP
+	id ac60kfPgAL1OGac60kMQlA; Thu, 05 Nov 2020 03:02:21 -0700
+X-CMAE-Analysis: v=2.4 cv=OeRdsjfY c=1 sm=1 tr=0 ts=5fa3cdad
+ a=rHVhcZ7MkiYw9pwnR3G25w==:117 a=FM0zR5x8FjvqzmxfUW9ThQ==:17
+ a=nNwsprhYR40A:10 a=DAwyPP_o2Byb1YXLmDAA:9 a=MGKIFWvDAAAA:8 a=zwvI-rEBAAAA:8
+ a=M3pV6hDrU73NYLgajEUA:9 a=QEXdDO2ut3YA:10 a=yMhMjlubAAAA:8 a=SSmOFEACAAAA:8
+ a=38YqF4Fu2TQZdgEepicA:9 a=YBSxrCiprw9x72lg:21 a=gKO2Hq4RSVkA:10
+ a=UiCQ7L4-1S4A:10 a=hTZeC7Yk6K0A:10 a=frz4AuCg-hUA:10
+ a=4D1dU0hVIIbnoyLp9NuI:22 a=OoLSvEA_ic9EetkLKI_r:22
+X-SECURESERVER-ACCT: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+Received: from cl03.gs01.gridserver.com ([64.13.192.12])
+	by mailout01.c01 with esmtp (Exim 4.80)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kac5y-0008S8-LY
+	for josh@josh.is; Thu, 05 Nov 2020 02:02:20 -0800
+Received: from [2.221.20.105] (port=60212 helo=DESKTOPVL3QK79)
+	by cl03.gs01.gridserver.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.84_2)
+	(envelope-from <chris@indigometrics.com>)
+	id 1kac5n-0005sZ-GP
+	for josh@josh.is; Thu, 05 Nov 2020 02:02:18 -0800
+From: <chris@indigometrics.com>
+To: "'Josh Klein'" <josh@josh.is>
+References: <CACNgykNozyWdxe72Z4uA0zRbiyEXX2aujDsHo4N2ONXxv2RVog@mail.gmail.com> <002501d6ae04$caf16c10$60d44430$@indigometrics.com> <CACNgykPvwj1ixGSPgMFZa-zJe0JedDfZJ7wYLgFTP1TOOVjaAQ@mail.gmail.com> <056801d6b1df$01a51df0$04ef59d0$@indigometrics.com> <CACNgykMuTDVcPcDerbX7QCrvJg=pcKW_HERRv7K5uqOhHiAC4g@mail.gmail.com>
+In-Reply-To: <CACNgykMuTDVcPcDerbX7QCrvJg=pcKW_HERRv7K5uqOhHiAC4g@mail.gmail.com>
+Subject: RE: BSS redesign
+Date: Thu, 5 Nov 2020 10:02:06 -0000
+Message-ID: <02ab01d6b35a$b87dd090$297971b0$@indigometrics.com>
+MIME-Version: 1.0
+Content-Type: multipart/alternative;
+	boundary="----=_NextPart_000_02AC_01D6B35A.B87F0910"
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AQIUrdI9y1nYFwa1oa/JJSs9qM15agJ+yzezAnfp/48B90YZvQKh5LogqPDZ9kA=
+Content-Language: en-gb
+X-MT-INTERNAL-ID: D9664824D559B91A226E3453D3C7ECC4C6CE5B41
+X-Authenticated-User: 44066 chris@indigometrics.com
+X-Spam-Status: "score=4.2 tests=ALL_TRUSTED, HTML_FONT_LOW_CONTRAST, HTML_MESSAGE,
+	URIBL_BLOCKED version=3.4.2 cmae=_CMAETAG_"
+X-Spam-Level: ****
+X-Spam_score: 4.2
+X-Spam_score_int: 42
+X-CMAE-Envelope: MS4xfP1NiVXAg/2Qht5O28V0EPwbN6KwVJwHBgFPmdC1KGAgMqmH6I4PemviFWC06NQammELuTIwz4LIGxrODjqCALxm04CnWCsFGQRKJ2WqUqal9KOBYBQU
+ BYeCORu2op7uO8c751UPB8Dird40aV6e8FPJ276h6uCqPyG5nqBc5Cw2eAgaW6J76vQnQRat8Y5Y9Q==
+
+This is a multipart message in MIME format.
+
+------=_NextPart_000_02AC_01D6B35A.B87F0910
+Content-Type: text/plain;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+Cool =E2=80=93 I am changing the corporate web site and participant =
+intro brief as suggested and then chasing Simon the storyteller =
+=E2=80=93 think the videos are now the critical path task for getting =
+the raise started so if he cant deliver we need to go elsewhere.
+
+On the D+I =E2=80=93 agree lots of challenges and avenues to trip =
+ourselves up =E2=80=93 but ultimately we need a 90 second D+I pitch so =
+would be great if you could try to modify. Suggest no hurry though as =
+intention is to just get the 1st three videos done first.
+
+C
+
+=20
+
+From: Josh Klein <josh@josh.is>=20
+Sent: 04 November 2020 14:57
+To: Chris at Indigo <chris@indigometrics.com>
+Subject: Re: BSS redesign
+
+=20
+
+1. Corporate web site video: think we need to overhaul this in light of =
+the Google Analytics approach. For example, we could just life directly =
+from the new about page:
+
+"What gets measured gets managed" has been the driving principle for =
+business for decades, and yet most organizations have almost no =
+measurable insight into their highest value asset - their culture.
+=20
+Then COVID-19 happened, and the value of workplace culture suddenly =
+became paramount. No other element drives such sweeping, massive impact =
+across organizations - or represents such significant risk.
+=20
+Much as Google Analytics prompted the digital marketing revolution by =
+unlocking insights that could drive business initiatives at new scale =
+and speed, IndigoMetrics is creating the new world of Workplace Culture =
+Analytics.
+=20
+Longitudinal data company-wide lets you steer your company in real-time, =
+avoiding risk and launching, measuring, and optimizing campaigns to =
+improve alignment, realize D&I, and provide upskilling support where, =
+when, and however it works best.=20
+
+And that's just the beginning. IndigoMetrics lets your employees =
+evaluate the peers they work with most closely, aggregating valuable =
+feedback to help everyone know where they're doing their best work, and =
+where they need to improve. Then it rolls that up into the metrics you =
+need most to steer your company culture towards improvement, no matter =
+what the market conditions.
+
+- So How does it work?
+- the platform uses an algorithmically driven peer to peer review =
+process to ask your employees to give each other feedback on the =
+specific actions, behaviours and values that are important to your =
+organisation =20
+- Every week each employee answers 6 questions about 5 of their peers, =
+on average the whole process takes less than 3 minutes
+- the questions and reviewees iterate algorithmically over time to allow =
+us to build up a multi-dimensional quantified assessment of each =
+individual=E2=80=99s behaviours in a time efficient manner=20
+- importantly the behaviours measured are specific to your organisation =
+and can be dynamically changed as your internal goals or your external =
+environment changes=20
+ and our process is specifically designed to address the bias commonly =
+associated with peer review systems
+- Employees receive continuous, consistent feedback around the quality =
+of their behaviours and soft skills=20
+- Managers receive a team driven assessment of each of their =
+member=E2=80=99s soft skills, putting them in a position to help each =
+team member develop within a framework set by your organisation=20
+- Leaders receive consistent, timely data quantifying the quality of =
+relevant soft skills across their entire organisation =E2=80=93 helping =
+them make cultural decisions informed by data and metrics=20
+IndigoMetrics can help you and your organisation in many ways =E2=80=93 =
+for more information please keep an eye out for the other videos on our =
+website that deal with specific use cases:
+  -      Data that tilts the world in favour of Diversity and Inclusion
+  -      Culture Management and Training effectiveness
+ -        Pulse 360, build trust in your organisation
+Digital culture management, the future of work
+IndigoMetrics - the language of your company, by your company.
+
+2. D+I Focus video: this makes me really twitchy. Seems like there is a =
+TON of room for error here. Are you ok if I give a shot at rewriting =
+this with more of a "we empower your D&I efforts" than "we solve for =
+this by focusing on soft skills" angle?
+
+3. Culture change and training effectiveness: Love this, but think it's =
+missing:
+- Provides data/insight all the way from specific individual action =
+statements to corporate trend lines.
+- Has feedback loops baked in to improve alignment automatically and at =
+scale
+- Can effortlessly incorporate any existing surveying efforts
+- Automatically multivariate tests your culture campaigns, L&D, and =
+internal comms to give you feedback on what works where with who (WHAT =
+KIND OF REPORTS DO WE PROVIDE TO THIS END?)
+
+4. Pulse 360, bringing feedback and review data to the future of work: I =
+think that if we have to explain why 360 reviews suck we're not talking =
+to the right people.
+
+5. Managing corporate culture in a world of autonomous work: Yes, BUT =
+would say distributed not autonomous work. Autonomous employees are =
+scary. Distributed workforces are the future. Agree with the generally =
+talented point but think that we also need to focus on conduct risk, =
+talent churn / retention, and hiring (attracting top talent) as big =
+issues here.
+
+6. New participant video: Love this except for the last paragraph, which =
+sounds apologetic, and also think that it could benefit from a team =
+approach - i.e., this is info about you from the people you work with, =
+and vice versa, to create a framework within which you can all address =
+the soft skill areas that make you the best team you can be. We all want =
+to know how we can improve, but random criticism isn't helpful, and =
+anonymous ranting is just that. Indigometrics provides an alternative; =
+clear, incisive you alone can use to chart your own career improvement =
+as you go, informed by the people who know you best!
+
+OVERALL: This is great stuff!! That said, I wouldn't explain how it =
+works in each video, because we explain it on our homepage, we provide =
+access to our sandbox to try it, and we'll walk anyone through it in =
+person when they're qualified as leads.=20
+
+best,
+Josh
+
+P.S. I love that there's a category for "spare Josh text." I have become =
+a literal word machine.=20
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D7ad7f049-574b-41b1-a16b-a57c49db6089> =E1=90=A7
+
+=20
+
+On Tue, Nov 3, 2020 at 12:45 PM <chris@indigometrics.com =
+<mailto:chris@indigometrics.com> > wrote:
+
+Attached was my next attempt with a focus on 3 from a few days ago =
+=E2=80=93 could you comment on the revised brief / list?
+
+C
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: 03 November 2020 12:17
+To: Chris at Indigo <chris@indigometrics.com =
+<mailto:chris@indigometrics.com> >
+Subject: Re: BSS redesign
+
+=20
+
+We spoke about revising these and focusing on just three; did you want =
+me to comment on these directly or are you taking another shot first in =
+light of the Google Analytics / platform accelerator pivot we've been =
+discussing?
+
+=20
+
+- J
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D6aa91284-7b02-4e72-a4c1-e33e562f3113> =E1=90=A7
+
+=20
+
+On Thu, Oct 29, 2020 at 3:05 PM <chris@indigometrics.com =
+<mailto:chris@indigometrics.com> > wrote:
+
+This is far as I got with video texts.
+
+Guess idea is to send this to Simon the storyteller with the explanation =
+that we only want to spend =C2=A33k on a few videos before funding =
+=E2=80=93 but that we=E2=80=99ll come back post funding to do more given =
+feedback we get from the first batch (potentially corporate web site =
+video plus D+I plus one more?
+
+=20
+
+C
+
+=20
+
+From: Josh Klein <josh@josh.is <mailto:josh@josh.is> >=20
+Sent: 29 October 2020 13:21
+To: Chris at Indigo <chris@indigometrics.com =
+<mailto:chris@indigometrics.com> >
+Subject: BSS redesign
+
+=20
+
+Talked Harry into doing one more redesign to make it less PPT-y. He'll =
+revert EOD tomorrow and hand over all three versions as exports; I'll =
+take those and replace what we have now, and going forward we can =
+multivariate test the messaging on it when/if we think appropriate.=20
+
+=20
+
+First stop is getting a good video on the front page, though. :)
+
+=20
+
+- J
+
+  =
+<https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzeroc=
+ontent&guid=3D5b94f426-c654-4ba5-b410-c29a2b94bd10> =E1=90=A7
+
+
+------=_NextPart_000_02AC_01D6B35A.B87F0910
+Content-Type: text/html;
+	charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" =
+xmlns:o=3D"urn:schemas-microsoft-com:office:office" =
+xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" =
+xmlns=3D"http://www.w3.org/TR/REC-html40"><head><meta =
+http-equiv=3DContent-Type content=3D"text/html; charset=3Dutf-8"><meta =
+name=3DGenerator content=3D"Microsoft Word 15 (filtered medium)"><!--[if =
+!mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Gadugi;
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]--></head><body lang=3DEN-GB link=3Dblue =
+vlink=3Dpurple style=3D'word-wrap:break-word'><div =
+class=3DWordSection1><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>Cool =E2=80=93 I am changing the =
+corporate web site and participant intro brief as suggested and then =
+chasing Simon the storyteller =E2=80=93 think the videos are now the =
+critical path task for getting the raise started so if he cant deliver =
+we need to go elsewhere.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>On the D+I =E2=80=93 agree lots of =
+challenges and avenues to trip ourselves up =E2=80=93 but ultimately we =
+need a 90 second D+I pitch so would be great if you could try to modify. =
+Suggest no hurry though as intention is to just get the 1<sup>st</sup> =
+three videos done first.<o:p></o:p></span></p><p class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'>C<o:p></o:p></span></p><p =
+class=3DMsoNormal><span =
+style=3D'mso-fareast-language:EN-US'><o:p>&nbsp;</o:p></span></p><div =
+style=3D'border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm'><p class=3DMsoNormal><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein =
+&lt;josh@josh.is&gt; <br><b>Sent:</b> 04 November 2020 =
+14:57<br><b>To:</b> Chris at Indigo =
+&lt;chris@indigometrics.com&gt;<br><b>Subject:</b> Re: BSS =
+redesign<o:p></o:p></span></p></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><p class=3DMsoNormal>1. =
+Corporate web site video: think we need to overhaul this in light of the =
+Google Analytics approach. For example, we could just life directly from =
+the new about page:<br><br>&quot;What gets measured gets managed&quot; =
+has been the driving principle for business for decades, and yet most =
+organizations have almost no measurable insight into their highest value =
+asset - their culture.<br>&nbsp;<br>Then COVID-19 happened, and the =
+value of workplace culture suddenly became paramount. No other element =
+drives such sweeping, massive impact across organizations - or =
+represents such significant risk.<br>&nbsp;<br>Much as Google Analytics =
+prompted the digital marketing revolution by unlocking insights that =
+could drive business initiatives at new scale and speed, IndigoMetrics =
+is creating the new world of Workplace Culture =
+Analytics.<br>&nbsp;<br>Longitudinal data company-wide lets you steer =
+your company in real-time, avoiding risk and launching, measuring, and =
+optimizing campaigns to improve alignment, realize D&amp;I, and provide =
+upskilling support where, when, and however it works best. <br><br>And =
+that's just the beginning. IndigoMetrics lets your employees evaluate =
+the peers they work with most closely, aggregating valuable feedback to =
+help everyone know where they're doing their best work, and where they =
+need to improve. Then it rolls that up into the metrics you need most to =
+steer your company culture towards improvement, no matter what the =
+market conditions.<br><br>- So How does it work?<br>- the platform uses =
+an algorithmically driven peer to peer review process to ask your =
+employees to give each other feedback on the specific actions, =
+behaviours and values that are important to your organisation =
+&nbsp;<br>- Every week each employee answers 6 questions about 5 of =
+their peers, on average the whole process takes less than 3 minutes<br>- =
+the questions and reviewees iterate algorithmically over time to allow =
+us to build up a multi-dimensional quantified assessment of each =
+individual=E2=80=99s behaviours in a time efficient manner <br>- =
+importantly the behaviours measured are specific to your organisation =
+and can be dynamically changed as your internal goals or your external =
+environment changes <br>&nbsp;and our process is specifically designed =
+to address the bias commonly associated with peer review systems<br>- =
+Employees receive continuous, consistent feedback around the quality of =
+their behaviours and soft skills <br>- Managers receive a team driven =
+assessment of each of their member=E2=80=99s soft skills, putting them =
+in a position to help each team member develop within a framework set by =
+your organisation <br>- Leaders receive consistent, timely data =
+quantifying the quality of relevant soft skills across their entire =
+organisation =E2=80=93 helping them make cultural decisions informed by =
+data and metrics <br>IndigoMetrics can help you and your organisation in =
+many ways =E2=80=93 for more information please keep an eye out for the =
+other videos on our website that deal with specific use cases:<br>&nbsp; =
+- &nbsp; &nbsp; &nbsp;Data that tilts the world in favour of Diversity =
+and Inclusion<br>&nbsp; - &nbsp; &nbsp; &nbsp;Culture Management and =
+Training effectiveness<br>&nbsp;- &nbsp; &nbsp; &nbsp; &nbsp;Pulse 360, =
+build trust in your organisation<br>Digital culture management, the =
+future of work<br>IndigoMetrics - the language of your company, by your =
+company.<br><br>2. D+I Focus video: this makes me really twitchy. Seems =
+like there is a TON of room for error here. Are you ok if I give a shot =
+at rewriting this with more of a &quot;we empower your D&amp;I =
+efforts&quot; than &quot;we solve for this by focusing on soft =
+skills&quot; angle?<br><br>3. Culture change and training effectiveness: =
+Love this, but think it's missing:<br>- Provides data/insight all the =
+way from specific individual action statements to corporate trend =
+lines.<br>- Has feedback loops baked in to improve alignment =
+automatically and at scale<br>- Can effortlessly incorporate any =
+existing surveying efforts<br>- Automatically multivariate tests your =
+culture campaigns, L&amp;D, and internal comms to give you feedback on =
+what works where with who (WHAT KIND OF REPORTS DO WE PROVIDE TO THIS =
+END?)<br><br>4. Pulse 360, bringing feedback and review data to the =
+future of work: I think that if we have to explain why 360 reviews suck =
+we're not talking to the right people.<br><br>5. Managing corporate =
+culture in a world of autonomous work: Yes, BUT would say distributed =
+not autonomous work. Autonomous employees are scary. Distributed =
+workforces are the future. Agree with the generally talented point but =
+think that we also need to focus on conduct risk, talent churn / =
+retention, and hiring (attracting top talent) as big issues =
+here.<br><br>6. New participant video: Love this except for the last =
+paragraph, which sounds apologetic, and also think that it could benefit =
+from a team approach - i.e., this is info about you from the people you =
+work with, and vice versa, to create a framework within which you can =
+all address the soft skill areas that make you the best team you can be. =
+We all want to know how we can improve, but random criticism isn't =
+helpful, and anonymous ranting is just that. Indigometrics provides an =
+alternative; clear, incisive you alone can use to chart your own career =
+improvement as you go, informed by the people who know you =
+best!<br><br>OVERALL: This is great stuff!! That said, I wouldn't =
+explain how it works in each video, because we explain it on our =
+homepage, we provide access to our sandbox to try it, and we'll walk =
+anyone through it in person when they're qualified as leads. =
+<br><br>best,<br>Josh<br><br>P.S. I love that there's a category for =
+&quot;spare Josh text.&quot; I have become a literal word machine. =
+<o:p></o:p></p></div><div><p class=3DMsoNormal><img width=3D1 height=3D1 =
+style=3D'width:.0104in;height:.0104in' id=3D"_x0000_i1027" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D7ad7f049-574b-41b1-a16b-a57c49db6089"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div><p =
+class=3DMsoNormal><o:p>&nbsp;</o:p></p><div><div><p class=3DMsoNormal>On =
+Tue, Nov 3, 2020 at 12:45 PM &lt;<a =
+href=3D"mailto:chris@indigometrics.com">chris@indigometrics.com</a>&gt; =
+wrote:<o:p></o:p></p></div><blockquote =
+style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm =
+6.0pt;margin-left:4.8pt;margin-right:0cm'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Attached =
+was my next attempt with a focus on 3 from a few days ago =E2=80=93 =
+could you comment on the revised brief / list?<o:p></o:p></p><p =
+class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>C<o:p></o:p>=
+</p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div style=3D'border:none;border-top:solid #E1E1E1 =
+1.0pt;padding:3.0pt 0cm 0cm 0cm'><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> 03 November 2020 12:17<br><b>To:</b> Chris at Indigo =
+&lt;<a href=3D"mailto:chris@indigometrics.com" =
+target=3D"_blank">chris@indigometrics.com</a>&gt;<br><b>Subject:</b> Re: =
+BSS redesign</span><o:p></o:p></p></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>We spoke =
+about revising these and focusing on just three; did you want me to =
+comment on these directly or are you taking another shot first in light =
+of the Google Analytics / platform accelerator&nbsp;pivot we've been =
+discussing?<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>- =
+J<o:p></o:p></p></div></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><img =
+border=3D0 width=3D1 height=3D1 style=3D'width:.0104in;height:.0104in' =
+id=3D"_x0000_i1026" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D6aa91284-7b02-4e72-a4c1-e33e562f3113"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>On Thu, Oct =
+29, 2020 at 3:05 PM &lt;<a href=3D"mailto:chris@indigometrics.com" =
+target=3D"_blank">chris@indigometrics.com</a>&gt; =
+wrote:<o:p></o:p></p></div><blockquote =
+style=3D'border:none;border-left:solid #CCCCCC 1.0pt;padding:0cm 0cm 0cm =
+6.0pt;margin-left:4.8pt;margin-top:5.0pt;margin-right:0cm;margin-bottom:5=
+.0pt'><div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>This is far =
+as I got with video texts.<o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Guess idea =
+is to send this to Simon the storyteller with the explanation that we =
+only want to spend =C2=A33k on a few videos before funding =E2=80=93 but =
+that we=E2=80=99ll come back post funding to do more given feedback we =
+get from the first batch (potentially corporate web site video plus D+I =
+plus one more?<o:p></o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>C<o:p></o:p>=
+</p><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div style=3D'border:none;border-top:solid #E1E1E1 =
+1.0pt;padding:3.0pt 0cm 0cm 0cm'><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><b><span =
+lang=3DEN-US>From:</span></b><span lang=3DEN-US> Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is</a>&gt; =
+<br><b>Sent:</b> 29 October 2020 13:21<br><b>To:</b> Chris at Indigo =
+&lt;<a href=3D"mailto:chris@indigometrics.com" =
+target=3D"_blank">chris@indigometrics.com</a>&gt;<br><b>Subject:</b> BSS =
+redesign</span><o:p></o:p></p></div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>Talked =
+Harry into doing one more redesign to make it less PPT-y. He'll revert =
+EOD tomorrow and hand over all three versions as exports; I'll take =
+those and replace what we have now, and going forward we =
+can&nbsp;multivariate test the messaging on it when/if we think =
+appropriate.&nbsp;<o:p></o:p></p><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>First stop =
+is getting a good video on the front page, though. =
+:)<o:p></o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>&nbsp;<o:p><=
+/o:p></p></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'>- =
+J<o:p></o:p></p></div></div><div><p class=3DMsoNormal =
+style=3D'mso-margin-top-alt:auto;mso-margin-bottom-alt:auto'><img =
+border=3D0 width=3D1 height=3D1 style=3D'width:.0104in;height:.0104in' =
+id=3D"_x0000_i1025" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;ty=
+pe=3Dzerocontent&amp;guid=3D5b94f426-c654-4ba5-b410-c29a2b94bd10"><span =
+style=3D'font-size:7.5pt;font-family:"Gadugi",sans-serif;color:white'>=E1=
+=90=A7</span><o:p></o:p></p></div></div></div></blockquote></div></div></=
+div></blockquote></div></div></body></html>
+------=_NextPart_000_02AC_01D6B35A.B87F0910--
+

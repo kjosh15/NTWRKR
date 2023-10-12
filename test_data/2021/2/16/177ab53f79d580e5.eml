@@ -1,0 +1,987 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9d41:0:0:0:0:0 with SMTP id y1csp3118769ljj;
+        Tue, 16 Feb 2021 06:52:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxgHq6ZE1qJSZESO4k0odxgKqrdmUVoNeaTtdznk5LPhDyLA43x7YMA9cex8TZqORNarjbt
+X-Received: by 2002:a17:902:e547:b029:e2:90b0:569d with SMTP id n7-20020a170902e547b02900e290b0569dmr20048143plf.27.1613487142843;
+        Tue, 16 Feb 2021 06:52:22 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1613487142; cv=none;
+        d=google.com; s=arc-20160816;
+        b=hX0oDXbpNPbWw3KNyCJqZqCJG2ZMvD+KC5XY97jlw1xOWIVPYCdeejD11vJ1J41Oz7
+         mVeOVr7Ldngaitr2W4Vu8rcuKTkBiuLzGVtVcrhJACIALGFqBT9UaqIdrpi9qFmcis0F
+         Zqz5UWQhjLpatTmr0QuhW9wplPUqEZpkIBCt3NzuFYTrT81j4eGNS1ZP83bhB+ylYyiJ
+         Eog4gMuQS7BpuzQV39oHGtt3BK7qhzsBJu5BxniUnqLDsxgWh5rAvVjxkKyaHDLouSx3
+         EUoWWcyR7vzgEQw5obAPbU5G2C+PirJijc6P/a47aNjeEGxoZ82YhT8/oCJ7K4NkU9Db
+         2uRA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:subject:message-id:to:reply-to:from:date
+         :dkim-signature:dkim-signature;
+        bh=cWSyVRxb//DGzibRYGjID3Y1ToKApbYdYuGHQ7wzoEc=;
+        b=TEfM5QQOUuA/u5j2ndzu+uggc58xiwnt/Tv91Bj/D/6Fm957827LW0UOs297sx7Hmf
+         a8bv8lI2Io9jiwTR3JgAwCXZNv8jzjlGmzw987JSfWXHI22mTdIF/lkG9epDk9aF97Y3
+         E2wY+rW2DaLh+mo5UqZfxPXZv6owB6Vwt6Viznmk6EVXobuqqIB6/faOfaDSggM4Vt0n
+         spKID2Gds+psLwBuOIa6d6E/41N/1dQCkr5GJYS5+GaUULyRTQPDomkcbV1km4aIDZR3
+         hq5OVHKVNgfsJ8b0YDrHyYe8qqDmvHo9NFlo+szvota7uDXSbf63+PSkz3cHVbOQej2e
+         2YuA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@m.lastpass.com header.s=lmi header.b=JZb9kSVr;
+       dkim=pass header.i=@mktdns.com header.s=m1 header.b=JlaMrrh4;
+       spf=pass (google.com: domain of 677-xnu-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com designates 199.15.215.104 as permitted sender) smtp.mailfrom=677-XNU-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=lastpass.com
+Return-Path: <677-XNU-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com>
+Received: from caribou.mktdns.com (caribou.mktdns.com. [199.15.215.104])
+        by mx.google.com with ESMTPS id n5si19548473plf.415.2021.02.16.06.52.22
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Feb 2021 06:52:22 -0800 (PST)
+Received-SPF: pass (google.com: domain of 677-xnu-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com designates 199.15.215.104 as permitted sender) client-ip=199.15.215.104;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@m.lastpass.com header.s=lmi header.b=JZb9kSVr;
+       dkim=pass header.i=@mktdns.com header.s=m1 header.b=JlaMrrh4;
+       spf=pass (google.com: domain of 677-xnu-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com designates 199.15.215.104 as permitted sender) smtp.mailfrom=677-XNU-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=lastpass.com
+X-MSFBL: 6wRYJ6cGF906Gskbrk0WbD6o1I3sS8dWa42fy/nqZKo=|eyJ1IjoiNjc3LVhOVS0
+	yMDM6MDozNzc3MDoxOTQ1MzE6NjgzMjU3OjU4NjE2Ojk6MzE1OTA4Njo4NTM2MzI
+	xMy02IiwiciI6Impvc2hAam9zaC5pcyIsImciOiJiZy1zamQtMTQiLCJiIjoiZHZ
+	wLTE5OS0xNS0yMTUtMTA0In0=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613487141;
+	s=lmi; d=m.lastpass.com; i=@m.lastpass.com;
+	h=Content-Type:MIME-Version:Subject:To:From:Date;
+	bh=cWSyVRxb//DGzibRYGjID3Y1ToKApbYdYuGHQ7wzoEc=;
+	b=JZb9kSVrxcyivHfff67vm7krrct08lhXxMp/1DcPIj1o0CUd1T2dZ8Vs6eSBES6M
+	+slYNZtkv4FuO2YhEmg5Qbgotwif2LC90FuE8C1fCvKqAoebXp8N9+gS+U0LPFdcWTf
+	HIx4gZX/Gy7l4SRXQHNYRfz3TMS5esZgQWZpKvYk=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1613487141;
+	s=m1; d=mktdns.com; i=@mktdns.com;
+	h=Content-Type:MIME-Version:Subject:To:From:Date;
+	bh=cWSyVRxb//DGzibRYGjID3Y1ToKApbYdYuGHQ7wzoEc=;
+	b=JlaMrrh4KpUm9FyHc/4j3KwvLrsZ8xjqTc0J/ft7cJ/fR2E1Nd5R/1QFlJadru2N
+	AXDIU2r3We6o/Sty05kEju3i/aqY1YwwNWduNpPbFOvaKiptQwSgrA7neISjp9I/Wui
+	u+03tmvG2HjdqG0R8/rEGsYIXGfvpDI0ZhlfP2MU=
+Date: Tue, 16 Feb 2021 08:52:21 -0600 (CST)
+From: LastPass <replies@m.lastpass.com>
+Reply-To: replies@m.lastpass.com
+To: josh@josh.is
+Message-ID: <1631683372.85386059.1613487141949@sjmktmail-batch1i.marketo.org>
+Subject: Changes to LastPass Free
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_85386058_1605866885.1613487141948"
+X-Binding: bg-sjd-14
+X-PVIQ: mkto-677XNU203-000001-000003-159086
+X-MarketoID: 677-XNU-203:0:37770:194531:683257:58616:9:3159086:85363213-6
+X-Mailfrom: 677-XNU-203.0.3159086.0.0.58616.9.85363213-6@em-sj-77.mktomail.com
+X-MktArchive: false
+X-MSYS-API: {"options":{"open_tracking":false,"click_tracking":false}}
+X-MktMailDKIM: true
+
+------=_Part_85386058_1605866885.1613487141948
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Important information + a limited time offer<div style=3D"display: none; ma=
+x-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&z=
+wnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj=
+;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&n=
+bsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp=
+;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div>
+We're making some changes to LastPass Free
+
+
+We love being a part of the security routines of more than 20 million users=
+ across the world. As our community continues to grow, we need to adapt our=
+ offerings to keep up with the constantly evolving digital world.
+
+Beginning March 16, 2021, we will be introducing some changes to our LastPa=
+ss Free experience, including how many device types free users will be able=
+ to use LastPass on (more details below).
+
+Leading up to these changes, you can=20
+upgrade to Premium <https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00> at a=
+ limited-time discounted rate of $2.25
+ per month, billed annually ($36
+=C2=A0$27
+/year).
+UPGRADE NOW <https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00>
+What's changing in LastPass Free?
+
+Beginning March 16, 2021, LastPass Free will include access on one device t=
+ype of your choice. The first device you login with on or after March 16 wi=
+ll set your active device type.
+If you choose computer as your device type, LastPass Free will work on all =
+computers in your life:
+
+
+
+
+
+
+
+
+
+
+
+=09- ALL desktop computers
+=09- ALL laptop computers
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=20
+=20
+=20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+If you choose mobile as your device type, LastPass Free will work on all mo=
+bile devices in your life:
+
+
+
+
+
+
+
+
+
+
+
+=09- ALL mobile phones
+=09- ALL tablets
+=09- ALL smartwatches
+For more information about this change, including how to select and change =
+your active device type, check out our support page <https://go.logmeininc.=
+com/m500aK20MzaQ4D1SNnx0XU0>.
+LEARN MORE <https://go.logmeininc.com/m500aK20MzaQ4D1SNnx0XU0>
+
+Redesigned=C2=A0support=C2=A0experience
+
+
+Beginning May 17, 2021, email support will remain available to Premium and =
+Families customers only. As a Free user, you=E2=80=99ll have 24/7 access to=
+ the Support Center and the LastPass Community, where LastPass specialists =
+actively monitor all questions and concerns.
+
+ Learn more about Free support =E2=86=92 <https://go.logmeininc.com/p0M00Xz=
+4NU0a5AaNQD01Sn2>
+Go Premium at 25% off
+
+
+
+As a current Free user, you can upgrade to Premium now at a limited-time di=
+scounted rate of $2.25
+ per month, billed annually ($36
+=C2=A0$27
+/year). Go Premium today=C2=A0for=C2=A0unlimited access on all device types=
+, advanced security features and Personal Support at 25% off.
+UPGRADE NOW <https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00>
+Offer Terms and Conditions:=20
+ *Advertised price valid for new users on their first year of LastPass Prem=
+ium. Price not valid for renewals or existing customers and cannot be used =
+for other LastPass plans, products, or services.
+This email was sent to: josh@josh.is <https://go.logmeininc.com/dc/X6daeQDX=
+E-lSK6XyeTOgpjQSHE_kuatkwmyvEezEwqk=3D/lnNaD000D4S1zU2QM0a0q5X>
+ =C2=A9 LogMeIn USA, 333 Summer Street, Boston, MA 02210
+ <https://go.logmeininc.com/SN0U2Q0SD5M0aX1z400naEr>
+ Unsubscribe <https://lastpass.com/unsubscribe.php>     |   View in browser=
+ <[[https://lp.logmeininc.com/index.php/email/emailWebview?mkt_tok=3DeyJpIj=
+oiT0dVd1pqWmxZamt6WkdZMyIsInQiOiJGQ3lCaTNvVTZZNndhM29IZGZ0eXJJWlA5SDBZUlVHd=
+HI5T05aVjJqZlBaa2lDbCtnVXRNL0VuRnF4WmFvSXh1bFN0YTQ3ZEJOYk9xQmd0ZVU0UzdlbmlI=
+b3JrTWhMelhCckMwN0hLV1FzeUFvZktCbGt2bHZSWUNrcnBOTjE5TCJ9&md_id=3D58616]]>  =
+|   Privacy policy <https://go.logmeininc.com/ZNaM104GQ0z05a0St20DUXn>
+=20
+ Log in to your account <https://go.logmeininc.com/WX04HaNMD5u2UQ100azSn00>=
+  |   LastPass support <https://go.logmeininc.com/EzQ0X51INvS0a0aU2n0MD04>
+ Your security is our top priority. Never share your master password with a=
+nyone - including us!
+ For more information, click here <https://go.logmeininc.com/JN2DXa0w4U0aJn=
+SzQ1005M0>.
+
+------=_Part_85386058_1605866885.1613487141948
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>=20
+<title>LastPass</title>=20
+<link rel=3D"Shortcut Icon" type=3D"image/x-icon" href=3D"https://lp.logmei=
+ninc.com/rs/677-XNU-203/images/Lastpass.ico">=20
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1.=
+0, maximum-scale=3D1.0,">                                        =20
+<link href=3D"http://fonts.googleapis.com/css?family=3DLato:300,400,700,900=
+" rel=3D"stylesheet" type=3D"text/css">=20
+<style type=3D"text/css">
+        .appleLinksWhite a {color: #ffffff !important; text-decoration: non=
+e;} =20
+        .appleLinksBlack a {color: #000000 !important; text-decoration: non=
+e;}=20
+        .appleLinksGrey a {color: #5e656b !important; text-decoration: none=
+;}
+        table { display: table; }
+        /*body .button a:hover { background-color: #B6000B !important; }*/
+        .button:hover { background-color: #B6000B !important; }
+        a.hover:hover { color: #6ABAE5 !important; }
+        @media screen and (max-width: 550px) {.bgcolor1 {padding: 20px 5% 2=
+0px 5% !important; Background: #D1E5F5; Border-radius: 0px;} .bgcolor2 {pad=
+ding: 20px 5% 20px 5% !important; Background: #ffffff; Border-radius: 0px;}=
+ .txt {font-size: 20px !important; Line-height: 28px !important; Padding: 1=
+0px 5% !important; Text-align: left !important;} .txtC {font-size: 20px !im=
+portant; Line-height: 28px !important; Padding: 10px 5% !important; Text-al=
+ign: center !important;} .txt1 {font-size: 26px !important; Font-weight: bo=
+ld !important; Line-height: 36px !important; Padding: 10px 5% !important;} =
+.txt2 { text-align: center;} .txt3 { padding: 10px 5% 5px 5% !important; Te=
+xt-align: center !important; Font-size: 36px !important; Line-height: 44px!=
+important;} .txt4 {padding: 5px 5% 10px 5%; Text-align: center; Font-size: =
+20px !important; Line-height: 28px !important;} .txt5 {padding: 5px 5% 30px=
+ 5%; Text-align: center; Font-size: 18px !important; Line-height: 28px !imp=
+ortant;} .mobile-hide {display: none !important;} .mobile-show {display: in=
+line !important;}
+        @media only screen and (max-width: 550px) {
+            table { width: 100% !important; }
+            table.button { width: 100% !important; display: table; }
+            td.logo img { max-width: 175px !important }
+            .centerImg { width: 100%; }
+            td.text { text-align: left; }
+        }
+    </style>=20
+<!--[if mso]|(IE)>
+        <style type=3D"text/css">
+            body, table, td, h1, h2, h3, h4, h5, span {font-family: Lato, A=
+rial, Helvetica, sans-serif !important; mso-line-height-rule:exactly;}
+        </style>
+    <![endif]-->=20
+</head>=20
+<body style=3D"font-family: 'Lato',Arial, Helvetica, sans-serif; font-size:=
+ 14px; margin: 0; padding: 0; color: #5e656b;">=20
+<table style=3D"width: 100%; border-collapse: collapse; background-color: #=
+F7F9FA; background-image: url(); font-family: 'Lato',Arial, Helvetica, sans=
+-serif; font-size: 14px; margin: 0; padding: 0; color: #5e656b;" cellpaddin=
+g=3D"0" cellspacing=3D"0">=20
+<tbody>
+<tr>=20
+<td class=3D"mktoContainer" id=3D"container" align=3D"center" style=3D"word=
+-break: break-word;">
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative;" class=3D"mktoModule" id=3D"preheaderf=
+d8245ed-5a27-400b-a0f9-f1c7cd187a80">=20
+<tbody>=20
+<tr>=20
+<td align=3D"center" style=3D"font-size:0px; display:none; visibility:hidde=
+n;" class=3D"mktoText" id=3D"preHeaderTextfd8245ed-5a27-400b-a0f9-f1c7cd187=
+a80">Important information + a limited time offer<div style=3D"display: non=
+e; max-height: 0px; overflow: hidden;">&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nb=
+sp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;=
+&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zw=
+nj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;=
+&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;</div></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative;" class=3D"mktoModule" id=3D"preheaderb=
+b0477d8-e53c-45ce-9e3d-e8c23a2cdbac">=20
+<tbody>=20
+<tr>=20
+<td align=3D"center" style=3D"font-size:0px; display:none; visibility:hidde=
+n;" class=3D"mktoText" id=3D"preHeaderTextbb0477d8-e53c-45ce-9e3d-e8c23a2cd=
+bac"></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; background-color: #F7F9FA;" class=3D"m=
+ktoModule" id=3D"centerImageb888ce93-e9d6-42a1-bdd8-0133c0aca46d">=20
+<tbody>=20
+<tr>=20
+<td align=3D"center" style=3D"padding: 30px;" class=3D"centerImg">=20
+<div class=3D"mktoImg" id=3D"centerImgb888ce93-e9d6-42a1-bdd8-0133c0aca46d"=
+ mktolockimgsize=3D"false">=20
+<a href=3D
+"https://go.logmeininc.com/dc/DFSn1nst6ojOKF16-3hnBS60CVCcXiOJ3k_v0VrvDlLLD=
+PcEJJO84xYpCfHRkG2ipCWdQ4JtKyinAYprTW23neQtjy_DVJvXQ9Mf0T_vnHlv6H9bEgv1r7W4=
+xTiE5Za7g_5o2giPJGzAZMhnBZUD6Ak23rhuQJNVuK96TFgfdPpwhlr0S_f-KVwJftw2BrK1oe_=
+P_m7VBOKum3Fe6gAiE2UwUAK8cI5UeZl_B9bpa6NcZ9MKW5JmoLjL_zr8hU5A0U8jVbiyQvuxYi=
+_y6xLqFA=3D=3D/lnNaD000D4S1zU2QM0a0q5X" target=3D"_blank"
+><img border=3D"0" src=3D"http://lp.logmeininc.com/rs/677-XNU-203/images/Lo=
+go_LastPass_Color2.png" width=3D"180" height=3D"50" alt=3D"LastPass" style=
+=3D"font-family: Helvetica, Arial, sans-serif; color: #5e656b; font-size: 1=
+6px;"></a>=20
+</div> </td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0;  background-color: #ffffff=
+; background-image: url();" class=3D"mktoModule" id=3D"bodyText29c88a0d-a58=
+4-44bc-9ea8-d95d9846fad887d5a783-401b-4602-b06f-5399a9cde7e8" cellpadding=
+=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td class=3D"mktoText" id=3D"trBodyText29c88a0d-a584-44bc-9ea8-d95d9846fad8=
+87d5a783-401b-4602-b06f-5399a9cde7e8">
+<table style=3D"width: 100%; border-collapse: collapse;">
+<tbody>
+<tr>
+<td bgcolor=3D"ffffff" style=3D"padding: 30px 30px 15px 30px;" align=3D"lef=
+t">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td align=3D"left" style=3D"font-size: 26px; line-height: 30px; color: #0a2=
+140;"><strong>We're making some changes to LastPass Free</strong></td>
+</tr>
+<tr>
+<td style=3D"padding: 20px 0 0 0; display: block; font-size: 16px; line-hei=
+ght: 24px;" class=3D"text">We love being a part of the security routines of=
+ more than 20 million users across the world.
+ As our community continues to grow, we need to adapt our offerings to keep=
+ up with the constantly evolving digital world.<br /><br />Beginning <stron=
+g>March 16, 2021</strong>, we will be introducing some changes to our LastP=
+ass Free experience, including how many device types free users will be abl=
+e to use LastPass on (more details below).<br /><br />Leading up to these c=
+hanges, you can=20
+<strong><a href=3D
+"https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00" target=3D"_blank" style=
+=3D"color: #3498DB; line-height: 24px; text-decoration: none;" id=3D"Upgrad=
+e to Premium text link"
+>upgrade to Premium</a></strong> at a limited-time discounted rate of <em>$=
+2.25
+ per month, billed annually (<span style=3D"text-decoration: line-through;"=
+>$36
+</span>&nbsp;$27
+/year).</em></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"display: table; width: 500px; border-collapse: collapse; bo=
+rder-spacing: 0; margin: 0 auto; position: relative; padding: 0; background=
+-color: #ffffff; background-image: url();" class=3D"mktoModule" id=3D"butto=
+n292c00ed-548b-4951-8d25-95240b2e01d9b5ed7779-48b8-4229-aa2e-c92b13d51e32" =
+cellpadding=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 30px 30px 40px 30px;" class=3D"mktoText" id=3D"trButt=
+on292c00ed-548b-4951-8d25-95240b2e01d9b5ed7779-48b8-4229-aa2e-c92b13d51e32"=
+><center>
+<table class=3D"button" style=3D"border-radius: 30px; background-color: #d3=
+2d27;">
+<tbody>
+<tr>
+<td style=3D"text-align: center;"><!--[if (gte mso 9)|(IE)]>
+      <table cellpadding=3D"0" cellspacing=3D"0" align=3D"center" style=3D"=
+border-spacing:0">
+      <tr>
+      <td style=3D"padding:0;mso-padding-alt:15px 30px ; background-color: =
+#D32D27">
+      <![endif]--> <a class=3D"${linkHoverStyle}" style=3D"display: block; =
+color: #ffffff; font-size: 16px; text-decoration: none; padding: 15px 30px;=
+" href=3D
+"https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00" target=3D"_blank" id=3D=
+"Upgrade Now button"
+>UPGRADE NOW</a> <!--[if (gte mso 9)|(IE)]>
+      </td>
+      </tr>
+      </table>
+      <![endif]--></td>
+</tr>
+</tbody>
+</table>
+</center></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0;  background-color: #D0E5F6=
+; background-image: url();" class=3D"mktoModule" id=3D"bodyText29c88a0d-a58=
+4-44bc-9ea8-d95d9846fad8b843dec8-16a3-4838-94bb-6180c8fad97d7b3eeeb3-c375-4=
+f11-998e-191c9f066466a4ed57b4-7571-4c15-bc7a-7c27229f518d" cellpadding=3D"0=
+" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td class=3D"mktoText" id=3D"trBodyText29c88a0d-a584-44bc-9ea8-d95d9846fad8=
+b843dec8-16a3-4838-94bb-6180c8fad97d7b3eeeb3-c375-4f11-998e-191c9f066466a4e=
+d57b4-7571-4c15-bc7a-7c27229f518d"><table style=3D"width: 100%; border-coll=
+apse: collapse;">
+<tbody>
+<tr>
+<td style=3D"padding: 30px 30px 10px 30px;" align=3D"left">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"><strong>What's changing in LastPass Free?</strong=
+><br /><br />Beginning March 16, 2021, LastPass Free will include access on=
+ one device type of your choice. The first device you login with on or afte=
+r March 16 will set your active device type.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0; background-color: #D0E5F6;=
+ background-image: url();" class=3D"mktoModule" id=3D"columns7fb41f05-7db9-=
+4bb4-aca9-e66bf72a3e98b508858a-c4b1-47c1-a74d-8021db2904d2" cellspacing=3D"=
+0" cellpadding=3D"0">=20
+<tbody>=20
+<tr>=20
+<td class=3D"mktoText" id=3D"trColumns7fb41f05-7db9-4bb4-aca9-e66bf72a3e98b=
+508858a-c4b1-47c1-a74d-8021db2904d2"><table class=3D"bgcolor1" style=3D"flo=
+at: left; width: 50%; border-collapse: collapse; color: #5e656b;" cellpaddi=
+ng=3D"0"><!--[if (gte mso 9)|(IE)]>
+                               =20
+<tr>
+<td></td>
+</tr>
+</table>
+<table style=3D"float: left; width: 100%; border-collapse: collapse; color:=
+ #5E656B;" cellpadding=3D"0">
+<![endif]-->
+<tbody>
+<tr>
+<td class=3D"bgcolor1" style=3D"padding: 0;" align=3D"center" width=3D"2%" =
+bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class=3D"bgcolor1" style=3D"padding: 20px; border-radius: 20px;" width=
+=3D"40%" align=3D"center" valign=3D"top" bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"text-align: left; display: block;" class=3D"text"><span style=
+=3D"font-size: 16px;">If you choose <strong>computer</strong> as your devic=
+e type, LastPass Free will work on <span style=3D"text-decoration: underlin=
+e;">all computers</span> in your life:<br /><br /></span></td>
+</tr>
+<tr>
+<td style=3D"padding: 10px 0 0 0; display: block; font-size: 30px; text-ali=
+gn: center;" class=3D"txt3"><img src=3D"https://lp.logmeininc.com/rs/677-XN=
+U-203/images/Icon_LastPass_B2C_Computer_Devices.png" alt=3D"ALL Computer De=
+vices" height=3D"57" width=3D"150" constrain=3D"true" imagepreview=3D"false=
+" /><br /></td>
+</tr>
+<tr>
+<td style=3D"padding: 10px 0px 0px 0px; display: block; font-size: 16px; li=
+ne-height: 24px; text-align: left;" class=3D"txt4">
+<ul>
+<li>ALL desktop computers</li>
+<li>ALL laptop computers</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class=3D"bgcolor1" style=3D"padding: 0px;" align=3D"center" width=3D"2%=
+" bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<!--[if (gte mso 9)|(IE)]>
+                        </td>
+<td>
+                        <![endif]-->
+<table class=3D"bgcolor1" style=3D"float: left; width: 50%; border-collapse=
+: collapse; color: #5e656b;" cellpadding=3D"0"><!--[if (gte mso 9)|(IE)]>
+                               =20
+<tr>
+<td></td>
+</tr>
+</table>
+<table style=3D"float: left; width: 100%; border-collapse: collapse; color:=
+ #5E656B" cellpadding=3D"0">
+<![endif]-->
+<tbody>
+<tr>
+<td class=3D"bgcolor1" style=3D"padding: 0px;" align=3D"center" width=3D"2%=
+" bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"></td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class=3D"bgcolor1" style=3D"padding: 20px; border-radius: 20px;" width=
+=3D"40%" align=3D"center" valign=3D"top" bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"display: block;" class=3D"text"><span style=3D"font-size: 16px=
+;">If you choose <strong>mobile</strong> as your device type, LastPass Free=
+ will work on <span style=3D"text-decoration: underline;">all mobile device=
+s</span> in your life:<br /><br /></span></td>
+</tr>
+<tr>
+<td style=3D"padding: 10px 0 0 0; display: block; font-size: 30px; text-ali=
+gn: center;" class=3D"txt3"><img src=3D"https://lp.logmeininc.com/rs/677-XN=
+U-203/images/Icon_LastPass_B2C_Mobile_Devices.png" alt=3D"ALL Mobile Device=
+s" height=3D"51" width=3D"150" constrain=3D"true" imagepreview=3D"false" />=
+<br /></td>
+</tr>
+<tr>
+<td style=3D"padding: 10px 0 0 0; display: block; font-size: 16px; line-hei=
+ght: 24px; text-align: center;" class=3D"txt4">
+<ul>
+<li style=3D"text-align: left;">ALL mobile phones</li>
+<li style=3D"text-align: left;">ALL tablets</li>
+<li style=3D"text-align: left;">ALL smartwatches</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td class=3D"bgcolor1" style=3D"padding: 0px;" align=3D"center" width=3D"2%=
+" bgcolor=3D"#D0E5F6">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0;  background-color: #D0E5F6=
+; background-image: url();" class=3D"mktoModule" id=3D"bodyText29c88a0d-a58=
+4-44bc-9ea8-d95d9846fad8b843dec8-16a3-4838-94bb-6180c8fad97d7b3eeeb3-c375-4=
+f11-998e-191c9f066466a4ed57b4-7571-4c15-bc7a-7c27229f518d27c941c5-5cd8-47d4=
+-94d4-e2259fb504d7" cellpadding=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td class=3D"mktoText" id=3D"trBodyText29c88a0d-a584-44bc-9ea8-d95d9846fad8=
+b843dec8-16a3-4838-94bb-6180c8fad97d7b3eeeb3-c375-4f11-998e-191c9f066466a4e=
+d57b4-7571-4c15-bc7a-7c27229f518d27c941c5-5cd8-47d4-94d4-e2259fb504d7"><tab=
+le style=3D"width: 100%; border-collapse: collapse;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 30px 10px 30px;" align=3D"left">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text">For more information about this change, including=
+ how to select and change your active device type, check out our <strong><a=
+ href=3D
+"https://go.logmeininc.com/B40zMX2Ua000M5nN0SzD1aQ" target=3D"_blank" style=
+=3D"color: #3498db; line-height: 24px; text-decoration: none;" id=3D"Suppor=
+t Page text link"
+>support page</a></strong>.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"display: table; width: 500px; border-collapse: collapse; bo=
+rder-spacing: 0; margin: 0 auto; position: relative; padding: 0; background=
+-color: #D0E5F6; background-image: url();" class=3D"mktoModule" id=3D"butto=
+n292c00ed-548b-4951-8d25-95240b2e01d9" cellpadding=3D"0" cellspacing=3D"0">=
+=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 20px 30px 10px 30px;" class=3D"mktoText" id=3D"trButt=
+on292c00ed-548b-4951-8d25-95240b2e01d9"><center>
+<table class=3D"button" style=3D"border-radius: 30px; background-color: #d3=
+2d27;">
+<tbody>
+<tr>
+<td style=3D"text-align: center;"><!--[if (gte mso 9)|(IE)]>
+      <table cellpadding=3D"0" cellspacing=3D"0" align=3D"center" style=3D"=
+border-spacing:0">
+      <tr>
+      <td style=3D"padding:0;mso-padding-alt:15px 30px ; background-color: =
+#D32D27">
+      <![endif]--> <a class=3D"${linkHoverStyle}" style=3D"display: block; =
+color: #ffffff; font-size: 16px; text-decoration: none; padding: 15px 30px;=
+" href=3D
+"https://go.logmeininc.com/B40zMX2Ua000M5nN0SzD1aQ" target=3D"_blank" id=3D=
+"Learn More button"
+>LEARN MORE</a> <!--[if (gte mso 9)|(IE)]>
+      </td>
+      </tr>
+      </table>
+      <![endif]--></td>
+</tr>
+</tbody>
+</table>
+</center></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; background-color: #D0E5F6; background-=
+image: url();" class=3D"mktoModule" id=3D"spacer19c0dbe9-b02e-4e0b-999c-52c=
+6fabf44ae346ab2d3-1989-4639-98c9-86c6207300ba37bb1df5-5525-418e-8181-1880fb=
+0befa3">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 5px;" class=3D"mktoText" id=3D"trSpacer19c0dbe9-b02e-=
+4e0b-999c-52c6fabf44ae346ab2d3-1989-4639-98c9-86c6207300ba37bb1df5-5525-418=
+e-8181-1880fb0befa3"><table class=3D"mobile-hide" style=3D"width: 100%; bor=
+der-collapse: collapse;">=20
+ <tbody>=20
+  <tr>=20
+   <td style=3D"padding: 5px;" align=3D"left">=20
+    <table style=3D"border-collapse: collapse; border-spacing: 0;">=20
+     <tbody>=20
+      <tr>=20
+       <td style=3D"display: block; font-size: 16px; line-height: 22px;" cl=
+ass=3D"mobile-hide">&nbsp;</td>=20
+      </tr>=20
+     </tbody>=20
+    </table> </td>=20
+  </tr>=20
+ </tbody>=20
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0; background-color: #EDF6FE;=
+ background-image: url();" class=3D"mktoModule" id=3D"pictureBullet74a1b5ad=
+-a2d7-4682-a53e-d58590098b1a" cellpadding=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 30px;" align=3D"center">=20
+<table style=3D"margin: 0 auto; border-collapse: collapse; display: table-c=
+ell">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 0 30px 30px 0"> <img src=3D"https://lp.logmeininc.com=
+/rs/677-XNU-203/images/Icon_LastPass_200x200_Support_Free.png" style=3D"bor=
+der-radius: 8px;" class=3D"mktoImg" id=3D"bulletImage74a1b5ad-a2d7-4682-a53=
+e-d58590098b1a" border=3D"0" width=3D"150" height=3D"150" alt=3D"LastPass F=
+ree Support" mktolockimgsize=3D"false"> </td>=20
+<td style=3D"padding: 0 0 30px 0" class=3D"mktoText" id=3D"bulletText74a1b5=
+ad-a2d7-4682-a53e-d58590098b1a"><table style=3D"border-collapse: collapse; =
+border-spacing: 0; font-size: 16px;">
+<tbody>
+<tr>
+<td style=3D"font-size: 16px; font-weight: bold; line-height: 24px; display=
+: block;">Redesigned&nbsp;support&nbsp;experience</td>
+</tr>
+<tr>
+<td style=3D"font-size: 16px; line-height: 24px;">Beginning May 17, 2021, e=
+mail support will remain available to Premium and Families customers only. =
+As a Free user, you&rsquo;ll have 24/7 access to the Support Center and the=
+ LastPass Community, where LastPass specialists actively monitor all questi=
+ons and concerns.<br /><br /> <a href=3D
+"https://go.logmeininc.com/s0Gn5D40SNaT0XzaM120Q0U" style=3D"color: #3498db=
+; line-height: 24px; text-decoration: none;" target=3D"_blank" id=3D"Learn =
+More about Support text link"
+>Learn more about Free support &rarr;</a></td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table> </td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; padding: 0; background-color: #ffffff;=
+ background-image: url();" class=3D"mktoModule" id=3D"subBox46445fb6-4c98-4=
+9e1-bba6-34c3303441ff" cellpadding=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 30px 30px 10px 30px;" class=3D"mktoText" id=3D"trSubB=
+ox46445fb6-4c98-49e1-bba6-34c3303441ff"><table style=3D"width: 100%; border=
+-collapse: collapse;">
+<tbody>
+<tr>
+<td style=3D"padding: 30px 30px 10px 30px;" align=3D"left">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td align=3D"left" style=3D"font-size: 26px; line-height: 32px; color: #0a2=
+140;"><strong>Go Premium at 25% off</strong></td>
+</tr>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 16px; line-heig=
+ht: 24px;" class=3D"text"><br />As a current Free user, you can upgrade to =
+Premium now at a limited-time discounted rate of <em>$2.25
+ per month, billed annually (<span style=3D"text-decoration: line-through;"=
+>$36
+</span>&nbsp;$27
+/year)</em>. Go Premium today&nbsp;for&nbsp;unlimited access on all device =
+types, advanced security features and Personal Support at 25% off.<strong><=
+br /></strong></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"display: table; width: 500px; border-collapse: collapse; bo=
+rder-spacing: 0; margin: 0 auto; position: relative; padding: 0; background=
+-color: #FFFFFF; background-image: url();" class=3D"mktoModule" id=3D"butto=
+n292c00ed-548b-4951-8d25-95240b2e01d914a47fc8-d956-486f-b816-6b68a8d809ee" =
+cellpadding=3D"0" cellspacing=3D"0">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 20px 30px 10px 30px;" class=3D"mktoText" id=3D"trButt=
+on292c00ed-548b-4951-8d25-95240b2e01d914a47fc8-d956-486f-b816-6b68a8d809ee"=
+><center>
+<table class=3D"button" style=3D"border-radius: 30px; background-color: #d3=
+2d27;">
+<tbody>
+<tr>
+<td style=3D"text-align: center;"><!--[if (gte mso 9)|(IE)]>
+      <table cellpadding=3D"0" cellspacing=3D"0" align=3D"center" style=3D"=
+border-spacing:0">
+      <tr>
+      <td style=3D"padding:0;mso-padding-alt:15px 30px ; background-color: =
+#D32D27">
+      <![endif]--> <a class=3D"${linkHoverStyle}" style=3D"display: block; =
+color: #ffffff; font-size: 16px; text-decoration: none; padding: 15px 30px;=
+" href=3D
+"https://go.logmeininc.com/c0Mz2a1X0DaN54QUL0Syn00" target=3D"_blank" id=3D=
+"Upgrade Now button 2"
+>UPGRADE NOW</a> <!--[if (gte mso 9)|(IE)]>
+      </td>
+      </tr>
+      </table>
+      <![endif]--></td>
+</tr>
+</tbody>
+</table>
+</center></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; background-color: #ffffff; background-=
+image: url();" class=3D"mktoModule" id=3D"spacer19c0dbe9-b02e-4e0b-999c-52c=
+6fabf44ae346ab2d3-1989-4639-98c9-86c6207300bad30618a6-5a46-4802-8ee9-c6f077=
+72c27c">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 5px;" class=3D"mktoText" id=3D"trSpacer19c0dbe9-b02e-=
+4e0b-999c-52c6fabf44ae346ab2d3-1989-4639-98c9-86c6207300bad30618a6-5a46-480=
+2-8ee9-c6f07772c27c"><table style=3D"width: 100%; border-collapse: collapse=
+;">
+<tbody>
+<tr>
+<td bgcolor=3D"ffffff" style=3D"padding: 30px 30px 40px 30px;" align=3D"lef=
+t">
+<table style=3D"border-collapse: collapse; border-spacing: 0; color: #5e656=
+b;">
+<tbody>
+<tr>
+<td style=3D"padding: 0px 0 0 0; display: block; font-size: 11px; line-heig=
+ht: 16px;" class=3D"text">Offer Terms and Conditions: <br /> *Advertised pr=
+ice valid for new users on their first year of LastPass Premium. Price not =
+valid for renewals or existing customers and cannot be used for other LastP=
+ass plans, products, or services.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></td>=20
+</tr>=20
+</tbody>=20
+</table>
+<table style=3D"width: 500px; border-collapse: collapse; border-spacing: 0;=
+ margin: 0 auto; position: relative; background-color: #F7F9FA; background-=
+image: url();" class=3D"mktoModule" id=3D"spacer19c0dbe9-b02e-4e0b-999c-52c=
+6fabf44aebe129c75-0310-4393-92d6-e5323220b8d8">=20
+<tbody>=20
+<tr>=20
+<td style=3D"padding: 20px;" class=3D"mktoText" id=3D"trSpacer19c0dbe9-b02e=
+-4e0b-999c-52c6fabf44aebe129c75-0310-4393-92d6-e5323220b8d8">&nbsp;</td>=20
+</tr>=20
+</tbody>=20
+</table></td>=20
+</tr>=20
+<tr>=20
+<td class=3D"mktoText" id=3D"footer" style=3D"padding: 40px; background-col=
+or:#434E6B;">
+<table align=3D"center" style=3D"width: 500px; border-collapse: collapse; c=
+olor: #ffffff; font-size: 11px; line-height: 18px;">
+<tbody>
+<tr>
+<td align=3D"center" style=3D"font-size: 11px; line-height: 18px; font-fami=
+ly: Lato, Arial, Helvetica, sans-serif; color: #ffffff;">This email was sen=
+t to: <a style=3D"color: #ffffff; text-decoration: none;" href=3D
+"https://go.logmeininc.com/dc/X6daeQDXE-lSK6XyeTOgpjQSHE_kuatkwmyvEezEwqk=
+=3D/lnNaD000D4S1zU2QM0a0q5X"
+>josh@josh.is</a><br /> &copy; <span class=3D"appleLinksWhite"><a href=3D
+"https://go.logmeininc.com/HX002za0a1OSnUM5D4N00BQ" style=3D"color: #ffffff=
+; text-decoration: none;" target=3D"_blank"=20
+id=3D"Footer_LMI"
+>LogMeIn USA, 333 Summer Street, Boston, MA 02210
+</a></span><br /> <a href=3D
+"https://lp.logmeininc.com/Unsubscribe?mkt_unsubscribe=3D1&amp;mkt_tok=3D##=
+MKT_TOK##" style=3D"color: #ffffff; text-decoration: none;" footer_unsubscr=
+ibe=3D"" target=3D"_blank" class=3D"mktNoTrack"
+>Unsubscribe</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=3D"https://lp.logmeininc.c=
+om/index.php/email/emailWebview?mkt_tok=3DeyJpIjoiT0dVd1pqWmxZamt6WkdZMyIsI=
+nQiOiJGQ3lCaTNvVTZZNndhM29IZGZ0eXJJWlA5SDBZUlVHdHI5T05aVjJqZlBaa2lDbCtnVXRN=
+L0VuRnF4WmFvSXh1bFN0YTQ3ZEJOYk9xQmd0ZVU0UzdlbmlIb3JrTWhMelhCckMwN0hLV1FzeUF=
+vZktCbGt2bHZSWUNrcnBOTjE5TCJ9&md_id=3D58616" style=3D"color: #ffffff; text-=
+decoration: none;" target=3D"_blank" id=3D"Footer_BrowserView">View in brow=
+ser</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a  href=3D
+"https://go.logmeininc.com/K00aMXN50DnC2PQS1z4a0U0" style=3D"color: #ffffff=
+; text-decoration: none;" target=3D"_blank" id=3D"Footer_Privacy"
+>Privacy policy</a><br /> <br /> <a href=3D
+"https://go.logmeininc.com/DXDMz0Q0UNS00n54Da210Qa" style=3D"color: #ffffff=
+; text-decoration: none;" target=3D"_blank" id=3D"Footer_Login"
+>Log in to your account</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href=3D
+"https://go.logmeininc.com/eazSEU02050NXn0aM4RD10Q"=20
+style=3D"color: #ffffff; text-decoration: none;" target=3D"_blank" id=3D"Fo=
+oter_Support"
+>LastPass support</a><br /> Your security is our top priority.
+ Never share your master password with anyone - including us!<br /> For mor=
+e information, <a href=3D
+"https://go.logmeininc.com/n0X10FS02aaD0UN0S45zQnM" style=3D"color: #ffffff=
+; text-decoration: none;" target=3D"_blank" id=3D"Footer_Security"
+>click here</a>.</td>
+</tr>
+</tbody>
+</table>
+</td>=20
+</tr>=20
+</tbody>
+</table> =20
+
+<img src=3D"https://go.logmeininc.com/trk?t=3D1&mid=3DNjc3LVhOVS0yMDM6MDozN=
+zc3MDoxOTQ1MzE6NjgzMjU3OjU4NjE2Ojk6MzE1OTA4Njo4NTM2MzIxMy02Ompvc2hAam9zaC5p=
+cw%3D%3D" width=3D"1" height=3D"1" style=3D"display:none !important;" alt=
+=3D"" />
+</body>
+</html>
+------=_Part_85386058_1605866885.1613487141948--

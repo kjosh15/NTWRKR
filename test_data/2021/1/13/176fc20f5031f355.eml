@@ -1,0 +1,808 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b5af:0:0:0:0:0 with SMTP id f15csp100336ljn;
+        Wed, 13 Jan 2021 06:23:07 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJxH8xAUalxWKguFTyndrB9Yb6spdKN+3mghNuYn1Lbw26WHLBNT+L7rajyql9lNrTcio5WT
+X-Received: by 2002:a37:aa42:: with SMTP id t63mr2122405qke.271.1610547786861;
+        Wed, 13 Jan 2021 06:23:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1610547786; cv=none;
+        d=google.com; s=arc-20160816;
+        b=0UjiUKWVcxkj2crLs6+MSWGDdyKZ6QgeUSEjJIPG49jh8zZgfO/emNbkdMwvhiDzcj
+         m+WSxU4msDkyqm1i8eI6Lxn5N3nUJjoDOCH+/mwo4Y5QHU6VfSloX03JiPZFJsGoX2Ln
+         IiswWERyKgDrGGR0zHbK3asTf75TrUHXxHnhVZpGqVXcGp7iwo3ggOGGL8XA1fsAqpXH
+         zj7iHngIBybdgJvy7FLXp9c2JBXzg5JRyWZwTVBphHnGcNW9AUbhJ68oWc27Mn111O0P
+         bHXLRBz1Q9Xel3CY/pe/OrcQuz0HHpmlWOv+jPYfImUg0oZm9cdfivLKIIWKfcb2jLuy
+         F46w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:auto-submitted:mime-version:message-id:subject:to
+         :reply-to:from:dkim-signature:dkim-signature;
+        bh=vNUKd7Tw94EomrTyiBcRTyQZTLKO5QHhTb1O7QW+6OQ=;
+        b=AxfPSwaTlUZ2oBAGave01787II4OUOsyYeeJ1aF7ZiqrULoR/Dmbd4hNN7D8YTvbTR
+         qLkVMHCna5D+l+cX5CNvyUGcTu3EoiYRci2BAJXQTaO9lTDg07PqteqpZ6PhvKEBE2p4
+         EH8UmzrLRyuENbY2qDDak+u4IHP8fu+qCNWlotMi+RRrnaCqwAyaw+5aa0ZF38ruR/ks
+         278m1sBJiD+XpgrcYjxu+eNdF70fqve8NrFgVsARqHIt+6ypnlQTauB7vTlRa3/E9pRX
+         x0adnu3eKg4WJgBw0/jmEwZ75dGRKVMU1QT8Bp5kIYvJqOAkC0lr7Hb9Fb2E9L9cwkvn
+         8UmA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@slack.com header.s=s4xolb5s7tnx6yxtrm4adems7glgsuyf header.b=FAjmUbUc;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=gBGW7e8u;
+       spf=pass (google.com: domain of 01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com designates 54.240.35.27 as permitted sender) smtp.mailfrom=01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=slack.com
+Return-Path: <01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com>
+Received: from a35-27.smtp-out.amazonses.com (a35-27.smtp-out.amazonses.com. [54.240.35.27])
+        by mx.google.com with ESMTPS id b20si1007059qkl.170.2021.01.13.06.23.06
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 13 Jan 2021 06:23:06 -0800 (PST)
+Received-SPF: pass (google.com: domain of 01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com designates 54.240.35.27 as permitted sender) client-ip=54.240.35.27;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@slack.com header.s=s4xolb5s7tnx6yxtrm4adems7glgsuyf header.b=FAjmUbUc;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=gBGW7e8u;
+       spf=pass (google.com: domain of 01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com designates 54.240.35.27 as permitted sender) smtp.mailfrom=01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@mail.slack.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=slack.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=s4xolb5s7tnx6yxtrm4adems7glgsuyf; d=slack.com; t=1610547786;
+	h=From:Reply-To:To:Subject:Message-ID:Content-Type:MIME-Version:Date;
+	bh=IRkfuO+NDGvkea4vKqn2ZmAAGZ3cnRHPLdkw5RqnR8o=;
+	b=FAjmUbUc8NX9dlDlrn5h1TquXqeMM+AlVuUzHuD5ddQlXRrjhPhf6Co6w/X6nfUB
+	PO16jxIkqHRmB2tN1G0H8VMtOAxswyBKCutTkdm34ZUUh20K/tHYjtBdfbGtigADjrT
+	Dcw0IYASdfv17YJTi8tC9PiVG9oQUBvlIawSHCiQ=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1610547786;
+	h=From:Reply-To:To:Subject:Message-ID:Content-Type:MIME-Version:Date:Feedback-ID;
+	bh=IRkfuO+NDGvkea4vKqn2ZmAAGZ3cnRHPLdkw5RqnR8o=;
+	b=gBGW7e8ucJaRYXMCexhIcI69+/mtSeS4feIOJ6Pp6zgsfr4hZyETsQeZs2+rw9Yk
+	f+IpJ5FkwuLgwNJO+JY8jDKiKyJPdFhVXn5IbC1TAIQHT8+YXPVimiI8i6A1CW3bZaz
+	v/Z6iZdpff3ZvY7Grab7ZPHYMlqwZvgUdI2+RGh0=
+From: Slack <feedback@slack.com>
+Reply-To: no-reply@slack.com
+To: "" <josh@josh.is>
+Subject: Accenture Hosts on Slack: New Account Details
+Message-ID: <01000176fc20f108-680c513f-2146-4016-9c24-1eea222481a6-000000@email.amazonses.com>
+Content-Type: multipart/alternative;
+ boundary="=_658771b1-3915-4617-afca-c501b7b50253"
+MIME-Version: 1.0
+X-Slack-Team-ID: T01JJP4SHB4
+Auto-Submitted: auto-generated
+X-Slack-Message-ID: ob-aaaac65spfkyeevz4t5thexiae
+Date: Wed, 13 Jan 2021 14:23:06 +0000
+X-SES-Outgoing: 2021.01.13-54.240.35.27
+Feedback-ID: 1.us-east-1.kwXgUBITdY2w2KyDhc4cKlXKai8tXy8Sx50cu3XZbqE=:AmazonSES
+
+--=_658771b1-3915-4617-afca-c501b7b50253
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Welcome to your new workspace!
+
+Here are the details for your new Slack workspace, Accenture Hosts.
+
+Workspace name: Accenture Hosts
+
+A
+
+accenturehosts.slack.com []
+
+Open Slack [https://accenturehosts.slack.com/x-p1630786901378-1654639884016=
+-1626612930198/messages/C01JJV6NQKV]
+
+Setting up your workspace
+
+If you=E2=80=99ve used Slack before and have the basics down pat, here are =
+a few ways to get even more out of your new workspace.
+
+Connect your tools
+
+Sync your calendar, run polls, share files, and much more, by connecting Sl=
+ack to any of the 2,000+ apps in our App Directory [https://accenturehosts.=
+slack.com/x-p1630786901378-1654639884016-1626612930198/apps?utm_medium=3Dem=
+ail&utm_source=3Dconfirmation-existing-join].
+
+Fine-tune your notifications
+
+Keep track of the projects and conversations that matter most to you by cus=
+tomizing notifications in Slack [https://accenturehosts.slack.com/x-p163078=
+6901378-1654639884016-1626612930198/help/categories/360000047906-Your-profi=
+le-preferences?utm_medium=3Demail&utm_source=3Dconfirmation-existing-join#a=
+djust-your-notifications].
+
+Add your workspace to the Slack app
+
+Sign in on our mobile and desktop apps [https://accenturehosts.slack.com/x-=
+p1630786901378-1654639884016-1626612930198/downloads?utm_medium=3Demail&utm=
+_source=3Dconfirmation-existing-join&t=3DT01JJP4SHB4] to stay notified on a=
+ll your workspaces, so you never miss a message.
+
+See more tips [https://accenturehosts.slack.com/x-p1630786901378-1654639884=
+016-1626612930198/resources/using-slack/slack-tutorials?utm_medium=3Demail&=
+utm_source=3Dconfirmation-existing-join]
+
+Have questions about your new workspace? Drop us a note at help@slack.com. =
+We=E2=80=99re glad you=E2=80=99re here!
+--=_658771b1-3915-4617-afca-c501b7b50253
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org=
+/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns=3D"http://www.w3.org/1999/xht=
+ml"><head><meta http-equiv=3D"Content-Type" content=3D"text/html; charset=
+=3Dutf-8"><meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-=
+scale=3D1.0"><link href=3D"https://fonts.googleapis.com/css?family=3DLato:4=
+00,700,900" rel=3D"stylesheet"><title>Accenture Hosts on Slack: New Account=
+ Details</title><style type=3D"text/css">/* Global Resets */
+	body, .background_main, p, table, td, div { font-family: 'Lato', 'Helvetic=
+a Neue', Helvetica, Arial, sans-serif; }
+
+	img {
+		border: none;
+		-ms-interpolation-mode: bicubic;
+		max-width: 100%;
+	}
+
+	p {padding-bottom: 2px;}
+
+	body {
+		background: #fff;
+		font-size: 17px;
+		line-height: 24px;
+		margin: 0;
+		padding: 0;
+		-ms-text-size-adjust: 100%;
+		-webkit-text-size-adjust: 100%;
+	}
+
+	table {
+		border-collapse: collapse;
+		mso-table-lspace: 0pt;
+		mso-table-rspace: 0pt;
+		width: 100%;
+	}
+
+	td {
+		font-size: 17px;
+		line-height: 24px;
+		vertical-align: top;
+	}
+
+	/* Footer */
+	.email_footer td, .email_footer p, .email_footer span, .email_footer a {
+		font-size: 15px;
+		text-align: center;
+		color: #434245;
+	}
+
+	.email_footer td {padding-top: 20px;}
+
+	.preheader {
+		display: none;
+		mso-hide: all;
+	}
+
+	/* Typography */
+	h1, h2, h3, h4 {
+		color: #434245;
+		font-weight: 400;
+		line-height: 1.4;
+		margin: 0;
+		margin-bottom: 12px;
+	}
+
+	h1 {
+		font-size: 30px;
+		line-height: 36px;
+		font-weight: 900;
+		letter-spacing: -.75px;
+		text-align: left;
+	}
+
+	p, ul, ol {
+		font-size: 17px;
+		line-height: 24px;
+		font-weight: normal;
+		margin: 0;
+		margin-bottom: 15px;
+	}
+
+	p li, ul li, ol li {
+		list-style-position: inside;
+		margin-left: 5px;
+	}
+
+	a {
+		color: #3498db;
+		text-decoration: none;
+	}
+
+	a:hover {text-decoration: underline;}
+
+	.button_link::after {
+		position: absolute;
+		content: '';
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		border-radius: 4px;
+	}
+
+	.button_link:hover::after {
+		box-shadow: inset 0 -2px #237c4a;
+	}
+
+	.button_link.is_secondary:hover::after {
+		box-shadow: none;
+	}
+
+	.button_link.plum:hover {
+		background-color: #4a154b !important;
+		border-color: #4a154b !important;
+	}
+
+	.button_link_wrapper.plum:hover {
+		background-color: #4a154b !important;
+	}
+
+	.button_link.plum:hover::after {
+		box-shadow: none;
+	}
+
+	.preview_text {
+		color: transparent;
+		display: none;
+		height: 0;
+		max-height: 0;
+		max-width: 0;
+		opacity: 0;
+		overflow: hidden;
+		mso-hide: all;
+		visibility: hidden;
+		width: 0;
+		font-size: 1px;
+		line-height:1px;
+	}
+
+	.preview_text a {
+		color: #3AA3E3 !important;
+		font-weight: bold;
+	}
+
+	/* Responsive and Mobile Friendly Styles */
+	/* Yahoo Mail has a history of rendering all media query styles with class=
+ selectors unless class is used as an attribute */
+	@media only screen and (max-width: 600px) {
+		table[class=3D"background_main"] .sm_full_width {
+			width: 100% !important;
+		}
+		table[class=3D"background_main"] .sm_90_percent_width {
+			width: 90% !important;
+			padding: 16px !important;
+			text-align: center !important;
+			float: none !important;
+		}
+		table[class=3D"background_main"] .sm_side_padding {
+			padding-right: 8px !important;
+			padding-left: 8px !important;
+			float: none !important;
+		}
+		table[class=3D"background_main"] .sm_small_top_padding {
+			padding-top: 8px !important;
+		}
+		table[class=3D"background_main"] .sm_top_padding {
+			padding-top: 16px !important;
+		}
+		table[class=3D"background_main"] .sm_auto_width {
+			width: auto !important;
+		}
+		table[class=3D"background_main"] .sm_auto_height {
+			height: auto !important;
+		}
+
+		table[class=3D"background_main"] .sm_border_box {
+			box-sizing: border-box !important;
+		}
+
+		table[class=3D"background_main"] .sm_block {
+			display: block !important;
+		}
+		table[class=3D"background_main"] .sm_inline_block {
+			display: inline-block !important;
+		}
+		table[class=3D"background_main"] .sm_table {
+			display: table !important;
+		}
+
+		table[class=3D"background_main"] .sm_no_side_padding {
+			padding-right: 0 !important;
+			padding-left: 0 !important;
+		}
+		table[class=3D"background_main"] .sm_no_border_radius {
+			border-radius: 0 !important;
+		}
+		table[class=3D"background_main"] .sm_no_padding {
+			padding-right: 0 !important;
+			padding-left: 0 !important;
+		}
+		table[class=3D"background_main"] .sm_os_icons_height {
+			/* this is to make the parent element the same height as the inline-bloc=
+k img inside */
+			height: 44px;
+		}
+		.social_img_bottom_margin {
+			/*this class is for social_user_outreach email only*/
+			margin-bottom: 20px !important;
+		}
+		.social_p_bottom_margin {
+			/*this class is for social_user_outreach email only*/
+			margin-bottom: 40px !important;
+		}
+	}
+
+	/* More client-specific styles */
+	@media all {
+		.ExternalClass {
+			width: 100%;
+		}
+		.ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass fon=
+t, .ExternalClass td, .ExternalClass div {
+			line-height: 100%;
+		}
+		.email_footer a {
+			color: #434245 !important;
+			font-family: inherit !important;
+			font-size: inherit !important;
+			font-weight: inherit !important;
+			line-height: inherit !important;
+			text-decoration: none !important;
+		}
+	}
+	a:hover {
+		text-decoration: underline !important;
+	}
+
+	pre, code {
+		--saf-0: rgba(var(--sk_foreground_low, 29, 28, 29), 0.13);
+		border: 1px solid var(--saf-0);
+		background: rgba(var(--sk_foreground_min, 29, 28, 29), 0.04);
+		font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace !imp=
+ortant;
+		font-size: 12px;
+		line-height: 1.50001;
+		font-variant-ligatures: none;
+		white-space: pre;
+		white-space: pre-wrap;
+		word-wrap: break-word;
+		word-break: normal;
+		-webkit-tab-size: 4;
+		-moz-tab-size: 4;
+		-o-tab-size: 4;
+		tab-size: 4;
+	}
+
+	code {
+		color: #e01e5a;
+		padding: 2px 3px 1px;
+		border-radius: 3px;
+	}
+
+	pre {
+		margin-bottom: 16px;
+		padding: 8px;
+		border-radius: 4px;
+	}
+
+	blockquote {
+		position: relative;
+		margin-bottom: 16px;
+		padding-left: 16px;
+		border-left: rgba(var(--sk_foreground_low_solid, 221, 221, 221), 1);
+		border-left-width: 4px;
+		border-left-style: solid;
+	}
+</style></head><body><div class=3D"preheader plaintext_ignore" style=3D"fon=
+t-size: 1px; display: none !important;">Here are the details for your new S=
+lack workspace, Accenture Hosts.</div><div class=3D"plaintext_ignore" style=
+=3D"display: none; max-height: 0px; overflow: hidden;"> =C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0 =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=
+=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=
+=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=
+=8C =C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=
+=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=
+=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0=E2=80=8C=C2=A0 </div><!--[if =
+mso]><style type=3D"text/css">.background_main, table, table td, p, div, h1=
+, h2, h3, h4, h5, h6 {
+								font-family: Arial, sans-serif !important;
+							}</style><![endif]--><table style=3D"background-color: #ffffff; padd=
+ing-top: 20px;color: #434245;width: 100%;-webkit-font-smoothing:antialiased=
+; -moz-osx-font-smoothing:grayscale;   border: 0; text-align: center; borde=
+r-collapse: collapse;" class=3D"background_main"><tr><td style=3D"vertical-=
+align: top; padding: 0"><center><table id=3D"body" class=3D"card" style=3D"=
+border: 0; border-collapse: collapse; margin: 0 auto; background: white; bo=
+rder-radius: 8px; margin-bottom: 16px;"><tr><td style=3D"width: 546px; vert=
+ical-align: top; padding-top: 32px"><div style=3D"max-width: 600px; margin:=
+ 0 auto;"><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><img width=3D"120" height=3D"36" style=3D"margin-top: 0; margin=
+-right: 0; margin-bottom: 32px; margin-left: 0px; padding-right: 30px; padd=
+ing-left: 30px;" src=3D"https://accenturehosts.slack.com/x-p1630786901378-1=
+654639884016-1626612930198/img/slack_logo_240.png" alt=3D""><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><h1 style=3D"font-size: 30px; padding-right: 30px; padding-left=
+: 30px;">Welcome to your new workspace!</h1><p style=3D"font-size: 17px; ma=
+rgin-left: 30px; margin-right: 30px;">Here are the details for your new Sla=
+ck workspace, <span style=3D"font-weight: 900;">Accenture Hosts</span>.</p>=
+<!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><div style=3D"padding-right: 30px; padding-left: 30px; padding-=
+bottom: 30px;"><h4 class=3D"plaintext_only" style=3D"display: none">Workspa=
+ce name: Accenture Hosts</h4><table style=3D"table-layout: fixed; border: 1=
+px solid #A0A0A2; border-radius: 8px; padding: 40px 0; margin-top: 20px; wi=
+dth: 100%; border-collapse: separate; text-align: center"><tr><td style=3D"=
+vertical-align: middle;"><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"38">
+<![endif]--><div style=3D"margin: auto; height: 38px; width: 38px; min-widt=
+h: 38px; border-radius: 4px; color: #FFFFFF; font-size: 18px; line-height: =
+38px; mso-line-height-rule: exactly; mso-text-raise: 10px; vertical-align: =
+middle; text-align: center; background-color: #0576b9;">A</div><!--[if mso]=
+>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"420">
+<![endif]--><h3 class=3D"plaintext_ignore" style=3D"font-weight: 900; paddi=
+ng-top: 10px; margin-bottom: 7px; font-size: 21px; font-size: 21px; margin-=
+bottom: 2px; width: 70%; margin: auto; text-align: center; margin-top: 0;">=
+Accenture Hosts</h3><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><h4 style=3D"margin-bottom: 2px;font-size: 17px; margin-bottom:=
+ 12px;"><a style=3D"white-space: nowrap; color: #717274; text-decoration: n=
+one !important;">accenturehosts.slack.com</a></h4><table style=3D"width: 10=
+0%; text-align: center;" class=3D"sm_table"><tr style=3D"width: 100%;"><td =
+style=3D"width: 100%;"><span style=3D"display: inline-block; position:relat=
+ive; border-radius:4px; background-color:#611f69; " class=3D"button_link_wr=
+apper plum"><a class=3D"button_link  plum" href=3D"https://accenturehosts.s=
+lack.com/x-p1630786901378-1654639884016-1626612930198/messages/C01JJV6NQKV"=
+ style=3D"border-top:13px solid; border-bottom:13px solid; border-right:24p=
+x solid; border-left:24px solid; border-color:#611f69; border-radius:4px; b=
+ackground-color:#611f69; color:#ffffff; font-size:16px; line-height:18px; w=
+ord-break:break-word;  display: inline-block; text-align: center; font-weig=
+ht: 900; text-decoration: none !important;">Open Slack</a></span></td></tr>=
+</table></td></tr></table></div><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><h1 style=3D"font-size: 30px; padding-right: 30px; padding-left=
+: 30px;">Setting up your workspace</h1><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><p style=3D"font-size: 17px; margin-left: 30px; margin-right: 3=
+0px;">If you=E2=80=99ve used Slack before and have the basics down pat, her=
+e are a few ways to get even more out of your new workspace.</p><!--[if mso=
+]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><div style=3D"padding-right: 30px; padding-left: 30px; margin: =
+0; margin-top: 24px"><table style=3D"border-collapse: collapse; border: 0;h=
+eight: 70px; table-layout: fixed; word-wrap: break-word; border-radius: 6px=
+;"><tr><td style=3D"width: 40px;"><img style=3D"padding: 10px 0; display: b=
+lock; margin-right: auto; margin-left: auto; height: auto;" width=3D"40" sr=
+c=3D"https://a.slack-edge.com/d51da/img/email/tools_white_background@2x.png=
+"></td><td><p style=3D"font-size: 17px; margin-left: 30px; margin-right: 30=
+px; margin-bottom: 0"><span style=3D"font-weight: 900;">Connect your tools<=
+/span></p><p style=3D"font-size: 17px; margin-left: 30px; margin-right: 30p=
+x;">Sync your calendar, run polls, share files, and much more, by connectin=
+g Slack to any of the <a style=3D"color: #0576b9; text-decoration: underlin=
+e !important;" href=3D"https://accenturehosts.slack.com/x-p1630786901378-16=
+54639884016-1626612930198/apps?utm_medium=3Demail&utm_source=3Dconfirmation=
+-existing-join">2,000+ apps in our App Directory</a>.</p></td></tr></table>=
+</div><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><div style=3D"padding-right: 30px; padding-left: 30px; margin: =
+0;"><table style=3D"border-collapse: collapse; border: 0;height: 70px; tabl=
+e-layout: fixed; word-wrap: break-word; border-radius: 6px;"><tr><td style=
+=3D"width: 40px;"><img style=3D"padding: 10px 0; display: block; margin-rig=
+ht: auto; margin-left: auto; height: auto;" width=3D"40" src=3D"https://a.s=
+lack-edge.com/d51da/img/email/bell_white_background@2x.png"></td><td><p sty=
+le=3D"font-size: 17px; margin-left: 30px; margin-right: 30px; margin-bottom=
+: 0"><span style=3D"font-weight: 900;">Fine-tune your notifications</span><=
+/p><p style=3D"font-size: 17px; margin-left: 30px; margin-right: 30px;">Kee=
+p track of the projects and conversations that matter most to you by <a sty=
+le=3D"color: #0576b9; text-decoration: underline !important;" href=3D"https=
+://accenturehosts.slack.com/x-p1630786901378-1654639884016-1626612930198/he=
+lp/categories/360000047906-Your-profile-preferences?utm_medium=3Demail&utm_=
+source=3Dconfirmation-existing-join#adjust-your-notifications">customizing =
+notifications in Slack</a>.</p></td></tr></table></div><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><div style=3D"padding-right: 30px; padding-left: 30px; margin: =
+0;"><table style=3D"border-collapse: collapse; border: 0;height: 70px; tabl=
+e-layout: fixed; word-wrap: break-word; border-radius: 6px;"><tr><td style=
+=3D"width: 40px;"><img style=3D"padding: 10px 0; display: block; margin-rig=
+ht: auto; margin-left: auto; height: auto;" width=3D"40" src=3D"https://a.s=
+lack-edge.com/d51da/img/email/download_white_background@2x.png"></td><td><p=
+ style=3D"font-size: 17px; margin-left: 30px; margin-right: 30px; margin-bo=
+ttom: 0"><span style=3D"font-weight: 900;">Add your workspace to the Slack =
+app</span></p><p style=3D"font-size: 17px; margin-left: 30px; margin-right:=
+ 30px;">Sign in on our <a style=3D"color: #0576b9; text-decoration: underli=
+ne !important;" href=3D"https://accenturehosts.slack.com/x-p1630786901378-1=
+654639884016-1626612930198/downloads?utm_medium=3Demail&utm_source=3Dconfir=
+mation-existing-join&t=3DT01JJP4SHB4">mobile and desktop apps</a> to stay n=
+otified on all your workspaces, so you never miss a message.</p></td></tr><=
+/table></div><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><div class=3D"sm_inline_block sm_90_percent_width" style=3D"tex=
+t-align: center; padding-right: 16px; vertical-align: middle; font-size: 30=
+px; margin: 8px 0 36px 0"><table style=3D"width: 100%; text-align: center;"=
+ class=3D"sm_table"><tr style=3D"width: 100%;"><td style=3D"width: 100%;"><=
+span style=3D"display: inline-block; position:relative; border-radius:4px; =
+background-color:#611f69; " class=3D"button_link_wrapper plum"><a class=3D"=
+button_link  plum" href=3D"https://accenturehosts.slack.com/x-p163078690137=
+8-1654639884016-1626612930198/resources/using-slack/slack-tutorials?utm_med=
+ium=3Demail&amp;utm_source=3Dconfirmation-existing-join" style=3D"border-to=
+p:13px solid; border-bottom:13px solid; border-right:24px solid; border-lef=
+t:24px solid; border-color:#611f69; border-radius:4px; background-color:#61=
+1f69; color:#ffffff; font-size:16px; line-height:18px; word-break:break-wor=
+d;  display: inline-block; text-align: center; font-weight: 900; text-decor=
+ation: none !important;">See more tips</a></span></td></tr></table></div><!=
+--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--><!--[if mso]>
+<table cellpadding=3D"0" cellspacing=3D"0" border=3D"0" style=3D"padding: 0=
+; margin: 0; width: 100%;">
+    <tr>
+        <td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; =
+height: 20px;" height=3D"20">&nbsp;</td>
+    </tr>
+    <tr>
+        <td style=3D"padding: 0; margin: 0;">&nbsp;</td>
+        <td style=3D"padding: 0; margin: 0;" width=3D"540">
+<![endif]--><p style=3D"font-size: 17px; margin-left: 30px; margin-right: 3=
+0px; margin-top: 20px;">Have questions about your new workspace? Drop us a =
+note at <a href=3D"mailto:help@slack.com">help@slack.com</a>. We=E2=80=99re=
+ glad you=E2=80=99re here!</p><!--[if mso]>
+		</td>
+		<td style=3D"padding: 0; margin: 0; font-size: 20px; height: 20px;">&nbsp=
+;</td>
+	</tr>
+	<tr>
+		<td colspan=3D"3" style=3D"padding: 0; margin: 0; font-size: 20px; height=
+: 20px; height: 20px;">&nbsp;</td>
+	</tr>
+</table>
+<![endif]--></div></td></tr></table></center></td></tr><tr><td class=3D"ema=
+il_footer" style=3D"font-size: 15px;color: #717274;text-align: center;width=
+: 100%;"><table style=3D"margin: 20px auto 0; background-color: white; bord=
+er: 0; text-align: center; border-collapse: collapse;"><tr><td>=C2=A0</td><=
+td><span style=3D"display: block; color: #434245; font-size: 15px;"> Made b=
+y <a href=3D"https://slack.com" style=3D"text-decoration: none; color: #434=
+245;">Slack Technologies, Inc</a>
+                <br/>
+                500 Howard Street&nbsp;|&nbsp;San&nbsp;Francisco,&nbsp;CA&n=
+bsp;94105&nbsp;|&nbsp;United States </span></td><td>=C2=A0</td></tr><tr><td=
+>=C2=A0</td><td style=3D"font-size: 15px; padding: 16px 8px 24px; vertical-=
+align: top; text-align: center;"><span><a href=3D"https://slackhq.com" styl=
+e=3D"color: #434245; text-decoration: underline !important;">Our Blog</a> =
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <a href=3D"https://accenturehosts.slac=
+k.com/x-p1630786901378-1654639884016-1626612930198/account/notifications" s=
+tyle=3D"color: #434245;font-size: 15px; text-decoration: underline !importa=
+nt;">Email Preferences</a> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 <a href=3D"=
+https://slack.com/legal" style=3D"color: #434245; text-decoration: underlin=
+e !important;">Policies</a></span></td></tr></table></td></tr></table></bod=
+y></html>
+--=_658771b1-3915-4617-afca-c501b7b50253--

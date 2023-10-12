@@ -1,0 +1,533 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:740d:0:0:0:0:0 with SMTP id p13csp838462ljc;
+        Wed, 18 Mar 2020 07:30:26 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vvwUmYysxfFHQdzuKGiAcgtupzFFQl3JipUFj6IfHJofTuqt9xz8TWPHJbr8oNdrLv83jkk
+X-Received: by 2002:a05:6e02:cf:: with SMTP id r15mr4476547ilq.260.1584541826634;
+        Wed, 18 Mar 2020 07:30:26 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1584541826; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=vzXTK4eVpKjhJAh6zodSCfR/RDd0n/SHlXdXwe11oi7M+EOKpW1jV/SAZb+hu+6etX
+         D6y1emvhr+NUebYX36Y6S7u6O+XtrH+pbtfbLkAYi8kuMxt380bY+zBk2TYRMQ/A9Z+S
+         iHthbwBUxcOs7zQfHj08jrTRSKyETNgkmX+1YmE11w0lteS8fMmlmzX+s9UdfHB/ZY96
+         F3DlbVZhrLyMm6HszLPGOrQPlpEkHYoXoRlvZqlaV8q0G14VRmhoyxTLQ+bebEmXC/Dr
+         ibcYef2GQIOPykxtwJZuUq3C+yCSPiMgy7Faognbq4vAAQSOt7lNgHI1WANouwEyB/RT
+         QkIg==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:msip_labels:content-language:accept-language
+         :in-reply-to:references:message-id:date:content-class:thread-index
+         :thread-topic:subject:to:from:dkim-signature;
+        bh=yN38j2ktuTajiNNRBX3YM6/tRAZWlJ5ABBISIM87wUw=;
+        b=xyx2YT4gwDntPdjxMFHMLMvV+7Ujrl3UPItKlvcvW6dQn99Bt1eUtUzU+gJwnPffc9
+         U7hnGlwW+CIBnkpJGtdhD4uomeCcmLfy9ErheIODys+uYNcdcHaBE9CODfYwBCAxzbnP
+         +R5sSgl7Kxwem+AnatGp5GX6aXsInUTQkqfXDP7JK3UAyFvbD88OA028Bd9uEJPdC5Ly
+         B/qhC2ZhkjhSTMLXpHND5WOoB335Lrf6av2mBs5jp6esB/JDQnOfO4oxEcg+vURnj9Xq
+         NGlOfr+Y1Q5gmmvJm042KXwdTNRccb+N2nWsL24hCrsUSMSslJdZ5JwcA80vx1M/uyDW
+         oYlQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@HalmaHoldingsInc.onmicrosoft.com header.s=selector2-HalmaHoldingsInc-onmicrosoft-com header.b=TZwssgYn;
+       arc=pass (i=1 spf=pass spfdomain=halma.com dkim=pass dkdomain=halma.com dmarc=pass fromdomain=halma.com);
+       spf=pass (google.com: domain of john.clifford@halma.com designates 40.107.243.120 as permitted sender) smtp.mailfrom=john.clifford@halma.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=halma.com
+Return-Path: <john.clifford@halma.com>
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2120.outbound.protection.outlook.com. [40.107.243.120])
+        by mx.google.com with ESMTPS id j16si6548110ili.6.2020.03.18.07.30.26
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 18 Mar 2020 07:30:26 -0700 (PDT)
+Received-SPF: pass (google.com: domain of john.clifford@halma.com designates 40.107.243.120 as permitted sender) client-ip=40.107.243.120;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@HalmaHoldingsInc.onmicrosoft.com header.s=selector2-HalmaHoldingsInc-onmicrosoft-com header.b=TZwssgYn;
+       arc=pass (i=1 spf=pass spfdomain=halma.com dkim=pass dkdomain=halma.com dmarc=pass fromdomain=halma.com);
+       spf=pass (google.com: domain of john.clifford@halma.com designates 40.107.243.120 as permitted sender) smtp.mailfrom=john.clifford@halma.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=halma.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HpOUCS2m6W+sa3I/xnGphj36zohfmPwUBSWaU2zdh67fqze52/yf/dg4bYh5kP7n5s5O1QNDoqhDURp8RZ9/zdGW3mS6U8woVb4fkDRpPjWnlXfqHgCav3pvZBq2XQkLUGH1FbmOdy45aesif2FnGHuEOEpncl3zf/dSNCH0I5MknLU719iuCkYpwTYFuQ6uu+PXY5VIuAO/SZUBWbeasUQ6xr2juwSaUmTHN53GeefS3jf5gCriHHwb636OAA4SQuh6S8ghNfbPtI9KAVlnsVdvKTzjfjl1Uv/gKWF4K3usxArYRsMJvuXWFcz6HOGn21SvL7qIKZQneviBLvTlVg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yN38j2ktuTajiNNRBX3YM6/tRAZWlJ5ABBISIM87wUw=;
+ b=KKy7bsh1NPMKTOvtNUAYCwfkg9bCusnC/R6JBF8NUeuZoAy42h/SoacGiewn0I3voKsMe88b9Mk2bT27ZtVtA38tUK5mT/LSaluYF2v3vL9mAdyVKXeDP6qIj/nZX2Rn0Okbp4jEmBRRJr12vm6v8qXqV2u12NwFdFDC+VZK4jnY+T9ffXGWd9SbDa+2WJQ/6gBbwiloPnMjNBvhTk4vh3HG1Xqr+BkeODk/SP1a95HD18a1jbRzgd3DngBrn5rIHe2jJtCw/2SiZ/G2ialoVK0f28E6mLe0jJc5n4YqE5UjKt86OeniXaAYoMcEWwKwxaT3VtsUQYR6yw6CY+v40Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=halma.com; dmarc=pass action=none header.from=halma.com;
+ dkim=pass header.d=halma.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=HalmaHoldingsInc.onmicrosoft.com;
+ s=selector2-HalmaHoldingsInc-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=yN38j2ktuTajiNNRBX3YM6/tRAZWlJ5ABBISIM87wUw=;
+ b=TZwssgYnAwdnk5dHgxdLeqpLc0F+9kLZjyXRmg3y/8FnAhyNKd/Hxr+Fj6xy2jsWjhglMDqp934nZq+xAdwJFHhUGLVw7X4uTODyfUn06Rsbz+KoGKdReLWaIDSifAD3W76YuzdO/EZOjanzF5OlptBOn2c+rIIHXzCN11ALNwU=
+Received: from BL0PR01MB4273.prod.exchangelabs.com (2603:10b6:208:4b::22) by
+ BL0PR01MB4274.prod.exchangelabs.com (2603:10b6:208:41::18) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.2814.13; Wed, 18 Mar 2020 14:30:24 +0000
+Received: from BL0PR01MB4273.prod.exchangelabs.com
+ ([fe80::507d:3686:9b02:feba]) by BL0PR01MB4273.prod.exchangelabs.com
+ ([fe80::507d:3686:9b02:feba%4]) with mapi id 15.20.2814.021; Wed, 18 Mar 2020
+ 14:30:24 +0000
+From: John Clifford <john.clifford@halma.com>
+To: Sharon Meader <sharon.meader@halma.com>, Inken Braunschmidt
+	<inken.braunschmidt@halma.com>, Maria Niculescu
+	<maria.niculescu-aron@halma.com>, Josh Klein <josh@josh.is>
+Subject: RE: Josh Klein 
+Thread-Topic: Josh Klein 
+Thread-Index: AdX4TR38fpO5PyguQbK3XUDka5XwewAADVTwATjdtqA=
+Content-Class:
+Date: Wed, 18 Mar 2020 14:30:24 +0000
+Message-ID:
+ <BL0PR01MB4273F44148DC035B3C0C9717EEF70@BL0PR01MB4273.prod.exchangelabs.com>
+References:
+ <CH2PR01MB57330B73624399233458FB58EEFD0@CH2PR01MB5733.prod.exchangelabs.com>
+In-Reply-To:
+ <CH2PR01MB57330B73624399233458FB58EEFD0@CH2PR01MB5733.prod.exchangelabs.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+msip_labels: MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_Enabled=True;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_SiteId=078256a4-c4a0-4e95-b107-2ae7d5db8581;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_Owner=John.Clifford@halmauk.local;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_SetDate=2020-03-18T14:24:56.7536558Z;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_Name=Public;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_Application=Microsoft Azure
+ Information Protection;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_ActionId=a25323d9-3adf-4e1d-9582-c15575507475;
+ MSIP_Label_4a44d18b-fddb-4a06-bba9-aba5753ff352_Extended_MSFT_Method=Automatic
+authentication-results: spf=none (sender IP is )
+ smtp.mailfrom=john.clifford@halma.com; 
+x-originating-ip: [188.29.164.57]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b8e8f307-0c92-412a-04f7-08d7cb48e5ac
+x-ms-traffictypediagnostic: BL0PR01MB4274:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs:
+ <BL0PR01MB427433F63B3DA7427647EC38EEF70@BL0PR01MB4274.prod.exchangelabs.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3044;
+x-forefront-prvs: 03468CBA43
+x-forefront-antispam-report:
+ SFV:NSPM;SFS:(10019020)(376002)(39850400004)(346002)(396003)(366004)(136003)(199004)(8936002)(55016002)(9326002)(26005)(5660300002)(81156014)(44832011)(110136005)(7696005)(186003)(4743002)(8676002)(478600001)(316002)(6506007)(55236004)(53546011)(9686003)(2906002)(71200400001)(3480700007)(76116006)(7116003)(33656002)(66446008)(81166006)(66616009)(66556008)(66946007)(52536014)(86362001)(966005)(64756008)(66476007);DIR:OUT;SFP:1102;SCL:1;SRVR:BL0PR01MB4274;H:BL0PR01MB4273.prod.exchangelabs.com;FPR:;SPF:None;LANG:en;PTR:InfoNoRecords;A:1;
+received-spf: None (protection.outlook.com: halma.com does not designate
+ permitted sender hosts)
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ qg6b7+EmdfhYTy3I5rW9AHW++n593SXc9cUBDfatjUuddorupBlaS73I9MRSAv+No5vO8o3UX66GXwY6JC4iqQKTPqz1HEQCQ1+Hr6r2/z5+xdUWLH8xrybb1QdSYlaxT0san9yKR2WRoyKG5I9eMJSuqWewRwdscTjRts4Y2pXojK+NCxi+oUoN21UxH54MRCz+2GvV++XPI3lRfaWyj/LT1gZcKyTJ3W9KVnCakC8wCv55vNnVVwMa5H06aO8DMabD+Yr/MVqx5hhP5tkcoauK7WFH75NR6LSyFYxrMPjbGdbZMXPTxmAmkpROhuyszaGLMOakLEmhjuZivNZ76+OzjJEvCF4i1UJigKNWWquLiaJScV0ZDdBitrJyYIjq9lZ7FOKU7BXYcHXaKgXaXzKxIdKzVOhRzzYyXYr87kBZ7ipbYEaKLErBMeTUInkRyWGfABHaZHsoz6eSKsEc9A5lCecgptUTEnxNJ81jM7MDliFaJgd2PeOS50Yzfgyiu844IRfsKQE4EdEOZzLxsg==
+x-ms-exchange-antispam-messagedata:
+ lD/+vVTd2wis2dCH1n2IzD2T4l1Oztr/O8+oH44yIkCMELfZMNkY1ASaUNqU0JvzlazdPk5Snb0oNbFpaAkGNarqRjYOsWBAbsTUwiDFLLDi5Mt9fcb+WNuURbaxhwpQjUE/YiCpLFQVehfH28HilQ==
+Content-Type: multipart/related;
+	boundary="_004_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: halma.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b8e8f307-0c92-412a-04f7-08d7cb48e5ac
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2020 14:30:24.6364
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 078256a4-c4a0-4e95-b107-2ae7d5db8581
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: H88ZAPyUy3wa0NLOlIoPQdKbw6OShvmpYIKcco9RaoA4VMIRxnKKdMWYRayiaJnGpxZbVgEWJ85YyUUTO6lHlQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR01MB4274
+
+--_004_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_
+Content-Type: multipart/alternative;
+	boundary="_000_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_"
+
+--_000_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+I will be 5 minutes late to the call - please start with introductions with=
+ Maria and I'll join soon.
+
+Inken will not join the call.
+
+Many thanks,
+
+John.
+
+
+John Clifford
+Digital Growth Director
+
+E:    john.clifford@halma.com<mailto:john.clifford@halma.com>
+T:    +44 (0)7384 796013
+
+[cid:image001.png@01D5FD30.FFB1AF30]
+
+Halma plc
+Misbourne Court, Rectory Way
+Amersham, Bucks
+HP7 0DE, UK
+
+halma.com<http://www.halma.com/>
+
+
+-----Original Appointment-----
+From: Sharon Meader <sharon.meader@halma.com>
+Sent: 12 March 2020 09:05
+To: Sharon Meader; Inken Braunschmidt; John Clifford; Maria Niculescu; Josh=
+ Klein
+Subject: Josh Klein
+When: 18 March 2020 14:30-15:30 (UTC+00:00) Dublin, Edinburgh, Lisbon, Lond=
+on.
+Where: Zoom
+
+Sharon Meader is inviting you to a scheduled Zoom meeting.
+
+Topic: Josh Klein
+Time: Mar 18, 2020 02:30 PM London
+
+Join Zoom Meeting
+https://halma.zoom.us/j/908610426
+
+Meeting ID: 908 610 426
+
+One tap mobile
++442034815237,,908610426# United Kingdom
++442034815240,,908610426# United Kingdom
+
+Dial by your location
+        +44 203 481 5237 United Kingdom
+        +44 203 481 5240 United Kingdom
+        +44 131 460 1196 United Kingdom
+        +44 203 051 2874 United Kingdom
+        0 800 031 5717 United Kingdom Toll-free
+        0 800 260 5801 United Kingdom Toll-free
+        +1 669 900 6833 US (San Jose)
+        +1 929 436 2866 US (New York)
+        877 853 5247 US Toll-free
+        888 788 0099 US Toll-free
+        +852 5803 3730 Hong Kong, China
+        +852 5803 3731 Hong Kong, China
+        +852 5808 6088 Hong Kong, China
+        800 906 780 Hong Kong, China Toll-free
+        800 931 189 Hong Kong, China Toll-free
+        800 931 645 Hong Kong, China Toll-free
+        400 616 8835 China Toll-free
+        400 669 9381 China Toll-free
+        000 800 040 1530 India Toll-free
+        000 800 050 5050 India Toll-free
+Meeting ID: 908 610 426
+Find your local number: https://halma.zoom.us/u/abgXY2DN4c
+
+--_000_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	margin-bottom:.0001pt;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;
+	mso-fareast-language:EN-US;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+	{mso-style-priority:99;
+	color:#954F72;
+	text-decoration:underline;}
+p.msonormal0, li.msonormal0, div.msonormal0
+	{mso-style-name:msonormal;
+	mso-margin-top-alt:auto;
+	margin-right:0cm;
+	mso-margin-bottom-alt:auto;
+	margin-left:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+span.EmailStyle18
+	{mso-style-type:personal;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+span.EmailStyle19
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-GB" link=3D"#0563C1" vlink=3D"#954F72">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Josh,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">I will be 5 minutes late to the call &#8211; please =
+start with introductions with Maria and I&#8217;ll join soon.<o:p></o:p></p=
+>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Inken will not join the call.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Many thanks,<o:p></o:p></p>
+<p class=3D"MsoNormal"><br>
+John.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal"><b><span style=3D"mso-fareast-language:EN-GB"><o:p>&=
+nbsp;</o:p></span></b></p>
+<p class=3D"MsoNormal"><b><span style=3D"mso-fareast-language:EN-GB">John C=
+lifford<o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">Digital G=
+rowth Director<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><o:p>&nbs=
+p;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">E:&nbsp;&=
+nbsp;&nbsp; <a href=3D"mailto:john.clifford@halma.com">
+john.clifford@halma.com</a> <o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">T:&nbsp;&=
+nbsp;&nbsp; &#43;44 (0)7384 796013<o:p></o:p></span></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><span style=3D"mso-fa=
+reast-language:EN-GB"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><img bord=
+er=3D"0" width=3D"157" height=3D"33" style=3D"width:1.6388in;height:.3472in=
+" id=3D"Picture_x0020_19" src=3D"cid:image001.png@01D5FD30.FFB1AF30"><o:p><=
+/o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><o:p>&nbs=
+p;</o:p></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"mso-fareast-language:EN-GB">Halma =
+plc<o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">Misbourne=
+ Court, Rectory Way<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">Amersham,=
+ Bucks<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB">HP7 0DE, =
+UK<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><o:p>&nbs=
+p;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><a href=
+=3D"http://www.halma.com/">halma.com</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-GB"><o:p>&nbs=
+p;</o:p></span></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal"><span lang=3D"EN-US" style=3D"mso-fareast-language:E=
+N-GB">-----Original Appointment-----<br>
+<b>From:</b> Sharon Meader &lt;sharon.meader@halma.com&gt; <br>
+<b>Sent:</b> 12 March 2020 09:05<br>
+<b>To:</b> Sharon Meader; Inken Braunschmidt; John Clifford; Maria Niculesc=
+u; Josh Klein<br>
+<b>Subject:</b> Josh Klein <br>
+<b>When:</b> 18 March 2020 14:30-15:30 (UTC&#43;00:00) Dublin, Edinburgh, L=
+isbon, London.<br>
+<b>Where:</b> Zoom<o:p></o:p></span></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Sharon Meader is inviting you to a scheduled Zoom me=
+eting.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Topic: Josh Klein<o:p></o:p></p>
+<p class=3D"MsoNormal">Time: Mar 18, 2020 02:30 PM London<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Join Zoom Meeting<o:p></o:p></p>
+<p class=3D"MsoNormal"><a href=3D"https://halma.zoom.us/j/908610426">https:=
+//halma.zoom.us/j/908610426</a><o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Meeting ID: 908 610 426<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">One tap mobile<o:p></o:p></p>
+<p class=3D"MsoNormal">&#43;442034815237,,908610426# United Kingdom<o:p></o=
+:p></p>
+<p class=3D"MsoNormal">&#43;442034815240,,908610426# United Kingdom<o:p></o=
+:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Dial by your location<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;44 2=
+03 481 5237 United Kingdom<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;44 2=
+03 481 5240 United Kingdom<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;44 1=
+31 460 1196 United Kingdom<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;44 2=
+03 051 2874 United Kingdom<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 800 031=
+ 5717 United Kingdom Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 0 800 260=
+ 5801 United Kingdom Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;1 66=
+9 900 6833 US (San Jose)<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;1 92=
+9 436 2866 US (New York)<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 877 853 5=
+247 US Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 888 788 0=
+099 US Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;852 =
+5803 3730 Hong Kong, China<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;852 =
+5803 3731 Hong Kong, China<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#43;852 =
+5808 6088 Hong Kong, China<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 800 906 7=
+80 Hong Kong, China Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 800 931 1=
+89 Hong Kong, China Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 800 931 6=
+45 Hong Kong, China Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 400 616 8=
+835 China Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 400 669 9=
+381 China Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 000 800 0=
+40 1530 India Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 000 800 0=
+50 5050 India Toll-free<o:p></o:p></p>
+<p class=3D"MsoNormal">Meeting ID: 908 610 426<o:p></o:p></p>
+<p class=3D"MsoNormal">Find your local number: <a href=3D"https://halma.zoo=
+m.us/u/abgXY2DN4c">
+https://halma.zoom.us/u/abgXY2DN4c</a><o:p></o:p></p>
+</div>
+</body>
+</html>
+
+--_000_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_--
+
+--_004_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_
+Content-Type: image/png; name="image001.png"
+Content-Description: image001.png
+Content-Disposition: inline; filename="image001.png"; size=5941;
+	creation-date="Wed, 18 Mar 2020 14:30:24 GMT";
+	modification-date="Wed, 18 Mar 2020 14:30:24 GMT"
+Content-ID: <image001.png@01D5FD30.FFB1AF30>
+Content-Transfer-Encoding: base64
+
+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
+EAAAAABJRU5ErkJggg==
+
+--_004_BL0PR01MB4273F44148DC035B3C0C9717EEF70BL0PR01MB4273prod_--

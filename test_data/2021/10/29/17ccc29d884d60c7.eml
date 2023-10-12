@@ -1,0 +1,2241 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp2663293vqp;
+        Fri, 29 Oct 2021 06:07:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy2tmhW1jCKSU3T1l1CHZcP2HQO3I87TpAmshF6tQe9IBxCMqCARPrvJJbUeJbbIHbuc+6C
+X-Received: by 2002:a05:6000:1b8f:: with SMTP id r15mr14218815wru.27.1635512866874;
+        Fri, 29 Oct 2021 06:07:46 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1635512866; cv=none;
+        d=google.com; s=arc-20160816;
+        b=L8U3m9L38fQ40qaP14UTiTWQaJ2FR6G0cIydlr2rMgcyAbDXkA1rlLQAY7iVFHwJ7t
+         /NDd+vdRbLa3jJgx91t+JOhnV6hdYTG01UbVgPTjDciPPt17WJ4fzOcuWjltiYvYp9yO
+         cHut/Zee/jhgBQk/3oRjAW1jMVjyLlXRSqCT2lIhuUE3NM3EW+kV+12EU2lEvTjh7KDh
+         YupCq9XgWMM2SdT9dsItu/6+mZPYO4RzgqkcgOCkj6VtraeTgC4KQo64z8foWFeaxJ4j
+         e/jYzE2eKzz7WO5iEw3S4dvCjYkMglL7RtBDpqqP8mJ0OwqP/vJqYEL5cCzfr/OfToIU
+         hidQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:bounces-to:mime-version:subject:message-id:to
+         :reply-to:from:dkim-signature:dkim-signature;
+        bh=Sj2hi74enCb2oFd2OQW/O29Is1IEqzohcHI/EC7G52k=;
+        b=jO+/+XnSvhk8Dky1ARhETLCwmEN6vwewR1bL9rtkQwo6f3rv8FGCk2u30rk9ecBPS8
+         8THDcoZnvGWBNZOCVvbRm4+2LOhmj2O/xZmzGuDrU4uPNn1cbNSxP091XtBXJZ0SeCM6
+         +n1CTock9es08dR+tpRacXUjDwTn4GWvLb0FRCrnqOroJMv9YUqIE1yBIQVvq7tDDlgf
+         inyF1Xe/e8pEEp2i0rPO5BrmDnqpbbWuljzOnjJzCoXtgMMbeopYDdy5C13BZUnjowDO
+         LhwOMuGy/JOQ8Ay/gZGWnA20VpGThkWAqg4SqKAt0zXHRPOsanr3imz8x7Ik+IyL4wpq
+         qO0A==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@amazon.co.uk header.s=xzr7cjj46bvb5ib4fyyv5hcqwj7o5lx2 header.b="E/MxvgAr";
+       dkim=pass header.i=@amazonses.com header.s=uku4taia5b5tsbglxyj6zym32efj7xqv header.b=aDINsSx8;
+       spf=pass (google.com: domain of 20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk designates 54.240.1.11 as permitted sender) smtp.mailfrom=20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.co.uk
+Return-Path: <20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk>
+Received: from a1-11.smtp-out.eu-west-1.amazonses.com (a1-11.smtp-out.eu-west-1.amazonses.com. [54.240.1.11])
+        by mx.google.com with ESMTPS id l42si15329326wms.161.2021.10.29.06.07.46
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 29 Oct 2021 06:07:46 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk designates 54.240.1.11 as permitted sender) client-ip=54.240.1.11;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@amazon.co.uk header.s=xzr7cjj46bvb5ib4fyyv5hcqwj7o5lx2 header.b="E/MxvgAr";
+       dkim=pass header.i=@amazonses.com header.s=uku4taia5b5tsbglxyj6zym32efj7xqv header.b=aDINsSx8;
+       spf=pass (google.com: domain of 20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk designates 54.240.1.11 as permitted sender) smtp.mailfrom=20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.co.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=xzr7cjj46bvb5ib4fyyv5hcqwj7o5lx2; d=amazon.co.uk; t=1635512865;
+	h=From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Date;
+	bh=5e3QKT8KTfZvAiWmw9Y1nO1/YverJtVoP+rTQdcYmFE=;
+	b=E/MxvgArVg1jh39KT/IcoOsO0HUJxjpoBzL6/d0gRf569cURc3u3GTosAAFKMXxP
+	7x6bTMvkPfpIcOXDpXoTjcTNO1FOmyq4i+ByUCLMqKqSZ5ohXl3PPsG2nJWNSCIXIl+
+	J11rcP63UfL1nAN0YvHcHdLY5Jp6eqhJ2mgkQvPA=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=uku4taia5b5tsbglxyj6zym32efj7xqv; d=amazonses.com; t=1635512865;
+	h=From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Date:Feedback-ID;
+	bh=5e3QKT8KTfZvAiWmw9Y1nO1/YverJtVoP+rTQdcYmFE=;
+	b=aDINsSx8gEgomlXz/L6AUkUBkRVMEkxWMVZhmrbC8iNtEsgKh2ZM3BJ/DUhSHT2G
+	K5JwhUPu2/aHFWbx+VS9p7MqSX1nBMF60iuUgGNnQ3p0ICRBYMk7bjAO5liuhhLhVTA
+	RiUD8G42G+z/x3MZIFTdnSO8P3vb6sadFd60QHok=
+From: "Amazon.co.uk" <auto-confirm@amazon.co.uk>
+Reply-To: no-reply@amazon.co.uk
+To: josh@josh.is
+Message-ID: <0102017ccc29d3f1-664bfe70-9fe2-4b8d-98ed-2a9b8bc15a18-000000@eu-west-1.amazonses.com>
+Subject: Your Amazon.co.uk order.
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_7718727_844408414.1635512865764"
+X-AMAZON-MAIL-RELAY-TYPE: notification
+Bounces-to: 20211029130745fc3dcbc4c6884c96880296539600p0eu@bounces.amazon.co.uk
+X-AMAZON-METADATA: CA=CSWAAXLC954UP-CU=A3TT31TZCNFFF7
+X-Original-MessageID: <urn.rtn.msg.20211029130745fc3dcbc4c6884c96880296539600p0eu@1635512865766.rtn-svc-eu-back-c5-1b-857a2e6e.eu-west-1.amazon.com>
+Date: Fri, 29 Oct 2021 13:07:45 +0000
+Feedback-ID: 1.eu-west-1.UIAUrMfbpGrxavqnRE0yoZrAUBI9C7GRNUx/kUDo6B4=:AmazonSES
+X-SES-Outgoing: 2021.10.29-54.240.1.11
+
+------=_Part_7718727_844408414.1635512865764
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Amazon.co.uk Order Confirmation
+Order #205-8521932-7293939
+Order #205-1109857-2356321
+Order #205-0165784-2258761
+https://www.amazon.co.uk/ref=3DTE_tex_h
+___________________________________________________________________________=
+__________
+
+Hello,
+
+Thanks for your order. We=E2=80=99ll let you know once your item(s) have di=
+spatched.=20
+Your estimated delivery date is indicated below.=20
+You can view the status of your order or make changes to it by visiting You=
+r Orders on Amazon.co.uk at:
+    https://www.amazon.co.uk/gp/css/your-orders-access?ref_=3DTE_tex_gs
+
+Your purchase has been divided into 3 orders.
+
+
+
+
+
+
+     Arriving:
+          Saturday, October 30
+
+     Your delivery option:
+          Priority Delivery
+
+     Your order will be sent to:
+          Joshua
+          LONDON
+          United Kingdom
+
+Ordered item(s):
+     HANERDUN Kids Braces Bowtie Sets Adjustable Suspenders With Bow Ties G=
+ift Idea For Boys And Girls, Black, One Size  =20
+     =C2=A36.99
+     Condition: New
+     Sold by: AYOZI
+     Fulfilled by Amazon
+
+
+     Order Total:                     =C2=A36.99 (USD 9.89*)
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+
+
+     Arriving:
+          Monday, November 1
+
+     Your delivery option:
+          Standard Delivery
+
+     Your order will be sent to:
+          Joshua
+          LONDON
+          United Kingdom
+
+Ordered item(s):
+     2 x : A2S Protection Paracord Bracelet K2-Peak - Survival Gear Kit wit=
+h Embedded Compass, Fire Starter, Emergency Knife & Whistle (Black/Orange A=
+djustable Size)  =20
+     =C2=A38.32
+     Condition: New
+     Sold by: STOPTOSHOP LTD
+     Fulfilled by Amazon
+
+     An Elephant & Piggie Biggie! (Elephant and Piggie Book) of Willems, Mo=
+  =20
+     =C2=A312.37
+     Sold by: Amazon EU S.a.r.L.
+
+     Dog Man: Grime and Punishment: from the bestselling creator of Captain=
+ Underpants (Dog Man #9) of Pilkey, Dav  =20
+     =C2=A36.95
+     Sold by: Amazon EU S.a.r.L.
+
+     Attack Of The Deranged Mutant Killer Monster Snow Goons: Calvin & Hobb=
+es Series: Book Ten (Calvin and Hobbes) of Watterson, Bill  =20
+     =C2=A38.99
+     Sold by: Amazon EU S.a.r.L.
+
+     An Elephant & Piggie Biggie-Biggie!, Volume 2 (Elephant and Piggie Boo=
+k) of Willems, Mo  =20
+     =C2=A312.41
+     Sold by: Amazon EU S.a.r.L.
+
+     LEGO 76195 Marvel Spider-Man's Drone Duel Building Toy for Kids Age 7 =
+, Superhero Birthday Idea  =20
+     =C2=A314.99
+     Sold by: Amazon EU S.a.r.L.
+
+     New Replacement Keyboard Keycaps Keys,Full Set of UK Replacement Keyca=
+ps QWERTY for MB Pro Retina 13/15" Model A1706 A1707 A1708 2016-2017 Year f=
+or Mb 12" Model A1534 2017 Year  =20
+     =C2=A311.66
+     Condition: New
+     Sold by: JI-SO
+     Fulfilled by Amazon
+
+     Spring&Gege Boys' Long Sleeve Solid Formal Uniform Cotton Twill Dress =
+Shirts Black 9-10 Years  =20
+     =C2=A316.99
+     Condition: New
+     Sold by: SpringgegeEU
+     Fulfilled by Amazon
+
+     Calvin And Hobbes: The Calvin & Hobbes Series: Book One of Watterson, =
+Bill  =20
+     =C2=A38.58
+     Sold by: Amazon EU S.a.r.L.
+
+     Tommy Hilfiger Boy's Essential Oxford Shirt L/S Button, Black, 6 Years=
+  =20
+     =C2=A319.30
+     Sold by: Amazon EU S.a.r.L.
+
+     Anpro Disco Lights, Sound Activated LED Disco Ball Lights with 4m USB =
+Cable and Suction Mount, Remote Control Party Lights for Kids Birthday, Hom=
+e Party, Bedroom Decoration  =20
+     =C2=A39.16
+     Condition: New
+     Sold by: LansirbaoHQR
+     Fulfilled by Amazon
+
+     Fetch-22: From the Creator of Captain Underpants (Dog Man 8) of Pilkey=
+, Dav  =20
+     =C2=A36.95
+     Sold by: Amazon EU S.a.r.L.
+
+     Bluetooth Mouse, Inphic Three-mode Slim Silent Rechargeable Bluetooth =
+Wireless Mouse (Bluetooth 5.0/3.0+ 2.4G), 1600DPI Portable Mouse for Laptop=
+ PC Computer, Android,Windows MacBook (Black)  =20
+     =C2=A311.66
+     Condition: New
+     Sold by: inphic
+     Fulfilled by Amazon
+
+     2 x Kids Headphones, JLab Audio JBuddies Studio Kids Wireless Headphon=
+es - Headphones For Kids with 13 Hour Battery Life, Kid Safe Volume Limiter=
+ and Noise Isolation - Kids Bluetooth Headphones, Blue  =20
+     =C2=A324.99
+     Condition: New
+     Sold by: Jlab Audio
+     Fulfilled by Amazon
+
+     LEGO 42123 Technic McLaren Senna GTR Racing Sports Collectable Model C=
+ar, Vehicle Toy Construction Set, Idea  =20
+     =C2=A324.99
+     Sold by: Amazon EU S.a.r.L.
+
+
+     Order Total:                      =C2=A3250.55 (USD 354.61*)
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+
+
+     Arriving:
+          Tuesday, November 2 -=20
+          Wednesday, November 3
+
+     Your delivery option:
+          Standard Delivery
+
+     Your order will be sent to:
+          Joshua
+          LONDON
+          United Kingdom
+
+Ordered item(s):
+     Optimum Nutrition 100% Whey Gold Standard (5lbs) Extreme Milk Chocolat=
+e, 1 Units, 2.27 kg (Pack of 1)  =20
+     =C2=A341.24
+     Condition: New
+     Sold by: UKESUPPS-2016
+
+
+     Order Total:                      =C2=A349.49 (USD 70.04*)
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Need to make changes to your order? Visit our Help page for more informatio=
+n and video guides at:
+https://www.amazon.co.uk/orderchanges?ref=3DTE_tex_ss
+
+To learn more about managing your orders in your local currency please visi=
+t the link below:
+https://www.amazon.co.uk/currencyconverterhow?ref_=3DTE_tex_fx
+
+
+We hope to see you again soon.
+
+Amazon.co.uk
+www.amazon.co.uk/ref=3DTE_tex_ty
+
+___________________________________________________________________________=
+__________
+
+Fulfilled By Amazon (usually referred to as FBA) items are generally sold b=
+y third-party sellers but stored in an Amazon Fulfilment Centre and sent to=
+ you from there. Items which are sold by Warehouse Deals are also labeled F=
+ulfilled by Amazon. Warehouse Deals is a trading name for Amazon EU Sarl, a=
+nd is part of the Amazon.com group. For more information, visit our "Amazon=
+ Logistics" help page:=20
+https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=3D202018630&r=
+ef=3DTE_helpfba
+
+Unless otherwise noted, items sold by Amazon EU Sarl are subject to Value A=
+dded Tax based on country of delivery in accordance with the EU laws on dis=
+tance selling. If your order contains one or more items from a seller other=
+ than Amazon EU Sarl, it may also be subject to VAT, depending upon the sel=
+ler's business policies and the location of their operations. Learn more ab=
+out VAT and seller information:
+https://www.amazon.co.uk/VatSellerInfo?ref=3DTE_vat
+
+If your item(s) are purchased from Amazon Marketplace, the seller may reque=
+st additional information such as the VAT number or your VAT code, in order=
+ to issue a valid invoice.=20
+
+
+
+*Amazon Currency Converter is operated by Amazon Services Europe SARL, and =
+your use of Amazon Currency Converter is governed by the Amazon Currency Co=
+nverter Terms and Conditions:
+https://www.amazon.co.uk/gp/tfx/t-and-c.html?ie=3DUTF8&Version=3D1&entries=
+=3D0&ref_=3DTE_tex_tfx
+
+This e-mail is only an acknowledgement of receipt of your order. Your contr=
+act to purchase these items is not complete until we send you an e-mail not=
+ifying you that the items have been dispatched.
+https://www.amazon.co.uk/gp/help/customer/display.html?nodeId=3D201909000&r=
+ef_=3DTE_gtnc
+
+Please note: This e-mail was sent from a notification-only address that can=
+'t accept incoming e-mail. Please do not reply to this message.
+------=_Part_7718727_844408414.1635512865764
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns=3D"http://www.w3.org/1999/xhtml">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8" =
+/>=20
+  <style type=3D"text/css">
+body {
+    background-color: #ffffff;
+=09margin:0;
+=09font:12px/16px Arial, sans-serif;
+}
+
+a {
+=09text-decoration:none;
+=09color:#006699;
+=09font:12px/16px Arial, sans-serif;
+}
+
+a img {
+=09border:0;
+}
+
+h2 {
+=09font-size:20px;
+=09line-height:24px;
+=09margin:0;
+=09padding:0;
+=09font-weight:normal;
+=09color:#000 !important;
+}
+
+h3 {
+=09font-size: 18px;
+=09color:#cc6600;
+=09margin:15px 0 0 0;
+=09font-weight: normal;
+}
+
+h4 {
+=09font-size:14px;
+=09margin:0;
+=09font-weight:normal;
+}
+
+p {
+=09margin:4px 0 0 0;
+=09font:12px/16px Arial, sans-serif;
+}
+
+table {
+=09border-collapse:collapse;
+}
+
+td {
+=09vertical-align: top;
+=09font-size: 12px;
+=09line-height: 16px;
+=09font-family: Arial, sans-serif;
+}
+
+/* container */
+#container {
+=09width:640px;
+=09color:#333;
+=09margin:0 auto;
+}
+
+#container .frame {
+=09padding:0 20px 20px 20px;
+}
+
+/* content tables */
+#main, #header, #summary, #desiredInformation, #orderDetails, #itemDetails,=
+ #costBreakdown, #costBreakdownNoAsin,
+#selfService, #closing, #marketingContent, #legalCopy {
+=09width:100%;
+}
+
+/* header */
+#header .logo {
+=09width:115px;
+=09padding:18px 0 0 0;
+}
+
+#header .navigation {
+=09text-align:right;
+=09padding:5px 0;
+=09border-bottom:1px solid #ccc;
+=09white-space:nowrap;
+}
+
+#header .navigation a {
+=09border-right:0px solid #CCC;
+=09margin-right:0px;
+=09padding-right:0px;
+}
+
+#header .navigation span {
+=09text-decoration:none;
+=09color:#CCC;
+=09font-size:15px;
+=09font-family:Arial, sans-serif;
+}
+
+#header .navigation a.last {
+=09border:0;
+=09margin:0;
+=09padding:0;
+}
+
+#header .title {
+=09text-align:right;
+=09padding:7px 0 5px 0;
+}
+
+#header .title img {
+=09padding:0 4px 0 0;
+}
+
+/* summary */
+#summary a{
+=09text-decoration:none;
+=09color:#006699;
+}
+
+#summary p {
+=09margin:5px 0 0 0;
+}
+
+/* critical info */
+#criticalInfo {
+=09border-top:3px solid #2d3741;
+=09width: 95%;
+}
+
+#criticalInfo td {
+=09font-size:14px;
+=09padding:11px 18px 18px 18px;
+=09width:50%;
+}
+
+#criticalInfo .detailsContent {
+    background-color:#efefef;
+}
+
+#criticalInfo .label {
+=09color:#666;
+}
+
+#criticalInfo p {
+=09margin:2px 0 9px 0;
+}
+
+#criticalInfo span {
+=09color:#666;
+}
+
+#criticalInfo a {
+=09font-size:11px;
+=09color:#006699;
+=09text-decoration:none;
+}
+
+#cancelOrder p {
+    font: 11px/ 16px Arial, sans-serif;
+    color: rgb(51, 51, 51);
+}
+/* desiredInformation */
+#desiredInformation a {
+=09text-decoration:none;
+=09color:#006699;
+}
+
+/* buttons */
+.button {
+=09text-decoration:none !important;
+=09display:block;
+=09height:26px;
+=09display:inline-block;
+=09margin:0 0 2px 0;
+}
+
+.button.small {
+=09height:20px;
+}
+
+.button .expandable {
+=09float:left;
+=09overflow:hidden;
+}
+
+.button .text {
+=09color:#000f68;
+=09font-size:12px;
+=09position:relative;
+=09z-index:10;
+=09top:-22px;
+=09left:-12px;
+=09text-align:center;
+}
+
+.button.secondary .text {
+=09left:0;
+}
+
+.button.small .text {
+=09top:-20px;
+=09left:0;
+=09font-size:11px;
+}
+
+/* supporting details */
+#supportingDetails {
+=09font-size:11px;
+=09color:#666;
+=09line-height:14px;
+=09margin:10px 20px;
+}
+
+#supportingDetails {
+=09margin:0 18px 0 18px;
+}
+
+/* order details */
+#orderDetails h3 {
+=09border-bottom:1px solid #ccc;
+=09margin:0 0 3px 0;
+=09padding:0 0 3px 0;
+}
+
+#orderDetails .frame {
+=09padding:16px 20px 6px 20px;
+}
+
+#orderDetails .orderDate {
+=09color:#666666;
+=09font-size:12px;
+}
+
+#orderDetails span {
+=09font-size:12px;
+=09color:#666;
+}
+
+#orderDetails p {
+=09margin:2px 0 9px 0;
+}
+
+/* item details */
+#itemDetails {
+=09width: 95%;
+}
+
+#itemDetails .photo {
+=09width:150px;
+=09text-align:center;
+=09padding:16px 0 10px 0;
+}
+
+#itemDetails .photo .play img {
+=09margin:3px 0 0 0;
+}
+
+#itemDetails .name {
+=09color:#666;
+=09padding:10px 0 0 0;
+}
+
+#itemDetails ul {
+=09margin:0;
+=09padding:0;
+}
+
+#itemDetails ul li {
+=09list-style-type:none;
+=09line-height:14px;
+=09padding:0 0 4px 0;
+}
+
+#itemDetails ul li a {
+=09font-size:14px;
+}
+
+#itemDetails .name p {
+=09margin:0;
+=09padding:10px 0 0 0;
+=09font-size:12px;
+=09line-height:14px;
+}
+
+#itemDetails .name p a {
+=09text-decoration:none;
+    color:#006699;
+}
+
+
+#itemDetails .name .share {
+=09margin:3px 0 15px 0;
+}
+
+#itemDetails .name .share a {
+=09margin: 4px 5px 0 0;
+=09font-size:0;
+}
+
+#itemDetails .name .supportingDetails,
+#itemDetails .name .supportingDetails a {
+=09margin:8px 0 0 0;
+=09font-size:12px;
+}
+
+#itemDetails .price {
+=09text-align:right;
+=09font-size:14px;
+=09padding:10px 10px 0 10px;
+=09white-space:nowrap;
+}
+
+#itemDetails .price a {
+=09text-decoration:none;
+    color:#006699;
+}
+
+#itemDetails .divider {
+=09border-top:1px solid #eaeaea;
+=09padding:0 0 16px 0;
+}
+
+#itemDetails .name table {
+border-collapse: separate;
+}
+
+/* cost breakdown */
+#costBreakdow {
+=09width:95%;
+}
+
+#costBreakdown td {
+=09text-align:right;
+=09line-height:18px;
+=09padding:0 10px 0 0;
+}
+
+#costBreakdownNoAsin td {
+    text-align: left !important;
+    line-height: 18px;
+    padding: 0 10px 0 0;
+}
+
+#costBreakdown .divider, #costBreakdownNoAsin .divider {
+=09border-top:1px solid #eaeaea;
+=09padding:0 0 16px 0;
+}
+
+#costBreakdown .end, #costBreakdownNoAsin .end {
+=09padding:0 0 16px 0;
+}
+
+#costBreakdown .start, #costBreakdownNoAsin .start {
+=09padding: 0 0 16px 0;
+}
+
+#costBreakdown .price {
+=09width:150px;
+}
+
+#costBreakdownNoAsin .price {
+=09width: 70%;
+}
+
+#costBreakdown .total, #costBreakdownNoAsin .total {
+=09font-size:14px;
+=09font-weight:bold;
+=09font: 12px/ 16px Arial, sans-serif;
+}
+
+#costBreakdown .disclaimer, #costBreakdownNoAsin .disclaimer {
+=09text-align:right;
+=09font: 12px
+}
+
+.deferred-payments-separator {
+    border: 1px solid #cbcfd4;
+}
+
+/* Critical Information Cost Breakdown */
+#criticalInfo-costBreakdown .total {
+    font-weight:bold;
+    font: 14px/ 16px Arial, sans-serif;
+}
+
+#criticalInfo-costBreakdown .total-value {
+    font-weight:bold;
+    font: 14px/ 16px Arial, sans-serif;
+    text-align: right;
+}
+
+#criticalInfo-costBreakdown .nonTotalInformation {
+    font-size: 12px;
+    font: 12px/ 16px Arial, sans-serif;
+}
+
+#criticalInfo-costBreakdown .nonTotalInformation-value {
+    font-size: 12px;
+    font: 12px/ 16px Arial, sans-serif;
+    text-align: right;
+}
+
+#criticalInfo-costBreakdown td {
+    padding:11px 0px 0px 0px !important;
+}
+
+#criticalInfo-costBreakdown .lowerPriorityInformation {
+    color: #767676;
+}
+
+/* additional shipments */
+#additionalShipments {
+=09font-size:11px;
+}
+
+#additionalShipments h3 {
+=09margin:10px 0 0 0;
+}
+
+#additionalShipments p {
+=09margin:10px 20px 0px 20px;
+}
+
+#additionalShipments .orderDate {
+=09color:#666666;
+=09font-size:12px;
+}
+
+#additionalShipments .details {
+=09padding:10px 20px 10px 20px;
+}
+
+#additionalShipments .details .label {
+=09color:#666666;
+=09font-weight:bold;
+}
+
+#additionalShipments .details .edd, #additionalShipments .details .quantity=
+ {
+=09font-weight:bold;
+}
+
+/* self service */
+#selfService .divider {
+=09border-top:1px solid #ccc;
+=09padding:0 0 16px 0;
+}
+
+#selfService a{
+=09text-decoration:none;
+=09color:#006699;
+}
+
+/* closing */
+#closing {
+=09padding:0 0 0 0;
+=09border-collapse:collapse;
+}
+
+#closing p {
+=09padding:0 0 20px 0;
+=09border-bottom:1px solid #eaeaea;
+=09margin:10px 0 0 0;
+}
+
+#closing .signature {
+=09font-size:16px;
+=09font-weight:bold;
+}
+
+#closing a{
+=09text-decoration:none;
+=09color:#006699;
+}
+
+/* marketing content */
+#marketingContent {
+=09border-bottom:1px solid #eaeaea;
+=09border-collapse:collapse;
+=09padding:0;
+}
+
+#marketingContent td.recs {
+=09padding:10px 0;
+}
+
+#marketingContent td.right {
+=09padding:10px 15px 10px 0;
+}
+
+#marketingContent td.left {
+=09padding:10px 0 10px 15px;
+}
+
+#middleCenterMC {
+=09text-align:center;
+}
+
+#middleCenterMC img {
+=09width:85%;
+}
+
+/* legal copy */
+#legalCopy td {
+=09padding:20px 0 0 0;
+}
+
+#legalCopy p {
+=09font-size:11px;
+=09color:#666;
+=09line-height:16px;
+=09margin:0 0 10px 0;
+        font:11px;
+}
+
+#legalCopy a {
+=09font:11px/16px Arial, sans-serif;
+=09text-decoration:none;
+=09color:#006699;
+}
+
+#legalExceptionsList li{
+=09padding-left: 10px;
+}
+
+#extendedLegalInfoBlock {
+=09font-size:11px;
+=09color:#666;
+=09line-height:16px;
+=09margin:0 0 10px 0;
+}
+
+/* reg fee */
+#regFee td {
+=09colspan: "2";
+=09border-top:1px solid #ccc;
+}
+
+/* html button */
+
+.link {
+    color: rgb(17, 17, 17) !important;
+    text-decoration: none !important;
+    font: 16px/ 18px Arial, sans-serif !important;
+    padding: 10px 12px;
+    line-height: 1.5;
+    border-radius: 10px;
+    border-style: solid;
+    border-color: #000000;
+    border-width: 1px;
+    background: #F0C14B linear-gradient(#F7DFA5, #F0C14B) repeat scroll 0% =
+0%;
+    background-color: #F0C14B;
+    white-space: nowrap;
+}
+
+.a-icon-info, .a-icon-small {
+    background-position: -166px -130px;
+    height: 13px;
+    width: 14px;
+}
+
+.a-icon {
+    background-image: url(https://m.media-amazon.com/images/G/01/AUIClients=
+/AmazonUIBaseCSS-sprite_1x-28bd59af93d9b1c745bb0aca4de58763b54df7cf._V2_.pn=
+g);
+    -webkit-background-size: 400px 670px;
+    display: inline-block;
+}
+
+.a-text-italic {
+    font-style: italic !important;
+}
+
+.a-size-small {
+    font-size: 12px !important;
+    line-height: 1.5 !important;
+}
+.inline-block{
+    display: inline-block;
+}
+
+/* Styling for Top Amabot Banner */
+#topAmabotBannerTextArea #topAmabotBannerHeaderText {
+    font: bold 14px Arial, sans-serif;
+    color: #333;
+}
+
+#topAmabotBannerTextArea #topAmabotBannerHeaderTextClickable {
+    font: bold 14px Arial, sans-serif;
+    color: #069;
+}
+
+#topAmabotBannerTextArea #topAmabotBannerBodyPrefix {
+    font: 14px Arial, sans-serif;
+    color: #333;
+}
+
+#topAmabotBannerTextArea #topAmabotBannerBodyPrefixClickable {
+    font: bold 14px Arial, sans-serif;
+    color: #069;
+}
+
+#topAmabotBannerTextArea #topAmabotBannerBody {
+    font: 14px Georgia, serif;
+    line-height: 1.2;
+    color: #333;
+}
+
+#topAmabotBannerTextArea #topAmabotBannerBodyEmphasized {
+    font: 14px Georgia, serif;
+    line-height: 1.2;
+    font-style: italic;
+    color: #333;
+}
+
+#postOrderSummaryAmabotSlot #dykSlotWrapper {
+    margin-top: 0px;
+}
+
+#dykSlotWrapper td {
+    vertical-align: middle;
+}
+
+#dykSlotTextContainer {
+    padding: 0px;
+}
+
+/* To fix the blue href links in gmail clients */
+.noColorAndTextDecoration a {
+    color:#000 !important;
+    text-decoration:none !important;
+}
+
+    .buttonComponent {
+    border-collapse: separate;
+    text-decoration: none !important;
+    line-height: 47px;
+    border-radius: 3px;
+    border-style: solid;
+    border-color: #CBA957;
+    border-width: 1px;
+    background: #F0C354 linear-gradient(#F7DEA2, #F0C354) repeat scroll 0% =
+0%;
+    background-color: #ffa723;
+    white-space: nowrap;
+    min-width: 222px;
+    min-height: 45px;
+    }
+
+    .buttonComponentLink {
+    color: rgb(27, 27, 27) !important;
+    font: 16px/ 18px Arial, sans-serif !important;
+    display: table-cell;
+    margin: auto 0;
+    vertical-align: middle;
+    text-decoration: none !important;
+
+    min-width: 222px;
+    height: 45px;
+    }
+
+
+</style>=20
+  <title>
+Your Amazon.co.uk order of &quot;Optimum Nutrition 100% Whey...&quot; and 1=
+8 more item(s)  </title>=20
+ </head>=20
+ <body><img width=3D"1" height=3D"1" src=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D3SJW84PWN12U&T=3DO&U=3Dhttps%3A%2F%2Fimages=
+-eu.ssl-images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3DTHKXJHPE=
+JM9BXJPVEBAELPTI8XYA&ref_=3Dpe_27063361_485629781_opens" />=20
+  <table id=3D"container" dir=3D"ltr">=20
+   <tbody>
+    <tr>=20
+     <td class=3D"frame">=20
+      <table id=3D"main">=20
+       <tbody>
+        <tr>=20
+         <td>=20
+          <table id=3D"header">=20
+           <tbody>
+            <tr>=20
+             <td rowspan=3D"2" class=3D"logo"> <a href=3D"https://www.amazo=
+n.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211=
+029130745fc3dcbc4c6884c96880296539600p0eu&R=3DWYBWU7MJAV21&T=3DC&U=3Dhttps%=
+3A%2F%2Fwww.amazon.co.uk%2Fref%3Dpe_27063361_485629781_TE_logo&H=3DAXA2SFBE=
+DEOSX8MHFNALXBAJHT8A&ref_=3Dpe_27063361_485629781_TE_logo" title=3D"Visit A=
+mazon.co.uk"> <img alt=3D"Amazon.co.uk" src=3D"http://g-ec2.images-amazon.c=
+om/images/G/02/x-locale/common/amazon-logo.gif" style=3D"border: 0; width: =
+115px;" /> </a> </td>=20
+             <td class=3D"navigation"> </td>
+             <td style=3D"width: 100%; padding:7px 5px 0;" class=3D"navigat=
+ion"> <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2SKF371&K=3D2=
+S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu=
+&R=3D21P1YBM4989X2&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fcss%2Fyo=
+ur-orders-access%3Fref_%3Dpe_27063361_485629781_TE_yo&H=3DXTK692AAGDMBHMWCS=
+3HA5UXOCC4A&ref_=3Dpe_27063361_485629781_TE_yo">Your Orders</a> </td>=20
+             <td class=3D"navigation"> <span>&nbsp;|&nbsp;</span> <a href=
+=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&=
+M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D2I8AH1DB=
+G1CPE&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fcss%2Fyour-account-ac=
+cess%3Fref_%3Dpe_27063361_485629781_TE_ya&H=3DKBHCAVOO3BP2XFDBVBVLRNYOJP8A&=
+ref_=3Dpe_27063361_485629781_TE_ya">Your Account</a> <span>&nbsp;|&nbsp;</s=
+pan> <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2SKF371&K=3D2S=
+78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&=
+R=3D3TH3S3JTQEFZD&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fref%3Dpe_27063=
+361_485629781_TE_cn&H=3DOQ2JV5KGIVGOPWVPJAAF12JEPTWA&ref_=3Dpe_27063361_485=
+629781_TE_cn">Amazon.co.uk</a> </td> =20
+            </tr>=20
+            <tr>=20
+             <td colspan=3D"3" class=3D"title"> <h2> Order Confirmation </h=
+2> Order # <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2SKF371&=
+K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c9688029653960=
+0p0eu&R=3D1ON119QCGWYD8&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fcss=
+%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-8521932-7293939%26ref_%3=
+Dpe_27063361_485629781_TE_order&H=3DRHSMGXSZ2TOXLPRBAVTUZNF43W8A&ref_=3Dpe_=
+27063361_485629781_TE_order" class=3D"inline-block">205-8521932-7293939 </a=
+> <br /> Order # <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2S=
+KF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c9688029=
+6539600p0eu&R=3D7YMCVTYRPKH6&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%=
+2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-1109857-2356321%26r=
+ef_%3Dpe_27063361_485629781_TE_order&H=3DTV9CUYSADS1KQ5Q2P1EFBIQ9DNUA&ref_=
+=3Dpe_27063361_485629781_TE_order" class=3D"inline-block">205-1109857-23563=
+21 </a> <br /> Order # <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D13=
+9N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c9=
+6880296539600p0eu&R=3D1AP23XX13619Q&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.u=
+k%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-0165784-2258=
+761%26ref_%3Dpe_27063361_485629781_TE_order&H=3DQXBZUGG3YHZOMQ8JYUDDSPMSGGK=
+A&ref_=3Dpe_27063361_485629781_TE_order" class=3D"inline-block">205-0165784=
+-2258761 </a> <br /> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"summary">=20
+           <tbody>
+            <tr>=20
+             <td> <h3> Hello, </h3> <p> Thanks for your order. We=E2=80=99l=
+l let you know once your item(s) have dispatched. Your estimated delivery d=
+ate is indicated below. You can view the status of your order or make chang=
+es to it by visiting <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N=
+1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c968=
+80296539600p0eu&R=3D25ACTU8C9W1JV&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%=
+2Fgp%2Fcss%2Fyour-orders-access%3Fref_%3Dpe_27063361_485629781_TE_gs&H=3DSY=
+8HYH99ZLM0CPWNTEXNUTHAR7UA&ref_=3Dpe_27063361_485629781_TE_gs">Your Orders<=
+/a> on Amazon.co.uk. </p> </td>=20
+            </tr>=20
+            <tr>=20
+             <td> <p> Your purchase has been divided into 3 orders. </p> </=
+td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"desiredInformation">=20
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"border-bottom:1px solid #ccc;"> <h3>Order summary</h3=
+> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"orderDetails">=20
+           <tbody>
+            <tr>=20
+             <td> Order #<a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D2TLIRMXD8YGZE&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co=
+.uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-8521932-72=
+93939%26ref_%3Dpe_27063361_485629781_TE_order&H=3D1FQ8S3ZBNG02WNJMXMK5QAO8B=
+ICA&ref_=3Dpe_27063361_485629781_TE_order" class=3D"inline-block">205-85219=
+32-7293939</a> <br /> <span>Placed on October 29, 2021</span> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"criticalInfo">=20
+           <tbody>
+            <tr class=3D"detailsContent">=20
+             <td> <p> <span>Arriving:</span> <br /> <b style=3D"color:#0099=
+00;"> Saturday, October 30 </b> </p> <p> <span>Your delivery option:</span>=
+ <br /> <b> Priority Delivery </b> </p> <br />=20
+              <table class=3D"buttonComponent" bgcolor=3D"#ffa723" width=3D=
+"222">=20
+               <tbody>
+                <tr>=20
+                 <td style=3D"width:100%; vertical-align:middle; padding: 0=
+px;" align=3D"center" valign=3D"middle" width=3D"100%" height=3D"45"> <a cl=
+ass=3D"buttonComponentLink" href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D9YIWX1BQZDUN&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.=
+uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-8521932-729=
+3939%26ref_%3Dpe_27063361_485629781_TE_on_sh&H=3DHP6T3LSCEPSGTFUYZMZDTK0WD7=
+IA&ref_=3Dpe_27063361_485629781_TE_on_sh">View order details</a> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+             <td> <p> <span>Your order will be sent to:</span> <br /> <b> J=
+oshua <br /> LONDON <br /> United Kingdom </b> </p>=20
+              <table id=3D"criticalInfo-costBreakdown">=20
+               <tbody>
+                <tr>=20
+                 <td class=3D"total"> <strong>Order Total: </strong> </td>=
+=20
+                 <td class=3D"total-value"> <strong> &pound;6.99 <br /> USD=
+ 9.89* </strong> </td>=20
+                </tr>=20
+                <tr>=20
+                 <td rowspan=3D"2" class=3D"nonTotalInformation"> Selected =
+Payment Method: </td>=20
+                 <td class=3D"price nonTotalInformation-value"> Mastercard =
+</td>=20
+                </tr>=20
+                <tr></tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> *Exchange rate guarantee fee: USD 0.25 </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guaranteed for this order: 1 GBP =3D 1.415332=
+1625 USD </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guarantee fee above the European Central Bank=
+ reference rate: 3.01% </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"end"></td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"divider"></td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D13AX8LVI81TIH&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB06ZYPPBGM%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3D2YDPTATR24KU8DBQU72QJWDPMU0A&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/41PATRrRJhL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D2VLH7U4P7468F&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB06ZYPPBGM%2Fref%3Dpe_27063361_485629781_TE_item&H=3DRXM=
+BEJOB0PA9ANSZEMCYOCAEBGQA&ref_=3Dpe_27063361_485629781_TE_item"> HANERDUN K=
+ids Braces Bowtie Sets Adjustable Suspenders With Bow Ties Gift Idea For Bo=
+ys And Girls, Black, One Size </a> <br /> Condition: New <br /> Sold by: <a=
+ href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQ=
+PYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D34I=
+O4DDC5WFCQ&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2F=
+home.html%3Fref_%3Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DA=
+283ZJUSG2610J&H=3DJYFOPAORY5YINAZAKCATWFH8L48A&ref_=3Dpe_27063361_485629781=
+_TE_seller">AYOZI</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.html?=
+C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c=
+6884c96880296539600p0eu&R=3D2ZOP0WEORNZPF&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazo=
+n.co.uk%2Fhelpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DGZA5MKLDOXHU2=
+YT8IPTEAKBNKS0A&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazon<=
+/a> </td>=20
+             <td class=3D"price"> <strong>&pound;6.99</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"orderDetails">=20
+           <tbody>
+            <tr>=20
+             <td> Order #<a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D4OKM72PY7UMH&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.=
+uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-1109857-235=
+6321%26ref_%3Dpe_27063361_485629781_TE_order&H=3DZ2DNWZXEE4EYJORDXAJ6GAP9AS=
+8A&ref_=3Dpe_27063361_485629781_TE_order" class=3D"inline-block">205-110985=
+7-2356321</a> <br /> <span>Placed on October 29, 2021</span> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"criticalInfo">=20
+           <tbody>
+            <tr class=3D"detailsContent">=20
+             <td> <p> <span>Arriving:</span> <br /> <b style=3D"color:#0099=
+00;"> Monday, November 1 </b> </p> <p> <span>Your delivery option:</span> <=
+br /> <b> Standard Delivery </b> </p> <br />=20
+              <table class=3D"buttonComponent" bgcolor=3D"#ffa723" width=3D=
+"222">=20
+               <tbody>
+                <tr>=20
+                 <td style=3D"width:100%; vertical-align:middle; padding: 0=
+px;" align=3D"center" valign=3D"middle" width=3D"100%" height=3D"45"> <a cl=
+ass=3D"buttonComponentLink" href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D3HV34KML3DZ7S&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co=
+.uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-1109857-23=
+56321%26ref_%3Dpe_27063361_485629781_TE_on_sh&H=3DRSQSGX8Y5YWMLFQWJVXITJAKY=
+XGA&ref_=3Dpe_27063361_485629781_TE_on_sh">View order details</a> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+             <td> <p> <span>Your order will be sent to:</span> <br /> <b> J=
+oshua <br /> LONDON <br /> United Kingdom </b> </p>=20
+              <table id=3D"criticalInfo-costBreakdown">=20
+               <tbody>
+                <tr>=20
+                 <td class=3D"total"> <strong> Order Total: </strong> </td>=
+=20
+                 <td class=3D"total-value"> <strong> &pound;250.55 <br /> U=
+SD 354.61* </strong> </td>=20
+                </tr>=20
+                <tr>=20
+                 <td rowspan=3D"2" class=3D"nonTotalInformation"> Selected =
+Payment Method: </td>=20
+                 <td class=3D"price nonTotalInformation-value"> Mastercard =
+</td>=20
+                </tr>=20
+                <tr></tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> *Exchange rate guarantee fee: USD 9.07 </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guaranteed for this order: 1 GBP =3D 1.415332=
+1625 USD </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guarantee fee above the European Central Bank=
+ reference rate: 3.01% </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"end"></td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"divider"></td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D2ICWSJWMNIZC1&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB073G915C8%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3D5A4UB2YMUGLP2L11YUFUAW4JHCEA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51d9ufnzKtL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3DOGRR8LF8MY51&T=3DC&U=3Dhttps%3A%2F%2Fwww.am=
+azon.co.uk%2Fdp%2FB073G915C8%2Fref%3Dpe_27063361_485629781_TE_item&H=3D8C6Q=
+CPH6X3FMTAW9K7MT02XLY5EA&ref_=3Dpe_27063361_485629781_TE_item"> <b>2 x </b>=
+: A2S Protection Paracord Bracelet K2-Peak - Survival Gear Kit with Embedde=
+d Compass, Fire Starter, Emergency Knife &amp; Whistle (Black/Orange Adjust=
+able Size) </a> <br /> Condition: New <br /> Sold by: <a href=3D"https://ww=
+w.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:ms=
+g:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D2JQU2PA93077U&T=3DC&U=
+=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2Fhome.html%3Fref_%3=
+Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DA1GWY7RLDHBK7I&H=3D=
+UJDPZKI3TXALVWQZZCKVGT5BQJEA&ref_=3Dpe_27063361_485629781_TE_seller">STOPTO=
+SHOP LTD</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1=
+T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c9688=
+0296539600p0eu&R=3D9336Y0PVSHE7&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2F=
+helpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DI4BTA4TQVKP1SC68IRUOCN5=
+89BKA&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazon</a> </td>=
+=20
+             <td class=3D"price"> <strong>&pound;8.32</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D2OGY5E86OSEE&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F1484799674%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DNG3QXMZZIBVQ5BGE0JLNJT2GS4UA&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/5152mQzPkOL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D26VSWOBABK9JS&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F1484799674%2Fref%3Dpe_27063361_485629781_TE_item&H=3DALB=
+XLVSLCAM7TVXWYYSSGEMWICWA&ref_=3Dpe_27063361_485629781_TE_item"> An Elephan=
+t &amp; Piggie Biggie! (Elephant and Piggie Book) </a> <br /> Willems, Mo <=
+br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;12.37</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D1ABTGWBCEASYO&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2F0702310670%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DAHCHJNQAZRIRQ3TLXPUDPS7JBGSA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51PlhdjUixL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D128Q8LAJSFWFS&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F0702310670%2Fref%3Dpe_27063361_485629781_TE_item&H=3DA0U=
+CBAIYXQ4JMRC6ZNAKIAWYYT0A&ref_=3Dpe_27063361_485629781_TE_item"> Dog Man: G=
+rime and Punishment: from the bestselling creator of Captain Underpants (Do=
+g Man #9) </a> <br /> Pilkey, Dav <br /> Sold by: Amazon EU S.a.r.L. </td>=
+=20
+             <td class=3D"price"> <strong>&pound;6.95</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D3RGWF2WGAVGLP&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2F0751509337%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DGJRYITAIOIOXTCWJ3F9YLJYJ9A0A&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/61FoFuU5r9L.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D12BMRQ2EITJUT&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F0751509337%2Fref%3Dpe_27063361_485629781_TE_item&H=3DIIR=
+J4OMGWRYNHLQ46A6VMVRFKWKA&ref_=3Dpe_27063361_485629781_TE_item"> Attack Of =
+The Deranged Mutant Killer Monster Snow Goons: Calvin &amp; Hobbes Series: =
+Book Ten (Calvin and Hobbes) </a> <br /> Watterson, Bill <br /> Sold by: Am=
+azon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;8.99</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3DNMKKA3WIHL7J&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F1368045707%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DSRYRR8CUJSZTG4YPYPH2VTQYIUOA&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51t1JINdE3L._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D32D1MQG1XKDS8&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F1368045707%2Fref%3Dpe_27063361_485629781_TE_item&H=3DDGQ=
+AJ2HGWSWNUPZ7OWOPG6IU884A&ref_=3Dpe_27063361_485629781_TE_item"> An Elephan=
+t &amp; Piggie Biggie-Biggie!, Volume 2 (Elephant and Piggie Book) </a> <br=
+ /> Willems, Mo <br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;12.41</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D3IAHG5R3IV9G5&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB08W9HBYV7%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DJHEFEA1XIJQXNAMEU8YXMQYC9EAA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51C9b3z0hLL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D3RKZIV9QLSZ1L&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08W9HBYV7%2Fref%3Dpe_27063361_485629781_TE_item&H=3D9K0=
+ZKCFC5QL59UWVXHZAWQJJFRWA&ref_=3Dpe_27063361_485629781_TE_item"> LEGO 76195=
+ Marvel Spider-Man's Drone Duel Building Toy for Kids Age 7 , Superhero Bir=
+thday Idea </a> <br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;14.99</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D3W10LHJKNMNQ3&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB093FT1GQV%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DCUMAX7Y7K15BFOOATYXARZA6CLIA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/41eAtTQkBIS.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D2UXRJ3AKN8KYS&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB093FT1GQV%2Fref%3Dpe_27063361_485629781_TE_item&H=3DFFO=
+QAJSKCFB9X2U9PJXRKWZHP3WA&ref_=3Dpe_27063361_485629781_TE_item"> New Replac=
+ement Keyboard Keycaps Keys,Full Set of UK Replacement Keycaps QWERTY for M=
+B Pro Retina 13/15&quot; Model A1706 A1707 A1708 2016-2017 Year for Mb 12&q=
+uot; Model A1534 2017 Year </a> <br /> Condition: New <br /> Sold by: <a hr=
+ef=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO=
+1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D3JYUDQ=
+W610RPQ&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2Fhom=
+e.html%3Fref_%3Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DAG6N=
+E4UQQCHYW&H=3D4093FZJQKQ7HU1THCE1WD6BKWV0A&ref_=3Dpe_27063361_485629781_TE_=
+seller">JI-SO</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D1PW1CAMM6ZH1B&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co=
+.uk%2Fhelpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DJ4BFDIEY2BBH53B4O=
+BCDJMN5PIWA&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazon</a> =
+</td>=20
+             <td class=3D"price"> <strong>&pound;11.66</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3DBNXNR5CDUKAS&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB07KVZNKVL%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DB7SEM6VKFJHCQSSB97NHBMM6RA8A&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/41jKi23zxtL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D29UE7SEIO8I6J&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB07KVZNKVL%2Fref%3Dpe_27063361_485629781_TE_item&H=3D3ZX=
+XDDOJA5ZAXF1102BXON2JVWOA&ref_=3Dpe_27063361_485629781_TE_item"> Spring&amp=
+;Gege Boys' Long Sleeve Solid Formal Uniform Cotton Twill Dress Shirts Blac=
+k 9-10 Years </a> <br /> Condition: New <br /> Sold by: <a href=3D"https://=
+www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:=
+msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D3SNVMTGNB7FS2&T=3DC&=
+U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2Fhome.html%3Fref_%=
+3Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DA39HE607WXM1AN&H=
+=3DB0CNBYCVZQR7J4PJAM6HQKCHJU8A&ref_=3Dpe_27063361_485629781_TE_seller">Spr=
+inggegeEU</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N=
+1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c968=
+80296539600p0eu&R=3D2PY1M17G8RC79&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%=
+2Fhelpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DYLMMWUXLLCIIRB9TF3LVW=
+0OQ9CQA&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazon</a> </td=
+>=20
+             <td class=3D"price"> <strong>&pound;16.99</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3DKKFZVBXJD7AR&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F0751516554%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DYZKUH83GT2CBAO1TCBOSUKA1FMUA&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51FoK-pPLWL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D24CV4HK4CUDGL&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F0751516554%2Fref%3Dpe_27063361_485629781_TE_item&H=3DS9L=
+YLHSHRQ04GIKARLSU4X5AAW0A&ref_=3Dpe_27063361_485629781_TE_item"> Calvin And=
+ Hobbes: The Calvin &amp; Hobbes Series: Book One </a> <br /> Watterson, Bi=
+ll <br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;8.58</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3DDU05EI0K0MTC&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08T685C4D%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DBECSBGCCKJSMI5GVEFK0OIAGGZUA&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/31YLDzlEPRL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D2R6T4KRBA1PA&T=3DC&U=3Dhttps%3A%2F%2Fwww.am=
+azon.co.uk%2Fdp%2FB08T685C4D%2Fref%3Dpe_27063361_485629781_TE_item&H=3DCISC=
+T7DFTV1VYSOWTOBGWK4JKLWA&ref_=3Dpe_27063361_485629781_TE_item"> Tommy Hilfi=
+ger Boy's Essential Oxford Shirt L/S Button, Black, 6 Years </a> <br /> Sol=
+d by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;19.30</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D1LDDJLQ4RA0PU&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB07P8Y7C4B%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DSBJXENFM1AX36XZBO4SXVYDDTCSA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51T+EzAh1nL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3DKA3SJX8D10E3&T=3DC&U=3Dhttps%3A%2F%2Fwww.am=
+azon.co.uk%2Fdp%2FB07P8Y7C4B%2Fref%3Dpe_27063361_485629781_TE_item&H=3DVSL3=
+XJWQQLSUGG35VCC9DAGNABWA&ref_=3Dpe_27063361_485629781_TE_item"> Anpro Disco=
+ Lights, Sound Activated LED Disco Ball Lights with 4m USB Cable and Suctio=
+n Mount, Remote Control Party Lights for Kids Birthday, Home Party, Bedroom=
+ Decoration </a> <br /> Condition: New <br /> Sold by: <a href=3D"https://w=
+ww.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:m=
+sg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D3Q7JC84MRVYYN&T=3DC&U=
+=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2Fhome.html%3Fref_%3=
+Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DA31FA9055GDUUI&H=3D=
+C3ORTYKUD4TEGS43BQMTENWYILGA&ref_=3Dpe_27063361_485629781_TE_seller">Lansir=
+baoHQR</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2=
+SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c968802=
+96539600p0eu&R=3D1H7LGF9991N1W&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fh=
+elpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DQVD6DTEJMT6RN0EZR7PQBNHS=
+IV8A&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazon</a> </td>=
+=20
+             <td class=3D"price"> <strong>&pound;9.16</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D3AF9UPMQMG3BG&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2F0702306878%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DAUCLGQDKWPL0IEANLSAZ2TMBVGOA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51AqAI-VB5L.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D15P8B5UZ667J8&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2F0702306878%2Fref%3Dpe_27063361_485629781_TE_item&H=3DXGK=
+4MXGJQF3GTKNFTXDUP5CONXEA&ref_=3Dpe_27063361_485629781_TE_item"> Fetch-22: =
+From the Creator of Captain Underpants (Dog Man 8) </a> <br /> Pilkey, Dav =
+<br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;6.95</strong> <br /> </td>=
+=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3DUPKQ26T96JI1&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08DKFQFJH%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DR6HYIK9IS6RA0HXBOPWITCJAQK0A&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/417vpgg3mfL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D1TSR9EJ91K030&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08DKFQFJH%2Fref%3Dpe_27063361_485629781_TE_item&H=3DM5W=
+UQA3H1DQA1TBZRNRKDX76BJAA&ref_=3Dpe_27063361_485629781_TE_item"> Bluetooth =
+Mouse, Inphic Three-mode Slim Silent Rechargeable Bluetooth Wireless Mouse =
+(Bluetooth 5.0/3.0+ 2.4G), 1600DPI Portable Mouse for Laptop PC Computer, A=
+ndroid,Windows MacBook (Black) </a> <br /> Condition: New <br /> Sold by: <=
+a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D11=
+N8536W6S4JQ&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2=
+Fhome.html%3Fref_%3Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3D=
+A3N4VL8ASM950G&H=3DNOZDIWYR5FOU7EO1FM4N74JSANGA&ref_=3Dpe_27063361_48562978=
+1_TE_seller">inphic</a> <br /> <a href=3D"https://www.amazon.co.uk/gp/f.htm=
+l?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc=
+4c6884c96880296539600p0eu&R=3D2M9DA0YBDDWQD&T=3DC&U=3Dhttps%3A%2F%2Fwww.ama=
+zon.co.uk%2Fhelpfba%3Fref_%3Dpe_27063361_485629781_TE_fbaen&H=3DPP2RSMYCH3P=
+MGXXMNOILH443IS0A&ref_=3Dpe_27063361_485629781_TE_fbaen">Fulfilled by Amazo=
+n</a> </td>=20
+             <td class=3D"price"> <strong>&pound;11.66</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D1SXJ9VJOD9UK2&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB0722VFVLW%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3D8JBDLVUDQLNMECGC8PICGEBB4E8A&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/41wXV8aV5BL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D3KVE6OH6144XD&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB0722VFVLW%2Fref%3Dpe_27063361_485629781_TE_item&H=3DNMX=
+EQA5P8JAJHSND7Q3QJZCSHWUA&ref_=3Dpe_27063361_485629781_TE_item"> <b>2 x </b=
+>Kids Headphones, JLab Audio JBuddies Studio Kids Wireless Headphones - Hea=
+dphones For Kids with 13 Hour Battery Life, Kid Safe Volume Limiter and Noi=
+se Isolation - Kids Bluetooth Headphones, Blue </a> <br /> Condition: New <=
+br /> Sold by: <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF=
+371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c968802965=
+39600p0eu&R=3D2GFPTWPHOFO1J&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2=
+Fhelp%2Fseller%2Fhome.html%3Fref_%3Dpe_27063361_485629781_TE_seller%26ie%3D=
+UTF8%26seller%3DAGYGRPZFJXD37&H=3DS3QUQXSZJW57PBN44WITRMPRYC8A&ref_=3Dpe_27=
+063361_485629781_TE_seller">Jlab Audio</a> <br /> <a href=3D"https://www.am=
+azon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20=
+211029130745fc3dcbc4c6884c96880296539600p0eu&R=3DTZI2KXB4IHE8&T=3DC&U=3Dhtt=
+ps%3A%2F%2Fwww.amazon.co.uk%2Fhelpfba%3Fref_%3Dpe_27063361_485629781_TE_fba=
+en&H=3DWLSANLYUXCPZNT0QYO5LPVYCUG0A&ref_=3Dpe_27063361_485629781_TE_fbaen">=
+Fulfilled by Amazon</a> </td>=20
+             <td class=3D"price"> <strong>&pound;24.99</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D7H62H5AATI7E&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08G4293BD%2Fref%3Dpe_27063361_485629781_TE_item_image&H=
+=3DL8LCKODVQGDSAAE8HZTHOCJLJGWA&ref_=3Dpe_27063361_485629781_TE_item_image"=
+> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51UbIEyWSoL._=
+SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D1IGGMAT5H59ME&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB08G4293BD%2Fref%3Dpe_27063361_485629781_TE_item&H=3D2LM=
+BBBIJFP8K5BNAANHSNZD6ICYA&ref_=3Dpe_27063361_485629781_TE_item"> LEGO 42123=
+ Technic McLaren Senna GTR Racing Sports Collectable Model Car, Vehicle Toy=
+ Construction Set, Idea </a> <br /> Sold by: Amazon EU S.a.r.L. </td>=20
+             <td class=3D"price"> <strong>&pound;24.99</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"orderDetails">=20
+           <tbody>
+            <tr>=20
+             <td> Order #<a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3D20BVZ7LC04615&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co=
+.uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-0165784-22=
+58761%26ref_%3Dpe_27063361_485629781_TE_order&H=3DW5CNI3PGQ44Q093JL9QKQRJAB=
+CKA&ref_=3Dpe_27063361_485629781_TE_order" class=3D"inline-block">205-01657=
+84-2258761</a> <br /> <span>Placed on October 29, 2021</span> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table id=3D"criticalInfo">=20
+           <tbody>
+            <tr class=3D"detailsContent">=20
+             <td> <p> <span>Arriving:</span> <br /> <b style=3D"color:#0099=
+00;"> Tuesday, November 2 - <br /> Wednesday, November 3 </b> </p> <p> <spa=
+n>Your delivery option:</span> <br /> <b> Standard Delivery </b> </p> <br /=
+>=20
+              <table class=3D"buttonComponent" bgcolor=3D"#ffa723" width=3D=
+"222">=20
+               <tbody>
+                <tr>=20
+                 <td style=3D"width:100%; vertical-align:middle; padding: 0=
+px;" align=3D"center" valign=3D"middle" width=3D"100%" height=3D"45"> <a cl=
+ass=3D"buttonComponentLink" href=3D"https://www.amazon.co.uk/gp/r.html?C=3D=
+139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884=
+c96880296539600p0eu&R=3DJ2KVAUSF024L&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.=
+uk%2Fgp%2Fcss%2Fsummary%2Fedit.html%3Fie%3DUTF8%26orderID%3D205-0165784-225=
+8761%26ref_%3Dpe_27063361_485629781_TE_on_sh&H=3DGINQVPYTDQDJTEBXXGBXLB2C4I=
+GA&ref_=3Dpe_27063361_485629781_TE_on_sh">View order details</a> </td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>=20
+             <td> <p> <span>Your order will be sent to:</span> <br /> <b> J=
+oshua <br /> LONDON <br /> United Kingdom </b> </p>=20
+              <table id=3D"criticalInfo-costBreakdown">=20
+               <tbody>
+                <tr>=20
+                 <td class=3D"total"> <strong> Order Total: </strong> </td>=
+=20
+                 <td class=3D"total-value"> <strong> &pound;49.49 <br /> US=
+D 70.04* </strong> </td>=20
+                </tr>=20
+                <tr>=20
+                 <td rowspan=3D"2" class=3D"nonTotalInformation"> Selected =
+Payment Method: </td>=20
+                 <td class=3D"price nonTotalInformation-value"> Mastercard =
+</td>=20
+                </tr>=20
+                <tr></tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> *Exchange rate guarantee fee: USD 1.79 </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guaranteed for this order: 1 GBP =3D 1.415332=
+1625 USD </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"nonTotalInformation lowerPriori=
+tyInformation"> Exchange rate guarantee fee above the European Central Bank=
+ reference rate: 3.01% </td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"end"></td>=20
+                </tr>=20
+                <tr>=20
+                 <td colspan=3D"2" class=3D"divider"></td>=20
+                </tr>=20
+               </tbody>
+              </table> </td>
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td style=3D"padding-left:32px;">=20
+          <table style=3D"width:95%;" id=3D"itemDetails">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"photo"> <a href=3D"https://www.amazon.co.uk/gp/r.=
+html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3d=
+cbc4c6884c96880296539600p0eu&R=3D3AN0UGRNBUYXV&T=3DC&U=3Dhttps%3A%2F%2Fwww.=
+amazon.co.uk%2Fdp%2FB010VEAFYU%2Fref%3Dpe_27063361_485629781_TE_item_image&=
+H=3DTTHACK1R4LAQ2ONTGZLHCXGRBICA&ref_=3Dpe_27063361_485629781_TE_item_image=
+"> <img id=3D"asin" src=3D"https://m.media-amazon.com/images/I/51Au9NnOqQL.=
+_SY115_SX115_.jpg" /> </a> </td>=20
+             <td class=3D"name"> <a href=3D"https://www.amazon.co.uk/gp/r.h=
+tml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dc=
+bc4c6884c96880296539600p0eu&R=3D11JZB7DCL4OC6&T=3DC&U=3Dhttps%3A%2F%2Fwww.a=
+mazon.co.uk%2Fdp%2FB010VEAFYU%2Fref%3Dpe_27063361_485629781_TE_item&H=3D6AC=
+3LEHGSFTHRXR4Y4AJJQOGAYCA&ref_=3Dpe_27063361_485629781_TE_item"> Optimum Nu=
+trition 100% Whey Gold Standard (5lbs) Extreme Milk Chocolate, 1 Units, 2.2=
+7 kg (Pack of 1) </a> <br /> Condition: New <br /> Sold by: <a href=3D"http=
+s://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:=
+rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D36EMZYGXPEWIX&T=
+=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fgp%2Fhelp%2Fseller%2Fhome.html%3F=
+ref_%3Dpe_27063361_485629781_TE_seller%26ie%3DUTF8%26seller%3DA28JR47W36UJR=
+A&H=3DYB9VMRFC3XWD0V5AEALPBKH55ZKA&ref_=3Dpe_27063361_485629781_TE_seller">=
+UKESUPPS-2016</a> </td>=20
+             <td class=3D"price"> <strong>&pound;41.24</strong> <br /> </td=
+>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"selfService">=20
+           <tbody>
+            <tr>=20
+             <td> <p> If you use a mobile device, you can receive notificat=
+ions about the delivery of your package and track it from our free <a href=
+=3D"https://www.amazon.co.uk/gp/r.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&=
+M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3DAKD2G9ZY=
+PP30&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2Fb%3Fnode%3D4816518031%26ref=
+%3DTE_%26ref_%3Dpe_27063361_485629781&H=3DLBWZIBYNS88MAAKGNUB5M5WJREOA&ref_=
+=3Dpe_27063361_485629781">Amazon app</a>. </p> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"closing">=20
+           <tbody>
+            <tr>=20
+             <td> <p> We hope to see you again soon. <br /> <span class=3D"=
+signature"> <strong>Amazon.co.uk</strong> </span> </p> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"marketingContent">=20
+           <tbody>
+            <tr>=20
+             <td class=3D"recs">
+              <!--rbd-->=20
+              <div class=3D"celwidget pd_rd_w-8wMdC pf_rd_p-946587d7-ae48-4=
+ed2-ad6a-53cc60f6db71 pf_rd_r-CZA4CVKPWQM5MXA6X6H3 pd_rd_r-5eeef2dc-096d-49=
+3a-a9aa-11cccc913fce pd_rd_wg-8LyzU c-f" cel_widget_id=3D"p13n-asin-list-pl=
+ain_email-order-confirmation_0" data-csa-c-content-id=3D"amzn1.sym.946587d7=
+-ae48-4ed2-ad6a-53cc60f6db71" data-csa-c-slot-id=3D"email-order-confirmatio=
+n-1" data-csa-c-type=3D"widget" data-csa-c-painter=3D"p13n-asin-list-plain-=
+cards">
+               <script>if(window.mix_csa){window.mix_csa('[cel_widget_id=3D=
+"p13n-asin-list-plain_email-order-confirmation_0"]')('mark', 'bb')}</script=
+>=20
+               <script>if(window.uet){window.uet('bb','p13n-asin-list-plain=
+_email-order-confirmation_0',{wb: 1})}</script>=20
+               <style>._p13n-asin-list-plain_truncationStyles_p13n-sc-css-l=
+ine-clamp-1__1Fn1y{-webkit-line-clamp:1;-webkit-box-orient:vertical;display=
+:-webkit-box;overflow:hidden}._p13n-asin-list-plain_truncationStyles_p13n-s=
+c-css-line-clamp-2__EWgCb{-webkit-line-clamp:2;-webkit-box-orient:vertical;=
+display:-webkit-box;overflow:hidden}._p13n-asin-list-plain_truncationStyles=
+_p13n-sc-css-line-clamp-3__g3dy1{-webkit-line-clamp:3;-webkit-box-orient:ve=
+rtical;display:-webkit-box;overflow:hidden}._p13n-asin-list-plain_truncatio=
+nStyles_p13n-sc-css-line-clamp-4__2q2cc{-webkit-line-clamp:4;-webkit-box-or=
+ient:vertical;display:-webkit-box;overflow:hidden}._p13n-asin-list-plain_tr=
+uncationStyles_p13n-sc-css-line-clamp-5__2l-dX{-webkit-line-clamp:5;-webkit=
+-box-orient:vertical;display:-webkit-box;overflow:hidden}._p13n-asin-list-p=
+lain_truncationStyles_p13n-sc-css-line-clamp-6__28daG{-webkit-line-clamp:6;=
+-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden}._p13n-asin=
+-list-plain_truncationStyles_p13n-sc-css-line-clamp-7__1k_Mc{-webkit-line-c=
+lamp:7;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidden}._p1=
+3n-asin-list-plain_truncationStyles_p13n-sc-css-line-clamp-8__1yvsR{-webkit=
+-line-clamp:8;-webkit-box-orient:vertical;display:-webkit-box;overflow:hidd=
+en}._p13n-asin-list-plain_truncationStyles_p13n-sc-css-line-clamp-9__3Pofd{=
+-webkit-line-clamp:9;-webkit-box-orient:vertical;display:-webkit-box;overfl=
+ow:hidden}._p13n-asin-list-plain_truncationStyles_p13n-sc-css-line-clamp-10=
+__mY8_7{-webkit-line-clamp:10;-webkit-box-orient:vertical;display:-webkit-b=
+ox;overflow:hidden}
+._p13n-asin-list-plain_pillContainerStyle_p13nscPills__1KzwZ{margin-left:0;=
+overflow:auto;white-space:normal}._p13n-asin-list-plain_pillContainerStyle_=
+p13nscPills__1KzwZ::-webkit-scrollbar{background:transparent;width:0}._p13n=
+-asin-list-plain_pillContainerStyle_p13nscPills__1KzwZ li{-webkit-box-pack:=
+center;-ms-flex-pack:center;background-color:#f0f0f0;border:1px solid #f0f0=
+f0;border-radius:8px;box-shadow:0 1px 2px 0 rgba(15,17,17,.2);color:#111;cu=
+rsor:pointer;display:-webkit-inline-box;display:-ms-inline-flexbox;display:=
+inline-flex;font-weight:500;justify-content:center;list-style-type:none;mar=
+gin:1px 8px 2px 1px;min-width:44px;padding:8px;text-align:center;white-spac=
+e:normal}._p13n-asin-list-plain_pillContainerStyle_p13nscPills__1KzwZ li.p1=
+3n-selected-pill{background-color:#e7f4f5;border-color:#c7e4e8;color:#00718=
+5}._p13n-asin-list-plain_pillContainerStyle_p13nscPills__1KzwZ li:hover.p13=
+n-selected-pill{background-color:#daf1f3;border-color:#c7e4e8;color:#007185=
+}._p13n-asin-list-plain_pillContainerStyle_p13nscPills__1KzwZ li:hover{back=
+ground-color:#eee;border-color:#eee}._p13n-asin-list-plain_pillContainerSty=
+le_p13nscPills__1KzwZ ._p13n-asin-list-plain_pillContainerStyle_unselected_=
+_q8wvT{background-color:#f4f4f4}._p13n-asin-list-plain_pillContainerStyle_s=
+pinnerContainer__Llfcc{min-height:100px;width:100%}._p13n-asin-list-plain_p=
+illContainerStyle_spinnerContainer__Llfcc ._p13n-asin-list-plain_pillContai=
+nerStyle_p13nScSpinner__3lJFM{margin:20px auto auto}._p13n-asin-list-plain_=
+pillContainerStyle_refinementPillCss__1fYG0{max-width:200px}
+._p13n-asin-list-plain_style_grid-cell__zFYyO{-webkit-box-pack:center;-ms-f=
+lex-pack:center;-ms-flex-preferred-size:210px;-webkit-box-flex:1;-ms-flex-p=
+ositive:1;background-color:#fff;display:-webkit-box;display:-ms-flexbox;dis=
+play:flex;flex-basis:210px;flex-grow:1;justify-content:center;margin:10px;m=
+ax-width:300px;min-width:210px}._p13n-asin-list-plain_style_grid-row__3VsqC=
+{display:-webkit-box;display:-ms-flexbox;display:flex;-ms-flex-wrap:wrap;fl=
+ex-wrap:wrap;margin-bottom:22px}._p13n-asin-list-plain_style_grid-column__U=
+jCjt{border-bottom:1px solid #d5dbdb;border-top:1px solid #d5dbdb;border-co=
+lor:#d5dbdb;border-style:solid;border-width:.5px 1px;margin-bottom:0;margin=
+-left:-1px;margin-right:0!important;margin-top:0;width:-webkit-min-content;=
+width:-moz-min-content;width:min-content}
+._p13n-asin-list-plain_style_column__2x05O{grid-column:auto/span 1;margin-r=
+ight:0!important}._p13n-asin-list-plain_style_grid-row__3daT_{display:grid;=
+grid-template-columns:repeat(auto-fit,50%)}._p13n-asin-list-plain_style_car=
+d__3H7qC{margin-bottom:0;margin-top:0;padding:10px;position:relative;text-a=
+lign:center}._p13n-asin-list-plain_style_card__3H7qC,._p13n-asin-list-plain=
+_style_expandedColumn__1-66H{-webkit-box-orient:vertical;-webkit-box-direct=
+ion:normal;border-bottom:1px solid #d5dbdb;border-top:1px solid #d5dbdb;bor=
+der-color:#d5dbdb;border-style:solid;border-width:.5px 1px;-ms-flex-flow:co=
+lumn;flex-flow:column;height:100%;margin-left:-1px}._p13n-asin-list-plain_s=
+tyle_expandedColumn__1-66H{-webkit-box-align:center;-ms-flex-align:center;a=
+lign-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;grid=
+-column:auto/span 2;margin-right:0!important;margin-top:-1px}._p13n-asin-li=
+st-plain_style_overlayTitle__2XUqy{position:absolute;top:35%}._p13n-asin-li=
+st-plain_style_notInterestedMessage__2-bO3{position:absolute;top:50%}._p13n=
+-asin-list-plain_style_image__2eEq7{opacity:.1}._p13n-asin-list-plain_style=
+_feedbackRow__17KjU{margin-right:0!important}
+.report-flag-hide{cursor:none;display:none}.report-flag{background-image:ur=
+l(https://m.media-amazon.com/images/S/sash/vh8ofoqOd7XyRsk.png);background-=
+repeat:no-repeat;background-size:15px 16px;cursor:pointer;height:16px;posit=
+ion:absolute;right:20px;top:35px;width:15px}.report-flag:hover{background-i=
+mage:url(https://m.media-amazon.com/images/S/sash/WXxFP-k55X6KCh2.png)}.rep=
+ort-problem-modal-root{padding:14px 18px}
+._p13n-asin-list-plain_panelStyle_panel-text__3TtlT{width:220px}._p13n-asin=
+-list-plain_panelStyle_panel-container__3ZNzh{float:left;width:238px}._p13n=
+-asin-list-plain_panelStyle_panel-subsection__19oyW{padding-left:15px;paddi=
+ng-right:18px}._p13n-asin-list-plain_panelStyle_panel-logo-container__ucYMM=
+{height:33px;margin-bottom:5px;width:220px}._p13n-asin-list-plain_panelStyl=
+e_panel-button__GP7zd{width:auto}
+._p13n-asin-list-plain_style_card__2yY06{width:95%}._p13n-asin-list-plain_s=
+tyle_image-and-offer__XQEhq{display:-webkit-box;display:-ms-flexbox;display=
+:flex;margin-bottom:0;margin-top:10px}._p13n-asin-list-plain_style_review-r=
+ow__1d5Qn{padding-right:10px;width:100%}._p13n-asin-list-plain_style_row__1=
+eL-2{width:100%}._p13n-asin-list-plain_style_icon__3kTmk{background-positio=
+n:-310px -5px;height:1.6rem;width:1.6rem}
+._p13n-asin-list-plain_price_p13n-sc-price__3mJ9Z{word-wrap:normal}
+._p13n-asin-list-plain_prime_p13n-prime-badge__GVM4h{position:relative;top:=
+2px}
+input[type=3Dnumber]::-webkit-inner-spin-button,input[type=3Dnumber]::-webk=
+it-outer-spin-button{-webkit-appearance:none;margin:0}input[type=3Dnumber]{=
+-moz-appearance:textfield}
+._p13n-asin-list-plain_bestsellerStyles_p13n-best-seller-badge__1-yh1{backg=
+round-color:#c45500!important;font-size:12px;margin-right:8px;padding-botto=
+m:2px;padding-top:2px}._p13n-asin-list-plain_bestsellerStyles_p13n-best-sel=
+ler-badge__1-yh1:before{border-bottom-color:#c45500!important}._p13n-asin-l=
+ist-plain_bestsellerStyles_p13n-best-seller-badge__1-yh1:after{border-top-c=
+olor:#c45500!important}._p13n-asin-list-plain_bestsellerStyles_p13n-sc-best=
+seller-badge-body__3nkHf{background-color:#c45500;float:left;line-height:18=
+px;padding-left:6px;padding-right:3px}._p13n-asin-list-plain_bestsellerStyl=
+es_p13n-sc-bestseller-badge-text__3apKt{color:#fff;line-height:18px}._p13n-=
+asin-list-plain_bestsellerStyles_p13n-sc-bestseller-badge-triangle__2Z3cK{b=
+order-right:9px solid transparent;border-top:18px solid;color:#c45500;float=
+:left;height:0;width:0}
+._p13n-asin-list-plain_curationStyles_curation__13VGx{margin-bottom:0;overf=
+low:hidden;text-overflow:ellipsis;white-space:nowrap}._p13n-asin-list-plain=
+_curationStyles_curation__13VGx ._p13n-asin-list-plain_curationStyles_icon_=
+_3_dKr{width:20px}
+._p13n-asin-list-plain_dealInfo_p13nDealOfTheDay__cVlwZ{background:#b12704;=
+color:#fff;float:right;padding:2px 4px;position:relative}._p13n-asin-list-p=
+lain_dealInfo_dealsCardDealTimer__2oYBO{float:left}._p13n-asin-list-plain_d=
+ealInfo_dealsCardPercentClaimed__1GTDI{float:right}
+._p13n-asin-list-plain_quantityDiscounts_qdMessage__3xK5j{color:#007185}._p=
+13n-asin-list-plain_quantityDiscounts_qdMessage__3xK5j:hover{color:#c45000}
+._p13n-asin-list-plain_quantityPricingTable_qdPricingTableContainer__29w2z =
+._p13n-asin-list-plain_quantityPricingTable_qdPricingTable__1_iY1{border:no=
+ne;border-collapse:separate;border-top:1px solid #e7e7e7}._p13n-asin-list-p=
+lain_quantityPricingTable_qdPlaceholderRow__1ry1S ._p13n-asin-list-plain_qu=
+antityPricingTable_quantityColumn__2sfjE{border-left:3px solid #d77d32}._p1=
+3n-asin-list-plain_quantityPricingTable_qdPricingTableContainer__29w2z ._p1=
+3n-asin-list-plain_quantityPricingTable_qdPricingTable__1_iY1 ._p13n-asin-l=
+ist-plain_quantityPricingTable_qdRow__2WzQJ{background-color:#fff;cursor:po=
+inter}._p13n-asin-list-plain_quantityPricingTable_mobile__2LnqI._p13n-asin-=
+list-plain_quantityPricingTable_qdTableInput__1Z2G6{width:95%}._p13n-asin-l=
+ist-plain_quantityPricingTable_qdTableInput__1Z2G6{float:left;margin:10px}.=
+_p13n-asin-list-plain_quantityPricingTable_closeButton__3sVAs{background-co=
+lor:#eee;border-radius:5px;cursor:pointer;float:right;font-weight:100;heigh=
+t:30px;line-height:.85;margin:10px 10px 10px 0;text-align:center;width:30px=
+}
+._p13n-asin-list-plain_delightPricingStyles_p13n-delight-pricing-badge__26S=
+9Q{background:#b12704;color:#fff;display:inline-block;padding:2px 10px;posi=
+tion:relative}
+._p13n-asin-list-plain_style_welcome__2Dav7{background:-webkit-linear-gradi=
+ent(#01a4b5,#008296,#383e3e);background:linear-gradient(#01a4b5,#008296,#38=
+3e3e);color:#fff;padding:40px;text-align:center}._p13n-asin-list-plain_styl=
+e_welcome__2Dav7 h1{font-size:4em}._p13n-asin-list-plain_style_welcome__2Da=
+v7 h2{font-size:2.5em}._p13n-asin-list-plain_style_example__286SK{padding:4=
+0px}</style>=20
+               <!--CardsClient-->
+               <table style=3D"width:100%" id=3D"CardInstanceYRMrUNCX9eaIwX=
+TGElSSYQ" data-card-metrics-id=3D"p13n-asin-list-plain_email-order-confirma=
+tion_0">
+                <tbody>
+                 <tr>
+                  <td>
+                   <table width=3D"100%" bgcolor=3D"#FFFFFF" style=3D"verti=
+cal-align:central;background:white">
+                    <tbody>
+                     <tr>
+                      <td style=3D"font:18px Arial,sans-serif;text-decorati=
+on:none;color:#cc6600;text-align:left;padding:10px">Recommendations for all=
+ products:</td>
+                     </tr>
+                    </tbody>
+                   </table></td>
+                 </tr>
+                 <tr>
+                  <td>
+                   <table width=3D"100%" cellspacing=3D"0" cellpadding=3D"0=
+" border=3D"0" align=3D"left" style=3D"vertical-align:central;background:wh=
+ite">
+                    <tbody>
+                     <tr>
+                      <td width=3D"48%" bgcolor=3D"#ffffff" align=3D"left" =
+style=3D"vertical-align:middle"><a href=3D"https://www.amazon.co.uk/gp/r.ht=
+ml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcb=
+c4c6884c96880296539600p0eu&R=3D9OL7KTLR2WTI&T=3DC&U=3Dhttps%3A%2F%2Fwww.ama=
+zon.co.uk%2FSomething-Under-Bed-Drooling-Collection%2Fdp%2F0751504831%2Fref=
+%3Dpe_27063361_485629781_qpr_1%2F258-0523779-8671545%2Fref%3Dqpr%3F_encodin=
+g%3DUTF8%26pd_rd_i%3D0751504831%26psc%3D1%26pd_rd_w%3D8wMdC%26pf_rd_p%3D946=
+587d7-ae48-4ed2-ad6a-53cc60f6db71%26pf_rd_r%3DCZA4CVKPWQM5MXA6X6H3%26pd_rd_=
+r%3D5eeef2dc-096d-493a-a9aa-11cccc913fce%26pd_rd_wg%3D8LyzU&H=3D6E2B5WQBITV=
+76YQUMBB8PRBNGJEA&ref_=3Dpe_27063361_485629781_qpr_1" style=3D"text-decorat=
+ion:none">
+                        <table>
+                         <tbody>
+                          <tr>
+                           <td align=3D"center" style=3D"min-width:80px;pad=
+ding:12px 5px 10px 5px;vertical-align:middle"><img style=3D"margin:0 8px 0 =
+8px" src=3D"https://m.media-amazon.com/images/I/71hyYgI6L7L._AC_SX80_SY80_S=
+S80_.jpg" alt=3D"Something Under The Bed Is Drooling: Calvin &amp; Hobbes S=
+eries: Book Two (Calvin and Hobbes)" width=3D"80" height=3D"80" /></td>
+                           <td align=3D"left" style=3D"padding:12px 5px 10p=
+x 5px;vertical-align:middle">
+                            <table>
+                             <tbody>
+                              <tr align=3D"left">
+                               <td><p style=3D"font:13px Arial,sans-serif;t=
+ext-decoration:none;color:#868686">Something Under The Bed Is Drooling:...<=
+/p></td>
+                              </tr>
+                              <tr align=3D"left">
+                               <td><span style=3D"font:13px Arial,sans-seri=
+f;text-decoration:none;color:#868686">&pound;7.99</span></td>
+                              </tr>
+                             </tbody>
+                            </table></td>
+                          </tr>
+                         </tbody>
+                        </table></a></td>
+                      <td width=3D"48%" bgcolor=3D"#ffffff" align=3D"left" =
+style=3D"vertical-align:middle"><a href=3D"https://www.amazon.co.uk/gp/r.ht=
+ml?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcb=
+c4c6884c96880296539600p0eu&R=3D1L8QJO4WNY2N7&T=3DC&U=3Dhttps%3A%2F%2Fwww.am=
+azon.co.uk%2FLEGO-76185-tbd-LSH-2021%2Fdp%2FB08W9X8HZG%2Fref%3Dpe_27063361_=
+485629781_qpr_2%2F258-0523779-8671545%2Fref%3Dqpr%3F_encoding%3DUTF8%26pd_r=
+d_i%3DB08W9X8HZG%26psc%3D1%26pd_rd_w%3D8wMdC%26pf_rd_p%3D946587d7-ae48-4ed2=
+-ad6a-53cc60f6db71%26pf_rd_r%3DCZA4CVKPWQM5MXA6X6H3%26pd_rd_r%3D5eeef2dc-09=
+6d-493a-a9aa-11cccc913fce%26pd_rd_wg%3D8LyzU&H=3DCKW0CYIBOYQSDFZ506YAWSKAJX=
+GA&ref_=3Dpe_27063361_485629781_qpr_2" style=3D"text-decoration:none">
+                        <table>
+                         <tbody>
+                          <tr>
+                           <td align=3D"center" style=3D"min-width:80px;pad=
+ding:12px 5px 10px 5px;vertical-align:middle"><img style=3D"margin:0 8px 0 =
+8px" src=3D"https://m.media-amazon.com/images/I/91z0AZQjh0L._AC_SX80_SY80_S=
+S80_.jpg" alt=3D"LEGO 76185 Marvel Spider-Man at the Sanctum Workshop Build=
+ing Toy for Kids Age 7 with Bug Monster &amp; Doctor Strange Minifigure" wi=
+dth=3D"80" height=3D"80" /></td>
+                           <td align=3D"left" style=3D"padding:12px 5px 10p=
+x 5px;vertical-align:middle">
+                            <table>
+                             <tbody>
+                              <tr align=3D"left">
+                               <td><p style=3D"font:13px Arial,sans-serif;t=
+ext-decoration:none;color:#868686">LEGO 76185 Marvel Spider-Man at the...</=
+p></td>
+                              </tr>
+                              <tr align=3D"left">
+                               <td><span style=3D"font:13px Arial,sans-seri=
+f;text-decoration:none;color:#868686">&pound;34.99</span></td>
+                              </tr>
+                             </tbody>
+                            </table></td>
+                          </tr>
+                         </tbody>
+                        </table></a></td>
+                     </tr>
+                    </tbody>
+                   </table></td>
+                 </tr>
+                </tbody>
+               </table>
+               <script>if(window.mix_csa){window.mix_csa('[cel_widget_id=3D=
+"p13n-asin-list-plain_email-order-confirmation_0"]')('mark', 'be')}</script=
+>=20
+               <script>if(window.uet){window.uet('be','p13n-asin-list-plain=
+_email-order-confirmation_0',{wb: 1})}</script>=20
+               <script>if(window.mixTimeout){window.mixTimeout('p13n-asin-l=
+ist-plain', 'CardInstanceYRMrUNCX9eaIwXTGElSSYQ', 90000)};
+P.when('mix:@amzn/mix.client-runtime', 'mix:p13n-asin-list-plain__HZEx0OsW'=
+).execute(function (runtime, cardModule) {runtime.registerCardFactory('Card=
+InstanceYRMrUNCX9eaIwXTGElSSYQ', cardModule).then(function(){if(window.mix_=
+csa){window.mix_csa('[cel_widget_id=3D"p13n-asin-list-plain_email-order-con=
+firmation_0"]')('mark', 'functional')}if(window.uex){window.uex('ld','p13n-=
+asin-list-plain_email-order-confirmation_0',{wb: 1})}});});
+</script>=20
+               <script>P.load.js('https://images-eu.ssl-images-amazon.com/i=
+mages/I/01A1VjF8puL.js?xcp');
+</script>=20
+              </div></td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+        <tr>=20
+         <td>=20
+          <table id=3D"legalCopy">=20
+           <tbody>
+            <tr>=20
+             <td> <p> <a href=3D"https://www.amazon.co.uk/gp/r.html?C=3D139=
+N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96=
+880296539600p0eu&R=3D180FEJP1DB3WC&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk=
+%2Fgp%2Fhelp%2Fcustomer%2Fdisplay.html%3FnodeId%3D202018630%26ref%3DTE_help=
+fba%26ref_%3Dpe_27063361_485629781&H=3D31OVNTVINWGOWPLEIREF9AW1AD8A&ref_=3D=
+pe_27063361_485629781">Fulfilled By Amazon</a> (usually referred to as FBA)=
+ items are generally sold by third-party sellers but stored in an Amazon Fu=
+lfilment Centre and sent to you from there. Items which are sold by Warehou=
+se Deals are also labeled Fulfilled by Amazon. Warehouse Deals is a trading=
+ name for Amazon EU Sarl, and is part of the Amazon.com group. </p> <p> Unl=
+ess otherwise noted, items sold by Amazon EU Sarl are subject to Value Adde=
+d Tax based on country of delivery in accordance with the EU laws on distan=
+ce selling. If your order contains one or more items from a seller other th=
+an Amazon EU Sarl, it may also be subject to VAT, depending upon the seller=
+'s business policies and the location of their operations. Learn more about=
+ <a href=3D"https://www.amazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IY=
+ZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D=
+3ERZY7KZ50U5D&T=3DC&U=3Dhttps%3A%2F%2Fwww.amazon.co.uk%2FVatSellerInfo%3Fre=
+f%3DTE_vat%26ref_%3Dpe_27063361_485629781&H=3DHJEYWCLQGO74UK79CXGZHJIZFEQA&=
+ref_=3Dpe_27063361_485629781">VAT and seller information</a>. </p> <p>If yo=
+ur item(s) are purchased from <a href=3D"https://www.amazon.co.uk/gp/f.html=
+?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4=
+c6884c96880296539600p0eu&R=3D3LPDFZFN0ED8Q&T=3DC&U=3Dhttps%3A%2F%2Fwww.amaz=
+on.co.uk%2Fmarketplace%3Fref_%3Dpe_27063361_485629781_TE_mpen&H=3DQUH2HYFAG=
+MKQX1FBXGWXNGAX5GSA&ref_=3Dpe_27063361_485629781_TE_mpen">Amazon Marketplac=
+e</a>, the seller may request additional information such as the VAT number=
+ or your VAT code, in order to issue a valid invoice.</p> </td>=20
+            </tr>=20
+            <tr>=20
+             <td style=3D"padding: 0;"> <p>*Amazon Currency Converter is op=
+erated by Amazon Services Europe SARL, and your use of Amazon Currency Conv=
+erter is governed by the Amazon Currency Converter <a href=3D"https://www.a=
+mazon.co.uk/gp/f.html?C=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:2=
+0211029130745fc3dcbc4c6884c96880296539600p0eu&R=3D1X1NMJZ4T9TER&T=3DC&U=3Dh=
+ttps%3A%2F%2Fwww.amazon.co.uk%2Fcurrencyconverterhow%3Fref_%3Dpe_27063361_4=
+85629781_TE_tfx&H=3DVZ81HSMMMYA5BT5IACLBYCGXAOUA&ref_=3Dpe_27063361_4856297=
+81_TE_tfx">Terms and Conditions</a>.</p> </td>=20
+            </tr>=20
+            <tr>=20
+             <td style=3D"padding: 0;"> <p>This e-mail is only an acknowled=
+gement of receipt of your order. Your contract to purchase these items is n=
+ot complete until we send you an e-mail notifying you that the items have b=
+een dispatched.</p> <p>Please note: This e-mail was sent from a notificatio=
+n-only address that can't accept incoming e-mail. Please do not reply to th=
+is message.</p> </td>=20
+            </tr>=20
+           </tbody>
+          </table> </td>=20
+        </tr>=20
+       </tbody>
+      </table> </td>=20
+    </tr>=20
+   </tbody>
+  </table> =20
+ <img width=3D"1" height=3D"1" src=3D"https://www.amazon.co.uk/gp/r.html?C=
+=3D139N1T2SKF371&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:20211029130745fc3dcbc4c6=
+884c96880296539600p0eu&R=3DO7IUFVXCXONM&T=3DE&U=3Dhttps%3A%2F%2Fimages-eu.s=
+sl-images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3DEWTTOGRR2AIT2=
+BWOAYWLKSTQOSQA&ref_=3Dpe_27063361_485629781_open" /></body>
+</html>
+------=_Part_7718727_844408414.1635512865764--

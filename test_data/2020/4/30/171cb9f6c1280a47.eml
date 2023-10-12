@@ -1,0 +1,861 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:2202:0:0:0:0:0 with SMTP id i2csp2066753lji;
+        Thu, 30 Apr 2020 08:05:55 -0700 (PDT)
+X-Google-Smtp-Source: APiQypJoSwz7sg9lCVdWJMRRClM1OmfaFLv5H6Wpt6sF5YMkghgpfTBa4ps/ch2Q2jwCTlv0jyI3
+X-Received: by 2002:a0c:f781:: with SMTP id s1mr3453494qvn.182.1588259155160;
+        Thu, 30 Apr 2020 08:05:55 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1588259155; cv=none;
+        d=google.com; s=arc-20160816;
+        b=A6s+wwxbhFkkO+MSf9IsP8o+leHcEgUv/R2YlTVuaLwQWMoEIy3VBKDxMcmRhLAhG+
+         Q2T246KUEmF/edJjKR3HqMbeYB6B5j6xlA/o8BhJHcIo0LPzYqvlCuFX8uqvjj9r3LpW
+         S8rh/FxbkM7jMwbJCAuyAhirR2nYnqpZ2guhkxSVYM+dGpXBfktaXXF3elbWUx34EtpG
+         /rfkjUiKyIp6EVvYz1XbcNfG2p9tfZKw1rhJulOvNWg0uhMJoojbpfsNEKzLsg7sPR2P
+         dwbM4wklveakay1vBYiP3LTNSKhpta+6wjGdwbwsTTFq7BKDUgHzDKwqmrVmOcJlSmhd
+         1jhg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=message-id:in-reply-to:to:references:date:subject:mime-version:from
+         :dkim-signature;
+        bh=RXeglOih9odFe9tC272aJRtK4TyvHPzNe2/kZ0EYuMg=;
+        b=ywfI31JfYgLywMWMYhS0WzhLGmvSYEccS4mmVUk0Nmcr7/LgU2qXYkjUccjDYozXQw
+         xccUH80U4aXNeSkNbj6lCL/Ta+s2lwS2ZnNo5QIvrBPMaoCctNWuBX27YnChoU+r3tRa
+         aNL5/XwMjCsGZ2KVyEh/UZHw80CTviB8MMb6ey9u1tiJBtDW4xViXVi18SDDm9h+wQ1H
+         L7DSDA5TSPs/rSqdBJJ8Lj6WctKzx1r00Fed+/yWZF/KWpdVuQSubstmUAvIk45qXe0W
+         mKkDaNJIwa4L7dZMLm4EUwYlXnoahV8lJCkFMZ8AJ19AUQj7eAzukxY+Fy6HEFGNjl41
+         IYYg==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@me.com header.s=1a1hai header.b=uD+a8Ek+;
+       spf=pass (google.com: domain of brucemhodges@me.com designates 17.58.63.177 as permitted sender) smtp.mailfrom=brucemhodges@me.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=me.com
+Return-Path: <brucemhodges@me.com>
+Received: from st43p00im-ztdg10073201.me.com (st43p00im-ztdg10073201.me.com. [17.58.63.177])
+        by mx.google.com with ESMTPS id p1si1551642qtq.114.2020.04.30.08.05.54
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Apr 2020 08:05:55 -0700 (PDT)
+Received-SPF: pass (google.com: domain of brucemhodges@me.com designates 17.58.63.177 as permitted sender) client-ip=17.58.63.177;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@me.com header.s=1a1hai header.b=uD+a8Ek+;
+       spf=pass (google.com: domain of brucemhodges@me.com designates 17.58.63.177 as permitted sender) smtp.mailfrom=brucemhodges@me.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=me.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
+	t=1588259151; bh=RXeglOih9odFe9tC272aJRtK4TyvHPzNe2/kZ0EYuMg=;
+	h=From:Content-Type:Subject:Date:To:Message-Id;
+	b=uD+a8Ek+VhTTFlHtj7WntuK7LdZQHNaRSQqr7Gu/vo4/MgAe6LJnjRgZkkJu1ellC
+	 WYtQHzEwTR983hMq963MgOfz/Ytnkw8ZHMsoBwh0QeHE/OXpBCY8Lx4YTfQWAey7Qs
+	 GJB1OtO/C9pqDu2cQ9B+o+g0LB/QtxBgL3t0PN5iimUChNjeLowcK924xX2CXz6on9
+	 zl9oAFMfDpe/me+u+GVYEiUsnXcKq6hvFahtUc1xHX8arAang5UoEJSbAzyXTRrxgv
+	 Ca219yJYCmRHTAib6EAKAmnMHpx9g/EWI9dwl+K3WvHjpMehFOYXwr4FJRj2mIxMNn
+	 jV53nhFpSenoA==
+Received: from [192.168.1.106] (bras-vprn-toroon020aw-lp130-15-76-64-17-155.dsl.bell.ca [76.64.17.155])
+	by st43p00im-ztdg10073201.me.com (Postfix) with ESMTPSA id 0EF47221C16
+	for <josh@josh.is>; Thu, 30 Apr 2020 15:05:51 +0000 (UTC)
+From: Bruce Hodges <brucemhodges@me.com>
+Content-Type: multipart/alternative;
+	boundary="Apple-Mail=_ECD43AD3-C1A4-46EF-8C8D-3B1A31FB9FB7"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Subject: Re: My initiative at UW
+Date: Thu, 30 Apr 2020 11:03:33 -0400
+References: <914aaa6ef78c46d296e121bc188eb4d1@uwaterloo.ca>
+ <244A3DF7-EDD2-4C32-B98B-E2D3DCEE8C12@me.com>
+ <CACNgykNdY=xSES2ie1f6g5wizQB4bWyOngQ-sHLT5KvUZro9GQ@mail.gmail.com>
+ <54D2DE39-982D-454F-B942-40510DC31410@me.com>
+ <CACNgykMS6oM9dx1YP1tbGMYFqW5HbNQZYLMx2TtMtzv5n+1FLw@mail.gmail.com>
+ <C7790630-F163-4DE7-8FCF-12EDB37F2328@me.com>
+ <CACNgykOB4U--UiFMCE6VJrp0wYmZzPOEMwHFcHoDhmZiFb=zsw@mail.gmail.com>
+ <CACNgykMLVM3QFCB35cvMADSm+1142mZAEz+ZKh9bM4jFVXEC=w@mail.gmail.com>
+To: Josh Klein <josh@josh.is>
+In-Reply-To: <CACNgykMLVM3QFCB35cvMADSm+1142mZAEz+ZKh9bM4jFVXEC=w@mail.gmail.com>
+Message-Id: <4DB27882-1195-4A0C-859D-71BEFCE2BE24@me.com>
+X-Mailer: Apple Mail (2.3608.80.23.2.2)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.138,18.0.676
+ definitions=2020-04-30_09:2020-04-30,2020-04-30 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 malwarescore=0
+ phishscore=0 bulkscore=0 spamscore=0 clxscore=1015 mlxscore=0
+ mlxlogscore=999 adultscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.0.1-2002250000 definitions=main-2004300123
+
+
+--Apple-Mail=_ECD43AD3-C1A4-46EF-8C8D-3B1A31FB9FB7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=utf-8
+
+Hey Josh - good to hear from you. Have been busy on my end as well.=20
+
+Next week is better for me=E2=80=A6Friday the 8th being best=E2=80=A6anyti=
+me after 10 am
+
+B
+
+> On 28 Apr 2020, at 16:26, Josh Klein <josh@josh.is> wrote:
+>=20
+> Sorry for falling off the map; we've been seeing some pretty great =
+traction with big companies as they realize that remote work requires a =
+new means of management... You around for a followup call later this =
+week / early next to catch up and compare notes?
+>=20
+> Hope you and yours are well,
+> Josh
+>=20
+>=20
+> On Fri, Mar 27, 2020 at 10:36 AM Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+> Not so far; reached out to a half dozen different contacts but =
+response times have been slow. Are we going to set up a call?=20
+>=20
+> Also and as an aside, the pandemic has opened a window for my startup =
+that measures behavior and culture - with the huge uptick in remote =
+workers we provide a way for managers to understand where their =
+employees are at and how to support them autonomously. Any thoughts on =
+who might benefit from this would also be appreciated!
+>=20
+> I'm waiting for word back and will revert on the suitcase testing unit =
+ASAP.
+>=20
+> - J
+>=20
+> On Thu, Mar 26, 2020 at 9:58 PM Bruce Hodges <brucemhodges@me.com =
+<mailto:brucemhodges@me.com>> wrote:
+> Hey Josh - just wanted to check in. Any bites ?
+>=20
+>> On 25 Mar 2020, at 11:02, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>=20
+>> A call sounds good. And I was thinking about a network as well, but =
+am considering the best way to create it to generate impact vs. noise. I =
+have a call later today with a friend with some big entertainment =
+industry connections and may see if there's a way to connect leading =
+scientists with big-name stars to discuss areas of research/interest to =
+see if we can prompt listeners to surface useful connections. Happy to =
+get other virtual teams together, though!!
+>>=20
+>>=20
+>> =E1=90=A7
+>>=20
+>> On Tue, Mar 24, 2020 at 8:39 PM Bruce Hodges <brucemhodges@me.com =
+<mailto:brucemhodges@me.com>> wrote:
+>> Hey Josh - perhaps the best would be to connect you and Alex ? A call =
+might be good for all of us to get on the same page and see how we can =
+help?
+>>=20
+>> My brother is Chief medical at UHN here - responsible for all the =
+docs and students in a series of hospitals and he is connecting Alex =
+with their imaging dept. Its a start in Canada=20
+>>=20
+>> I am trying to connect the head of Bocconi - would also get good data =
+if we could get him on board and plugged in.
+>>=20
+>> I am just getting started on this - and frankly solely to help. So I =
+am fully open to ideas !!
+>>=20
+>> Your other ideas is also a good one - the suitcase. How can I help ? =
+Are they looking for commercial interest or to assist or ???
+>>=20
+>> How would we create a virtual team/think tank ?? Would that be the =
+place to start ? A network of innovators trying to connect people with =
+ideas ?
+>>=20
+>> I am super open=E2=80=A6and this is when they need our minds most !!
+>>=20
+>>> On 24 Mar 2020, at 20:20, Josh Klein <josh@josh.is =
+<mailto:josh@josh.is>> wrote:
+>>>=20
+>>> I could float this by some intelligence community contacts and some =
+CA VC=E2=80=99s with medtech expertise, as well as some AI experts at =
+Google and MIcrosoft. Each is going to have a different angle on =
+helping, however - are there any politics I should know about before I =
+connect folks?
+>>>=20
+>>> Separately, an investor friend of mine is working on suitcase-sized =
+swab testing kits for COVID-19 that can turn around 24 samples in ~45m. =
+I know that=E2=80=99s not the most competitive time out there, but its =
+portability and test price ($50/test) are compelling. Know anyone who =
+could / would want to help get it out also?
+>>>=20
+>>> I think we=E2=80=99re on the same page with testing being the single =
+point of failure we=E2=80=99re seeing now. Stoked to see some solutions =
+to push on!!
+>>>=20
+>>> - J
+>>>=20
+>>>=20
+>>> On Tue, Mar 24, 2020 at 1:21 PM Bruce Hodges <brucemhodges@me.com =
+<mailto:brucemhodges@me.com>> wrote:
+>>> Hey Josh - wanted to pick your brain. This is an initiative a friend =
+of mine is working on at UofW. He is an awesome guy, and he is wickedly =
+smart.
+>>>=20
+>>> I have connected him to the Canadian University Hospitals (UHN) here =
+in Canada, and am working on connecting him to Bocconi University in =
+Milan where I know the head. Which would also be a helpful collaboration =
+as you might imagine.
+>>>=20
+>>> But I know you have contacts that go well beyond mine. And a brain =
+much bigger than mine. Any ideas on how you and your connections might =
+be able to help ?
+>>>=20
+>>> I can send an intro to you and Alex, or to anyone that you think it =
+would help to get him plugged into. Could do some awesome work here=E2=80=A6=
+.
+>>>=20
+>>> Thoughts ?
+>>>=20
+>>> Bruce=20
+>>>=20
+>>>> Begin forwarded message:
+>>>>=20
+>>>> From: Alex Wong <alexander.wong@uwaterloo.ca =
+<mailto:alexander.wong@uwaterloo.ca>>
+>>>> Subject: My initiative at UW
+>>>> Date: 23 March 2020 at 12:29:43 GMT-4
+>>>> To: "brucemhodges@me.com <mailto:brucemhodges@me.com>" =
+<brucemhodges@me.com <mailto:brucemhodges@me.com>>
+>>>>=20
+>>>> Hi Bruce,
+>>>>=20
+>>>> My research teams at the University of Waterloo and DarwinAI have =
+launch an AI initiative in the fight against COVID-19 pandemic. As the =
+first step of this initiative (we have a number of other directions we =
+are pursuing in leveraging AI towards this cause), we have developed =
+COVID-Net - an open source deep neural network for detecting COVID-19 =
+infections from chest radiography, with AI explanations to gain =
+transparency into visual indicators of COVID-19.  With the unprecedented =
+number of COVID-19 infections on a global scale, chest radiography =
+(e.g., chest X-rays) has now become more than a complementary screening =
+tool to polymerase chain reaction (PCR) PCR testing (i.e., the swab lab =
+test), with it actually being used as a primary screening tool in the =
+countries that are most affected due to its speed and availability.
+>>>> =20
+>>>> Rapid screening is critical as it enables those infected to receive =
+immediate care, as well as be isolated to mitigate the spread of the =
+virus.  By leveraging deep learning AI with COVID-Net, we aim to help =
+clinicians improve both sensitivity and specificity by better =
+differentiate COVID-19 infections from other forms of viral infections, =
+which is a current challenge faced given their similarities, as well as =
+assist clinicians with additional knowledge about how COVID-Net detects =
+COVID-19 infections through AI explanations. We are making COVID-Net =
+available in an open source, open access manner, the hope is to =
+accelerate the global use and development of complementary COVID-19 =
+screening solutions for rapid screening of those who need it most.
+>>>>=20
+>>>> The COVID-Net model, dataset, and scientific paper describing both =
+COVID-Net and dataset (5941 posteroanterior chest radiography images =
+across 2839 patient cases gathered from public datasets) are available =
+on Github for anyone to use and build upon:=20
+>>>>=20
+>>>> https://github.com/lindawangg/COVID-Net =
+<https://github.com/lindawangg/COVID-Net>.=20
+>>>>=20
+>>>> In addition to making the COVID-Net available on Github, we'll also =
+make our explainability tool available to researchers and healthcare =
+providers so that they can see the critical factors that caused a =
+diagnosis using COVID-Net - which would help with adoption in the field.
+>>>>=20
+>>>> We want to keep improving this initiative so looking for any =
+support and contributors who can contribute COVID-19 x-ray images, =
+contribute expertise with model improvements, contribute funding to =
+support our teams during this difficult time to keep focused on this =
+initiative, connect us with the right agencies and institutions for =
+support, etc. =20
+>>>>=20
+>>>>=20
+>>>>=20
+>>>> Alexander Wong, Ph.D., P.Eng., SMIEEE
+>>>> Canada Research Chair in Artificial Intelligence and Medical =
+Imaging=20
+>>>> Member, Royal Society of Canada
+>>>> Director, Vision and Image Processing (VIP) Research Group
+>>>> Department of Systems Design Engineering
+>>>> Department of Mechanical and Mechatronics Engineering, =
+Cross-Appointed
+>>>> David R. Cheriton School of Computer Science, Cross-Appointed
+>>>> School of Optometry and Vision Science, Cross-Appointed
+>>>> Founding Member, Waterloo Artificial Intelligence Institute
+>>>> Research Scientist, Schlegel Research Institute for Aging
+>>>> Academic Advisor, Amazon Alexa Fund Fellowship Program  - Waterloo
+>>>> University Ambassador and Certified Instructor, Nvidia Deep =
+Learning Institute
+>>>> University of Waterloo
+>>>> Waterloo, Ontario, Canada, N2L 3G1
+>>>> +1-519-888-4567 x31299
+>>>> a28wong@uwaterloo.ca <mailto:a28wong@uwaterloo.ca>, =
+https://eng.uwaterloo.ca/~a28wong <https://eng.uwaterloo.ca/~a28wong>
+>>=20
+>=20
+
+
+--Apple-Mail=_ECD43AD3-C1A4-46EF-8C8D-3B1A31FB9FB7
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html;
+	charset=utf-8
+
+<html><head><meta http-equiv=3D"Content-Type" content=3D"text/html; =
+charset=3Dutf-8"></head><body style=3D"word-wrap: break-word; =
+-webkit-nbsp-mode: space; line-break: after-white-space;" class=3D"">Hey =
+Josh - good to hear from you. Have been busy on my end as =
+well.&nbsp;<div class=3D""><br class=3D""></div><div class=3D"">Next =
+week is better for me=E2=80=A6Friday the 8th being best=E2=80=A6anytime =
+after 10 am</div><div class=3D""><br class=3D""></div><div class=3D"">B<br=
+ class=3D""><div><br class=3D""><blockquote type=3D"cite" class=3D""><div =
+class=3D"">On 28 Apr 2020, at 16:26, Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; =
+wrote:</div><br class=3D"Apple-interchange-newline"><div class=3D""><div =
+dir=3D"ltr" class=3D""><div class=3D"">Sorry for falling off the map; =
+we've been seeing some pretty great traction with big companies as they =
+realize that remote work requires a new means of management... You =
+around for a followup call later this week / early next to catch up and =
+compare notes?</div><div class=3D""><br class=3D""></div><div =
+class=3D"">Hope you and yours are well,</div><div =
+class=3D"">Josh</div><div class=3D""><br class=3D""></div></div><br =
+class=3D""><div class=3D"gmail_quote"><div dir=3D"ltr" =
+class=3D"gmail_attr">On Fri, Mar 27, 2020 at 10:36 AM Josh Klein &lt;<a =
+href=3D"mailto:josh@josh.is" class=3D"">josh@josh.is</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div dir=3D"ltr" class=3D""><div =
+class=3D"">Not so far; reached out to a half dozen different contacts =
+but response times have been slow. Are we going to set up a call? <br =
+class=3D""></div><div class=3D""><br class=3D""></div><div class=3D"">Also=
+ and as an aside, the pandemic has opened a window for my startup that =
+measures behavior and culture - with the huge uptick in remote workers =
+we provide a way for managers to understand where their employees are at =
+and how to support them autonomously. Any thoughts on who might benefit =
+from this would also be appreciated!</div><div class=3D""><br =
+class=3D""></div><div class=3D"">I'm waiting for word back and will =
+revert on the suitcase testing unit ASAP.<br class=3D""></div><div =
+class=3D""><br class=3D""></div><div class=3D"">- J<br =
+class=3D""></div></div><br class=3D""><div class=3D"gmail_quote"><div =
+dir=3D"ltr" class=3D"gmail_attr">On Thu, Mar 26, 2020 at 9:58 PM Bruce =
+Hodges &lt;<a href=3D"mailto:brucemhodges@me.com" target=3D"_blank" =
+class=3D"">brucemhodges@me.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Hey Josh - just =
+wanted to check in. Any bites ?<br class=3D""><div class=3D""><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On 25 =
+Mar 2020, at 11:02, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D""><div class=3D""><div dir=3D"ltr" class=3D"">A call sounds =
+good. And I was thinking about a network as well, but am considering the =
+best way to create it to generate impact vs. noise. I have a call later =
+today with a friend with some big entertainment industry connections and =
+may see if there's a way to connect&nbsp;leading scientists with =
+big-name stars to discuss areas of research/interest to see if we can =
+prompt listeners to surface useful connections. Happy to get other =
+virtual teams together, though!!<div class=3D""><br class=3D""></div><div =
+class=3D""><br class=3D""></div></div><div hspace=3D"streak-pt-mark" =
+style=3D"max-height:1px" class=3D""><img alt=3D"" style=3D"width: 0px; =
+max-height: 0px; overflow: hidden;" =
+src=3D"https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;typ=
+e=3Dzerocontent&amp;guid=3D1fb0efd1-ee40-44f0-b546-1b610ef57616" =
+class=3D""><font size=3D"1" color=3D"#ffffff" =
+class=3D"">=E1=90=A7</font></div><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Mar =
+24, 2020 at 8:39 PM Bruce Hodges &lt;<a =
+href=3D"mailto:brucemhodges@me.com" target=3D"_blank" =
+class=3D"">brucemhodges@me.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Hey Josh - perhaps =
+the best would be to connect you and Alex ? A call might be good for all =
+of us to get on the same page and see how we can help?<div class=3D""><br =
+class=3D""></div><div class=3D"">My brother is Chief medical at UHN here =
+- responsible for all the docs and students in a series of hospitals and =
+he is connecting Alex with their imaging dept. Its a start in =
+Canada&nbsp;</div><div class=3D""><br class=3D""></div><div class=3D"">I =
+am trying to connect the head of Bocconi - would also get good data if =
+we could get him on board and plugged in.</div><div class=3D""><br =
+class=3D""></div><div class=3D"">I am just getting started on this - and =
+frankly solely to help. So I am fully open to ideas !!</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Your other ideas is also =
+a good one - the suitcase. How can I help ? Are they looking for =
+commercial interest or to assist or ???</div><div class=3D""><br =
+class=3D""></div><div class=3D"">How would we create a virtual =
+team/think tank ?? Would that be the place to start ? A network of =
+innovators trying to connect people with ideas ?</div><div class=3D""><br =
+class=3D""></div><div class=3D"">I am super open=E2=80=A6and this is =
+when they need our minds most !!<br class=3D""><div class=3D""><br =
+class=3D""><blockquote type=3D"cite" class=3D""><div class=3D"">On 24 =
+Mar 2020, at 20:20, Josh Klein &lt;<a href=3D"mailto:josh@josh.is" =
+target=3D"_blank" class=3D"">josh@josh.is</a>&gt; wrote:</div><br =
+class=3D""><div class=3D""><div class=3D""><div dir=3D"auto" class=3D"">I =
+could float this by some intelligence community contacts and some CA =
+VC=E2=80=99s with medtech expertise, as well as some AI experts at =
+Google and MIcrosoft. Each is going to have a different angle on =
+helping, however - are there any politics I should know about before I =
+connect folks?</div><div dir=3D"auto" class=3D""><br class=3D""></div><div=
+ dir=3D"auto" class=3D"">Separately, an investor friend of mine is =
+working on suitcase-sized swab testing kits for COVID-19 that can turn =
+around 24 samples in ~45m. I know that=E2=80=99s not the most =
+competitive time out there, but its portability and test price =
+($50/test) are compelling. Know anyone who could / would want to help =
+get it out also?</div><div dir=3D"auto" class=3D""><br =
+class=3D""></div><div dir=3D"auto" class=3D"">I think we=E2=80=99re on =
+the same page with testing being the single point of failure we=E2=80=99re=
+ seeing now. Stoked to see some solutions to push on!!</div><div =
+dir=3D"auto" class=3D""><br class=3D""></div><div dir=3D"auto" =
+class=3D"">- J</div><div dir=3D"auto" class=3D""><br =
+class=3D""></div></div><div class=3D""><br class=3D""><div =
+class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">On Tue, Mar =
+24, 2020 at 1:21 PM Bruce Hodges &lt;<a =
+href=3D"mailto:brucemhodges@me.com" target=3D"_blank" =
+class=3D"">brucemhodges@me.com</a>&gt; wrote:<br =
+class=3D""></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid =
+rgb(204,204,204);padding-left:1ex"><div class=3D"">Hey Josh - wanted to =
+pick your brain. This is an initiative a friend of mine is working on at =
+UofW. He is an awesome guy, and he is wickedly smart.<div class=3D""><br =
+class=3D""></div><div class=3D"">I have connected him to the Canadian =
+University Hospitals (UHN) here in Canada, and am working on connecting =
+him to Bocconi University in Milan where I know the head. Which would =
+also be a helpful collaboration as you might imagine.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">But I know you have =
+contacts that go well beyond mine. And a brain much bigger than mine. =
+Any ideas on how you and your connections might be able to help =
+?</div><div class=3D""><br class=3D""></div><div class=3D"">I can send =
+an intro to you and Alex, or to anyone that you think it would help to =
+get him plugged into. Could do some awesome work here=E2=80=A6.</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Thoughts ?</div><div =
+class=3D""><br class=3D""></div><div class=3D"">Bruce&nbsp;<br =
+class=3D""><div class=3D""><br class=3D""><blockquote type=3D"cite" =
+class=3D""><div class=3D"">Begin forwarded message:</div><br =
+class=3D""><div style=3D"margin:0px" class=3D""><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D""><b =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">From: </b></span><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">Alex Wong &lt;<a =
+href=3D"mailto:alexander.wong@uwaterloo.ca" =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" target=3D"_blank" =
+class=3D"">alexander.wong@uwaterloo.ca</a>&gt;<br =
+class=3D""></span></div><div style=3D"margin:0px" class=3D""><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D""><b =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">Subject: </b></span><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D""><b =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">My initiative at UW</b><br =
+class=3D""></span></div><div style=3D"margin:0px" class=3D""><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D""><b =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">Date: </b></span><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">23 March 2020 at 12:29:43 =
+GMT-4<br class=3D""></span></div><div style=3D"margin:0px" =
+class=3D""><span style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D""><b =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">To: </b></span><span =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" class=3D"">"<a =
+href=3D"mailto:brucemhodges@me.com" =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" target=3D"_blank" =
+class=3D"">brucemhodges@me.com</a>" &lt;<a =
+href=3D"mailto:brucemhodges@me.com" =
+style=3D"font-family:-webkit-system-font,&quot;Helvetica =
+Neue&quot;,Helvetica,sans-serif" target=3D"_blank" =
+class=3D"">brucemhodges@me.com</a>&gt;<br class=3D""></span></div><br =
+class=3D""><div class=3D""><div =
+id=3D"gmail-m_-3203739712956547790gmail-m_6095659768202546723gmail-m_-4891=
+121198999901829m_1842859643673701308divtagdefaultwrapper" dir=3D"ltr" =
+style=3D"font-style:normal;font-variant-caps:normal;font-weight:normal;let=
+ter-spacing:normal;text-align:start;text-indent:0px;text-transform:none;wh=
+ite-space:normal;word-spacing:0px;text-decoration:none;font-size:12pt;font=
+-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple Color =
+Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe UI =
+Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><p =
+style=3D"margin-top:0px;margin-bottom:0px;font-family:Calibri,Helvetica,sa=
+ns-serif,EmojiFont,&quot;Apple Color Emoji&quot;,&quot;Segoe UI =
+Emoji&quot;,NotoColorEmoji,&quot;Segoe UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols" class=3D""></p><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">Hi =
+Bruce,</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">My =
+research teams at the University of Waterloo and DarwinAI have launch an =
+AI initiative in the fight against COVID-19 pandemic. As the first step =
+of this initiative (we have a number of other directions we are pursuing =
+in leveraging AI towards this cause), we have developed COVID-Net - an =
+open source deep neural network for detecting COVID-19 infections from =
+chest radiography, with AI explanations to gain transparency into visual =
+indicators of COVID-19.&nbsp; With the unprecedented number of COVID-19 =
+infections on a global scale, chest radiography (e.g., chest X-rays) has =
+now become more than a complementary screening tool to polymerase chain =
+reaction (PCR) PCR testing (i.e., the swab lab test), with it actually =
+being used as a primary screening tool in the countries that are most =
+affected due to its speed and availability.</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" =
+class=3D"">&nbsp;</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">Rapid =
+screening is critical as it enables those infected to receive immediate =
+care, as well as be isolated to mitigate the spread of the virus.&nbsp; =
+By leveraging deep learning AI with COVID-Net, we aim to help clinicians =
+improve both sensitivity and specificity by better differentiate =
+COVID-19 infections from other forms of viral infections, which is a =
+current challenge faced given their similarities, as well as assist =
+clinicians with additional knowledge about how COVID-Net detects =
+COVID-19 infections through AI explanations. We are making COVID-Net =
+available in an open source, open access manner, the hope is to =
+accelerate the global use and development of complementary COVID-19 =
+screening solutions for rapid screening of those who need it =
+most.</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">The =
+COVID-Net model, dataset, and scientific paper describing both COVID-Net =
+and dataset (5941 posteroanterior chest radiography images across 2839 =
+patient cases gathered from public datasets) are available on Github for =
+anyone to use and build upon:&nbsp;</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><a =
+href=3D"https://github.com/lindawangg/COVID-Net" =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" target=3D"_blank" =
+class=3D"">https://github.com/lindawangg/COVID-Net</a>.&nbsp;</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">In =
+addition to making the COVID-Net available on Github, we'll also make =
+our explainability tool available to researchers and healthcare =
+providers so that they can see the critical factors that caused a =
+diagnosis using COVID-Net - which would help with adoption in the =
+field.</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D"">We =
+want to keep improving this initiative so looking for any support and =
+contributors who can contribute COVID-19 x-ray images, contribute =
+expertise with model improvements, contribute funding to support our =
+teams during this difficult time to keep focused on this initiative, =
+connect us with the right agencies and institutions for support, =
+etc.&nbsp;&nbsp;</div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><br =
+class=3D""></div><br class=3D""><p =
+style=3D"margin-top:0px;margin-bottom:0px;font-family:Calibri,Helvetica,sa=
+ns-serif,EmojiFont,&quot;Apple Color Emoji&quot;,&quot;Segoe UI =
+Emoji&quot;,NotoColorEmoji,&quot;Segoe UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols" class=3D""></p><div =
+style=3D"margin-top:0px;margin-bottom:0px;font-family:Calibri,Helvetica,sa=
+ns-serif,EmojiFont,&quot;Apple Color Emoji&quot;,&quot;Segoe UI =
+Emoji&quot;,NotoColorEmoji,&quot;Segoe UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols" class=3D""><br class=3D""></div><div =
+id=3D"gmail-m_-3203739712956547790gmail-m_6095659768202546723gmail-m_-4891=
+121198999901829m_1842859643673701308Signature" =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+id=3D"gmail-m_-3203739712956547790gmail-m_6095659768202546723gmail-m_-4891=
+121198999901829m_1842859643673701308divtagdefaultwrapper" dir=3D"ltr" =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:Tahoma;font-size:13px" class=3D""></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Alexander Wong, Ph.D., P.Eng.,&nbsp;</span><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">SMIEEE</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Canada Research Chair in Artificial Intelligence and Medical =
+Imaging&nbsp;</span></div><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Member, Royal Society of Canada</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Director, Vision and Image Processing (VIP) Research =
+Group</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Department of Systems Design Engineering</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Department of Mechanical and Mechatronics Engineering, =
+Cross-Appointed</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">David R. Cheriton School of Computer Science, =
+Cross-Appointed</span></div><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13.3333px;color:=
+rgb(34,34,34)" class=3D"">School of Optometry and Vision&nbsp;Science, =
+Cross-Appointed</span><br class=3D""></span></div><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""><div style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""><span =
+style=3D"font-size:10pt;font-family:Arial,Helvetica,sans-serif" =
+class=3D"">Founding Member, Waterloo Artificial Intelligence =
+Institute</span></div></span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Research Scientist, Schlegel Research Institute for =
+Aging</span><br class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span><span style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""></span></div><div =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android Emoji&quot;,EmojiSymbols" class=3D""><font =
+style=3D"font-family:Arial,Helvetica,sans-serif" face=3D"Arial, =
+Helvetica, sans-serif" class=3D""><span =
+style=3D"font-size:13.3333px;font-family:Arial,Helvetica,sans-serif" =
+class=3D"">Academic Advisor,&nbsp;<span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13.3333px" =
+class=3D"">Amazon Alexa Fund Fellowship Program&nbsp;<span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13.3333px" =
+class=3D"">&nbsp;- Waterloo</span></span></span></font></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><font style=3D"font-family:Tahoma;color:rgb(34,34,34)" =
+face=3D"Tahoma" class=3D""><span =
+style=3D"font-size:10pt;font-family:Arial,Helvetica,sans-serif" =
+class=3D"">University Ambassador and Certified Instructor,&nbsp;<span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13.3333px" =
+class=3D"">Nvidia Deep Learning Institute</span></span></font><br =
+class=3D""><span style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span><span style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""></span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><font style=3D"font-family:Tahoma;color:rgb(34,34,34)" =
+face=3D"Tahoma" class=3D""><span =
+style=3D"font-size:10pt;font-family:Arial,Helvetica,sans-serif" =
+class=3D"">University of Waterloo</span></font></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">Waterloo, Ontario, Canada, N2L 3G1</span></div><font =
+style=3D"font-family:arial,sans-serif;color:rgb(34,34,34)" face=3D"arial, =
+sans-serif" class=3D""><span =
+style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span></font><font =
+style=3D"font-family:Calibri,Helvetica,sans-serif,EmojiFont,&quot;Apple =
+Color Emoji&quot;,&quot;Segoe UI Emoji&quot;,NotoColorEmoji,&quot;Segoe =
+UI Symbol&quot;,&quot;Android =
+Emoji&quot;,EmojiSymbols;color:rgb(34,34,34)" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:12.8px" =
+class=3D""></span></font></div><font style=3D"font-family:Tahoma" =
+face=3D"Tahoma" class=3D""><span =
+style=3D"font-size:10pt;font-family:Tahoma" class=3D""></span></font><span=
+ style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13px" =
+class=3D""></span><font style=3D"font-family:Tahoma" face=3D"Tahoma" =
+class=3D""><span style=3D"font-size:10pt;font-family:Tahoma" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span><span style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""></span><font =
+style=3D"font-family:arial,helvetica,sans-serif;color:rgb(34,34,34)" =
+face=3D"arial, helvetica, sans-serif" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">+1-519-888-4567 x31299</span></font></div><font =
+style=3D"font-family:Tahoma" face=3D"Tahoma" class=3D""><span =
+style=3D"font-size:10pt;font-family:Tahoma" class=3D""></span></font><span=
+ style=3D"font-family:Arial,Helvetica,sans-serif;font-size:13px" =
+class=3D""></span><font style=3D"font-family:Tahoma" face=3D"Tahoma" =
+class=3D""><span style=3D"font-size:10pt;font-family:Tahoma" =
+class=3D""></span></font><div =
+style=3D"font-family:arial,sans-serif;font-size:12.8px;color:rgb(34,34,34)=
+" class=3D""><span style=3D"font-size:10pt;font-family:arial,sans-serif" =
+class=3D""></span><span style=3D"font-family:Arial,Helvetica,sans-serif" =
+class=3D""></span><a href=3D"mailto:a28wong@uwaterloo.ca" =
+id=3D"gmail-m_-3203739712956547790gmail-m_6095659768202546723gmail-m_-4891=
+121198999901829m_1842859643673701308LPNoLP" =
+style=3D"font-family:arial,sans-serif" target=3D"_blank" class=3D""><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">a28wong@uwaterloo.ca</span></a><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D"">,&nbsp;</span><span =
+style=3D"font-family:Arial,Helvetica,sans-serif;font-size:10pt" =
+class=3D""><a href=3D"https://eng.uwaterloo.ca/~a28wong" =
+id=3D"gmail-m_-3203739712956547790gmail-m_6095659768202546723gmail-m_-4891=
+121198999901829m_1842859643673701308LPNoLP" =
+style=3D"font-family:Arial,Helvetica,sans-serif" target=3D"_blank" =
+class=3D"">https://eng.uwaterloo.ca/~a28wong</a></span></div></div></div><=
+/div></div></div></div></div></div></blockquote></div><br =
+class=3D""></div></div></blockquote></div></div>
+</div></blockquote></div><br class=3D""></div></div></blockquote></div>
+</div></blockquote></div><br class=3D""></div></blockquote></div>
+</blockquote></div>
+</div></blockquote></div><br class=3D""></div></body></html>=
+
+--Apple-Mail=_ECD43AD3-C1A4-46EF-8C8D-3B1A31FB9FB7--

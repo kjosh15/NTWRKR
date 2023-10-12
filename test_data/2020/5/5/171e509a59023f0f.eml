@@ -1,0 +1,461 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Tue, 15 Sep 2020 07:41:32 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:2202:0:0:0:0:0 with SMTP id i2csp25210lji;
+        Tue, 5 May 2020 06:32:30 -0700 (PDT)
+X-Google-Smtp-Source: APiQypIuQHmyXwhJUeFmOg25GLjBNH8oW9g+X4dfuq54YC6biXS2nJe623dtozd73G9iKEGcvrCC
+X-Received: by 2002:a17:902:8a88:: with SMTP id p8mr3177198plo.134.1588685549599;
+        Tue, 05 May 2020 06:32:29 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1588685549; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=Ek32cP6briGZjNzNWr4QiWbIFXS84XQYcZn38FdvgUXqLpuyx7XmNac1tPU6MP0MBd
+         1VigsJKcQcHTTLDH/lsTfWHUmtBNt/RsfhmVO07H97shBh8TacauctBkBofp2Jd4/Fhm
+         D6n6asBePbLdl+oCpdzEnZW2MCSPxOsnVHMw3ZRDtrcv9u0VGi/FRxwyz2UEzSWiGE1O
+         dR4tVKn3sBBKgHVJnfRTdStD76/xmwerjX22tuTqLX75oOJulrAJGTUi15ELs/gr6j6a
+         EZ7k01Tm61TN7GAq8mUK5zO1eeEpIkkNILx6evnc0JMZA5z34Y0my6pwS2syJmHi0ODt
+         Jzsg==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:to
+         :from:dkim-signature;
+        bh=6Zh682Q4f1KokJQBfPWfZNc8XdEcATnaUvdHPJppSug=;
+        b=L5h17D3F8vSy1DbIgCYgM0ycATUCVpJFECd4ehHFmr8eOxbaU6BuzpcJgmRUAglOYb
+         em8thBj7UMMeKMAc8M+WtVeq7IyaKR0LXFG+Ni244ZZnLEMNSHGid/WNQ22OouOe+CXz
+         3xDgv+0zTeI3I3oO4hL4U3YFVkSk769V0/qXKzs7WcvY0x8n2sRIk8+nhs10G/Vs8l9Q
+         wfCBX8D8pdhelhv6ADW8zxBqiAxob+2bMOJAAER9Wx3jL0w/4hBTCmMN+RhF/+iio0Wm
+         PISU64YXHhKHKeYRMVCkQu76yLwAOJHLVy/wYu3q1NCVFJySXe+KU82oxtFkUQktU/4R
+         wd4Q==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@peppercomm.onmicrosoft.com header.s=selector2-peppercomm-onmicrosoft-com header.b=mmks6sRL;
+       arc=pass (i=1 spf=pass spfdomain=peppercomm.com dkim=pass dkdomain=peppercomm.com dmarc=pass fromdomain=peppercomm.com);
+       spf=pass (google.com: domain of dgoldstein@peppercomm.com designates 40.107.94.117 as permitted sender) smtp.mailfrom=dGoldstein@peppercomm.com
+Return-Path: <dGoldstein@peppercomm.com>
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2117.outbound.protection.outlook.com. [40.107.94.117])
+        by mx.google.com with ESMTPS id cx23si1429160pjb.20.2020.05.05.06.32.28
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 05 May 2020 06:32:29 -0700 (PDT)
+Received-SPF: pass (google.com: domain of dgoldstein@peppercomm.com designates 40.107.94.117 as permitted sender) client-ip=40.107.94.117;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@peppercomm.onmicrosoft.com header.s=selector2-peppercomm-onmicrosoft-com header.b=mmks6sRL;
+       arc=pass (i=1 spf=pass spfdomain=peppercomm.com dkim=pass dkdomain=peppercomm.com dmarc=pass fromdomain=peppercomm.com);
+       spf=pass (google.com: domain of dgoldstein@peppercomm.com designates 40.107.94.117 as permitted sender) smtp.mailfrom=dGoldstein@peppercomm.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YYILR6yUc9OcoBv697ZeoA3W70AXN6iYBVbWZXtzSyCLMe5ONFgeHgtgnM+eoNQ35uo4ICRmKBz5cKRYDKMfzudBXJ6WPmFMCChf7nh8qqOxcaPNTpbN0op9/GrXcMrkgxa6WcV/MGqV1c/InAuoK6ae1UX3Otvg5HwkTb9E8pYo9ndIBEEvhozylPAtQwNM2CbBuXWpuaCgW8KJ5BqamUjl4fReOJAwDNAhdac8YYUiQ3iKNs78fRdtTcVLdCU24w1EHMmgcQjGl1lD/FK9HsDBWoLlSe4WN1C+kfBOsQg4hWg8uVNEvLwuZoORhTBZyNtN9PDgBni0NtRKQ1KWHg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Zh682Q4f1KokJQBfPWfZNc8XdEcATnaUvdHPJppSug=;
+ b=IxeRjgcMICiV4BcXL+R6k0r/zoDbujLTxICJgpOC7+xwisHeWmdGWTp7lA6DmiQheb9roQkpzGVT8PleSF282EnuKSAT0hSkGxlGnCaAgE94F6r/5seegIiK7evI/Xz3axN+t0CRbPNIJoh9ZHJfKpRgEJXspsKzt1h3ZJypYR5Z5D78DdOloanHR3Ymnc/kXZf99W6VhasuQSWTcDHS+txZWFBvFLMw9sMiwYPUfjL2q6o9A3p68KiVRaEzce9070RjgoRCpc2xanqHBl4XJ1GadIc0V626YEqqkpegNN7TCb4ezNxXG4oyoVl1OtRwzCuL+GLE68AkmwBzPEpJKg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=peppercomm.com; dmarc=pass action=none
+ header.from=peppercomm.com; dkim=pass header.d=peppercomm.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=peppercomm.onmicrosoft.com; s=selector2-peppercomm-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=6Zh682Q4f1KokJQBfPWfZNc8XdEcATnaUvdHPJppSug=;
+ b=mmks6sRLGTfawFUDh+wtw4ndsZMKXfd73p7zIpZiFoAKLkwoAhb+Odv5pNu4RVRHQari4x+7coob5RMGCUTxos01dCvLBo/ME/gVHB/JQTC0dfdvRf0KsTHLctaocHHOs/Bza/3UM5x0Xp0BozLdWUETWmvO0Bgh0xagsXWOiqQ=
+Received: from BN7PR05MB5827.namprd05.prod.outlook.com (2603:10b6:408:3d::18)
+ by BN7PR05MB5729.namprd05.prod.outlook.com (2603:10b6:408:3e::25) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.2979.14; Tue, 5 May
+ 2020 13:32:27 +0000
+Received: from BN7PR05MB5827.namprd05.prod.outlook.com
+ ([fe80::2d50:802:bd5d:e260]) by BN7PR05MB5827.namprd05.prod.outlook.com
+ ([fe80::2d50:802:bd5d:e260%7]) with mapi id 15.20.2979.025; Tue, 5 May 2020
+ 13:32:27 +0000
+From: David Goldstein <dGoldstein@peppercomm.com>
+To: Josh Klein <josh@josh.is>
+Subject: RE: IndigoMetrics
+Thread-Topic: IndigoMetrics
+Thread-Index: AQHV8YnPo59TvFLo0kKBDM03/2Xo36iZxQwAgAAA1ICAABo6YA==
+Date: Tue, 5 May 2020 13:32:27 +0000
+Message-ID: <549819965.158.1600180891795@localhost>
+References:
+ <CACNgykPJf=CZhQYtbt6p6a8Rby+qkqct1AOVYr8ffWGeGJaa3A@mail.gmail.com>
+ <BN7PR05MB5827B02D771108FFFFDA916ABAA70@BN7PR05MB5827.namprd05.prod.outlook.com>
+ <CACNgykMRpi1iDqGxShHOxUpG3=_05evz-ofrj=bcKVQrisXF+Q@mail.gmail.com>
+In-Reply-To:
+ <CACNgykMRpi1iDqGxShHOxUpG3=_05evz-ofrj=bcKVQrisXF+Q@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: josh.is; dkim=none (message not signed)
+ header.d=none;josh.is; dmarc=none action=none header.from=peppercomm.com;
+x-originating-ip: [24.46.201.153]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: dd42c600-995a-404b-8f03-08d7f0f8c11a
+x-ms-traffictypediagnostic: BN7PR05MB5729:
+x-microsoft-antispam-prvs:
+ <BN7PR05MB57294E233CA1AAE61EF43A47BAA70@BN7PR05MB5729.namprd05.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:7219;
+x-forefront-prvs: 0394259C80
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ MxdfmYUmROX/K3KLeK+VOOFXo+fDXecN43Kjgi+Qrvzeuf2rJ06elBv9k1ohwu2YiNKKETPVw4n6VmjiUyzE4WrrVBL+Bey67uYemdI7qeVU05KgiloH3h5ws+UAbySocZmxRDHrsqEEKYLFnLcyKU+D+Y1KZa56vMg/fgl59FelZWERcHwiH5yGBzpi6lk8ykLG7mv5nG6tK1mNXhvIndMngFpozmPhevz1meFaZHjnOYhxtVhBBbUozRadyznmstYU9TjptC9MmlCdKj1TTOicqrut8f8Tze74Vg4zFAdB6d9I6043dyMy+ktEIkr8PMQiqJBg47keKtoquA4SgZj0KYaYIjHcyyIRFl7ystfAkvb3P3JCUZ+TUnGi16DV7Eidfr1j3gzaW8E20XvI0QNO6CRmekAOVIaZwK+Wv+J4OwS2OyCinbA3fl6eIa1bEZCtICMmZVT9kI222mDhrb2oVxSnFnIcYgBGGpUC4SeoMFKMlAK7KRvzocIr5DMgIFVCtfN1FaKLTNPs89sWaYN69EvE0VGN0AqyXKSuoUhgE+dI2leSpG41hArv0iIZhxNZwhxSTJfJ3EUJUiQxpoWz9lNKpTadP3yeVfllxBwggYe+iQ/ztgyJQOBKcsqnLijhpszbnC00j/HRPoL3Ew==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN7PR05MB5827.namprd05.prod.outlook.com;PTR:;CAT:NONE;SFTY:;SFS:(366004)(346002)(33430700001)(26005)(7696005)(7116003)(9686003)(508600001)(966005)(186003)(6506007)(53546011)(33656002)(6916009)(3480700007)(33440700001)(86362001)(8936002)(8676002)(66556008)(52536014)(76236002)(71200400001)(5660300002)(66446008)(2906002)(76116006)(55016002)(64756008)(99936003)(66476007)(66616009)(66946007)(99710200001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata:
+ z5skbzZv7uy0wIMXVFz2MpXcNwNgEzLakxUsCpD+WvEifG4BzD3DF+kSk9P1BlNUTAS2C2Wn8B6vy9bGuCgJofEesfX58rQ4WjDzZW3nQevmqTOnsC/b4mnyIxG5lur6ZNq18852C9SLaVtwDrxBsYYCkepj7G3uAL7hvmdnR9/0MLh0D+q1eCHRCbIeNy//BJRAE2f1CV3oGh+lqaIqFwgf7J0YklqDvd3tr8WoAnG+XJ+CgGbHy1BWmC36YznHq5tHbCqMNbOMu/kxA3vhgRsrgJp+menfyD2M6woGiAwx6q90voaKkq50RVzOU/5fTv5q6Xh0sDdDk6qHDd4SXp1ov6Ot5ZH9lBAqglGolxRCTe8v/tv+Z3n8pY3FeC+HlFqHWLrv9JrseSRDWluIEvgWx/0BZ2IlYxTxDrP/dBTX5EldAf2Cs1FicJ4sA5U+UgHGBJQPzPNywUgDX3mXReGJT3APE0RjWkmnef29GAiJTsBJbyZNONmMcWZ4C8MyXhxXNwFSr5bxuO3Abf+3YXp39HAQZEOqFDfjy1vCFbV1zOQgmCNXs+ppHvWd+IsfJYdOhDIyjo/K6owlXwiKYPpWRAvT/egcKikLiYcdS/6Oj28WqRN80dEmyF78l/i3f+0q8+RPJyijQE8Ai7meU3Q7gUkIg1twZZ/8ZR+LkaILv2i/45jNehzlUqSjWJ6fauEnLGAjyvtT1PgwAkPXMyzsQxctAxR2unXi+O1jTItvTk7viqcaHUW+3J3DUKHDiblpIuV3jdvEv6pOk0LBYAWJFBYUh4u63wrmxBpGohI=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/related;
+	boundary="_004_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: peppercomm.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: dd42c600-995a-404b-8f03-08d7f0f8c11a
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2020 13:32:27.6644
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: cd3712b2-aa25-45cf-a516-826bf04c4355
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: iDvm2ZW7qcI1eAg2YAgGh+9c0tA9VTfb5CnjPX6pwWnrOJ69vhyqFJXu6XwakheO14JQo+2DY22IUaWI7IycDyNPFlCZCQ8oQBy7DsbOFqI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN7PR05MB5729
+
+--_004_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_
+Content-Type: multipart/alternative;
+	boundary="_000_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_"
+
+--_000_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+That worked! Have time to chat today?
+
+From: Josh Klein <josh@josh.is>
+Sent: Tuesday, May 5, 2020 7:58 AM
+To: David Goldstein <dGoldstein@peppercomm.com>
+Subject: Re: IndigoMetrics
+
+Just tried it and it's working fine:
+
+http://reviews.indigometrics.com/Default.aspx
+
+USERNAME: innov1
+PASSWORD: Password123$
+
+Let me know if that works for you!
+
+- J
+
+[https://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&type=3Dzerocon=
+tent&guid=3D4eaa445f-2a95-4937-88b8-4957eb048fb5]=E1=90=A7
+
+On Tue, May 5, 2020 at 7:56 AM David Goldstein <dGoldstein@peppercomm.com<m=
+ailto:dGoldstein@peppercomm.com>> wrote:
+Hey man =E2=80=93 tried doing the sandbox but got the following when I used=
+ the login credentials from the PDF. Any thoughts?
+
+[cid:image002.png@01D622C0.16083470]
+
+From: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+Sent: Tuesday, March 3, 2020 1:30 PM
+To: David Goldstein <dGoldstein@peppercomm.com<mailto:dGoldstein@peppercomm=
+.com>>
+Cc: Joshua William Klein <josh@josh.is<mailto:josh@josh.is>>
+Subject: IndigoMetrics
+
+David,
+
+You'd asked for some case studies, our pricing model, and how Indigo stands=
+ out from competitors. I've attached our onboarding docs which includes pri=
+cing, timing, and a pilot overview so you have a more complete view of logi=
+stical requirements, and am including some differentiators below. We're cle=
+aring our cases studies with the relevant clients now: we're hard data guys=
+, so tend to steer clear of anecdotal descriptions unless you think that'd =
+be helpful?
+
+Some of the ways we vary from competitors:
+
+a. IndigoMetrics is designed to tell organizations whether the actions of t=
+heir employees match the organization=E2=80=99s definition of their respect=
+ive values and culture, vs a predefined set. This allows the organization t=
+o inspect new aspects of the company at any time and compare it apples-to-a=
+pples with previously analyzed values.
+
+b. IndigoMetrics gives everyone bilateral feedback, instead of only collect=
+ing feedback upwards. This means that building group identity is an activit=
+y that everyone contributes to jointly - which significantly reduces system=
+, accidental bias or groupthink.
+
+c. IndigoMetrics develops profiles for each individual to allow L&D and rel=
+ated campaigns to be individually targeted. This enables multivariate testi=
+ng of all internally aimed content to radically improve efficiencies in mes=
+saging, as well as creating upstream insights.
+
+d.  IndigoMetrics develops an understanding of peer to peer relationships t=
+o assist in learning journeys =E2=80=93 i.e., matching bronze medallists wi=
+th gold medallists. This makes L&D a network challenge (which allows for dy=
+namic, scaled, and emergent responses), rather than a command and control c=
+hallenge (see systemic bias, above).
+
+I hope this is helpful,
+Josh
+
+
+=E1=90=A7
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Previous attachments:
+ - image002.png (filename: 171e509af9035e20-0-image002.png)
+
+Information about the change:
+ - Made with:                 Unattach 2.2.0
+ - Date and time:             2020-09-15T14:41:31.792333Z
+ - Download target hostname:  Muninn-2.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+--_000_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">=
+=20
+  <meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">=
+=20
+  <!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+  <style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+=09{font-family:Gadugi;
+=09panose-1:2 11 5 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0in;
+=09margin-bottom:.0001pt;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+=09{mso-style-priority:99;
+=09color:blue;
+=09text-decoration:underline;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-family:"Calibri",sans-serif;}
+@page WordSection1
+=09{size:8.5in 11.0in;
+=09margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+=09{page:WordSection1;}
+--></style>
+  <!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]-->
+  <!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->=20
+ </head>=20
+ <body lang=3D"EN-US" link=3D"blue" vlink=3D"purple">=20
+  <div class=3D"WordSection1">=20
+   <p class=3D"MsoNormal">That worked! Have time to chat today?
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0=
+in 0in 0in">=20
+    <p class=3D"MsoNormal"><b>From:</b> Josh Klein &lt;josh@josh.is&gt; <br=
+> <b>Sent:</b> Tuesday, May 5, 2020 7:58 AM<br> <b>To:</b> David Goldstein =
+&lt;dGoldstein@peppercomm.com&gt;<br> <b>Subject:</b> Re: IndigoMetrics
+     <o:p></o:p></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <p class=3D"MsoNormal">Just tried it and it's working fine:
+     <o:p></o:p></p>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal"><a href=3D"http://reviews.indigometrics.com/Def=
+ault.aspx">http://reviews.indigometrics.com/Default.aspx</a><br> <br> USERN=
+AME: innov1<br> PASSWORD: Password123$
+      <o:p></o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">Let me know if that works for you!
+      <o:p></o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">- J
+      <o:p></o:p></p>=20
+    </div>=20
+    <div>=20
+     <p class=3D"MsoNormal">
+      <o:p>
+       &nbsp;
+      </o:p></p>=20
+    </div>=20
+   </div>=20
+   <div>=20
+    <p class=3D"MsoNormal"><img border=3D"0" id=3D"_x0000_i1027" src=3D"htt=
+ps://mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocon=
+tent&amp;guid=3D4eaa445f-2a95-4937-88b8-4957eb048fb5"><span style=3D"font-s=
+ize:7.5pt;font-family:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7<=
+/span>
+     <o:p></o:p></p>=20
+   </div>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <div>=20
+    <div>=20
+     <p class=3D"MsoNormal">On Tue, May 5, 2020 at 7:56 AM David Goldstein =
+&lt;<a href=3D"mailto:dGoldstein@peppercomm.com">dGoldstein@peppercomm.com<=
+/a>&gt; wrote:
+      <o:p></o:p></p>=20
+    </div>=20
+    <blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;paddin=
+g:0in 0in 0in 6.0pt;margin-left:4.8pt;margin-right:0in">=20
+     <div>=20
+      <div>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">Hey man =E2=80=93 tried doing the sandbox but got the follo=
+wing when I used the login credentials from the PDF. Any thoughts?
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto"><img border=3D"0" width=3D"1218" height=3D"609" style=3D"wi=
+dth:12.6875in;height:6.3472in" id=3D"gmail-m_5630031928420388289Picture_x00=
+20_2" src=3D"cid:image002.png@01D622C0.16083470">
+        <o:p></o:p></p>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0=
+pt 0in 0in 0in">=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto"><b>From:</b> Josh Klein &lt;<a href=3D"mailto:josh@josh.is=
+" target=3D"_blank">josh@josh.is</a>&gt; <br> <b>Sent:</b> Tuesday, March 3=
+, 2020 1:30 PM<br> <b>To:</b> David Goldstein &lt;<a href=3D"mailto:dGoldst=
+ein@peppercomm.com" target=3D"_blank">dGoldstein@peppercomm.com</a>&gt;<br>=
+ <b>Cc:</b> Joshua William Klein &lt;<a href=3D"mailto:josh@josh.is" target=
+=3D"_blank">josh@josh.is</a>&gt;<br> <b>Subject:</b> IndigoMetrics
+         <o:p></o:p></p>=20
+       </div>=20
+       <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-b=
+ottom-alt:auto">&nbsp;
+        <o:p></o:p></p>=20
+       <div>=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto">David,<br> <br> You'd asked for some case studies, our pri=
+cing model, and how Indigo stands out from competitors. I've attached our o=
+nboarding docs which includes pricing, timing, and a pilot overview so you =
+have a more complete view of logistical requirements, and am including some=
+ differentiators below. We're clearing our cases studies with the relevant =
+clients now: we're hard data guys, so tend to steer clear of anecdotal desc=
+riptions unless you think that'd be helpful?<br> <br> Some of the ways we v=
+ary from competitors:<br> <br> a. IndigoMetrics is designed to tell organiz=
+ations whether the actions of their employees match the organization=E2=80=
+=99s definition of their respective values and culture, vs a predefined set=
+. This allows the organization to inspect new aspects of the company at any=
+ time and compare it apples-to-apples with previously analyzed values. <br>=
+ <br> b. IndigoMetrics gives everyone bilateral feedback, instead of only c=
+ollecting feedback upwards. This means that building group identity is an a=
+ctivity that everyone contributes to jointly - which significantly reduces =
+system, accidental bias or groupthink.<br> <br> c. IndigoMetrics develops p=
+rofiles for each individual to allow L&amp;D and related campaigns to be in=
+dividually targeted. This enables multivariate testing of all internally ai=
+med content to radically improve efficiencies in messaging, as well as crea=
+ting upstream insights.<br> <br> d.&nbsp; IndigoMetrics develops an underst=
+anding of peer to peer relationships to assist in learning journeys =E2=80=
+=93 i.e., matching bronze medallists with gold medallists. This makes L&amp=
+;D a network challenge (which allows for dynamic, scaled, and emergent resp=
+onses), rather than a command and control challenge (see systemic bias, abo=
+ve).<br> <br> I hope this is helpful,<br> Josh
+         <o:p></o:p></p>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">&nbsp;
+          <o:p></o:p></p>=20
+        </div>=20
+        <div>=20
+         <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin=
+-bottom-alt:auto">&nbsp;
+          <o:p></o:p></p>=20
+        </div>=20
+       </div>=20
+       <div>=20
+        <p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-=
+bottom-alt:auto"><img border=3D"0" width=3D"1" height=3D"1" style=3D"width:=
+.0069in;height:.0069in" id=3D"_x0000_i1025" src=3D"https://mailfoogae.appsp=
+ot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&amp;guid=3D7e886=
+273-8156-4629-96be-e0fb02862ec8"><span style=3D"font-size:7.5pt;font-family=
+:&quot;Gadugi&quot;,sans-serif;color:white">=E1=90=A7</span>
+         <o:p></o:p></p>=20
+       </div>=20
+      </div>=20
+     </div>=20
+    </blockquote>=20
+   </div>=20
+  </div>  =20
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>image002.png (filename: /Users/josh/Desktop/ATTACHMENTS/171e509af903=
+5e20-0-image002.png, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/171=
+e509af9035e20-0-image002.png">local link</a>)</li>=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.2.0</li>=
+=20
+   <li>Date and time: 2020-09-15T14:41:31.792333Z</li>=20
+   <li>Download target host name: Muninn-2.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+--_000_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_--
+
+--_004_BN7PR05MB5827A1F3607F7A965FC0889DBAA70BN7PR05MB5827namp_--

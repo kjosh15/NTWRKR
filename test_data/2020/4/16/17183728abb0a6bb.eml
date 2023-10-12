@@ -1,0 +1,296 @@
+MIME-Version: 1.0
+Date: Thu, 16 Apr 2020 10:44:12 -0400
+References: <052a01d602a3$f06c1bf0$d14453d0$@indigometrics.com>
+	<CACNgykOFjFgTn_npaKyowjQLWxHswtAVyoy+xMp9AJd4aX1XGA@mail.gmail.com>
+In-Reply-To: <CACNgykOFjFgTn_npaKyowjQLWxHswtAVyoy+xMp9AJd4aX1XGA@mail.gmail.com>
+Message-ID: <CACNgykPwTmY8EDZzQ1CDnu-iqXxyA_LrmP=LLvG-DosNQfgXVA@mail.gmail.com>
+Subject: Fwd: Bechtel Gap and Tech questions for our next call
+From: Josh Klein <josh@josh.is>
+To: Chris at Indigo <chris@indigometrics.com>
+Content-Type: multipart/alternative; boundary="0000000000006f046d05a36977b3"
+
+--0000000000006f046d05a36977b3
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Here's that email again, and here's a good place to understand the
+architecture element we should be considering:
+
+1. Firewall:
+
+https://resources.infosecinstitute.com/network-design-firewall-idsips/#gref
+
+i.e., a firewall limits access to a very few channels. In our case that's
+sending emails (outbound, SMTP), posting forms (outbound, HTTPS), receiving
+forms data (inbound, HTTPS), and sending data for processing (outbound, our
+API). And, of course, secure access for updates and management (SSH).
+
+Note that we can install a packet filtering firewall, which will help with
+this - especially if we're limiting SSH access to traffic coming from a few
+secure places, for example, or only letting SMTP traffic go to a specific
+mail service. There are PLENTY of firewalls out there, so we just need to
+find one that plays nicely with the VM we ultimately install (we're only
+considering Linux, right?)
+
+2. NIDS:
+
+Nevertheless, that's still a fair amount of exposure (specifically the
+HTTPS bit), so we'll want to monitor both that traffic (to see if anyone is
+trying to attack any of those ports) as well as the file system (to see if
+anyone did). Snort can be run on a separate VM to monitor the client's VM,
+and then report to a separate centralized host (your shed, or the VM
+equivalent).
+
+3 HIDS:
+
+My recommendation here is to run OSSEC; a client on the user's front-end
+VM, and the processor back end in your shed or VM equivalent). OSSEC is the
+only real competitor in this space, and it monitors all your log files
+looking for anomalies and fingerprints. It alerts a centralized location if
+it sees anything funny.
+
+The overall architecture is a little more complicated, but a lot more
+secure, and we can roll things out in stages. For example, if we just
+include OSSEC and a good firewall in our basic host image we'll be doing
+good baseline detection.
+
+Food for thought,
+Josh
+
+---------- Forwarded message ---------
+From: Josh Klein <josh@josh.is>
+Date: Wed, Mar 25, 2020 at 1:21 PM
+Subject: Re: Bechtel Gap and Tech questions for our next call
+To: Chris at Indigo <chris@indigometrics.com>
+
+
+Excellent. You ok if I send this over to Bechtel now? In answer to your
+questions:
+
+1. Do you know of an intrusion monitoring software that we could use?
+
+First read this:
+
+https://www.addictivetips.com/net-admin/intrusion-detection-tools/
+
+I'm friends with the team that created Snort, but would suggest OSSIC or
+Samhain might be a better fit for our needs. Again, it'll depend on if we
+want to protect our VM, our network, or our application.
+
+2. How do we protect our python code. Password, create executable?
+
+Protect it from what? Detection? Analysis? Capture? Please explain the
+protection request, and in the meantime check out Cython and this article:
+
+https://www.stop-source-code-theft.com/protecting-python-source-code/
+
+I.e., I think that given the simplicity of what we've built/building we can
+probably circumvent a lot of these issues by having more periodic updates.
+Also see:
+
+https://snyk.io/blog/python-security-best-practices-cheat-sheet/
+
+This is a little old (and is written to sell a product) but ought to help
+on this front.
+
+3. Is there any point having a VM at Liquid, if we are going VM in the UK
+(and nobody is asking us for one) wouldn=E2=80=99t it make more sense to us=
+e a
+large provider? That would give us better business continuity and
+auditability for no more cost =E2=80=93 but a bit of hassle / dev cost?
+
+True. Question is if it's a dev cost we want to sustain right now. I'd
+suggest to liquid that whatever they set up should be deployed in as
+analogous a way as possible for EC2 or equivalent cloud providers and we
+then write all our docs with that in mind.
+
+Put another way, if we're successful in leveraging COVID-19 to generate
+significant new sources of business then we're going to need a
+cookie-cutter means of deploying new instances. VM's are excellent ways to
+do this as you simply spin up a new one for each new client, and count on
+the cloud provider to secure key elements of each one. That way you only
+pay for what you use, and each instance can be managed individually or en
+masse (there are infrastructure and control costs to this, obviously.)
+
+4. Which US cloud provider should we use for our Bechtel VM? We need SOC2
+and 2 factor auth for our VM access =E2=80=A6=E2=80=A6.
+
+All the big ones are going to be roughly equivalent; they can all enable 2
+factor auth. SOC 2 is going to be primarily on us.
+
+5. What are Bechtel talking about when they talk about an =E2=80=9Cencrypti=
+on key
+management process=E2=80=9D. This is only if we have the data encrypted at =
+rest?
+
+Worth thinking about centralizing our key management:
+
+https://www.cryptomathic.com/news-events/blog/the-benefits-of-an-automated-=
+and-centralized-key-management-system
+
+and
+
+https://securityboulevard.com/2019/05/what-is-encryption-key-management-and=
+-what-factors-should-be-considered-when-implementing-a-kms-solution-2/
+
+I.e., it depends on how we want to structure our system for remote access,
+key use, encryption, etc.
+
+- J
+=E1=90=A7
+
+On Wed, Mar 25, 2020 at 8:51 AM <chris@indigometrics.com> wrote:
+
+> J, attached is the gap analysis that I would suggest could go to Bechtel,
+> I will work through CAIQ and the US regulations through the rest of the
+> week.
+>
+> Also some questions below to cover on our call tomorrow.
+>
+> C
+>
+>    - Do you know of an intrusion monitoring software that we could use?
+>    - How do we protect our python code. Password, create executable?
+>    - Is there any point having a VM at Liquid, if we are going VM in the
+>    UK (and nobody is asking us for one) wouldn=E2=80=99t it make more sen=
+se to use a
+>    large provider? That would give us better business continuity and
+>    auditability for no more cost =E2=80=93 but a bit of hassle / dev cost=
+?
+>    - Which US cloud provider should we use for our Bechtel VM? We need
+>    SOC2 and 2 factor auth for our VM access =E2=80=A6=E2=80=A6.
+>    - What are Bechtel talking about when they talk about an =E2=80=9Cencr=
+yption
+>    key management process=E2=80=9D. This is only if we have the data encr=
+ypted at rest?
+>
+> =E1=90=A7
+
+--0000000000006f046d05a36977b3
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div dir=3D"ltr">Here&#39;s that email again, and here&#39;s a good place t=
+o understand the architecture element we should be considering:<br><br>1. F=
+irewall:<br><br><a href=3D"https://resources.infosecinstitute.com/network-d=
+esign-firewall-idsips/#gref">https://resources.infosecinstitute.com/network=
+-design-firewall-idsips/#gref</a><br><br>i.e., a firewall limits access to =
+a very few channels. In our case that&#39;s sending emails (outbound, SMTP)=
+, posting forms (outbound, HTTPS), receiving forms data (inbound, HTTPS), a=
+nd sending data for processing (outbound, our API). And, of course, secure =
+access for updates and management (SSH). <br><br>Note that we can install a=
+ packet filtering firewall, which will help with this - especially if we&#3=
+9;re limiting SSH access to traffic coming from a few secure places, for ex=
+ample, or only letting SMTP traffic go to a specific mail service. There ar=
+e PLENTY of firewalls out there, so we just need to find one that plays nic=
+ely with the VM we ultimately install (we&#39;re only considering Linux, ri=
+ght?)<br><br>2. NIDS:<br><br>Nevertheless, that&#39;s still a fair amount o=
+f exposure (specifically the HTTPS bit), so we&#39;ll want to monitor both =
+that traffic (to see if anyone is trying to attack any of those ports) as w=
+ell as the file system (to see if anyone did). Snort can be run on a separa=
+te VM to monitor the client&#39;s VM, and then report to a separate central=
+ized host (your shed, or the VM equivalent).<br><br>3 HIDS:<br><br>My recom=
+mendation here is to run OSSEC; a client on the user&#39;s front-end VM, an=
+d the processor back end in your shed or VM equivalent). OSSEC is the only =
+real competitor in this space, and it monitors all your log files looking f=
+or anomalies and fingerprints. It alerts a centralized location if it sees =
+anything funny.<br><br>The overall architecture is a little more complicate=
+d, but a lot more secure, and we can roll things out in stages. For example=
+, if we just include OSSEC and a good firewall in our basic host image we&#=
+39;ll be doing good baseline detection.<br><br>Food for thought,<br>Josh<br=
+><br><div class=3D"gmail_quote"><div dir=3D"ltr" class=3D"gmail_attr">-----=
+----- Forwarded message ---------<br>From: <strong class=3D"gmail_sendernam=
+e" dir=3D"auto">Josh Klein</strong> <span dir=3D"auto">&lt;<a href=3D"mailt=
+o:josh@josh.is">josh@josh.is</a>&gt;</span><br>Date: Wed, Mar 25, 2020 at 1=
+:21 PM<br>Subject: Re: Bechtel Gap and Tech questions for our next call<br>=
+To: Chris at Indigo &lt;<a href=3D"mailto:chris@indigometrics.com">chris@in=
+digometrics.com</a>&gt;<br></div><br><br><div dir=3D"ltr"><div>Excellent. Y=
+ou ok if I send this over to Bechtel now? In answer to your questions:</div=
+><div><br></div>1. Do you know of an intrusion monitoring software that we =
+could use?<br><br>First read this:<br><br><a href=3D"https://www.addictivet=
+ips.com/net-admin/intrusion-detection-tools/" target=3D"_blank">https://www=
+.addictivetips.com/net-admin/intrusion-detection-tools/</a><br><br>I&#39;m =
+friends with the team that created Snort, but would suggest OSSIC or Samhai=
+n might be a better fit for our needs. Again, it&#39;ll depend on if we wan=
+t to protect our VM, our network, or our application.<br><br>2. How do we p=
+rotect our python code. Password, create executable?<br><br>Protect it from=
+ what? Detection? Analysis? Capture? Please explain the protection request,=
+ and in the meantime check out Cython and this article:<br><br><a href=3D"h=
+ttps://www.stop-source-code-theft.com/protecting-python-source-code/" targe=
+t=3D"_blank">https://www.stop-source-code-theft.com/protecting-python-sourc=
+e-code/</a><br><br>I.e., I think that given the simplicity of what we&#39;v=
+e built/building we can probably circumvent a lot of these issues by having=
+ more periodic updates. Also see:<br><br><a href=3D"https://snyk.io/blog/py=
+thon-security-best-practices-cheat-sheet/" target=3D"_blank">https://snyk.i=
+o/blog/python-security-best-practices-cheat-sheet/</a><br><br>This is a lit=
+tle old (and is written to sell a product) but ought to help on this front.=
+<br><br>3. Is there any point having a VM at Liquid, if we are going VM in =
+the UK (and nobody is asking us for one) wouldn=E2=80=99t it make more sens=
+e to use a large provider? That would give us better business continuity an=
+d auditability for no more cost =E2=80=93 but a bit of hassle / dev cost?<b=
+r><br>True. Question is if it&#39;s a dev cost we want to sustain right now=
+. I&#39;d suggest to liquid that whatever they set up should be deployed in=
+ as analogous a way as possible for EC2 or equivalent cloud providers and w=
+e then write all our docs with that in mind.<br><br>Put another way, if we&=
+#39;re successful in leveraging COVID-19 to generate significant new source=
+s of business then we&#39;re going to need a cookie-cutter means of deployi=
+ng new instances. VM&#39;s are excellent ways to do this as you simply spin=
+ up a new one for each new client, and count on the cloud provider to secur=
+e key elements of each one. That way you only pay for what you use, and eac=
+h instance can be managed individually or en masse (there are infrastructur=
+e and control costs to this, obviously.)<br><br>4. Which US cloud provider =
+should we use for our Bechtel VM? We need SOC2 and 2 factor auth for our VM=
+ access =E2=80=A6=E2=80=A6.<br><br>All the big ones are going to be roughly=
+ equivalent; they can all enable 2 factor auth. SOC 2 is going to be primar=
+ily on us.<br><br>5. What are Bechtel talking about when they talk about an=
+ =E2=80=9Cencryption key management process=E2=80=9D. This is only if we ha=
+ve the data encrypted at rest?<br><br>Worth thinking about centralizing our=
+ key management:<br><br><a href=3D"https://www.cryptomathic.com/news-events=
+/blog/the-benefits-of-an-automated-and-centralized-key-management-system" t=
+arget=3D"_blank">https://www.cryptomathic.com/news-events/blog/the-benefits=
+-of-an-automated-and-centralized-key-management-system</a><br><br>and<br><b=
+r><a href=3D"https://securityboulevard.com/2019/05/what-is-encryption-key-m=
+anagement-and-what-factors-should-be-considered-when-implementing-a-kms-sol=
+ution-2/" target=3D"_blank">https://securityboulevard.com/2019/05/what-is-e=
+ncryption-key-management-and-what-factors-should-be-considered-when-impleme=
+nting-a-kms-solution-2/</a><br><br>I.e., it depends on how we want to struc=
+ture our system for remote access, key use, encryption, etc.<br><br>- J<br>=
+</div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img alt=3D""=
+ style=3D"width:0px;max-height:0px;overflow:hidden" src=3D"https://ci5.goog=
+leusercontent.com/proxy/AF8Ui1vlOOOuTvz8DOjcjhdh0P9Xjz4sPAIGa5wX_CGDQJ_BURx=
+px0NFWF1oHaJxIJrQfOGg6eeUok-_fMzpXIf1Ts1vQVbmFh1pmBAYurCL74gv3hxz_YBR34-BM5=
+dPdvZSOEHsagRvOlYK-eR03eHWWcauoaMDCIkzrYa0YM63v00zAPDn=3Ds0-d-e1-ft#https:/=
+/mailfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent=
+&amp;guid=3D6bd46937-2610-4991-9dbd-d62935f9ee43"><font color=3D"#ffffff" s=
+ize=3D"1">=E1=90=A7</font></div><br><div class=3D"gmail_quote"><div dir=3D"=
+ltr" class=3D"gmail_attr">On Wed, Mar 25, 2020 at 8:51 AM &lt;<a href=3D"ma=
+ilto:chris@indigometrics.com" target=3D"_blank">chris@indigometrics.com</a>=
+&gt; wrote:<br></div><blockquote class=3D"gmail_quote" style=3D"margin:0px =
+0px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex"><div=
+ lang=3D"EN-GB"><div><p class=3D"MsoNormal" style=3D"margin-left:36pt">J, a=
+ttached is the gap analysis that I would suggest could go to Bechtel, I wil=
+l work through CAIQ and the US regulations through the rest of the week.<u>=
+</u><u></u></p><p class=3D"MsoNormal" style=3D"margin-left:36pt">Also some =
+questions below to cover on our call tomorrow.<u></u><u></u></p><p class=3D=
+"MsoNormal" style=3D"margin-left:36pt">C<u></u><u></u></p><ul style=3D"marg=
+in-top:0cm" type=3D"disc"><li style=3D"margin-left:0cm">Do you know of an i=
+ntrusion monitoring software that we could use?<u></u><u></u></li><li style=
+=3D"margin-left:0cm">How do we protect our python code. Password, create ex=
+ecutable?<u></u><u></u></li><li style=3D"margin-left:0cm">Is there any poin=
+t having a VM at Liquid, if we are going VM in the UK (and nobody is asking=
+ us for one) wouldn=E2=80=99t it make more sense to use a large provider? T=
+hat would give us better business continuity and auditability for no more c=
+ost =E2=80=93 but a bit of hassle / dev cost?<u></u><u></u></li><li style=
+=3D"margin-left:0cm">Which US cloud provider should we use for our Bechtel =
+VM? We need SOC2 and 2 factor auth for our VM access =E2=80=A6=E2=80=A6.<u>=
+</u><u></u></li><li style=3D"margin-left:0cm">What are Bechtel talking abou=
+t when they talk about an =E2=80=9Cencryption key management process=E2=80=
+=9D. This is only if we have the data encrypted at rest?<u></u><u></u></li>=
+</ul></div></div></blockquote></div>
+</div></div><div hspace=3D"streak-pt-mark" style=3D"max-height:1px"><img al=
+t=3D"" style=3D"width:0px;max-height:0px;overflow:hidden" src=3D"https://ma=
+ilfoogae.appspot.com/t?sender=3Daam9zaEBqb3NoLmlz&amp;type=3Dzerocontent&am=
+p;guid=3D701f22d2-2a72-4a3b-aa62-c19b366c055d"><font color=3D"#ffffff" size=
+=3D"1">=E1=90=A7</font></div>
+
+--0000000000006f046d05a36977b3--

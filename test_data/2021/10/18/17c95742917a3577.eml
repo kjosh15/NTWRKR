@@ -1,0 +1,816 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:a5e9:0:b0:237:8407:3a71 with SMTP id i9csp3666414vqp;
+        Mon, 18 Oct 2021 15:09:50 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyxhVL4qcAuL7+WrJHIbMF0jynDzs9fMvrvxfwBaZhuq14/gF9hUprLnDnjn0SwC8lbYU72
+X-Received: by 2002:ab0:7044:: with SMTP id v4mr12741023ual.76.1634594990610;
+        Mon, 18 Oct 2021 15:09:50 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1634594990; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=FKXMPq8K62GmOYFawOEZA86zNUs7z5nzPdNY63x1ev2RJVxqrKs02jJQnkdejlCQhx
+         nRIUWoG/6VelTbm5u9rFgiuFPVFR15yyLHodnMW6JkpsDlwJscm410LkaNgHGPZmdBfo
+         fAjUJkXQPS4RbApkqTDkjwFQxDZqQGDViw66upBf0zYtAZP2eMGWF9W9z+hVmEb/zfh1
+         eYJNwNTljuzOfzQKdJGZke5RGvkaw2D3YDsGGVv+0OlDy+3hnMv1Oz+xki/8RlJaTneU
+         mjn8stkjVWj0zd3G/vTCsJooKNjGhNl61PEJE96DCErHMnjU4mY5VB3BTGx9VE4utoij
+         W9hQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:message-id:date
+         :thread-index:thread-topic:subject:to:from:dkim-signature;
+        bh=2am9Ld6Bis2JZS+9emSEBqL5REZ/aOED6zGMfnJCLT0=;
+        b=Kp5DeZpcZM+35Qdd8GiJadJgFVQvx0GBf92AgO17kLX1dIqkgrJXqoipv9yw4WaqyK
+         339kbaNJqudNnAAzd9bD3urt90CIwCv9P2E6rMFPzYGPdCLedxKBSzxp7dJaKpcnwYQa
+         B97ub8i+uhy7adHjY9+5e5r57vjZim7nBmQ6KLKtwdYn4X/HZxcVgRL+C9S4lTyELzzV
+         JQ+PaOJoVoA002u22agafZ7P2nSkABL45spR/9w+IoMLdxDD5Oe/tl2znBv7rRn5sI29
+         9pTTJ+6uknjhKy9AwPN/IaXMc+oyD7E/i2925PdbwAnMU3K3bzdzZPTTdp9Z3r5dcC17
+         tWzQ==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@BlackstoneLP.onmicrosoft.com header.s=selector1-BlackstoneLP-onmicrosoft-com header.b=JBBy19Id;
+       arc=pass (i=1 spf=pass spfdomain=blackstone.com dkim=pass dkdomain=blackstone.com dmarc=pass fromdomain=blackstone.com);
+       spf=pass (google.com: domain of melissa.parckys@blackstone.com designates 67.219.250.113 as permitted sender) smtp.mailfrom=Melissa.Parckys@blackstone.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=blackstone.com
+Return-Path: <Melissa.Parckys@blackstone.com>
+Received: from mail1.bemta24.messagelabs.com (mail1.bemta24.messagelabs.com. [67.219.250.113])
+        by mx.google.com with ESMTPS id q1si13239763vsj.80.2021.10.18.15.09.50
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 18 Oct 2021 15:09:50 -0700 (PDT)
+Received-SPF: pass (google.com: domain of melissa.parckys@blackstone.com designates 67.219.250.113 as permitted sender) client-ip=67.219.250.113;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@BlackstoneLP.onmicrosoft.com header.s=selector1-BlackstoneLP-onmicrosoft-com header.b=JBBy19Id;
+       arc=pass (i=1 spf=pass spfdomain=blackstone.com dkim=pass dkdomain=blackstone.com dmarc=pass fromdomain=blackstone.com);
+       spf=pass (google.com: domain of melissa.parckys@blackstone.com designates 67.219.250.113 as permitted sender) smtp.mailfrom=Melissa.Parckys@blackstone.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=blackstone.com
+Return-Path: <Melissa.Parckys@blackstone.com>
+Received: from [100.112.133.147] (using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256 bits))
+	by server-2.bemta.az-b.us-west-2.aws.symcld.net id 4B/3F-15715-DA0FD616; Mon, 18 Oct 2021 22:09:49 +0000
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrDJsWRWlGSWpSXmKPExsWSoW++UXf1h9x
+  Eg6+bzC0WvHrJ5MDosbptLWMAYxRrZl5SfkUCa8abVcdZC9r+Mlb8+ujYwLjzA2MXIxcHo8BS
+  Zolr7VfZIZxFrBKN12ewQDh7GCWmTn8FVsYisJNZ4mfbGzBHSGAhk8TpWxvYIJz7jBJL969m7
+  mLk5GATsJTY1LiUEcQWEZCV+Nq4ghXEFhbQkrj+fgVUXFtixc7/bBC2kcSmU4vYQWwWAVWJM1
+  u+gcV5BWIlrn3+DlbPKCAm8f3UGiYQm1lAXOLWk/lgtoSAgMSSPeeZIWxRiZeP/7FC3N3FKDH
+  l9DSoIlmJS/O7GSFsX4ltL9exQdhaEk9/r4CycyS2rV8KVcMt0dvVChVXk3i/7ALUHDmJVb0P
+  WSBseYlpi96zQ9gyEg9ubAeHhITABTaJ6Y/3MkM481kk7mxugjrPQGLetyNQU9/wSpzfaNPFy
+  AFkq0j8O1Q5gVFnFpLnIOw8iRfzJrPPAgeGoMTJmU9YIOI6Egt2f2KDsLUlli18zQxjnznwmA
+  lZfAEj+ypG86SizPSMktzEzBxdQwMDXUNDI11DY1NdUxO9xCrdJL3SYt3y1OISXSO9xPJiveL
+  K3OScFL281JJNjMBklVLQbraD8ebrD3qHGCU5mJREeR0u5iYK8SXlp1RmJBZnxBeV5qQWH2KU
+  4eBQkuC9cgcoJ1iUmp5akZaZA0ycMGkJDh4lEd7fb4DSvMUFibnFmekQqVOM9hwTXs5dxMzx7
+  udiIPlx1RIg+R1ECrHk5eelSonzLnsC1CYA0pZRmgc3FJboLzHKSgnzMjIwMAjxFKQW5WaWoM
+  q/YhTnYFQS5i15DzSFJzOvBG73K6CzmIDOuuqcA3JWSSJCSqqBKWRLWMEvHZcdoubzmY8pPjr
+  urro6dCnLTMWUY6ppt+YEPfx8zMtnmbJSSpWVUiUHW8aTw8GvVueE6pRbRFr8D9q+aF1aebbO
+  3grbP79jrCd8fiJQpSbw9NPd7GnH8rfsj5DOcHb6s6/g36L6lYyXdHTPViW/8TwptX/OHf5/F
+  ToXlmrUsEyOC1KbNutm8OK4w1z3t7s15v3YdSRFUNykb/b1atbmS+sOVbCq7Tqu2x9ppbszX7
+  Ny09e1t818na1Pxn2K7QxcueZO1JEps1VbFGJPrdotWfC+ZXGE8PPp+31+OYj9ucMWuOdw0of
+  lr66s+qFse/XlcYUvnz6x7jtU/FOvxUmGvd9cYp36w+X5l5RYijMSDbWYi4oTARXk6M9vBAAA
+X-Env-Sender: Melissa.Parckys@Blackstone.com
+X-Msg-Ref: server-12.tower-344.messagelabs.com!1634594987!138768!1
+X-Originating-IP: [104.47.55.177]
+X-SYMC-ESS-Client-Auth: mailfrom-relay-check=pass
+X-StarScan-Received:
+X-StarScan-Version: 9.81.4; banners=-,-,-
+X-VirusChecked: Checked
+Received: (qmail 2932 invoked from network); 18 Oct 2021 22:09:47 -0000
+Received: from mail-bn8nam12lp2177.outbound.protection.outlook.com (HELO NAM12-BN8-obe.outbound.protection.outlook.com) (104.47.55.177)
+  by server-12.tower-344.messagelabs.com with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP; 18 Oct 2021 22:09:47 -0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=k5OYwkK9R0zBxIXS9P2ex03KHWE1IhLj8ZNBHM+5kQ0q67QnYo7NGnw1Ytu/geNvdBZ1/ME/GGg6wJ12DBeWNlzcq9AU3F+sLz4D2go1GB0TKthVZh5lQJdMEFEu9c9IsjIYK26JNFsNsENWdDVtEWliQYU4jfR04xIyyMBKmlokOfpZp/3j1ATf4mqcFCB63an8/c+Y24+RmCNujCZLTTTV7J6Lm+rbb2pJahKxPrWq3s2jmuEJNcQsQw8iLntUMWqwwdb6YPlA6TisdYepmvdGGRbpwHOJzZsPv6wVbmONTi5SPbbTUVqW3IRmxIIYOn/JHsuueiv7VWnE1jl1Gw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2am9Ld6Bis2JZS+9emSEBqL5REZ/aOED6zGMfnJCLT0=;
+ b=G2TT94iYsVSEc0AiCEuG1hS9RtL0tF1ha7JYrpoAvMLxJtz5y10Q6cnx0jupC1wFFmVGEfjCigedJzSEntLkWV/4UMX0gufOX2Ii8fzWvZx2m4VEzWJfhC1NGB7lcaw7/C0pdPU3w5XG0rsvasKRx38WUkX6vwQc1tJzBWa5368AmrLXChTmbu8ULV7wpMR8AMxABqRBihZCLg0pWCzKH7v8oT6EsRgdTCbfEE8igOAyjypYUOFvlwnRMsZsrH0Yj7zbpsIiqUOArv/WTMdwlxNGCHbkp3geLXbGizH6jvaJfDh75LElW0+CfF2NDDkgOqs/2ckIy7rjcIyWRxDKEg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=blackstone.com; dmarc=pass action=none
+ header.from=blackstone.com; dkim=pass header.d=blackstone.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=BlackstoneLP.onmicrosoft.com; s=selector1-BlackstoneLP-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2am9Ld6Bis2JZS+9emSEBqL5REZ/aOED6zGMfnJCLT0=;
+ b=JBBy19Idma0TNOEr503oqfGn3m9BA0jtW7B0f0z1jnE81+sBte2khBFzM/dOMK4LkunjVIOjfrm6j53EC8OhUaZbKezZKrycz5KPTyDqHLVIhc/QXp0k1urrPTUoJVFA1RVL/PWw0E2I/mhTlviTMda0QCT+kLzakIBZEM68NPE=
+Received: from MN2PR17MB3182.namprd17.prod.outlook.com (2603:10b6:208:154::27)
+ by MN2PR17MB3342.namprd17.prod.outlook.com (2603:10b6:208:153::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4608.17; Mon, 18 Oct
+ 2021 22:09:43 +0000
+Received: from MN2PR17MB3182.namprd17.prod.outlook.com
+ ([fe80::7c75:e5cc:393d:b06f]) by MN2PR17MB3182.namprd17.prod.outlook.com
+ ([fe80::7c75:e5cc:393d:b06f%7]) with mapi id 15.20.4608.018; Mon, 18 Oct 2021
+ 22:09:42 +0000
+From: "Parckys, Melissa" <Melissa.Parckys@Blackstone.com>
+To: Josh Klein <josh@josh.is>
+Subject: RE: Stevi Petrelli and Josh Klein
+Thread-Topic: Stevi Petrelli and Josh Klein
+Thread-Index: AQHXu36PwDHAmsXhn0Kg/J+RP2p/uavZYmxA
+Date: Mon, 18 Oct 2021 22:09:42 +0000
+Message-ID:
+ <MN2PR17MB31820A32E8E67A1E85714B8892BC9@MN2PR17MB3182.namprd17.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 30556de4-07e0-4d0d-6c16-08d99283fccd
+x-ms-traffictypediagnostic: MN2PR17MB3342:
+x-microsoft-antispam-prvs:
+ <MN2PR17MB3342290E6EA498E6BB12C5B692BC9@MN2PR17MB3342.namprd17.prod.outlook.com>
+x-bxdisc: 1
+x-ms-oob-tlc-oobclassifiers: OLM:5797;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ qAJkpRoTe5BMwKufA0ACuPSmQ741hZDviEa7j9iWVhh9VXWRIdRU1x/vHdfbKePGOyFEg4W68SpIjEjxwffINNIGikrhr8gRrnVQBBFOdvyY2fA4XxV2PnhsGVaNdpu6095bbhe6gb40HL9bM8sLdAyW6bq9ZkJDuoAbbyJQWXjfLLJhIQsaxZ5RrR/eARYY/IQnBnm6e6kEQJbyQd4l9iLzfyUwzylOhQZXjtKooSLkj8mBEjS3623UeZ2Gccr4IIjjgCe9aGIp93XeyWMgAD8JSv9KHSewmSJVkyK/FsUvxm8YL9569hWWrI1WTjnPazCnf0/IDqp7zBatkkn5waJ/6H09ZQ/4b2di9UuJOrshKss2IKkBQk2NlYgtK427ybVSytPQrpfW5jH5q/XjBkrvuLzlFzPREAcO0N+RDONQ59YWQ7Rb+B/HzjA2zC4mr2i+pKxKiPJ/II09GKJQyKtbCdr+zR84OQ71nVNFNX8CgcNeTzBD5fK2ucVWZ8VgcKCBnjdK0O37tkEVQb/qLOrsiBONTfOZ5A13FKVxly0zkA/7cI/WS/1jQQ7tjj7sSIrDE/dzvqWM1W+3eqsWuPXVddC/wI8tsGLPNdIx8CmGYCyr+6mZn7amlNNSSk+IJu0qnk4xzYY3swBFoeoJbSMrl3vfF4bP3t4Maq3415addsAtllr3mRs0PudteM+IUTMY4K7LGPRZ8wOhhI6kifrlVVS12633ExAEr/1haJlJCuAJ4MYoUj0c5GJa9x42aJ/oOVhJbvid4pZxsWvenUBEkB/A3+JhQigR+qfV7wM=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR17MB3182.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(71200400001)(6916009)(8676002)(966005)(6506007)(26005)(53546011)(186003)(55016002)(66946007)(76116006)(66446008)(66556008)(64756008)(15974865002)(38070700005)(33656002)(52536014)(5660300002)(7696005)(9686003)(83380400001)(8936002)(508600001)(66476007)(316002)(86362001)(2906002)(40140700001)(122000001)(82960400001)(9326002)(166002)(38100700002)(55236004);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?2d9k6c7DEOHk7fhCbk/Wk9ioUoP4jWsCyMuXlFh+Qoab4WihqxeIOCITL33M?=
+ =?us-ascii?Q?PqeN8UG4euYoje4MkKyIZxlZvwy++QLQ1jpg6dKQghPZ3D4R2/A6ZGJEXSF9?=
+ =?us-ascii?Q?iizSjbHesS9REfpVBqVIk2DavHbBR9O3DuFnp4gRfPfsLX+pdaAd4/iZwm/H?=
+ =?us-ascii?Q?OSnDc49s8Da6Ml9m0I70Ej/Yh9mCSbt7Srd6W6TCB55iXJH1GBStU0Asrg/U?=
+ =?us-ascii?Q?Fbb2K5vTRN8+d3LVLgQF8uynyI9butom3J/2JLuCXNGZsebXqIPnmXoDo9YK?=
+ =?us-ascii?Q?Put6OvRCcCfK/5ZDf6Bl9HGzEXYbITS7Jvq6q/aPkLsdIQMfB3CtVtXG+T46?=
+ =?us-ascii?Q?IeL52KYotBiMbepauQQH2VbNp7CyD+IrPt1PD0iCpci5Bd7ZmdKyCaV2bIyB?=
+ =?us-ascii?Q?QqUql8/hZbZ/nXtb9TwlkE2U6kUazW3I8d17Mjd/pRn9nYUHjDR9m2pmqEC7?=
+ =?us-ascii?Q?6dCp7j+lcW5YUdNbdTQ3StrpEhQoTAde0E3mQXsp6CRkAw+BUPt6CFSNvXIa?=
+ =?us-ascii?Q?jePOJa2XP1PlGHncvK6v+KhYBFOShHLl/UVY/amKaH5KlqGvPOcxcfYo1GAE?=
+ =?us-ascii?Q?tteLn8GpjplTHq1JszSVXuK8uMSl7vo5n/QYV29BbE9i/SGAl5X9jjgwWhNt?=
+ =?us-ascii?Q?6k55B1ZHEmEombF5diiTlZr89p887STye/Md1s4/RlGcg4LSdmtjfcLSXhGC?=
+ =?us-ascii?Q?fYWe50Z/4MO9VQTgGWPcWBkZcyC68vJM/f8Zk9PEe6m5/Tfya+cKejmDyrNT?=
+ =?us-ascii?Q?q6rHLl70AKsGjlCJ6Rd43vHHD60iXSa4csdZOVCPlbKsy8mRDpqOmF4xSRAX?=
+ =?us-ascii?Q?73pakXNtU1i68AFKTDi/NQ73caBrL2YlIlXmHZOiD4tNeeLQfJS51GQncVcz?=
+ =?us-ascii?Q?vYgjb4ABBTq0H5d7uKI8AENHURA3hi9FT6wFakN43/P7EBbRxrs2y4K3PJm8?=
+ =?us-ascii?Q?InEq2YSqKyBFnbea9k9XnGM9Ycl1CxJ5nTJj2Z2+87AbYic9PMyIswL264YL?=
+ =?us-ascii?Q?Sdg4667l3N7MiUoS9TncI87/JGquGaFVRcYleOjsQ99QogTKpFFJHrQlRMMc?=
+ =?us-ascii?Q?XdhEnBYzgyrqZFoArYstSyYnG9ZouYVobtAeuIRzBo24ce2CgJLI0EhmVy+i?=
+ =?us-ascii?Q?inK1IAUOzbSxfbh79UkXWn25NYgREcE8ry4V8/dwIjaMNvESkVpU88Q+y3tr?=
+ =?us-ascii?Q?0STVIpTS29pE5ehjPdsiLY8AlVGCYn1SbxDPoDXnm+zhZuXIJbM0gpU5yl5B?=
+ =?us-ascii?Q?AOj2IM37WjIJTFovebTfXTs+uXplfHEIGeytAkEzenN5LN9F+JWLlTgr7ae2?=
+ =?us-ascii?Q?vj36uefUUumE99wN2cm12Qyx?=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/alternative;
+	boundary="_000_MN2PR17MB31820A32E8E67A1E85714B8892BC9MN2PR17MB3182namp_"
+MIME-Version: 1.0
+X-OriginatorOrg: blackstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR17MB3182.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30556de4-07e0-4d0d-6c16-08d99283fccd
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Oct 2021 22:09:42.8508
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 706e11b3-4dd3-4849-8ff2-41fac7751ea4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sOyYvXI01vtd9E2NXU97i7+AdXjtSEVNIk+BRxFGIKK0SiBMZWvf4g9jZkvHZsDxErSJjMWX5jMi2WkuCX0mCWRuNir5R+mUqXfIuwL6DB8=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR17MB3342
+
+--_000_MN2PR17MB31820A32E8E67A1E85714B8892BC9MN2PR17MB3182namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+Do you mind scaling this meeting down to 30 minutes, please - 11-11:30am ES=
+T?
+
+Thanking you kindly,
+
+Melissa
+
+Melissa Parckys
+
+Blackstone
+345 Park Avenue, NY, New York, 10154
+O: 212.390.2458  I M: 718.913.8234
+Melissa.Parckys@Blackstone.com<mailto:Melissa.Parckys@Blackstone.com>
+Blackstone | @Blackstone
+
+
+
+-----Original Appointment-----
+From: Josh Klein <josh@josh.is>
+Sent: Thursday, October 7, 2021 9:24 AM
+To: Josh Klein; Petrelli, Stevi
+Subject: Stevi Petrelli and Josh Klein
+When: Thursday, October 21, 2021 11:00 AM-11:45 AM (UTC-05:00) Eastern Time=
+ (US & Canada).
+Where: https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU200MCtHcmZwaWw2UT09
+
+You have been invited to the following event.
+Stevi Petrelli and Josh Klein
+When
+Thu Oct 21, 2021 3pm - 3:45pm Greenwich Mean Time
+Where
+https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU200MCtHcmZwaWw2UT09 (map<h=
+ttps://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.goog=
+le.com%2Furl%3Fq%3Dhttps%253A%252F%252Fzoom.us%252Fj%252F97452294285%253Fpw=
+d%253DbURVUlR4akpVU200MCtHcmZwaWw2UT09%26sa%3DD%26source%3Dcalendar%26usd%3=
+D2%26usg%3DAOvVaw3tZc5iHt4poq5Z9BA-hNmk&data=3D04%7C01%7Cstevi.petrelli%40b=
+lackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fa=
+c7751ea4%7C1%7C0%7C637692098277935344%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wL=
+jAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DcKNA4c=
+3R%2B%2FBzmnncpoAdtPujEVITy5RjAUKElwQm6fs%3D&reserved=3D0>)
+Calendar
+stevi.petrelli@blackstone.com<mailto:stevi.petrelli@blackstone.com>
+Who
+*
+Josh Klein - organizer
+*
+stevi.petrelli@blackstone.com<mailto:stevi.petrelli@blackstone.com>
+more details ><https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%=
+3A%2F%2Fcalendar.google.com%2Fcalendar%2Fevent%3Faction%3DVIEW%26eid%3DM3A1=
+ZmZwMnNib3ZnMXF0bTc2bTRoYTRwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26t=
+ok%3DMTIjam9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMT=
+FhMg%26ctz%3DEtc%252FGMT%26hl%3Den%26es%3D0&data=3D04%7C01%7Cstevi.petrelli=
+%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff2=
+41fac7751ea4%7C1%7C0%7C637692098277945301%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
+C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3Djy=
+dJEQamHry3L6MTV%2FQpIljRH5pd47CuJrYeKppCKTg%3D&reserved=3D0>
+Event Name: Connect Call
+
+Let's connect! Schedule a time now for us to chat.
+
+Location: This is a Zoom web conference.
+
+You can join this meeting from your computer, tablet, or smartphone.
+https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU200MCtHcmZwaWw2UT09<https:=
+//nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.google.co=
+m%2Furl%3Fq%3Dhttps%253A%252F%252Fzoom.us%252Fj%252F97452294285%253Fpwd%253=
+DbURVUlR4akpVU200MCtHcmZwaWw2UT09%26sa%3DD%26source%3Dcalendar%26usd%3D2%26=
+usg%3DAOvVaw3tZc5iHt4poq5Z9BA-hNmk&data=3D04%7C01%7Cstevi.petrelli%40blacks=
+tone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751=
+ea4%7C1%7C0%7C637692098277945301%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMD=
+AiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DuxlDnBZh%2F=
+2e57lxNy%2FTSxKBMQDNLjG0tlVGHazkOpyE%3D&reserved=3D0>
+
+Password: 5BgVYR
+
+Please share anything that will help prepare for our meeting.: n/a
+
+Need to make changes to this event?
+Cancel: https://calendly.com/cancellations/AKKAMMOH46UXIP6J<https://nam12.s=
+afelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.google.com%2Furl%3=
+Fq%3Dhttps%253A%252F%252Fcalendly.com%252Fcancellations%252FAKKAMMOH46UXIP6=
+J%26sa%3DD%26source%3Dcalendar%26usd%3D2%26usg%3DAOvVaw2FR4EPo-U7V5fiwJCp3e=
+-Q&data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69aa5395f497869330=
+8d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C637692098277955258=
+%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haW=
+wiLCJXVCI6Mn0%3D%7C1000&sdata=3D1IIyOvIlIoPET2xgLFSsimidGj6vId%2BTffvxY5ext=
+P0%3D&reserved=3D0>
+Reschedule: https://calendly.com/reschedulings/AKKAMMOH46UXIP6J<https://nam=
+12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.google.com%2Fu=
+rl%3Fq%3Dhttps%253A%252F%252Fcalendly.com%252Freschedulings%252FAKKAMMOH46U=
+XIP6J%26sa%3DD%26source%3Dcalendar%26usd%3D2%26usg%3DAOvVaw1Wauoz6kbzhBSk_Z=
+BZ2_cw&data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69aa5395f49786=
+93308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C63769209827795=
+5258%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik=
+1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DRaynIj2Va09PHM2vyOP9SvpH2T%2F6BeUhX9KJ7=
+0HCfwA%3D&reserved=3D0>
+
+Powered by Calendly.com
+
+Going (stevi.petrelli@blackstone.com<mailto:stevi.petrelli@blackstone.com>)=
+?   Yes<https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2=
+Fcalendar.google.com%2Fcalendar%2Fevent%3Faction%3DRESPOND%26eid%3DM3A1ZmZw=
+MnNib3ZnMXF0bTc2bTRoYTRwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26rst%3=
+D1%26tok%3DMTIjam9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMx=
+NjMzMTFhMg%26ctz%3DEtc%252FGMT%26hl%3Den%26es%3D0&data=3D04%7C01%7Cstevi.pe=
+trelli%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348=
+498ff241fac7751ea4%7C1%7C0%7C637692098277965214%7CUnknown%7CTWFpbGZsb3d8eyJ=
+WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdat=
+a=3DnnbfeHCjbEG%2FH9gGcryiVTfOfqKjOhyOBHprXty1Ekg%3D&reserved=3D0> - Maybe<=
+https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fcalenda=
+r.google.com%2Fcalendar%2Fevent%3Faction%3DRESPOND%26eid%3DM3A1ZmZwMnNib3Zn=
+MXF0bTc2bTRoYTRwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26rst%3D3%26tok=
+%3DMTIjam9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFh=
+Mg%26ctz%3DEtc%252FGMT%26hl%3Den%26es%3D0&data=3D04%7C01%7Cstevi.petrelli%4=
+0blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241=
+fac7751ea4%7C1%7C0%7C637692098277975172%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4=
+wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DvcTb=
+87JuV3vr9NOqXKXOdO6w2vOK8jEH88U57yrKHZc%3D&reserved=3D0> - No<https://nam12=
+.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%=
+2Fcalendar%2Fevent%3Faction%3DRESPOND%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoY=
+TRwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26rst%3D2%26tok%3DMTIjam9zaE=
+Bqb3NoLmlzNTEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEt=
+c%252FGMT%26hl%3Den%26es%3D0&data=3D04%7C01%7Cstevi.petrelli%40blackstone.c=
+om%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C=
+1%7C0%7C637692098277975172%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQ=
+IjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DAK2eMdKLVr078tofj=
+k%2BEo1hTel8NqyNwFLUjTkHsemM%3D&reserved=3D0>    more options ><https://nam=
+12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fcalendar.google.co=
+m%2Fcalendar%2Fevent%3Faction%3DVIEW%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoYT=
+RwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26tok%3DMTIjam9zaEBqb3NoLmlzN=
+TEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEtc%252FGMT%2=
+6hl%3Den%26es%3D0&data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69a=
+a5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C637=
+692098277985127%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzI=
+iLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3Di%2BfGr2Gc55rbYzKJ8UhU6tdDeW=
+o6taHRTmLzm1KpvVI%3D&reserved=3D0>
+
+Invitation from Google Calendar<https://nam12.safelinks.protection.outlook.=
+com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%2Fcalendar%2F&data=3D04%7C01%7=
+Cstevi.petrelli%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e1=
+1b34dd348498ff241fac7751ea4%7C1%7C0%7C637692098277995084%7CUnknown%7CTWFpbG=
+Zsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C=
+1000&sdata=3DJfJIqjgFJxxHnKuZCpUfgjoJBZQ5Lvimw3684O6lG28%3D&reserved=3D0>
+
+You are receiving this courtesy email at the account stevi.petrelli@blackst=
+one.com<mailto:stevi.petrelli@blackstone.com> because you are an attendee o=
+f this event.
+
+To stop receiving future updates for this event, decline this event. Altern=
+atively you can sign up for a Google account at https://calendar.google.com=
+/calendar/ and control your notification settings for your entire calendar.
+
+Forwarding this invitation could allow any recipient to send a response to =
+the organizer and be added to the guest list, or invite others regardless o=
+f their own invitation status, or to modify your RSVP. Learn More<https://n=
+am12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fsupport.google.c=
+om%2Fcalendar%2Fanswer%2F37135%23forwarding&data=3D04%7C01%7Cstevi.petrelli=
+%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff2=
+41fac7751ea4%7C1%7C0%7C637692098277995084%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
+C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DDg=
+GEtuPAG%2BieScELhQ0cYiNeyAlKFku2gtGmn02qtRI%3D&reserved=3D0>.
+
+
+
+________________________________
+
+This e-mail communication is intended only for the addressee(s) named above=
+ and any others who have been specifically authorized to receive it and may=
+ contain information that is privileged, confidential or otherwise protecte=
+d from disclosure. Please refer to www.blackstone.com/email-disclaimer<http=
+://www.blackstone.com/email-disclaimer> for important disclosures regarding=
+ this electronic communication, including information if you are not the in=
+tended recipient of this communication.
+
+--_000_MN2PR17MB31820A32E8E67A1E85714B8892BC9MN2PR17MB3182namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Century Gothic";
+	panose-1:2 11 5 2 2 2 2 2 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+h3
+	{mso-style-priority:9;
+	mso-style-link:"Heading 3 Char";
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:13.5pt;
+	font-family:"Calibri",sans-serif;
+	font-weight:bold;}
+h4
+	{mso-style-priority:9;
+	mso-style-link:"Heading 4 Char";
+	mso-margin-top-alt:auto;
+	margin-right:0in;
+	mso-margin-bottom-alt:auto;
+	margin-left:0in;
+	font-size:12.0pt;
+	font-family:"Calibri",sans-serif;
+	font-weight:bold;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.Heading4Char
+	{mso-style-name:"Heading 4 Char";
+	mso-style-priority:9;
+	mso-style-link:"Heading 4";
+	font-family:"Cambria",serif;
+	color:#365F91;
+	font-style:italic;}
+span.Heading3Char
+	{mso-style-name:"Heading 3 Char";
+	mso-style-priority:9;
+	mso-style-link:"Heading 3";
+	font-family:"Cambria",serif;
+	color:#243F60;}
+span.notranslate
+	{mso-style-name:notranslate;}
+span.EmailStyle25
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-family:"Calibri",sans-serif;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Josh,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Do you mind scaling this meeting down to 30 minutes,=
+ please &#8211; 11-11:30am EST?<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Thanking you kindly,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Melissa<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-family:&quot;Century Gothic&q=
+uot;,sans-serif;color:#323E4F;background:white">Melissa Parckys</span></b><=
+span style=3D"font-family:&quot;Century Gothic&quot;,sans-serif;color:black=
+;background:white"><br>
+<br>
+</span><span style=3D"font-size:10.0pt;font-family:&quot;Century Gothic&quo=
+t;,sans-serif"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-family:&quot;Century Gothic&q=
+uot;,sans-serif;color:#323E4F;background:white">Blackstone<o:p></o:p></span=
+></b></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ce=
+ntury Gothic&quot;,sans-serif">345 Park Avenue, NY, New York, 10154<br>
+<b><span style=3D"color:#3B3838">O</span>:</b>&nbsp;212.390.2458 <span styl=
+e=3D"color:black;background:white">
+&nbsp;I <b>M</b>: 718.913.8234</span><span style=3D"color:#595959;backgroun=
+d:white"><br>
+</span><span style=3D"color:black;background:white"><a href=3D"mailto:Melis=
+sa.Parckys@Blackstone.com">Melissa.Parckys@Blackstone.com</a></span><span s=
+tyle=3D"background:white"><o:p></o:p></span></span></p>
+<p class=3D"MsoNormal"><b><span style=3D"font-family:&quot;Century Gothic&q=
+uot;,sans-serif;color:#3B3838;background:white">Blackstone | @Blackstone&nb=
+sp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></b>&nbsp;<b><span style=3D"font-family:&quot;Century Gothic&quot;,s=
+ans-serif;color:#3B3838;background:white"><o:p></o:p></span></b></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">-----Original Appointment-----<br>
+<b>From:</b> Josh Klein &lt;josh@josh.is&gt; <br>
+<b>Sent:</b> Thursday, October 7, 2021 9:24 AM<br>
+<b>To:</b> Josh Klein; Petrelli, Stevi<br>
+<b>Subject:</b> Stevi Petrelli and Josh Klein<br>
+<b>When:</b> Thursday, October 21, 2021 11:00 AM-11:45 AM (UTC-05:00) Easte=
+rn Time (US &amp; Canada).<br>
+<b>Where:</b> https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU200MCtHcmZwa=
+Ww2UT09<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<table class=3D"MsoNormalTable" border=3D"1" cellspacing=3D"0" cellpadding=
+=3D"0" summary=3D"" width=3D"100%" style=3D"width:100.0%;background:white;b=
+order-top:1.0pt;border-left:1.0pt;border-bottom:1.5pt;border-right:1.5pt;bo=
+rder-color:#CCCCCC;border-style:solid">
+<tbody>
+<tr>
+<td style=3D"border:none;padding:4.0pt 4.0pt 4.0pt 4.0pt">
+<div style=3D"mso-element:para-border-div;border:solid white 1.0pt;padding:=
+5.0pt 0in 5.0pt 0in;background:white">
+<h4 style=3D"mso-margin-top-alt:0in;margin-right:0in;margin-bottom:3.0pt;ma=
+rgin-left:0in;background:white;border:none;padding:0in">
+<strong><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-=
+serif;color:#009900">You have been invited to the following event.</span></=
+strong><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#009900;font-weight:normal"><o:p></o:p></span></h4>
+</div>
+<div>
+<h3 style=3D"margin:0in"><span style=3D"font-size:12.0pt;font-family:&quot;=
+Arial&quot;,sans-serif;color:#222222">Stevi Petrelli and Josh Klein<o:p></o=
+:p></span></h3>
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0" summary=3D"Event details" style=3D"display:inline-table">
+<tbody>
+<tr>
+<td width=3D"90" nowrap=3D"" valign=3D"top" style=3D"width:67.5pt;padding:0=
+in 12.0pt 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#888888">When<o:p></o:p></span></p>
+</div>
+</td>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span style=3D"font-siz=
+e:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#222222">Thu Oct 21=
+, 2021 3pm &#8211; 3:45pm
+</span><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-s=
+erif;color:#888888">Greenwich Mean Time</span><span style=3D"font-size:10.0=
+pt;font-family:&quot;Arial&quot;,sans-serif;color:#222222"><o:p></o:p></spa=
+n></p>
+</div>
+</td>
+</tr>
+<tr>
+<td width=3D"90" nowrap=3D"" valign=3D"top" style=3D"width:67.5pt;padding:0=
+in 12.0pt 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#888888">Where<o:p></o:p></span></p>
+</div>
+</td>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span class=3D"notransl=
+ate"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-ser=
+if;color:#222222"><a href=3D"https://zoom.us/j/97452294285?pwd=3DbURVUlR4ak=
+pVU200MCtHcmZwaWw2UT09">https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU20=
+0MCtHcmZwaWw2UT09</a></span></span><span style=3D"font-size:10.0pt;font-fam=
+ily:&quot;Arial&quot;,sans-serif;color:#222222">
+ (<a href=3D"https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A=
+%2F%2Fwww.google.com%2Furl%3Fq%3Dhttps%253A%252F%252Fzoom.us%252Fj%252F9745=
+2294285%253Fpwd%253DbURVUlR4akpVU200MCtHcmZwaWw2UT09%26sa%3DD%26source%3Dca=
+lendar%26usd%3D2%26usg%3DAOvVaw3tZc5iHt4poq5Z9BA-hNmk&amp;data=3D04%7C01%7C=
+stevi.petrelli%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11=
+b34dd348498ff241fac7751ea4%7C1%7C0%7C637692098277935344%7CUnknown%7CTWFpbGZ=
+sb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1=
+000&amp;sdata=3DcKNA4c3R%2B%2FBzmnncpoAdtPujEVITy5RjAUKElwQm6fs%3D&amp;rese=
+rved=3D0" target=3D"_blank"><span style=3D"color:#2200CC">map</span></a>)<o=
+:p></o:p></span></p>
+</div>
+</td>
+</tr>
+<tr>
+<td width=3D"90" nowrap=3D"" valign=3D"top" style=3D"width:67.5pt;padding:0=
+in 12.0pt 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#888888">Calendar<o:p></o:p></span></p>
+</div>
+</td>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span style=3D"font-siz=
+e:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#222222"><a href=3D=
+"mailto:stevi.petrelli@blackstone.com">stevi.petrelli@blackstone.com</a><o:=
+p></o:p></span></p>
+</div>
+</td>
+</tr>
+<tr>
+<td width=3D"90" nowrap=3D"" valign=3D"top" style=3D"width:67.5pt;padding:0=
+in 12.0pt 7.5pt 0in">
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#888888">Who<o:p></o:p></span></p>
+</div>
+</td>
+<td valign=3D"top" style=3D"padding:0in 0in 7.5pt 0in">
+<table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpadding=
+=3D"0">
+<tbody>
+<tr>
+<td width=3D"10" style=3D"width:7.5pt;padding:0in 7.5pt 0in 0in">
+<div>
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span style=3D"font-siz=
+e:10.0pt;font-family:&quot;Courier New&quot;;color:#222222">&#8226;</span><=
+span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;col=
+or:#222222"><o:p></o:p></span></p>
+</div>
+</td>
+<td style=3D"padding:0in 7.5pt 0in 0in">
+<div>
+<div>
+<div style=3D"margin-bottom:.05in">
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span class=3D"notransl=
+ate"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-ser=
+if;color:#222222">Josh Klein</span></span><span style=3D"font-size:8.5pt;fo=
+nt-family:&quot;Arial&quot;,sans-serif;color:#888888"> - organizer</span><s=
+pan style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;colo=
+r:#222222"><o:p></o:p></span></p>
+</div>
+</div>
+</div>
+</td>
+</tr>
+<tr>
+<td width=3D"10" style=3D"width:7.5pt;padding:0in 7.5pt 0in 0in">
+<div>
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span style=3D"font-siz=
+e:10.0pt;font-family:&quot;Courier New&quot;;color:#222222">&#8226;</span><=
+span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;col=
+or:#222222"><o:p></o:p></span></p>
+</div>
+</td>
+<td style=3D"padding:0in 7.5pt 0in 0in">
+<div>
+<div>
+<div style=3D"margin-bottom:.05in">
+<p class=3D"MsoNormal" style=3D"text-indent:-.75pt"><span class=3D"notransl=
+ate"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-ser=
+if;color:#222222"><a href=3D"mailto:stevi.petrelli@blackstone.com">stevi.pe=
+trelli@blackstone.com</a></span></span><span style=3D"font-size:10.0pt;font=
+-family:&quot;Arial&quot;,sans-serif;color:#222222"><o:p></o:p></span></p>
+</div>
+</div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<div>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.0pt;font-family:&quot=
+;Arial&quot;,sans-serif;color:black"><a href=3D"https://nam12.safelinks.pro=
+tection.outlook.com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fe=
+vent%3Faction%3DVIEW%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoYTRwcXMgc3RldmkucG=
+V0cmVsbGlAYmxhY2tzdG9uZS5jb20%26tok%3DMTIjam9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwM=
+zU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEtc%252FGMT%26hl%3Den%26es%3D=
+0&amp;data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69aa5395f497869=
+3308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C637692098277945=
+301%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1=
+haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DjydJEQamHry3L6MTV%2FQpIljRH5pd47CuJr=
+YeKppCKTg%3D&amp;reserved=3D0"><span style=3D"color:#2200CC">more
+ details &raquo;</span></a></span></b><b><span style=3D"font-size:10.0pt;fo=
+nt-family:&quot;Arial&quot;,sans-serif"><o:p></o:p></span></b></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#222222">Event Name: Connect Call<o:p></o:p></sp=
+an></p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Let's connect! Schedule a time now for us to chat.<o:p></o:=
+p></span></p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Location: This is a Zoom web conference.<o:p></o:p></span><=
+/p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">You can join this meeting from your computer, tablet, or sm=
+artphone.<br>
+<a href=3D"https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Fwww.google.com%2Furl%3Fq%3Dhttps%253A%252F%252Fzoom.us%252Fj%252F974522=
+94285%253Fpwd%253DbURVUlR4akpVU200MCtHcmZwaWw2UT09%26sa%3DD%26source%3Dcale=
+ndar%26usd%3D2%26usg%3DAOvVaw3tZc5iHt4poq5Z9BA-hNmk&amp;data=3D04%7C01%7Cst=
+evi.petrelli%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b3=
+4dd348498ff241fac7751ea4%7C1%7C0%7C637692098277945301%7CUnknown%7CTWFpbGZsb=
+3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C100=
+0&amp;sdata=3DuxlDnBZh%2F2e57lxNy%2FTSxKBMQDNLjG0tlVGHazkOpyE%3D&amp;reserv=
+ed=3D0" target=3D"_blank">https://zoom.us/j/97452294285?pwd=3DbURVUlR4akpVU=
+200MCtHcmZwaWw2UT09</a><o:p></o:p></span></p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Password: 5BgVYR<o:p></o:p></span></p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Please share anything that will help prepare for our meetin=
+g.: n/a<o:p></o:p></span></p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Need to make changes to this event?<br>
+Cancel: <a href=3D"https://nam12.safelinks.protection.outlook.com/?url=3Dht=
+tps%3A%2F%2Fwww.google.com%2Furl%3Fq%3Dhttps%253A%252F%252Fcalendly.com%252=
+Fcancellations%252FAKKAMMOH46UXIP6J%26sa%3DD%26source%3Dcalendar%26usd%3D2%=
+26usg%3DAOvVaw2FR4EPo-U7V5fiwJCp3e-Q&amp;data=3D04%7C01%7Cstevi.petrelli%40=
+blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241f=
+ac7751ea4%7C1%7C0%7C637692098277955258%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4w=
+LjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D1=
+IIyOvIlIoPET2xgLFSsimidGj6vId%2BTffvxY5extP0%3D&amp;reserved=3D0" target=3D=
+"_blank">
+https://calendly.com/cancellations/AKKAMMOH46UXIP6J</a><br>
+Reschedule: <a href=3D"https://nam12.safelinks.protection.outlook.com/?url=
+=3Dhttps%3A%2F%2Fwww.google.com%2Furl%3Fq%3Dhttps%253A%252F%252Fcalendly.co=
+m%252Freschedulings%252FAKKAMMOH46UXIP6J%26sa%3DD%26source%3Dcalendar%26usd=
+%3D2%26usg%3DAOvVaw1Wauoz6kbzhBSk_ZBZ2_cw&amp;data=3D04%7C01%7Cstevi.petrel=
+li%40blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498f=
+f241fac7751ea4%7C1%7C0%7C637692098277955258%7CUnknown%7CTWFpbGZsb3d8eyJWIjo=
+iMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdat=
+a=3DRaynIj2Va09PHM2vyOP9SvpH2T%2F6BeUhX9KJ70HCfwA%3D&amp;reserved=3D0" targ=
+et=3D"_blank">
+https://calendly.com/reschedulings/AKKAMMOH46UXIP6J</a><o:p></o:p></span></=
+p>
+<p><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif=
+;color:#222222">Powered by Calendly.com<o:p></o:p></span></p>
+</div>
+</div>
+<p style=3D"margin:0in"><span style=3D"font-size:10.0pt;font-family:&quot;A=
+rial&quot;,sans-serif;color:#888888">Going (<a href=3D"mailto:stevi.petrell=
+i@blackstone.com">stevi.petrelli@blackstone.com</a>)?&nbsp;&nbsp;&nbsp;</sp=
+an><strong><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sa=
+ns-serif;color:#222222"><a href=3D"https://nam12.safelinks.protection.outlo=
+ok.com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%2Fcalendar%2Fevent%3Faction=
+%3DRESPOND%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoYTRwcXMgc3RldmkucGV0cmVsbGlA=
+YmxhY2tzdG9uZS5jb20%26rst%3D1%26tok%3DMTIjam9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwM=
+zU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEtc%252FGMT%26hl%3Den%26es%3D=
+0&amp;data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69aa5395f497869=
+3308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C637692098277965=
+214%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1=
+haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DnnbfeHCjbEG%2FH9gGcryiVTfOfqKjOhyOBH=
+prXty1Ekg%3D&amp;reserved=3D0"><span style=3D"color:#2200CC">Yes</span></a>=
+</span></strong><strong><span style=3D"font-size:10.0pt;font-family:&quot;A=
+rial&quot;,sans-serif;color:#222222;font-weight:normal">
+ - </span></strong><strong><span style=3D"font-size:10.0pt;font-family:&quo=
+t;Arial&quot;,sans-serif;color:#222222"><a href=3D"https://nam12.safelinks.=
+protection.outlook.com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%2Fcalendar%=
+2Fevent%3Faction%3DRESPOND%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoYTRwcXMgc3Rl=
+dmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26rst%3D3%26tok%3DMTIjam9zaEBqb3NoLmlzN=
+TEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEtc%252FGMT%2=
+6hl%3Den%26es%3D0&amp;data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3=
+c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7=
+C637692098277975172%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2l=
+uMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DvcTb87JuV3vr9NOqXKXO=
+dO6w2vOK8jEH88U57yrKHZc%3D&amp;reserved=3D0"><span style=3D"color:#2200CC">=
+Maybe</span></a></span></strong><strong><span style=3D"font-size:10.0pt;fon=
+t-family:&quot;Arial&quot;,sans-serif;color:#222222;font-weight:normal">
+ - </span></strong><strong><span style=3D"font-size:10.0pt;font-family:&quo=
+t;Arial&quot;,sans-serif;color:#222222"><a href=3D"https://nam12.safelinks.=
+protection.outlook.com/?url=3Dhttps%3A%2F%2Fcalendar.google.com%2Fcalendar%=
+2Fevent%3Faction%3DRESPOND%26eid%3DM3A1ZmZwMnNib3ZnMXF0bTc2bTRoYTRwcXMgc3Rl=
+dmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26rst%3D2%26tok%3DMTIjam9zaEBqb3NoLmlzN=
+TEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%3DEtc%252FGMT%2=
+6hl%3Den%26es%3D0&amp;data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3=
+c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7=
+C637692098277975172%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2l=
+uMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DAK2eMdKLVr078tofjk%2=
+BEo1hTel8NqyNwFLUjTkHsemM%3D&amp;reserved=3D0"><span style=3D"color:#2200CC=
+">No</span></a></span></strong><span style=3D"font-size:10.0pt;font-family:=
+&quot;Arial&quot;,sans-serif;color:#222222">&nbsp;&nbsp;&nbsp;&nbsp;<a href=
+=3D"https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fcal=
+endar.google.com%2Fcalendar%2Fevent%3Faction%3DVIEW%26eid%3DM3A1ZmZwMnNib3Z=
+nMXF0bTc2bTRoYTRwcXMgc3RldmkucGV0cmVsbGlAYmxhY2tzdG9uZS5jb20%26tok%3DMTIjam=
+9zaEBqb3NoLmlzNTEyMGEzMjUxNTgwMzU1ZDFjZDBiYTdlYTZjNTc5OGMxNjMzMTFhMg%26ctz%=
+3DEtc%252FGMT%26hl%3Den%26es%3D0&amp;data=3D04%7C01%7Cstevi.petrelli%40blac=
+kstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac77=
+51ea4%7C1%7C0%7C637692098277985127%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAw=
+MDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3Di%2Bf=
+Gr2Gc55rbYzKJ8UhU6tdDeWo6taHRTmLzm1KpvVI%3D&amp;reserved=3D0"><span style=
+=3D"color:#2200CC">more
+ options &raquo;</span></a><o:p></o:p></span></p>
+</td>
+</tr>
+<tr>
+<td style=3D"border:none;border-top:solid #CCCCCC 1.0pt;background:#F6F6F6;=
+padding:4.0pt 4.0pt 4.0pt 4.0pt">
+<p><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;=
+color:#888888">Invitation from
+<a href=3D"https://nam12.safelinks.protection.outlook.com/?url=3Dhttps%3A%2=
+F%2Fcalendar.google.com%2Fcalendar%2F&amp;data=3D04%7C01%7Cstevi.petrelli%4=
+0blackstone.com%7Cb3c69aa5395f4978693308d98995b0b7%7C706e11b34dd348498ff241=
+fac7751ea4%7C1%7C0%7C637692098277995084%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4=
+wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3D=
+JfJIqjgFJxxHnKuZCpUfgjoJBZQ5Lvimw3684O6lG28%3D&amp;reserved=3D0" target=3D"=
+_blank">
+Google Calendar</a><o:p></o:p></span></p>
+<p><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;=
+color:#888888">You are receiving this courtesy email at the account
+<a href=3D"mailto:stevi.petrelli@blackstone.com">stevi.petrelli@blackstone.=
+com</a> because you are an attendee of this event.<o:p></o:p></span></p>
+<p><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;=
+color:#888888">To stop receiving future updates for this event, decline thi=
+s event. Alternatively you can sign up for a Google account at
+<a href=3D"https://calendar.google.com/calendar/">https://calendar.google.c=
+om/calendar/</a> and control your notification settings for your entire cal=
+endar.<o:p></o:p></span></p>
+<p><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;=
+color:#888888">Forwarding this invitation could allow any recipient to send=
+ a response to the organizer and be added to the guest list, or invite othe=
+rs regardless of their own invitation status,
+ or to modify your RSVP. <a href=3D"https://nam12.safelinks.protection.outl=
+ook.com/?url=3Dhttps%3A%2F%2Fsupport.google.com%2Fcalendar%2Fanswer%2F37135=
+%23forwarding&amp;data=3D04%7C01%7Cstevi.petrelli%40blackstone.com%7Cb3c69a=
+a5395f4978693308d98995b0b7%7C706e11b34dd348498ff241fac7751ea4%7C1%7C0%7C637=
+692098277995084%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzI=
+iLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DDgGEtuPAG%2BieScELhQ0cYi=
+NeyAlKFku2gtGmn02qtRI%3D&amp;reserved=3D0">
+Learn More</a>.<o:p></o:p></span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+</div>
+<br>
+<br>
+<hr>
+<p style=3D"font-size:75%">This e-mail communication is intended only for t=
+he addressee(s) named above and any others who have been specifically autho=
+rized to receive it and may contain information that is privileged, confide=
+ntial or otherwise protected from
+ disclosure. Please refer to <a href=3D"http://www.blackstone.com/email-dis=
+claimer">
+www.blackstone.com/email-disclaimer</a> for important disclosures regarding=
+ this electronic communication, including information if you are not the in=
+tended recipient of this communication.</p>
+</body>
+</html>
+
+--_000_MN2PR17MB31820A32E8E67A1E85714B8892BC9MN2PR17MB3182namp_--

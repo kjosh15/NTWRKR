@@ -1,0 +1,713 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b4a1:0:0:0:0:0 with SMTP id q1csp294831ljm;
+        Wed, 31 Mar 2021 04:58:09 -0700 (PDT)
+X-Received: by 2002:a05:6e02:1a87:: with SMTP id k7mr2134241ilv.69.1617191889431;
+        Wed, 31 Mar 2021 04:58:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1617191889; cv=none;
+        d=google.com; s=arc-20160816;
+        b=ki30MFX2URtT7wsEBYZ7MjJ7B13xz//72Z0c6o460+cx46ycn+JKgoX0lkqU3/iItD
+         DRZmMKaBvZugSMD4bSJBGm8+KYAML+dbNIB8Wbl0z6KE9HV8VGHeqPTiAhyHWev0xkEb
+         9SZGsO/Hv6aoLUYVnWzoIBLa5tawgAW45JIuBlsPudRVIInz+SnMLFwmG7pTWEjOc7KU
+         5AXL+Vn5nAhQ5JakN5QXTIa+Nt804FBjMJVtjuwp9ACgJv3HmjfBhXNql2RvtCe+Rx3I
+         yBuYjRMUmxM1tiY6oYd/rFTmonOHMYoe8eGv3Su5Bc9O+GsROy1IYD6N0e68NjPYumuR
+         hW4A==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=to:from:subject:message-id:reply-to:references:date:mime-version
+         :dkim-signature;
+        bh=tZq0LPEI3Dei3Vg49WxBD4awY+WXOYVgnXRgP8Hm2QU=;
+        b=LJrepuXYs9M2ata3yR5uD8xva92TmziEuGRZBz+MxxN/hfBdri0sRQc1sqcoNYiEPZ
+         AYoozOXkGGi/OPnSlkkvFwaFkSwQSOPHjKXeJIu920JeSz+pMdRZbrHJ4fKPbsvQwAxO
+         HiZa4BUve5KKRHd7+qpmza+jq6h1wd9QtGY79hxWqs66+AE2hC9vEy3xdgKBOPyNL8EZ
+         5tiUw+8d1COa9ga+MzQ2Zu52IbZeI3pDsJkuoY1vIGK+EaR6d5KXx/yTqVN58tjf8pYa
+         Y3BgX0BU8AiRUMZizw4rW7Y4ZjSmoEwsjlDthhybD/S/ryHuH6FpDaen8ZufekDJ3E3i
+         v0Ng==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20161025 header.b=COIX9x8B;
+       spf=pass (google.com: domain of 30gnkybapbdmrdbbtcih-cdgteansdrh.vddvat.rdbydhwydhw.xh@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=30GNkYBAPBDMRdbbTcih-cdgTeanSdRh.VddVaT.RdbYdhWYdhW.Xh@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+Return-Path: <30GNkYBAPBDMRdbbTcih-cdgTeanSdRh.VddVaT.RdbYdhWYdhW.Xh@docos.bounces.google.com>
+Received: from mail-sor-f69.google.com (mail-sor-f69.google.com. [209.85.220.69])
+        by mx.google.com with SMTPS id v31sor3246041jal.8.2021.03.31.04.58.09
+        for <josh@josh.is>
+        (Google Transport Security);
+        Wed, 31 Mar 2021 04:58:09 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 30gnkybapbdmrdbbtcih-cdgteansdrh.vddvat.rdbydhwydhw.xh@docos.bounces.google.com designates 209.85.220.69 as permitted sender) client-ip=209.85.220.69;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@docs.google.com header.s=20161025 header.b=COIX9x8B;
+       spf=pass (google.com: domain of 30gnkybapbdmrdbbtcih-cdgteansdrh.vddvat.rdbydhwydhw.xh@docos.bounces.google.com designates 209.85.220.69 as permitted sender) smtp.mailfrom=30GNkYBAPBDMRdbbTcih-cdgTeanSdRh.VddVaT.RdbYdhWYdhW.Xh@docos.bounces.google.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=docs.google.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=docs.google.com; s=20161025;
+        h=mime-version:date:references:reply-to:message-id:subject:from:to;
+        bh=tZq0LPEI3Dei3Vg49WxBD4awY+WXOYVgnXRgP8Hm2QU=;
+        b=COIX9x8BXsL9vioh/rOEtA2g+tKDuAF1niQyHVrcxxpUsyR3qq4V3Vfm5/G9EIsz+I
+         MtPP4C8N3kmaqVsmTf0+3svP5vegN3aVapF8E6xFnZM2oMWN7gdKmSl+f1I1yh5QOw6T
+         NhgE00cd+L/u6TwLCfIMO9R/YfpLf6iDOo3Dq5wAOLesxAWtXH2ZCCDu8bi2zvyVYK/x
+         uFR2AgW7Nb8rDg+ujIx1J7W4clv3e+hJJuMhfOv/p3ObQry3Zk1GeO5zfDMGTd8+fiaM
+         NZ8r596e0g1IhfSq8kxCUtRu6SgqTYQJB/l5Grou3ToJUDWrrDOKD29JoxZO4fljBnWz
+         0xRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:references:reply-to:message-id
+         :subject:from:to;
+        bh=tZq0LPEI3Dei3Vg49WxBD4awY+WXOYVgnXRgP8Hm2QU=;
+        b=FhlnjeXpvKT82hAKamUBYBO5WGF11Iimp+IKXowh9IaFy+9lWSmwmRtO2KiOXQ9/Oq
+         EH8Z/MStbfvKHARSWbZPVwd5dD8GmsBS5gp0XD5hAYNxGHOtbEulONoPGkQEhY5T9zLi
+         atQuxnSIPoPimxaLvAPmghKGnYTLYCoCFXFlp06OiHBSZpz/+3VGqilnQVed3IB47MTJ
+         hoBKQvviZsr9vA+jfhOY6wff8jPNpSBXD/edwg0ppwQuPk1qxyWiH5PgVeE7rtiVzKZa
+         wSXG71GTK2JLjcIPugstnJELD9ee7B39PvsaAyhmhj0YX0nyv/00IaWEpiyJtSadhiYI
+         A7QA==
+X-Gm-Message-State: AOAM531VO60s3XnfRpFNRM9okirZO7pPlmuytqqCmLg3LE6lX0aBEYCe
+	SfvEUb71GjWC1joQqCg=
+X-Google-Smtp-Source: ABdhPJxDCNupGGA0n7PXSnegPip7FgRIcv9Ao66+ln0RjgJYeNF8iyRoC34wCfhIOERG5PW6dQ==
+MIME-Version: 1.0
+X-Received: by 2002:a02:850a:: with SMTP id g10mr2689045jai.140.1617191888655;
+ Wed, 31 Mar 2021 04:58:08 -0700 (PDT)
+Date: Wed, 31 Mar 2021 04:58:08 -0700
+X-Document-ID: s84uLYLCtqnmAeBHGBywFTw
+References: <d+czg0dUxZTEN0cW5tQWVCSEdCeXdGVHc6@docs.google.com>
+X-No-Auto-Attachment: 1
+Reply-to: No Reply <d+noreply@docs.google.com>
+X-Notifications: d8ed0ecf03200000
+Message-ID: <IUF1bndZIriMOaPJYlrvDQ@notifications.google.com>
+Subject: Indigometrics_Is_Not_Engagement_Software
+From: "Chris Carman (Google Docs)" <comments-noreply@docs.google.com>
+To: josh@josh.is
+Content-Type: multipart/alternative; boundary="0000000000000e959205bed3d434"
+
+--0000000000000e959205bed3d434
+Content-Type: text/plain; charset="UTF-8"; format=flowed; delsp=yes
+
+Chris Carman added comments to the following document
+Indigometrics_Is_Not_Engagement_Software  
+(https://docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=AAAAL5wqKvo&ts=606463d0&usp=comment_email_document&usp_dm=false)
+
+New: 2 comments
+
+
+New Comments
+
+.
+Chris Carman
+but we are normally compared to pulse engagement surveys - which isnt what  
+is shown here?
+
+Reply (Reply  
+<d+AORGpRc6f_8N_5DsOc0iUqR74CPDpKcmAgaULHgPK5x-PHh9b63A_UItI9dHMFTALATtYgdyNUfvSzcH0cTqndLpFgusnSkTfoBdyhHfKoyZ522MjhL26FRSTkPi6tyTEggdt52L9H2T@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=AAAAL5wqKvk&usp=comment_email_discussion&usp_dm=false&ts=606463d0)
+
+.
+Chris Carman
+| periodically
+similar to above - not sure the periodicity is the argument we are trying  
+to land
+
+Reply (Reply  
+<d+AORGpRfklgfXUdl2CJWJh7Q0lkBCCY_Zx64nAkcMpbklwQ0fmE75cr8XZ8_mWa97niRI919dd_osYObk3poXFRphN306TEy8EKI8P0Dw6tNfHnFhU-5FxMzw49Rhycx5uJriNAeerU8z@docs.google.com>)
+Open  
+(https://docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=AAAAL5wqKvo&usp=comment_email_discussion&usp_dm=false&ts=606463d0)
+
+
+Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA
+
+You have received this email because you are a participant in the updated  
+comment threads.
+Change  
+(https://docs.google.com/document/u/100348406323779895805/docos/notify?ouid=100348406323779895805&id=1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c&title=Indigometrics_Is_Not_Engagement_Software)  
+what Google sends you.
+You cannot reply to this email.
+
+--0000000000000e959205bed3d434
+Content-Type: text/x-amp-html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<!doctype html><html amp4email><head><meta charset=3D"utf-8"><meta name=3D"=
+email.contentIds" content=3D"AAAAL5wqKvo,AAAAL5wqKvk"><script async src=3D"=
+https://cdn.ampproject.org/v0.js"></script><script async custom-element=3D"=
+amp-list" src=3D"https://cdn.ampproject.org/v0/amp-list-0.1.js"></script><s=
+cript async custom-template=3D"amp-mustache" src=3D"https://cdn.ampproject.=
+org/v0/amp-mustache-0.2.js"></script><script async custom-element=3D"amp-fo=
+rm" src=3D"https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script =
+async custom-element=3D"amp-bind" src=3D"https://cdn.ampproject.org/v0/amp-=
+bind-0.1.js"></script><style amp4email-boilerplate>body{visibility:hidden}<=
+/style><style amp-custom>.material-button{-webkit-appearance: none; cursor:=
+ pointer; outline: none;}.material-button:disabled{cursor: initial;}.materi=
+al-button-transparent{background-color: transparent; color: #1a73e8;}.mater=
+ial-button-transparent:hover{background-color: rgba(26, 115, 232, .04);}.ma=
+terial-button-transparent:focus{background-color: rgba(26, 115, 232, .12);}=
+.material-button-transparent:active{background-color: rgba(26, 115, 232, .1=
+2); box-shadow: 0 1px 3px 1px rgba(60, 64, 67, .15);}.material-button-trans=
+parent:disabled{background-color: transparent; color: #3c4043; opacity: 0.3=
+8;}.material-text-input{border: none; border-bottom: 1px solid #3c4043;}.ma=
+terial-text-input:focus{border-bottom: 2px solid #2277e8;}.discussion-heade=
+r-spacer:first-of-type{display: none;}a{color: #1a73e8;}.resolving-discussi=
+on{opacity: 0.4;}.resolving-discussion .resolve-button{visibility: hidden;}=
+.submitting-reply .reply-form-textarea{opacity: 0.4;}.submitting-reply .res=
+olve-button{visibility: hidden;}.reply-error-text{display: none;}.submit-er=
+ror .reply-error-text{display: block;}.post-dark-text{color: #3c4043;}.head=
+-post{margin-top: 18px; word-break: break-word; word-wrap: break-word;}.rep=
+ly-post{margin-top: 12px; word-break: break-word; word-wrap: break-word;}.p=
+ost-light-text{color: #777777;}input:disabled{opacity: 0.4;}.screenreader-h=
+idden-offscreen{position: absolute; left: -10000px; top: auto; width: 1px; =
+height: 1px; overflow: hidden;}@media screen and (max-width: 600px){.discus=
+sion-post-quote ul,ol{padding-left:20px;}}@media screen and (min-width: 601=
+px){.discussion-open-button{float: right;}}</style></head><body><div style=
+=3D"font: 14px Roboto, sans-serif;"><template type=3D"amp-mustache" id=3D"i=
+nline-action-post">{{#post}}<div style=3D"margin-top: 12px; word-break: bre=
+ak-word; word-wrap: break-word;"><div class=3D"{{#isHeadPost}}head-post{{/i=
+sHeadPost}}{{^isHeadPost}}reply-post{{/isHeadPost}}"><table role=3D"present=
+ation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;" class=3D"=
+{{#isNew}}post-dark-text{{/isNew}}{{^isNew}}post-light-text{{/isNew}}"><tr>=
+<td style=3D"vertical-align: top; width: 44px;"><amp-img src=3D"{{authorPho=
+toUrl}}" height=3D"32" width=3D"32" alt=3D"User profile picture {{authorNam=
+e}}" style=3D"border-radius: 50%; display: block;"></amp-img></td><td><h3 s=
+tyle=3D"display: inline-block; font: 500 14px &quot;Google Sans&quot;, Robo=
+to, sans-serif;; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2p=
+x 0;">{{authorName}}</h3>{{#isNew}}<h4 style=3D"background: #1a73e8; border=
+-radius: 8px; color: #fff; display: inline-block; font: 700 12px/16px Robot=
+o, sans-serif; margin-bottom: 0; margin-top: 0; margin-left: 10px; padding:=
+ 0 6px;">New</h4>{{/isNew}}<div style=3D"font: 400 14px Roboto, sans-serif;=
+ line-height: 20px; letter-spacing: .2px;">{{#htmlBody}}<div style=3D"margi=
+n-top: 6px;" class=3D"notranslate">{{{htmlBody}}}</div>{{/htmlBody}}{{#html=
+ActionText}}<div style=3D"margin-top: 6px;"><i>{{{htmlActionText}}}</i></di=
+v>{{/htmlActionText}}{{#showCopiedText}}<div style=3D"margin: 18px 0; heigh=
+t: 1px; background-color: #eee;"></div><div style=3D"color: #3c4043; font: =
+italic 14px Roboto-Italic, Arial; margin: 18px 0 6px 0; width: 100%;">Comme=
+nts above copied from original document</div>{{/showCopiedText}}</div></td>=
+</tr></table></div></div>{{/post}}</template><amp-list id=3D"discussionList=
+" binding=3D"refresh-evaluate" layout=3D"container" single-item items=3D"."=
+ src=3D"https://docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGb=
+Nm8RyFDfKf2c/dynamicmail/comments?emailToken=3DAORGpRfXKgvR5FFQ5dEBUVuXVYBj=
+zkXEj-XRATh-ZYnUqCXF--7Ok7n3FImqYReSQBzzqEQnjNyPi8VSEit2lRCdOytCdde2z1idUhb=
+bZb6zvmPzecazc_f3nhlTwhE_-nON3VzSJhOD&amp;buildLabel=3Dkix_2021.12-Tue_RC01=
+&amp;clientVersion=3D2&amp;commentIds=3DAAAAL5wqKvo&amp;fnpi_AAAAL5wqKvo=3D=
+AAAAL5wqKvo&amp;commentIds=3DAAAAL5wqKvk&amp;fnpi_AAAAL5wqKvk=3DAAAAL5wqKvk=
+&amp;ct_cs=3DIsQx9fK21D3phqGzt5dB1w%3D%3D&amp;isNudge=3Dfalse&amp;hl=3Den&a=
+mp;headRevision=3D1196&amp;context_AAAAL5wqKvo=3DH4sIAAAAAAAAAK1SS27bMBC9yk=
+AFsqmV2AkaFLasTdEAWSSbLroeiyOSKMkRhpQN7XqN7nKWHKUnKeVPaxUFAjRZkIsHvg_fTNWBs=
+rIuXJICYhocrQuPom1Yzou6ih2G-j4oq9lTEtvE6mqPVVddXf2D23JI5Y6sNmm5YadWR7HLD-Th=
+t-IjJ_gcNGryFBJ84TbtUOhNtB9QGnNS2t9ws5jB9XyCXS9eMDsrYXxh5Ei8cGllfU5-odPqpPH=
+fYb-aAQbuIRrunQIhVJCMfanlvyd0xwIDocQZ0J9a47FWwKDyCT06uLmd__z-I4LBLcGGKGQ7As=
+1lYkjMLkKbtc6rgsZhjOsiNpKfjwlJSmOVolBy2x7gon5--sT-YJtQ0vPTROOYe4PNNy3cB1U27=
+FiW79qWFrcfi7ojsaxsg84Nr3KnoKbeNdAWXY_JBg3kO8cD0eSHdcxEO7In6CVMFh9sBFTKJpub=
+G9syFGkGO2NdbthFhk54a9VoE0eS2RtmZSE3QKDdcura5A2xoec-gieMvRym9h48htMIuT3bhF8=
+3Fc8urAMAAA&amp;context_AAAAL5wqKvk=3DH4sIAAAAAAAAAK1Sy07DMBD8lVWQemr6FBVq0=
+1wQSBzgwoHzNt7YFo43sp1WufEb3Pot_RS-hLSU0lSgCsTBPoy0M7Mzm5QgtJtHJrgIfKgNzaMC=
+ndR2OojSxJdo0zsrtOSCgtOZT_o7LOmXafLNbM42xCvSUoXpgo2Y7cl6l1TAgfGBA9xYiZIKsgE=
+eOQ8rdPQv3PfoMvXJtPthPOzCaNDCRsMzYichQGbQ-3nkM0dkHaEgFystBNmY8_wDjtLN-pqL3U=
+4-oAub9bGKcnuuvcQCs2fpuLIiztiwm17kOQ0nV1HaMWGmiyaejgyzY9-_tkFWfJn4c6ZPqoaaK=
+_CKKyNgqwtB6XPHcHpIt-ygJnS-2_g6tO_37QNa0TxboYHxZPD28upB4ZJg0ezUyBFIjgNDYDYe=
+8oar1WhJTrPQGRpTt-unJZoKg7YSqCgN10TtUd_Y0FsvLbQHPx3-O1Xc27g1AwAA&amp;ts=3D6=
+06463d0"><div placeholder><table style=3D"border-collapse: collapse; width:=
+ 100%; background-color: white; text-align: center;" role=3D"presentation">=
+<tr><td style=3D"padding: 24px 0 16px 0;"><table style=3D"border-collapse: =
+collapse;font-family: Roboto, Arial, Helvetica, sans-serif;hyphens: auto; o=
+verflow-wrap: break-word; word-wrap: break-word; word-break: break-word;dis=
+play: inline-block; width: 90%;max-width: 700px;min-width: 280px; text-alig=
+n: left;" role=3D"presentation"><tr><td style=3D"padding: 0;"><table style=
+=3D"width:100%; border: 1px solid #dadce0; border-radius: 8px; border-spaci=
+ng: 0; table-layout:fixed; border-collapse: separate;" role=3D"presentation=
+"><tr><td style=3D"padding: 4.5%;" dir=3D"ltr"><h1 style=3D"display: block;=
+ font: 400 18px &quot;Google Sans&quot;, Roboto, sans-serif; color: #3c4043=
+; margin: 0;">Chris Carman added comments to the following document</h1><a =
+href=3D"https://docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGb=
+Nm8RyFDfKf2c/edit?disco=3DAAAAL5wqKvo&amp;ts=3D606463d0&amp;usp=3Dcomment_e=
+mail_document&amp;usp_dm=3Dtrue" target=3D"_blank" style=3D"color: #3c4043;=
+ display: inline-block; max-width: 100%; text-decoration: none; vertical-al=
+ign: top;border: 1px solid #DADCE0; border-radius: 16px; white-space: nowra=
+p;margin-top:12px;"><div style=3D"line-height: 18px; overflow: hidden; text=
+-overflow: ellipsis;padding: 6px 12px;"><span style=3D"display: inline-bloc=
+k; vertical-align: top; min-width: 26px; width: 26px;"><amp-img src=3D"http=
+s://ssl.gstatic.com/docs/doclist/images/mediatype/icon_1_document_x64.png" =
+width=3D"18" height=3D"18" style=3D"vertical-align: top;" role=3D"presentat=
+ion"></amp-img></span><span style=3D"font-family: &quot;Google Sans&quot;, =
+Roboto, Arial, Helvetica, sans-serif;font-weight: 500; font-size: 14px; lin=
+e-height: 18px; display: inline; letter-spacing: 0.2px;">Indigometrics_Is_N=
+ot_Engagement_Software</span></div></a><div style=3D"margin: 18px 0; height=
+: 1px; background-color: #eee;"></div><table role=3D"presentation" cellpadd=
+ing=3D"0" cellspacing=3D"0" style=3D"display: table; width: 100%;"><tr><td>=
+<table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0"><tr><td><s=
+trong style=3D"display: inline-block; font: 500 14px Roboto, sans-serif; ma=
+rgin: 0; line-height: 20px; letter-spacing: .25px; color: #3c4043;">Open</s=
+trong></td></tr><tr><td height=3D"4" style=3D"height: 4px;" colspan=3D"0"><=
+/td></tr><tr><td><span style=3D"font: 400 14px Roboto, sans-serif; line-hei=
+ght: 20px; letter-spacing: .2px;color: #3c4043;">2 comments</span></td></tr=
+></table></td></tr></table></td></tr></table><div style=3D"height: 14px;"><=
+/div><table style=3D"width:100%; border: 1px solid #dadce0; border-radius: =
+8px; border-spacing: 0; table-layout:fixed; border-collapse: separate;" rol=
+e=3D"presentation"><tr><td style=3D"padding: 4.5%;" dir=3D"ltr"><div style=
+=3D"height: 18px;" class=3D"discussion-header-spacer"></div><h2 style=3D"di=
+splay: block; font: 400 18px &quot;Google Sans&quot;, Roboto, sans-serif; c=
+olor: #3c4043; margin: 0;">Comments</h2><div style=3D"margin: 18px 0; heigh=
+t: 1px; background-color: #eee;"></div><div style=3D"overflow: visible; lin=
+e-height: 20px;"><div class=3D"discussion-post-quote" style=3D"padding: 7px=
+ 12px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,=
+64,67,0.149); border: 1px solid #d3d3d3; border-radius: 8px; overflow-wrap:=
+ break-word; word-break: break-word;"><span class=3D"notranslate" style=3D"=
+font: 400 14px Roboto, sans-serif; line-height: 20px; color: #3c4043;"><p d=
+ir=3D"ltr" style=3D"margin:0"><span>Indigometrics</span></p><p dir=3D"ltr" =
+style=3D"font-weight:bold;margin:.5em 0"><span>Not Engagement Software</spa=
+n></p><p dir=3D"ltr" style=3D"font-weight:bold;margin:.5em 0"><span>March</=
+span><span> 31, 20</span><span>21</span></p><p dir=3D"ltr" style=3D"margin:=
+0"><span class=3D"screenreader-hidden-offscreen">=C2=A0Comment start=C2=A0<=
+/span></p><hr><span style=3D"background-color:#ffe168">&lt;image&gt;</span>=
+<span class=3D"screenreader-hidden-offscreen">=C2=A0Comment end=C2=A0</span=
+><p dir=3D"ltr" style=3D"font-weight:bold;margin:.5em 0"><span>Why you shou=
+ld read this</span></p><p dir=3D"ltr" style=3D"margin:0"><span>For years, e=
+ngagement software and annual 360=E2=80=99s have been the go-to tools for <=
+/span><span>periodically</span><span> evaluating employee </span><span>sent=
+iment</span><span>. Indigometrics</span></p></span></div><div style=3D"marg=
+in-top: 18px; word-break: break-word; word-wrap: break-word;"><table role=
+=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"width: 100%;=
+color: #3c4043;"><tr><td style=3D"vertical-align: top; width: 44px;"><amp-i=
+mg src=3D"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAAAAI/AAAAAA=
+AAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" style=3D"bor=
+der-radius: 50%; display: block;" alt=3D"User profile picture Chris Carman"=
+ height=3D"32" width=3D"32"></amp-img></td><td><h3 style=3D"display: inline=
+-block; font: 500 14px &quot;Google Sans&quot;, Roboto, sans-serif;; letter=
+-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Chris Carman</h3>=
+<h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff; display:=
+ inline-block; font: 700 12px/16px Roboto, sans-serif; margin-bottom: 0; ma=
+rgin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"font=
+: 400 14px Roboto, sans-serif; line-height: 20px; letter-spacing: .2px;"><d=
+iv style=3D"margin-top: 6px;" class=3D"notranslate">but we are normally com=
+pared to pulse engagement surveys - which isnt what is shown here?</div></d=
+iv></td></tr></table></div><div style=3D"margin: 10px 0 0 42px; overflow: a=
+uto; padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRecLMFK8DoSuElzsBVT=
+Yzzz-QDYNbjVnYGTvD3QDZHlBUb7M7zb4AKT2NOVnwU-qRuh4OEnwy2bgACu7a3-c1BN2ZEJQg3=
+ljYq804LzqyujiffrrxU-rrHxisPbE9bv-O437tQg@docs.google.com%3E?subject=3DIndi=
+gometrics_Is_Not_Engagement_Software" class=3D"material-button material-but=
+ton-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"=
+padding: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Arial, Helveti=
+ca, sans-serif;font-weight: 500; font-size: 14px; border: none; border-radi=
+us: 4px; box-sizing: border-box; display: inline-block; letter-spacing: .25=
+px; line-height: 36px; min-height: 36px; text-align: center; text-decoratio=
+n: none;margin-right: 12px;">Reply</a><a href=3D"https://docs.google.com/do=
+cument/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL5wq=
+Kvk&amp;usp=3Dcomment_email_discussion&amp;usp_dm=3Dtrue&amp;ts=3D606463d0"=
+ class=3D"material-button material-button-transparent" target=3D"_blank" ta=
+bindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font-family: &quot;Goo=
+gle Sans&quot;, Roboto, Arial, Helvetica, sans-serif;font-weight: 500; font=
+-size: 14px; border: none; border-radius: 4px; box-sizing: border-box; disp=
+lay: inline-block; letter-spacing: .25px; line-height: 36px; min-height: 36=
+px; text-align: center; text-decoration: none;float: right;">Open</a></div>=
+</div><div style=3D"margin: 18px 0; height: 1px; background-color: #eee;"><=
+/div><div style=3D"overflow: visible; line-height: 20px;"><div class=3D"dis=
+cussion-post-quote" style=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgb=
+a(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); border: 1px solid #d=
+3d3d3; border-radius: 8px; overflow-wrap: break-word; word-break: break-wor=
+d;"><span class=3D"notranslate" style=3D"font: 400 14px Roboto, sans-serif;=
+ line-height: 20px; color: #3c4043;"><p dir=3D"ltr" style=3D"margin:0"><spa=
+n>Indigometrics</span></p><p dir=3D"ltr" style=3D"font-weight:bold;margin:.=
+5em 0"><span>Not Engagement Software</span></p><p dir=3D"ltr" style=3D"font=
+-weight:bold;margin:.5em 0"><span>March</span><span> 31, 20</span><span>21<=
+/span></p><p dir=3D"ltr" style=3D"margin:0"></p><hr><span>&lt;image&gt;</sp=
+an><p dir=3D"ltr" style=3D"font-weight:bold;margin:.5em 0"><span>Why you sh=
+ould read this</span></p><p dir=3D"ltr" style=3D"margin:0"><span>For years,=
+ engagement software and annual 360=E2=80=99s have been the go-to tools for=
+ </span><span class=3D"screenreader-hidden-offscreen">=C2=A0Comment start=
+=C2=A0</span><span style=3D"background-color:#ffe168">periodically</span><s=
+pan class=3D"screenreader-hidden-offscreen">=C2=A0Comment end=C2=A0</span><=
+span> evaluating employee </span><span>sentiment</span><span>. Indigometric=
+s is additive to these, while also providing something entirely new: </span=
+><span>continuous measurement + management of</span></p></span></div><div s=
+tyle=3D"margin-top: 18px; word-break: break-word; word-wrap: break-word;"><=
+table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"wi=
+dth: 100%;color: #3c4043;"><tr><td style=3D"vertical-align: top; width: 44p=
+x;"><amp-img src=3D"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAAAAAA=
+AAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg" st=
+yle=3D"border-radius: 50%; display: block;" alt=3D"User profile picture Chr=
+is Carman" height=3D"32" width=3D"32"></amp-img></td><td><h3 style=3D"displ=
+ay: inline-block; font: 500 14px &quot;Google Sans&quot;, Roboto, sans-seri=
+f;; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Chris C=
+arman</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff=
+; display: inline-block; font: 700 12px/16px Roboto, sans-serif; margin-bot=
+tom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div sty=
+le=3D"font: 400 14px Roboto, sans-serif; line-height: 20px; letter-spacing:=
+ .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">similar to ab=
+ove - not sure the periodicity is the argument we are trying to land</div><=
+/div></td></tr></table></div><div style=3D"margin: 10px 0 0 42px; overflow:=
+ auto; padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRe1_xQh54iEWKNikj=
+yUjvNsJ9Vy1tpvU7R9gISrlakwio2ln1eBPje1i6aTaZLVmKsc8zAdI7iugHt0WziggKBqQMb_2=
+MNpvEVmswqhhOxQewJaA2QKdl3OI0YPT8oNoH720dSf@docs.google.com%3E?subject=3DIn=
+digometrics_Is_Not_Engagement_Software" class=3D"material-button material-b=
+utton-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button" style=
+=3D"padding: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Arial, Hel=
+vetica, sans-serif;font-weight: 500; font-size: 14px; border: none; border-=
+radius: 4px; box-sizing: border-box; display: inline-block; letter-spacing:=
+ .25px; line-height: 36px; min-height: 36px; text-align: center; text-decor=
+ation: none;margin-right: 12px;">Reply</a><a href=3D"https://docs.google.co=
+m/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAA=
+L5wqKvo&amp;usp=3Dcomment_email_discussion&amp;usp_dm=3Dtrue&amp;ts=3D60646=
+3d0" class=3D"material-button material-button-transparent" target=3D"_blank=
+" tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font-family: &quot=
+;Google Sans&quot;, Roboto, Arial, Helvetica, sans-serif;font-weight: 500; =
+font-size: 14px; border: none; border-radius: 4px; box-sizing: border-box; =
+display: inline-block; letter-spacing: .25px; line-height: 36px; min-height=
+: 36px; text-align: center; text-decoration: none;float: right;">Open</a></=
+div></div></td></tr></table><table style=3D"border-collapse: collapse; widt=
+h: 100%;" role=3D"presentation"><tr><td style=3D"padding: 24px 4.5%"><table=
+ style=3D"border-collapse: collapse; width: 100%;" dir=3D"ltr"><tr><td styl=
+e=3D"padding: 0;font-family: Roboto, Arial, Helvetica, sans-serif;color: #5=
+F6368; width: 100%; font-size: 12px; line-height: 16px; min-height: 40px; l=
+etter-spacing: .3px;"><p style=3D"margin: 0; padding: 0;"><span style=3D"pa=
+dding-right: 5px;">Google LLC, 1600 Amphitheatre Parkway, Mountain View, CA=
+ 94043, USA</span><br><br><span style=3D"padding-right: 5px;">You have rece=
+ived this email because you are a participant in the updated discussion thr=
+eads.</span><span style=3D"padding-right: 5px;"><a href=3D"https://docs.goo=
+gle.com/document/u/100348406323779895805/docos/notify?ouid=3D10034840632377=
+9895805&amp;id=3D1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c&amp;title=3DI=
+ndigometrics_Is_Not_Engagement_Software" target=3D"_blank" style=3D"color: =
+#1a73e8; text-decoration: none;">Change what Google Docs sends you.</a></sp=
+an><span>You can not reply to this email.</span></p></td><td style=3D"paddi=
+ng: 0; padding-left: 20px;"><amp-img src=3D"https://www.gstatic.com/images/=
+branding/googlelogo/2x/googlelogo_tm_black54_color_96x40dp.png" width=3D"96=
+px" height=3D"40px"></amp-img></td></tr></table></td></tr></table></td></tr=
+></table></td></tr></table></div><template type=3D"amp-mustache">{{#digestD=
+iscussions}}<table style=3D"border-collapse: collapse; width: 100%; backgro=
+und-color: white; text-align: center;" role=3D"presentation"><tr><td style=
+=3D"padding: 24px 0 16px 0;"><table style=3D"border-collapse: collapse;font=
+-family: Roboto, Arial, Helvetica, sans-serif;hyphens: auto; overflow-wrap:=
+ break-word; word-wrap: break-word; word-break: break-word;display: inline-=
+block; width: 90%;max-width: 700px;min-width: 280px; text-align: left;" rol=
+e=3D"presentation"><tr><td style=3D"padding: 0;"><table style=3D"width:100%=
+; border: 1px solid #dadce0; border-radius: 8px; border-spacing: 0; table-l=
+ayout:fixed; border-collapse: separate;" role=3D"presentation"><tr><td styl=
+e=3D"padding: 4.5%;" dir=3D"ltr"><h1 style=3D"display: block; font: 400 18p=
+x &quot;Google Sans&quot;, Roboto, sans-serif; color: #3c4043; margin: 0;">=
+Chris Carman added comments to the following document</h1><a href=3D"https:=
+//docs.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/e=
+dit?disco=3DAAAAL5wqKvo&amp;ts=3D606463d0&amp;usp=3Dcomment_email_document&=
+amp;usp_dm=3Dtrue" target=3D"_blank" style=3D"color: #3c4043; display: inli=
+ne-block; max-width: 100%; text-decoration: none; vertical-align: top;borde=
+r: 1px solid #DADCE0; border-radius: 16px; white-space: nowrap;margin-top:1=
+2px;"><div style=3D"line-height: 18px; overflow: hidden; text-overflow: ell=
+ipsis;padding: 6px 12px;"><span style=3D"display: inline-block; vertical-al=
+ign: top; min-width: 26px; width: 26px;"><amp-img src=3D"https://ssl.gstati=
+c.com/docs/doclist/images/mediatype/icon_1_document_x64.png" width=3D"18" h=
+eight=3D"18" style=3D"vertical-align: top;" role=3D"presentation"></amp-img=
+></span><span style=3D"font-family: &quot;Google Sans&quot;, Roboto, Arial,=
+ Helvetica, sans-serif;font-weight: 500; font-size: 14px; line-height: 18px=
+; display: inline; letter-spacing: 0.2px;">Indigometrics_Is_Not_Engagement_=
+Software</span></div></a><div style=3D"margin: 18px 0; height: 1px; backgro=
+und-color: #eee;"></div>{{#countBuckets}}<div role=3D"presentation" style=
+=3D"display: table; width: 100%;"><div style=3D"display: table-row;">{{#fir=
+stBucket}}<div style=3D"display: table-cell; padding-right: 12.5px; vertica=
+l-align: middle;"><table role=3D"presentation" cellpadding=3D"0" cellspacin=
+g=3D"0"><tr><td><strong style=3D"display: inline-block; font: 500 14px Robo=
+to, sans-serif; margin: 0; line-height: 20px; letter-spacing: .25px; color:=
+ #3c4043;">{{heading}}</strong></td></tr><tr><td height=3D"4" style=3D"heig=
+ht: 4px;" colspan=3D"0"></td></tr><tr><td><span style=3D"font: 400 14px Rob=
+oto, sans-serif; line-height: 20px; letter-spacing: .2px;color: #3c4043;">{=
+{counts}}</span></td></tr></table></div>{{/firstBucket}}{{#secondBucket}}<d=
+iv style=3D"display: table-cell; width: 50%; padding-left: 12.5px; vertical=
+-align: middle;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=
+=3D"0"><tr><td><strong style=3D"display: inline-block; font: 500 14px Robot=
+o, sans-serif; margin: 0; line-height: 20px; letter-spacing: .25px; color: =
+#3c4043;">{{heading}}</strong></td></tr><tr><td height=3D"4" style=3D"heigh=
+t: 4px;" colspan=3D"0"></td></tr><tr><td><span style=3D"font: 400 14px Robo=
+to, sans-serif; line-height: 20px; letter-spacing: .2px;color: #3c4043;">{{=
+counts}}</span></td></tr></table></div>{{/secondBucket}}</div></div>{{/coun=
+tBuckets}}</td></tr></table>{{#discussionSections}}<div style=3D"height: 14=
+px;"></div><table style=3D"width:100%; border: 1px solid #dadce0; border-ra=
+dius: 8px; border-spacing: 0; table-layout:fixed; border-collapse: separate=
+;" role=3D"presentation"><tr><td style=3D"padding: 4.5%;" dir=3D"ltr">{{#se=
+ctionHeaderTitle}}<h2 style=3D"font: normal 24px &quot;Google Sans&quot;, R=
+oboto, sans-serif; line-height: 32px; color: #3c4043; margin: 0 0 18px 0;">=
+{{sectionHeaderTitle}}</h2>{{/sectionHeaderTitle}}{{#discussionSubsections}=
+}<div style=3D"height: 18px;" class=3D"discussion-header-spacer"></div><h2 =
+style=3D"display: block; font: 400 18px &quot;Google Sans&quot;, Roboto, sa=
+ns-serif; color: #3c4043; margin: 0;">{{subsectionHeaderTitle}}</h2>{{#item=
+s}}<div style=3D"margin: 18px 0; height: 1px; background-color: #eee;"></di=
+v><div id=3D"discussion-{{docoId}}" style=3D"overflow: visible; line-height=
+: 20px;">{{^isDeleted}}{{#htmlQuote}}<div class=3D"discussion-post-quote" s=
+tyle=3D"padding: 7px 12px; box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302), 0 =
+2px 6px 2px rgba(60,64,67,0.149); border: 1px solid #d3d3d3; border-radius:=
+ 8px; overflow-wrap: break-word; word-break: break-word;"><span class=3D"no=
+translate" style=3D"font: 400 14px Roboto, sans-serif; line-height: 20px; c=
+olor: #3c4043;">{{{htmlQuote}}}</span></div>{{/htmlQuote}}{{#posts}}<div cl=
+ass=3D"{{#isHeadPost}}head-post{{/isHeadPost}}{{^isHeadPost}}reply-post{{/i=
+sHeadPost}}"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"=
+0" style=3D"width: 100%;" class=3D"{{#isNew}}post-dark-text{{/isNew}}{{^isN=
+ew}}post-light-text{{/isNew}}"><tr><td style=3D"vertical-align: top; width:=
+ 44px;"><amp-img src=3D"{{authorPhotoUrl}}" height=3D"32" width=3D"32" alt=
+=3D"User profile picture {{authorName}}" style=3D"border-radius: 50%; displ=
+ay: block;"></amp-img></td><td><h3 style=3D"display: inline-block; font: 50=
+0 14px &quot;Google Sans&quot;, Roboto, sans-serif;; letter-spacing: .25px;=
+ line-height: 20px; margin: 6px 0 2px 0;">{{authorName}}</h3>{{#isNew}}<h4 =
+style=3D"background: #1a73e8; border-radius: 8px; color: #fff; display: inl=
+ine-block; font: 700 12px/16px Roboto, sans-serif; margin-bottom: 0; margin=
+-top: 0; margin-left: 10px; padding: 0 6px;">New</h4>{{/isNew}}<div style=
+=3D"font: 400 14px Roboto, sans-serif; line-height: 20px; letter-spacing: .=
+2px;">{{#htmlBody}}<div style=3D"margin-top: 6px;" class=3D"notranslate">{{=
+{htmlBody}}}</div>{{/htmlBody}}{{#htmlActionText}}<div style=3D"margin-top:=
+ 6px;"><i>{{{htmlActionText}}}</i></div>{{/htmlActionText}}{{#showCopiedTex=
+t}}<div style=3D"margin: 18px 0; height: 1px; background-color: #eee;"></di=
+v><div style=3D"color: #3c4043; font: italic 14px Roboto-Italic, Arial; mar=
+gin: 18px 0 6px 0; width: 100%;">Comments above copied from original docume=
+nt</div>{{/showCopiedText}}</div></td></tr></table></div>{{/posts}}{{/isDel=
+eted}}{{#isDeleted}}<div style=3D"color: #3c4043; font: italic 14px Roboto-=
+Italic, Arial; margin: 18px 0 6px 0; width: 100%;">Comment was deleted</div=
+>{{/isDeleted}}{{#canResolve}}<form id=3D"resolve-form-{{docoId}}" method=
+=3D"post" action-xhr=3D"https://docs.google.com/document/d/1z1m3S49fWN9STsu=
+KHD5y7AFX3jHWKGbNm8RyFDfKf2c/dynamicmail/resolve?emailToken=3DAORGpRfXKgvR5=
+FFQ5dEBUVuXVYBjzkXEj-XRATh-ZYnUqCXF--7Ok7n3FImqYReSQBzzqEQnjNyPi8VSEit2lRCd=
+OytCdde2z1idUhbbZb6zvmPzecazc_f3nhlTwhE_-nON3VzSJhOD&amp;buildLabel=3Dkix_2=
+021.12-Tue_RC01&amp;clientVersion=3D2&amp;ts=3D606463d0" on=3D"submit-succe=
+ss: discussionList.refresh, AMP.setState({scope: {'pendingReply{{docoId}}':=
+ false}, pendingReplies: {'{{docoId}}': ''}, cachedReplies: {'{{docoId}}': =
+''}}); submit: discussion-{{docoId}}.toggleClass('class' =3D 'resolving-dis=
+cussion'), AMP.setState({scope: {'replyButton{{docoId}}Disabled': true, 'pe=
+ndingReply{{docoId}}': true}, cachedReplies: pendingReplies}); submit-error=
+: discussion-{{docoId}}.toggleClass('class' =3D 'submit-error', force=3Dtru=
+e), discussion-{{docoId}}.toggleClass('class' =3D 'resolving-discussion'), =
+AMP.setState({scope: {'replyButton{{docoId}}Disabled': pendingReplies['{{do=
+coId}}'] =3D=3D null || pendingReplies['{{docoId}}'] =3D=3D '', 'pendingRep=
+ly{{docoId}}': false}});"><div submit-success template=3D"inline-action-pos=
+t"></div><input type=3D"hidden" name=3D"replyText" data-amp-bind-value=3D"p=
+endingReplies['{{docoId}}']"><input type=3D"hidden" name=3D"commentId" valu=
+e=3D"{{docoId}}"><input type=3D"hidden" name=3D"clientId" value=3D"{{replyC=
+lientId}}"></form>{{/canResolve}}{{#canReply}}<form id=3D"reply-form-{{doco=
+Id}}" method=3D"post" autocomplete=3D"off" action-xhr=3D"https://docs.googl=
+e.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/dynamicmail/r=
+eply?emailToken=3DAORGpRfXKgvR5FFQ5dEBUVuXVYBjzkXEj-XRATh-ZYnUqCXF--7Ok7n3F=
+ImqYReSQBzzqEQnjNyPi8VSEit2lRCdOytCdde2z1idUhbbZb6zvmPzecazc_f3nhlTwhE_-nON=
+3VzSJhOD&amp;buildLabel=3Dkix_2021.12-Tue_RC01&amp;clientVersion=3D2&amp;ts=
+=3D606463d0" custom-validation-reporting=3D"as-you-go" on=3D"submit-success=
+: discussionList.refresh, AMP.setState({scope: {'pendingReply{{docoId}}': f=
+alse}, pendingReplies: {'{{docoId}}': ''}, cachedReplies: {'{{docoId}}': ''=
+}}); submit: discussion-{{docoId}}.toggleClass('class' =3D 'submitting-repl=
+y'), AMP.setState({scope: {'replyButton{{docoId}}Disabled': true, 'pendingR=
+eply{{docoId}}': true}, cachedReplies: pendingReplies}); submit-error: disc=
+ussion-{{docoId}}.toggleClass('class' =3D 'submit-error', force=3Dtrue), di=
+scussion-{{docoId}}.toggleClass('class' =3D 'submitting-reply'), AMP.setSta=
+te({scope: {'replyButton{{docoId}}Disabled': false, 'pendingReply{{docoId}}=
+': false}}); valid:AMP.setState({scope: {'replyButton{{docoId}}Disabled': f=
+alse}}); invalid:AMP.setState({scope: {'replyButton{{docoId}}Disabled': tru=
+e}});"><div submit-success template=3D"inline-action-post"></div><div class=
+=3D"reply-form-textarea" style=3D"margin-top: 12px; word-break: break-word;=
+ word-wrap: break-word;"><table role=3D"presentation" cellpadding=3D"0" cel=
+lspacing=3D"0" style=3D"width: 100%;"><tr><td style=3D"vertical-align: top;=
+ width: 44px; padding-top: 11px;"><amp-img src=3D"{{requestor.photoUrl}}" h=
+eight=3D"32" width=3D"32" alt=3D"User profile picture {{requestor.name}}" s=
+tyle=3D"border-radius: 50%; display: block;"></amp-img></td><td><textarea a=
+utoexpand style=3D"font-family: Roboto, Arial, Helvetica, sans-serif;font-s=
+ize: 14px; background-color: #f8f9fa; border-radius: 4px 4px 0 0; box-sizin=
+g: border-box; color: #3c4043; height: 54px; letter-spacing: .2px; line-hei=
+ght: 20px; outline: none; padding: 16px 10px; resize: none; width: 100%; wo=
+rd-break: break-word; vertical-align: top;" class=3D"material-text-input" n=
+ame=3D"replyText" autocomplete=3D"off" placeholder=3D"Reply" maxlength=3D"2=
+048" on=3D"input-throttled: AMP.setState({pendingReplies: {'{{docoId}}': ev=
+ent.value}});" data-amp-bind-text=3D"cachedReplies['{{docoId}}'] || ''" dat=
+a-amp-bind-disabled=3D"scope['pendingReply{{docoId}}']" pattern=3D".*\S+.*"=
+ aria-label=3D"Reply" required></textarea><input type=3D"hidden" name=3D"co=
+mmentId" value=3D"{{docoId}}"><input type=3D"hidden" name=3D"clientId" valu=
+e=3D"{{replyClientId}}"></td></tr></table></div></form>{{/canReply}}<div st=
+yle=3D"margin: 10px 0 0 42px; overflow: auto; padding: 2px;">{{#canReply}}<=
+input id=3D"discussion-reply-button-{{docoId}}" type=3D"submit" style=3D"pa=
+dding: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Arial, Helvetica=
+, sans-serif;font-weight: 500; font-size: 14px; border: none; border-radius=
+: 4px; box-sizing: border-box; display: inline-block; letter-spacing: .25px=
+; line-height: 36px; min-height: 36px; text-align: center; text-decoration:=
+ none;margin-right: 12px;" role=3D"button" on=3D"tap:reply-form-{{docoId}}.=
+submit()" class=3D"material-button material-button-transparent" value=3D"Re=
+ply" title=3D"Reply to comment" disabled data-amp-bind-disabled=3D"scope['r=
+eplyButton{{docoId}}Disabled']" tabindex=3D"0">{{/canReply}}{{#canResolve}}=
+<input id=3D"discussion-resolve-button-{{docoId}}" type=3D"submit" style=3D=
+"padding: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Arial, Helvet=
+ica, sans-serif;font-weight: 500; font-size: 14px; border: none; border-rad=
+ius: 4px; box-sizing: border-box; display: inline-block; letter-spacing: .2=
+5px; line-height: 36px; min-height: 36px; text-align: center; text-decorati=
+on: none;margin-right: 12px;" role=3D"button" on=3D"tap:resolve-form-{{doco=
+Id}}.submit()" class=3D"material-button material-button-transparent resolve=
+-button" value=3D"{{#isTodo}}Mark as done{{/isTodo}}{{^isTodo}}Resolve{{/is=
+Todo}}" title=3D"{{#isTodo}}Mark action item as done{{/isTodo}}{{^isTodo}}M=
+ark as resolved{{/isTodo}}" tabindex=3D"0">{{/canResolve}}<a id=3D"discussi=
+on-open-button-{{docoId}}" href=3D"{{discussionLink}}" class=3D"material-bu=
+tton material-button-transparent discussion-open-button" target=3D"_blank" =
+tabindex=3D"0" role=3D"button" style=3D"padding: 0 8px;font-family: &quot;G=
+oogle Sans&quot;, Roboto, Arial, Helvetica, sans-serif;font-weight: 500; fo=
+nt-size: 14px; border: none; border-radius: 4px; box-sizing: border-box; di=
+splay: inline-block; letter-spacing: .25px; line-height: 36px; min-height: =
+36px; text-align: center; text-decoration: none;">Open</a></div><div style=
+=3D"color: #d93025; font: 14px Roboto, sans-serif; height: 36px; line-heigh=
+t: 36px; letter-spacing: 0.25px; margin-left: 36px; padding-left: 8px;" cla=
+ss=3D"reply-error-text">Something went wrong, please retry</div></div>{{/it=
+ems}}{{/discussionSubsections}}</td></tr></table>{{/discussionSections}}<ta=
+ble style=3D"border-collapse: collapse; width: 100%;" role=3D"presentation"=
+><tr><td style=3D"padding: 24px 4.5%"><table style=3D"border-collapse: coll=
+apse; width: 100%;" dir=3D"ltr"><tr><td style=3D"padding: 0;font-family: Ro=
+boto, Arial, Helvetica, sans-serif;color: #5F6368; width: 100%; font-size: =
+12px; line-height: 16px; min-height: 40px; letter-spacing: .3px;"><p style=
+=3D"margin: 0; padding: 0;"><span style=3D"padding-right: 5px;">Google LLC,=
+ 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</span><br><br><spa=
+n style=3D"padding-right: 5px;">You have received this email because you ar=
+e a participant in the updated discussion threads.</span><span style=3D"pad=
+ding-right: 5px;"><a href=3D"https://docs.google.com/document/u/10034840632=
+3779895805/docos/notify?ouid=3D100348406323779895805&amp;id=3D1z1m3S49fWN9S=
+TsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c&amp;title=3DIndigometrics_Is_Not_Engagement=
+_Software" target=3D"_blank" style=3D"color: #1a73e8; text-decoration: none=
+;">Change what Google Docs sends you.</a></span><span>You can not reply to =
+this email.</span></p></td><td style=3D"padding: 0; padding-left: 20px;"><a=
+mp-img src=3D"https://www.gstatic.com/images/branding/googlelogo/2x/googlel=
+ogo_tm_black54_color_96x40dp.png" width=3D"96px" height=3D"40px"></amp-img>=
+</td></tr></table></td></tr></table></td></tr></table></td></tr></table>{{/=
+digestDiscussions}}</template></amp-list></div></body></html>
+--0000000000000e959205bed3d434
+Content-Type: text/html; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+<div itemscope itemtype=3D"http://schema.org/EmailMessage" style=3D"font: 1=
+4px Roboto, sans-serif;"><div itemprop=3D"about" itemscope itemtype=3D"http=
+://schema.org/CreativeWork"><meta itemprop=3D"name" content=3D"Indigometric=
+s_Is_Not_Engagement_Software"><meta itemprop=3D"url" content=3D"https://doc=
+s.google.com/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?d=
+isco=3DAAAAL5wqKvo&amp;ts=3D606463d0&amp;usp=3Dcomment_email_document"><tab=
+le style=3D"border-collapse: collapse; width: 100%; background-color: white=
+; text-align: center;" role=3D"presentation"><tr><td style=3D"padding: 24px=
+ 0 16px 0;"><table style=3D"border-collapse: collapse;font-family: Roboto, =
+Arial, Helvetica, sans-serif;hyphens: auto; overflow-wrap: break-word; word=
+-wrap: break-word; word-break: break-word;display: inline-block; width: 90%=
+;max-width: 700px;min-width: 280px; text-align: left;" role=3D"presentation=
+"><tr><td style=3D"padding: 0;"><table style=3D"width:100%; border: 1px sol=
+id #dadce0; border-radius: 8px; border-spacing: 0; table-layout:fixed; bord=
+er-collapse: separate;" role=3D"presentation"><tr><td style=3D"padding: 4.5=
+%;" dir=3D"ltr"><h1 style=3D"display: block; font: 400 18px &quot;Google Sa=
+ns&quot;, Roboto, sans-serif; color: #3c4043; margin: 0;">Chris Carman adde=
+d comments to the following document</h1><a href=3D"https://docs.google.com=
+/document/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL=
+5wqKvo&amp;ts=3D606463d0&amp;usp=3Dcomment_email_document&amp;usp_dm=3Dfals=
+e" target=3D"_blank" style=3D"color: #3c4043; display: inline-block; max-wi=
+dth: 100%; text-decoration: none; vertical-align: top;border: 1px solid #DA=
+DCE0; border-radius: 16px; white-space: nowrap;margin-top:12px;"><div style=
+=3D"line-height: 18px; overflow: hidden; text-overflow: ellipsis;padding: 6=
+px 12px;"><span style=3D"display: inline-block; vertical-align: top; min-wi=
+dth: 26px; width: 26px;"><img src=3D"https://ssl.gstatic.com/docs/doclist/i=
+mages/mediatype/icon_1_document_x64.png" width=3D"18" height=3D"18" style=
+=3D"vertical-align: top;" role=3D"presentation"></span><span style=3D"font-=
+family: &quot;Google Sans&quot;, Roboto, Arial, Helvetica, sans-serif;font-=
+weight: 500; font-size: 14px; line-height: 18px; display: inline; letter-sp=
+acing: 0.2px;">Indigometrics_Is_Not_Engagement_Software</span></div></a><di=
+v style=3D"margin: 18px 0; height: 1px; background-color: #eee;"></div><tab=
+le role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" style=3D"displ=
+ay: table; width: 100%;"><tr><td><table role=3D"presentation" cellpadding=
+=3D"0" cellspacing=3D"0"><tr><td><strong style=3D"display: inline-block; fo=
+nt: 500 14px Roboto, sans-serif; margin: 0; line-height: 20px; letter-spaci=
+ng: .25px; color: #3c4043;">New</strong></td></tr><tr><td height=3D"4" styl=
+e=3D"height: 4px;" colspan=3D"0"></td></tr><tr><td><span style=3D"font: 400=
+ 14px Roboto, sans-serif; line-height: 20px; letter-spacing: .2px;color: #3=
+c4043;">2 comments</span></td></tr></table></td></tr></table></td></tr></ta=
+ble><div style=3D"height: 14px;"></div><table style=3D"width:100%; border: =
+1px solid #dadce0; border-radius: 8px; border-spacing: 0; table-layout:fixe=
+d; border-collapse: separate;" role=3D"presentation"><tr><td style=3D"paddi=
+ng: 4.5%;" dir=3D"ltr"><h2 style=3D"display: block; font: 400 18px &quot;Go=
+ogle Sans&quot;, Roboto, sans-serif; color: #3c4043; margin: 0;">Comments</=
+h2><div itemprop=3D"action" itemscope itemtype=3D"http://schema.org/ViewAct=
+ion"><meta itemprop=3D"url" content=3D"https://docs.google.com/document/d/1=
+z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL5wqKvk&amp;us=
+p=3Dcomment_email_discussion&amp;ts=3D606463d0"><meta itemprop=3D"name" con=
+tent=3D"Open Discussion"></div><div style=3D"margin: 18px 0; height: 1px; b=
+ackground-color: #eee;"></div><div style=3D"overflow: visible; line-height:=
+ 20px;"><div style=3D"margin-top: 18px; word-break: break-word; word-wrap: =
+break-word;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"=
+0" style=3D"width: 100%;color: #3c4043;"><tr><td style=3D"vertical-align: t=
+op; width: 44px;"><img src=3D"https://lh5.googleusercontent.com/-q1hLQTYRhA=
+Q/AAAAAAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/pho=
+to.jpg" style=3D"border-radius: 50%; display: block;" alt=3D"User profile p=
+icture Chris Carman" height=3D"32" width=3D"32"></td><td><h3 style=3D"displ=
+ay: inline-block; font: 500 14px &quot;Google Sans&quot;, Roboto, sans-seri=
+f;; letter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Chris C=
+arman</h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff=
+; display: inline-block; font: 700 12px/16px Roboto, sans-serif; margin-bot=
+tom: 0; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div sty=
+le=3D"font: 400 14px Roboto, sans-serif; line-height: 20px; letter-spacing:=
+ .2px;"><div style=3D"margin-top: 6px;" class=3D"notranslate">but we are no=
+rmally compared to pulse engagement surveys - which isnt what is shown here=
+?</div></div></td></tr></table></div><div style=3D"margin: 10px 0 0 42px; o=
+verflow: auto; padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRc6f_8N_5=
+DsOc0iUqR74CPDpKcmAgaULHgPK5x-PHh9b63A_UItI9dHMFTALATtYgdyNUfvSzcH0cTqndLpF=
+gusnSkTfoBdyhHfKoyZ522MjhL26FRSTkPi6tyTEggdt52L9H2T@docs.google.com%3E?subj=
+ect=3DIndigometrics_Is_Not_Engagement_Software" class=3D"material-button ma=
+terial-button-transparent" target=3D"_blank" tabindex=3D"0" role=3D"button"=
+ style=3D"padding: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Aria=
+l, Helvetica, sans-serif;font-weight: 500; font-size: 14px; border: none; b=
+order-radius: 4px; box-sizing: border-box; display: inline-block; letter-sp=
+acing: .25px; line-height: 36px; min-height: 36px; text-align: center; text=
+-decoration: none;background-color: transparent; color: #1a73e8; cursor: po=
+inter;margin-right: 12px;">Reply</a><a href=3D"https://docs.google.com/docu=
+ment/d/1z1m3S49fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL5wqKv=
+k&amp;usp=3Dcomment_email_discussion&amp;usp_dm=3Dfalse&amp;ts=3D606463d0" =
+class=3D"material-button material-button-transparent" target=3D"_blank" tab=
+index=3D"0" role=3D"button" style=3D"padding: 0 8px;font-family: &quot;Goog=
+le Sans&quot;, Roboto, Arial, Helvetica, sans-serif;font-weight: 500; font-=
+size: 14px; border: none; border-radius: 4px; box-sizing: border-box; displ=
+ay: inline-block; letter-spacing: .25px; line-height: 36px; min-height: 36p=
+x; text-align: center; text-decoration: none;background-color: transparent;=
+ color: #1a73e8; cursor: pointer;float: right;">Open</a></div></div><div it=
+emprop=3D"action" itemscope itemtype=3D"http://schema.org/ViewAction"><meta=
+ itemprop=3D"url" content=3D"https://docs.google.com/document/d/1z1m3S49fWN=
+9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL5wqKvo&amp;usp=3Dcommen=
+t_email_discussion&amp;ts=3D606463d0"><meta itemprop=3D"name" content=3D"Op=
+en Discussion"></div><div style=3D"margin: 18px 0; height: 1px; background-=
+color: #eee;"></div><div style=3D"overflow: visible; line-height: 20px;"><d=
+iv class=3D"discussion-post-quote" style=3D"padding: 7px 12px; box-shadow: =
+0 1px 2px 0 rgba(60,64,67,0.302), 0 2px 6px 2px rgba(60,64,67,0.149); borde=
+r: 1px solid #d3d3d3; border-radius: 8px; overflow-wrap: break-word; word-b=
+reak: break-word;"><span class=3D"notranslate" style=3D"font: 400 14px Robo=
+to, sans-serif; line-height: 20px; color: #3c4043;">periodically</span></di=
+v><div style=3D"margin-top: 18px; word-break: break-word; word-wrap: break-=
+word;"><table role=3D"presentation" cellpadding=3D"0" cellspacing=3D"0" sty=
+le=3D"width: 100%;color: #3c4043;"><tr><td style=3D"vertical-align: top; wi=
+dth: 44px;"><img src=3D"https://lh5.googleusercontent.com/-q1hLQTYRhAQ/AAAA=
+AAAAAAI/AAAAAAAAAAA/AMZuuckDDEKnmAsIUiuOWr8LhnO8krupvg/s50-c-k-no/photo.jpg=
+" style=3D"border-radius: 50%; display: block;" alt=3D"User profile picture=
+ Chris Carman" height=3D"32" width=3D"32"></td><td><h3 style=3D"display: in=
+line-block; font: 500 14px &quot;Google Sans&quot;, Roboto, sans-serif;; le=
+tter-spacing: .25px; line-height: 20px; margin: 6px 0 2px 0;">Chris Carman<=
+/h3><h4 style=3D"background: #1a73e8; border-radius: 8px; color: #fff; disp=
+lay: inline-block; font: 700 12px/16px Roboto, sans-serif; margin-bottom: 0=
+; margin-top: 0; margin-left: 10px; padding: 0 6px;">New</h4><div style=3D"=
+font: 400 14px Roboto, sans-serif; line-height: 20px; letter-spacing: .2px;=
+"><div style=3D"margin-top: 6px;" class=3D"notranslate">similar to above - =
+not sure the periodicity is the argument we are trying to land</div></div><=
+/td></tr></table></div><div style=3D"margin: 10px 0 0 42px; overflow: auto;=
+ padding: 2px;"><a href=3D"mailTo:Reply%20%3Cd+AORGpRfklgfXUdl2CJWJh7Q0lkBC=
+CY_Zx64nAkcMpbklwQ0fmE75cr8XZ8_mWa97niRI919dd_osYObk3poXFRphN306TEy8EKI8P0D=
+w6tNfHnFhU-5FxMzw49Rhycx5uJriNAeerU8z@docs.google.com%3E?subject=3DIndigome=
+trics_Is_Not_Engagement_Software" class=3D"material-button material-button-=
+transparent" target=3D"_blank" tabindex=3D"0" role=3D"button" style=3D"padd=
+ing: 0 8px;font-family: &quot;Google Sans&quot;, Roboto, Arial, Helvetica, =
+sans-serif;font-weight: 500; font-size: 14px; border: none; border-radius: =
+4px; box-sizing: border-box; display: inline-block; letter-spacing: .25px; =
+line-height: 36px; min-height: 36px; text-align: center; text-decoration: n=
+one;background-color: transparent; color: #1a73e8; cursor: pointer;margin-r=
+ight: 12px;">Reply</a><a href=3D"https://docs.google.com/document/d/1z1m3S4=
+9fWN9STsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c/edit?disco=3DAAAAL5wqKvo&amp;usp=3Dco=
+mment_email_discussion&amp;usp_dm=3Dfalse&amp;ts=3D606463d0" class=3D"mater=
+ial-button material-button-transparent" target=3D"_blank" tabindex=3D"0" ro=
+le=3D"button" style=3D"padding: 0 8px;font-family: &quot;Google Sans&quot;,=
+ Roboto, Arial, Helvetica, sans-serif;font-weight: 500; font-size: 14px; bo=
+rder: none; border-radius: 4px; box-sizing: border-box; display: inline-blo=
+ck; letter-spacing: .25px; line-height: 36px; min-height: 36px; text-align:=
+ center; text-decoration: none;background-color: transparent; color: #1a73e=
+8; cursor: pointer;float: right;">Open</a></div></div></td></tr></table><ta=
+ble style=3D"border-collapse: collapse; width: 100%;" role=3D"presentation"=
+><tr><td style=3D"padding: 24px 4.5%"><table style=3D"border-collapse: coll=
+apse; width: 100%;" dir=3D"ltr"><tr><td style=3D"padding: 0;font-family: Ro=
+boto, Arial, Helvetica, sans-serif;color: #5F6368; width: 100%; font-size: =
+12px; line-height: 16px; min-height: 40px; letter-spacing: .3px;"><p style=
+=3D"margin: 0; padding: 0;"><span style=3D"padding-right: 5px;">Google LLC,=
+ 1600 Amphitheatre Parkway, Mountain View, CA 94043, USA</span><br><br><spa=
+n style=3D"padding-right: 5px;">You have received this email because you ar=
+e a participant in the updated discussion threads.</span><span style=3D"pad=
+ding-right: 5px;"><a href=3D"https://docs.google.com/document/u/10034840632=
+3779895805/docos/notify?ouid=3D100348406323779895805&amp;id=3D1z1m3S49fWN9S=
+TsuKHD5y7AFX3jHWKGbNm8RyFDfKf2c&amp;title=3DIndigometrics_Is_Not_Engagement=
+_Software" target=3D"_blank" style=3D"color: #1a73e8; text-decoration: none=
+;">Change what Google Docs sends you.</a></span><span>You can not reply to =
+this email.</span></p></td><td style=3D"padding: 0; padding-left: 20px;"><i=
+mg src=3D"https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_=
+tm_black54_color_96x40dp.png" width=3D"96px" height=3D"40px"></td></tr></ta=
+ble></td></tr></table></td></tr></table></td></tr></table></div></div>
+--0000000000000e959205bed3d434--

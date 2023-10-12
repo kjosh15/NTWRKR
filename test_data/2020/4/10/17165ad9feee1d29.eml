@@ -1,0 +1,634 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:97c9:0:0:0:0:0 with SMTP id m9csp958384ljj;
+        Fri, 10 Apr 2020 13:00:09 -0700 (PDT)
+X-Google-Smtp-Source: APiQypLRr8v2d9GghmxBFKDCkvq7PyKDJaxttbXec+j9VUrWSlDEaR7ivUTxUiCNEAFNem9YtUyx
+X-Received: by 2002:a17:90a:8c93:: with SMTP id b19mr7448532pjo.141.1586548809334;
+        Fri, 10 Apr 2020 13:00:09 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1586548809; cv=none;
+        d=google.com; s=arc-20160816;
+        b=IClEE782fBCmoKXaK3OOydseS5b0R96eylB2W66H3Gx4a8LLgvO3vZGlgUkkg0N9GY
+         CjqYKTbi7fQFN95BH9GsXLpIr4KvIJg2CLxKyUeTBiGKODL/QhlGOxNPwI6Foe+tv1kO
+         oT0VRd6tG0b3ADndsfhTi9Ycdl9GPFO670jPYd8W1XODSchxDdr5vLgOeH00GwkkQspd
+         LT5OnyTBdYnteWze57OAxpPAfRwi9UwCehynXpwiBz/PAxBSIRFvR2s7CDUgpql+VvP6
+         zOGs2Up5lm4WXBu6AYt1ZTdbFYveBhL1XO9UeWy0ZKqErFR1vZ1xpy6boTlmezNJFtb1
+         5DUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=references:from:message-id:subject:reply-to:date:mime-version:to
+         :dkim-signature;
+        bh=h/DKBsirIjEJJ/1fSBahVU6OqiWd54DmeoS7iJPlB9s=;
+        b=WndzaDwmq+zift/bazCEIan2nmP36Za2B4mWWPlgoki3b1r9ocHqCmfURrFUH8MxvN
+         /JADcG2clIG3BU+vZLTERBqqksJ9CLlJCxTtcXe4Yyj4hsh3Dv8rxCDY7deGsYnQkNk8
+         3IUS2z8+JoR6mOpuzpYWMPWfZVAb7QPWPlTfUc+gY7wo64YbSvsYZ/tGQq39plZ2EyWp
+         zu/FncULKrC/qmrPQ/yIrRmNTg9Ng36hC/rAS+wrn+hDLF01eFswIrHsIXnYPZF1zZ/H
+         zosopAJi1OBaGWh42GHAJ1FtS5sz5ojTsO5XFJXrEQakW3hdU9OlYpwikQ84jbtMirJg
+         V8JQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@divvy-582a46f44335.intercom-mail.com header.s=intercom header.b=YLlaWwZA;
+       spf=pass (google.com: domain of bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com designates 192.174.84.114 as permitted sender) smtp.mailfrom=bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=intercom-mail.com
+Return-Path: <bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com>
+Received: from mta-174-84-114.intercom.com.sparkpostmail.com (mta-174-84-114.intercom.com.sparkpostmail.com. [192.174.84.114])
+        by mx.google.com with ESMTPS id 32si2228355plb.314.2020.04.10.13.00.09
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 10 Apr 2020 13:00:09 -0700 (PDT)
+Received-SPF: pass (google.com: domain of bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com designates 192.174.84.114 as permitted sender) client-ip=192.174.84.114;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@divvy-582a46f44335.intercom-mail.com header.s=intercom header.b=YLlaWwZA;
+       spf=pass (google.com: domain of bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com designates 192.174.84.114 as permitted sender) smtp.mailfrom=bounces+26594755817@rp.divvy-582a46f44335.intercom-mail.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=intercom-mail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=divvy-582a46f44335.intercom-mail.com; s=intercom; t=1586548809;
+	i=@divvy-582a46f44335.intercom-mail.com;
+	bh=h/DKBsirIjEJJ/1fSBahVU6OqiWd54DmeoS7iJPlB9s=;
+	h=To:Content-Type:Date:Subject:Message-ID:From;
+	b=YLlaWwZA+2c1mnqO8ZQera5I/dXbpg8nVopT0ad5RcpeATjJ45mZrAh5PSguN7IMA
+	 UQaFAjE5Q5RnZXGSMg+abYNw96RYaWzkeeL9ul3CSWDyuzmeKIMeM8PRa9AmP+CEhh
+	 bul/P5JKLeGq4B1/yrfx0gJtl/QZkZ9EDdEEB5Ow=
+X-MSFBL: KEZDUhuUPZYLDlmEAgnm7Q/zQ6w56kC8q9BT7ChAnkk=|eyJzdWJhY2NvdW50X2l
+	kIjoiMzcxNzAiLCJ0ZW5hbnRfaWQiOiJpbnRlcmNvbSIsInIiOiJqb3NoQGpvc2g
+	uaXMiLCJtZXNzYWdlX2lkIjoiMDAyMzQ5ZDA5MDVlMzYxNWU3YzIiLCJjdXN0b21
+	lcl9pZCI6IjEifQ==
+To: josh@josh.is
+Content-Type: multipart/alternative; boundary="_----xtiSWVMo5y0Lryslipf02Q===_BD/2C-05430-940D09E5"
+MIME-Version: 1.0
+X-Mailgun-Variables: {"app_id":"gh17um10","conversation_id":"26594755817","intercom_message_id":532191039,"user_id":"5e905cf27070db945cb10058"}
+Date: Fri, 10 Apr 2020 20:00:08 +0000
+Reply-To: Nick from Divvy <nicholas.bright@divvy-582a46f44335.intercom-mail.com>
+X-Intercom-Comment-Id: 5112276110
+X-Intercom-App-Id: gh17um10
+X-Intercom-Bin: proven_users
+Subject: Re: I'm trying to fill out the PPP worksheet, but haven't filed my 2019...
+Message-ID: <005cbef7-dc0fd740-1586548808-26594755817@divvy-582a46f44335.intercom-mail.com>
+X-Report-Abuse: Please report spam or abuse to abuse@intercom.io
+From: "Nick from Divvy" <nicholas.bright@divvy-582a46f44335.intercom-mail.com>
+X-Auto-Response-Suppress: OOF, AutoReply
+References: <a5d2ff1ba54a81d3358eeb4b7abf7286348cd78e@intercom>
+X-Mailgun-Tag: user-admin_reply
+
+--_----xtiSWVMo5y0Lryslipf02Q===_BD/2C-05430-940D09E5
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hey Josh. You can use your 2018 taxes. Do you have payroll documentation=3F=
+=0A=0A> On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" <operator@divvy-582a46=
+f44335.intercom-mail.com> wrote: =0A>=0A> We are experiencing high volume o=
+f SBA PPP loan inquiries and requests and are doing our best to get to ever=
+y individual in a timely manner. We will get back to you in the order the m=
+essage arrived in our inbox. Hold tight, but we'll get back to you as soon =
+as we can (usually within a couple hours).=0A>=0A>> On Fri, Apr 10, 2020 at=
+ 03:49 PM, "DivvyBot" <operator@divvy-582a46f44335.intercom-mail.com> wrote=
+: =0A>>=0A>>> On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" <operator@divvy-=
+582a46f44335.intercom-mail.com> wrote: =0A>>>=0A>>> A few more details will=
+ help get you to the right person:=0A>>>=0A>>>> On Fri, Apr 10, 2020 at 03:=
+49 PM, "Josh Klein" <josh@josh.is> wrote: =0A>>>>=0A>>>> Yes=0A>>>>=0A>>>>>=
+ On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" <operator@divvy-582a46f44335.=
+intercom-mail.com> wrote: =0A>>>>>=0A>>>>> Awesome! Are you a financial dec=
+ision maker at your company=3F and based out of the United States=3F=0A>>>>=
+>=0A>>>>>> On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" <operator@divvy-582=
+a46f44335.intercom-mail.com> wrote: =0A>>>>>>=0A>>>>>>> On Fri, Apr 10, 202=
+0 at 03:49 PM, "DivvyBot" <operator@divvy-582a46f44335.intercom-mail.com> w=
+rote: =0A>>>>>>>=0A>>>>>>> Give the team a way to reach you:=0A>>>>>>>=0A>>=
+>>>>>> On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" <operator@divvy-582a46f=
+44335.intercom-mail.com> wrote: =0A>>>>>>>>=0A>>>>>>>> Welcome! You'll get =
+a reply from the team.=0A>>>>>>>>=0A>>>>>>>>> On Fri, Apr 10, 2020 at 03:49=
+ PM, "Josh Klein" <josh@josh.is> wrote: =0A>>>>>>>>>=0A>>>>>>>>> No, I'm no=
+t a customer yet=0A>>>>>>>>>=0A>>>>>>>>>> On Fri, Apr 10, 2020 at 03:49 PM,=
+ "DivvyBot" <operator@divvy-582a46f44335.intercom-mail.com> wrote: =0A>>>>>=
+>>>>>=0A>>>>>>>>>> Are you a Divvy customer=3F=0A>>>>>>>>>>=0A>>>>>>>>>>> O=
+n Fri, Apr 10, 2020 at 03:49 PM, "Josh Klein" <josh@josh.is> wrote: =0A>>>>=
+>>>>>>>=0A>>>>>>>>>>> I'm trying to fill out the PPP worksheet, but haven't=
+ filed my 2019 taxes yet so don't know what my compensation taxes are.=0A>>=
+>>>>>>>>>
+--_----xtiSWVMo5y0Lryslipf02Q===_BD/2C-05430-940D09E5
+Content-Transfer-Encoding: 7bit
+Content-Type: text/html; charset="UTF-8"
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<meta name="viewport" content="width=device-width">
+<meta name="format-detection" content="telephone=no">
+<!-- Resets -->
+
+<style type="text/css" data-premailer="ignore">
+  #outlook a{
+    padding: 0;
+  }
+  body{
+    -webkit-text-size-adjust: none;
+    -ms-text-size-adjust: none;
+    font-weight: 400;
+  }
+  .ReadMsgBody{
+    width: 100%;
+  }
+  .ExternalClass{
+    width: 100%;
+  }
+  img {
+    border: 0;
+    max-width: 100%;
+    height: auto;
+    outline: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    text-decoration: none;
+    line-height: 100%;
+  }
+  #backgroundTable{
+    height: 100% !important;
+    margin: 0;
+    padding: 0;
+    width: 100% !important;
+  }
+</style>
+<!-- Main styles -->
+
+<style type="text/css">
+  /**
+   * Generic
+   */
+
+  .main {
+    font-family: Helvetica, Arial, sans-serif;
+    letter-spacing: 0;
+    width: 100%;
+  }
+
+  table {
+    border-spacing: 0;
+    border-collapse: separate;
+    table-layout: fixed;
+  }
+
+  td {
+    padding: 0;
+    font-family: Helvetica, Arial, sans-serif;
+  }
+
+  a {
+    border: none;
+    outline: none !important;
+  }
+
+
+  /**
+   * Content
+   */
+
+  .content-td {
+    color: #222;
+    line-height: 20px;
+  }
+
+  .content-td .article-card,
+  .content-td .intercom-interblocks-link-content-container {
+    max-width: 500px;
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    padding: 0;
+    margin-bottom: 15px;
+  }
+
+  .content-td .article-card .intercom-interblocks-link-content-container {
+    border: none;
+  }
+
+  .ratings,
+  .content-td .messenger-card {
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    border-radius: 5px;
+    border: 1px solid #dadfe3;
+  }
+
+  .content-td .messenger-card table {
+    border: none;
+  }
+
+  .events {
+    background-color: #F5F5F5;
+    border-collapse: separate;
+    border-spacing: 10px;
+    table-layout: fixed;
+    border-radius: 5px;
+    border: 1px solid #E5E5E5;
+    padding: 0px 15px 0px 15px;
+  }
+
+  .content-td .ratings td,
+  .content-td .messenger-card td {
+    border: 0;
+    padding: 0;
+  }
+
+  .content-td .messenger-card td {
+    text-align: center;
+  }
+
+  .content-td .messenger-card td p {
+    font-size: 14px;
+    color: #6e7a89;
+    text-align: center;
+  }
+
+  .content-td .ratings table {
+    margin-bottom: 0;
+  }
+
+  .content-td .ratings table img {
+    margin: 0;
+  }
+
+  .rating-link {
+    max-width: 27px;
+    min-height: 27px;
+  }
+
+  .content-td > :first-child {
+    margin-top: 0;
+    padding-top: 0;
+  }
+
+  .content-td h1 {
+    font-size: 1.3em;
+    font-weight: bold;
+    line-height: 25px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+  }
+
+  .content-td h1 + h2 {
+    margin-top: 0 !important;
+  }
+
+  .content-td h2 + h1 {
+    margin-top: 0 !important;
+  }
+
+  .content-td h2 {
+    font-size: 1.1em;
+    font-weight: bold;
+    margin: 20px 0 5px;
+  }
+
+  .content-td h3 ,
+  .content-td h4 ,
+  .content-td h5 {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+
+  .content-td p {
+    margin: 0 0 15px 0;
+  }
+
+  .content-td p img,
+  .content-td h1 img,
+  .content-td h2 img,
+  .content-td li img,
+  .content-td .intercom-h2b-button img {
+    margin: 0;
+    padding: 0;
+  }
+
+  .content-td a {
+    color: #1251ba;
+    text-decoration: underline;
+  }
+
+  .content-td .messenger-card .link {
+    margin-bottom: 25px;
+  }
+
+  .content-td strong {
+    color: #606060;
+  }
+
+  .content-td ol,
+  .content-td ul {
+    margin: 0 0 20px 40px;
+    padding: 0;
+    list-style: disc;
+  }
+
+  .content-td ol {
+    list-style: decimal;
+  }
+
+  .content-td ol li,
+  .content-td ul li {
+    margin: 5px 0;
+  }
+
+  .content-td blockquote {
+    padding: 10px 0;
+    margin: 10px 0;
+    font-style: italic;
+  }
+
+  .content-td blockquote a {
+    color: #8C8C8C;
+  }
+
+  .content-td img {
+    max-width: 100%;
+    margin: 15px 0 15px;
+  }
+
+  .content-td .intercom-container {
+    margin-bottom: 16px;
+  }
+
+  .content-td hr {
+    border: none;
+    border-top: 1px solid #DDD;
+    border-bottom: 0;
+    margin: 20px 0;
+  }
+
+  .content-td table th {
+    font-weight: bold;
+    background: #F6F6F6;
+  }
+
+  .content-td table td,
+  .content-td table th {
+    padding: 7px 10px;
+    border: 1px solid #DADADA;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  .content-td table {
+    margin-bottom: 20px;
+    border-collapse: collapse;
+    border-spacing: 0;
+  }
+
+  .content-td table.intercom-container.intercom-align-center {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .content-td table.intercom-container td {
+    border: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  /**
+   * Admin profile
+   */
+  .admin_profile table {
+    margin: 0;
+  }
+  .admin_profile table td {
+    padding: 0;
+  }
+  .admin_profile table,
+  .admin_profile table td,
+  .admin_profile table th {
+    border: none;
+  }
+  .admin_profile .avatar {
+    -ms-interpolation-mode: bicubic;
+    -webkit-background-clip: padding-box;
+    -webkit-border-radius: 20px;
+    background-clip: padding-box;
+    border-radius: 20px;
+    display: inline-block;
+    height: 40px;
+    max-width: 100%;
+    outline: none;
+    text-decoration: none;
+    width: 40px;
+  }
+  .admin_profile .icon_container {
+    display: inline-block;
+    vertical-align: middle;
+  }
+  .admin_profile .icon {
+    margin: 0;
+  }
+  .admin_profile .name {
+    color: #000;
+  }
+  .admin_profile .signature_border {
+    margin: 0;
+    line-height: 0;
+    margin-bottom: 3px;
+  }
+
+  /**
+   * Footer
+   */
+   .smiley {
+     padding: 4px;
+   }
+   .feedback_item:first-child .smiley {
+     padding-left: 0;
+   }
+  .divider {
+    border: none;
+    height: 1px;
+    color: #f0f0f0;
+    background-color: #f0f0f0;
+    margin: 0;
+  }
+  .feedback-text {
+    margin-bottom: 0.3em;
+    margin-top: 0;
+  }
+  .deemphasized_text {
+    color: #8c8c8c;
+  }
+  .sent_to_text {
+    font-weight: bold;
+  }
+  .dark_text {
+    color: #222;
+  }
+  .light_text {
+    color: #999;
+  }
+  .align_middle {
+    vertical-align: middle !important;
+  }
+  .history {
+    color: #500050;
+  }
+  .history_content {
+    border-left: 1px #ccc solid;
+  }
+  .history .history_content {
+    font-style: normal;
+    padding-top: 1px;
+  }
+  .history .history_content > *:last-child {
+    margin-bottom: 0;
+  }
+  .powered_by_link {
+    color: #8c8c8c;
+    font-weight: bold;
+    text-decoration: none;
+  }
+</style>
+
+<!-- Outlook.com -->
+<style type="text/css" data-premailer="ignore">
+  .content-td blockquote + * {
+    margin-top: 10px !important;
+  }
+
+  .ExternalClass .content-td h1 {
+    padding: 15px 0 5px 0 !important;
+  }
+
+  .ExternalClass .content-td h2 {
+    padding: 0 0 5px 0 !important;
+  }
+
+  .ExternalClass .content-td p {
+    padding: 10px 0 !important;
+  }
+
+  .ExternalClass .content-td hr + * {
+    padding-top: 20px !important;
+  }
+
+  .ExternalClass .content-td .intercom-container {
+    padding: 5px 0 !important;
+  }
+
+  .ExternalClass .content-td ol ,
+  .ExternalClass .content-td ul {
+    padding: 0 0 20px 40px !important;
+    margin: 0 !important;
+  }
+
+  img {
+    max-width: 600px !important;
+  }
+  @media (max-width: 600px) {
+    img {
+      max-width: 100% !important;
+    }
+  }
+</style>
+
+
+<!-- Outlook fix -->
+
+<!--[if gte mso 9]>
+    <style type="text/css">
+      table {
+        border-collapse: collapse !important;
+      }
+      td {
+        border-collapse: collapse !important;
+      }
+    </style>
+<![endif]-->
+
+</head>
+
+<body id="admin_reply" style="background-color: white" bgcolor="white">
+<div style="color:transparent;visibility:hidden;opacity:0;font-size:0px;border:0;max-height:1px;width:1px;margin:0px;padding:0px;border-width:0px!important;display:none!important;line-height:0px!important;"><img border="0" width="1" height="1" src="https://divvy-582a46f44335.intercom-mail.com/q/ZuxUIl8mnyW8G7ZMXOeH7g~~/AAAAAQA~/RgRgc1VJPVcIaW50ZXJjb21CCgAjSdCQXjYV58JSDGpvc2hAam9zaC5pc1gEAACRMg~~"/></div>
+
+
+  <table cellspacing="0" border="0" cellpadding="0" align="center" bgcolor="transparent" class="main" style="border-collapse: separate; border-spacing: 0; font-family: Helvetica, Arial, sans-serif; letter-spacing: 0; table-layout: fixed; width: 100%">
+      <tr>
+  <td class="content-td" style="color: #222; font-family: Helvetica, Arial, sans-serif; line-height: 20px; padding: 0">
+    
+      <div style="margin-top: 0; padding-top: 0"><p style="margin: 0 0 15px">Hey Josh. You can use your 2018 taxes. Do you have payroll documentation?</p></div>
+  </td>
+</tr>
+    <tr>
+      <td style="font-family: Helvetica, Arial, sans-serif; padding: 0">
+        <div class="admin_profile">
+  <table cellspacing="0" border="0" cellpadding="0" bgcolor="transparent" style="border: none; border-collapse: separate; border-spacing: 0; margin: 0; table-layout: fixed">
+    <tr height="20"></tr>
+    <tr>
+      <td style="border: none; font-family: Helvetica, Arial, sans-serif; padding: 0">
+        <p class="signature_border light_text" style="color: #999; line-height: 0; margin: 0 0 3px">--</p>
+      </td>
+    </tr>
+    <tr height="15"></tr>
+    <tr>
+        <td class="align_middle" valign="middle" width="50" align="left" style="border: none; font-family: Helvetica, Arial, sans-serif; padding: 0; vertical-align: middle !important">
+          <img class="avatar" width="32" height="32" alt="Nick" src="https://divvy-582a46f44335.intercom-mail.com/avatars/2310066/square_128/me-1534372812.jpg?1534372812" style="-ms-interpolation-mode: bicubic; -webkit-background-clip: padding-box; -webkit-border-radius: 20px; background-clip: padding-box; border-radius: 20px; display: inline-block; height: 40px; max-width: 100%; outline: none; text-decoration: none; width: 40px">
+        </td>
+      <td class="align_middle" valign="middle" align="left" style="border: none; font-family: Helvetica, Arial, sans-serif; padding: 0; vertical-align: middle !important">
+        <strong class="name" style="color: #000">Nick</strong> <span class="dark_text" style="color: #222">from Divvy</span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+      </td>
+    </tr>
+  <tr height="35"></tr>
+
+<tr>
+  <td class="content-td" style="color: #222; font-family: Helvetica, Arial, sans-serif; line-height: 20px; padding: 0">
+      <div class="history" style="color: #500050; margin-top: 0; padding-top: 0">
+          <div class="history_reply">
+            On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" &lt;operator@divvy-582a46f44335.intercom-mail.com&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div><p style="margin: 0 0 15px">A few more details will help get you to the right person:</p></div>
+                <div></div>
+                <div><p style="margin: 0 0 15px">We are experiencing high volume of SBA PPP loan inquiries and requests and are doing our best to get to every individual in a timely manner. We will get back to you in the order the message arrived in our inbox. Hold tight, but we'll get back to you as soon as we can (usually within a couple hours).</p></div>
+          <div class="history_reply" style="margin-bottom: 0">
+            On Fri, Apr 10, 2020 at 03:49 PM, "Josh Klein" &lt;josh@josh.is&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div><p style="margin: 0 0 15px">Yes</p></div>
+          <div class="history_reply" style="margin-bottom: 0">
+            On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" &lt;operator@divvy-582a46f44335.intercom-mail.com&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div><p style="margin: 0 0 15px">Welcome! You'll get a reply from the team.</p></div>
+                <div><p style="margin: 0 0 15px">Give the team a way to reach you:</p></div>
+                <div></div>
+                <div><p style="margin: 0 0 15px">Awesome! Are you a financial decision maker at your company? and based out of the United States?</p></div>
+          <div class="history_reply" style="margin-bottom: 0">
+            On Fri, Apr 10, 2020 at 03:49 PM, "Josh Klein" &lt;josh@josh.is&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div><p style="margin: 0 0 15px">No, I'm not a customer yet</p></div>
+          <div class="history_reply" style="margin-bottom: 0">
+            On Fri, Apr 10, 2020 at 03:49 PM, "DivvyBot" &lt;operator@divvy-582a46f44335.intercom-mail.com&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div><p style="margin: 0 0 15px">Are you a Divvy customer?</p></div>
+          <div class="history_reply" style="margin-bottom: 0">
+            On Fri, Apr 10, 2020 at 03:49 PM, "Josh Klein" &lt;josh@josh.is&gt; wrote: <br>
+            <blockquote class="history_content" style="border-left-color: #ccc; border-left-style: solid; border-left-width: 1px; font-style: normal; margin: 0 0 0 .8ex; padding: 1px 0 10px 1ex">
+                <div style="margin-bottom: 0"><p style="margin: 0 0 15px">I'm trying to fill out the PPP worksheet, but haven't filed my 2019 taxes yet so don't know what my compensation taxes are. </p></div>
+          </blockquote>
+          </div>
+          </blockquote>
+          </div>
+          </blockquote>
+          </div>
+          </blockquote>
+          </div>
+          </blockquote>
+          </div>
+          </blockquote>
+          </div>
+          
+          </div>
+      
+  </td>
+</tr>
+  </table>
+<img src="https://divvy-582a46f44335.intercom-mail.com/via/o?h=1a59b2605a10ca4edc57fe08b9205e9224723fa5-gh17um10_26594755817_5112276110" width="1" height="1" style="display: block;" alt="intercom">
+
+<img border="0" width="1" height="1" alt="" src="https://divvy-582a46f44335.intercom-mail.com/q/OcaO3wJify3aWSGM572yTA~~/AAAAAQA~/RgRgc1VJPlcIaW50ZXJjb21CCgAjSdCQXjYV58JSDGpvc2hAam9zaC5pc1gEAACRMg~~">
+</body>
+</html>
+--_----xtiSWVMo5y0Lryslipf02Q===_BD/2C-05430-940D09E5--
+

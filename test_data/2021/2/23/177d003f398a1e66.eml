@@ -1,0 +1,420 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9d41:0:0:0:0:0 with SMTP id y1csp2913571ljj;
+        Tue, 23 Feb 2021 09:50:55 -0800 (PST)
+X-Received: by 2002:a1f:1f96:: with SMTP id f144mr17567488vkf.16.1614102655601;
+        Tue, 23 Feb 2021 09:50:55 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1614102655; cv=none;
+        d=google.com; s=arc-20160816;
+        b=vTAGHvHF1xWJl6q5Wz35fe2HFS09bf26JgJsUvYwtG3+ww2T2qpKUMsjPIzEGI0lNQ
+         lGU56tHE6hyB8uqQO3igMr/GNR8X1AIbGw3uHyqnuM8Nad0gasGMQS8jocYxG4r5kJcx
+         nTR3BukAOtBueHYDrShMP9QqV4IkpdW4v0DN+kzPCntPU91U7Tx6msY/bqGPrn/pYWiy
+         XNFSeFw3IRmgdSBmAQYSMQTAGLvqOwjeqcrRSaWTB4JadAjlNEEHh89Vsqi80/sKU9yZ
+         QS2Rkt14/xy/kb/DiVxQhe1xtwk/lMdLYknPuOtT6vMIP4BneeuKgTiwve38wiaSZK5d
+         3pPA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=subject:to:message-id:date:from:references:in-reply-to:mime-version
+         :dkim-signature;
+        bh=DPQmQ6msZHqNhCN9epnf00zVsJD+nM2CDsxiYeZqYbo=;
+        b=vatwFfpwuQLGsVu8XbmFa5H+gPJiG1eFro7bypEgzWJ0tPFWSs2VogAjYpwPP6bmBh
+         ntK6jPLVJdgM6AuN8Rj3fNakRrgPc/OGzoNl8Jr9EDx4ZzC8pYuK5/G41X9MnXQvg1Wa
+         6z576ndD8m0uLtMk7w2eQFbmXSr+XSMDr8Gvh70d+vSOHT3w3CDhKsZYIRh6Rvg6+bQX
+         c14q7RRmWfF3nf+WYItQDIQfXVN/SwkEbjmS8K01TX34P6Y/A/MD4dW0cNHU3Ewac7KI
+         2kwVghHHJ1OUHJ7uh+XaKraIsHQqIPoB7Fn1+ccn1Wvc03QTLB3n42r/IttW1gja7gdt
+         RoKQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@grid.is header.s=google header.b=PoeuMEpU;
+       spf=pass (google.com: domain of hg@grid.is designates 209.85.220.41 as permitted sender) smtp.mailfrom=hg@grid.is;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=grid.is
+Return-Path: <hg@grid.is>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id a15sor4937655vsq.91.2021.02.23.09.50.55
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 23 Feb 2021 09:50:55 -0800 (PST)
+Received-SPF: pass (google.com: domain of hg@grid.is designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@grid.is header.s=google header.b=PoeuMEpU;
+       spf=pass (google.com: domain of hg@grid.is designates 209.85.220.41 as permitted sender) smtp.mailfrom=hg@grid.is;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=grid.is
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=grid.is; s=google;
+        h=mime-version:in-reply-to:references:from:date:message-id:to:subject;
+        bh=DPQmQ6msZHqNhCN9epnf00zVsJD+nM2CDsxiYeZqYbo=;
+        b=PoeuMEpU1ncclSfj3DA2FXwCB3pdjONZnFsWJ5rjJSpvnWYoLij4fG8B8TBRyhuZFy
+         CvSjQc93YnWbMQ1Hwrx/X5gu+eTdHI/sWH1KKcm8XDccczHvl9bjETAhrXJ+Ujr1WLFb
+         o2cZk506QHJ6kchirNRM8q9h1/w32RBVcn5tKplZhTcLcWX1ooPEK174T6+mIsY6ykNR
+         eZM1uqPaW4cQCNgXuD77q21xZOY5H4lEv6JIysMB50/GYRDXDfONy/50T4VhzpBhepIk
+         8z9t74IUpxkDNEtu94XDltpEuOb8ZkIbQWs4pOJSLtU9LAoPvkuxakzEEgW9EBoupeZu
+         k8yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:in-reply-to:references:from:date
+         :message-id:to:subject;
+        bh=DPQmQ6msZHqNhCN9epnf00zVsJD+nM2CDsxiYeZqYbo=;
+        b=lw0j1WVVQMUroZlSc0vFmUfVaxQrdVyiuKM3XCIg7CeI+gKtpcdUw9Zzd4a9gzaC+c
+         R4M2/slk8+4mmJE0NRgE+3rdwLkfNC6keIQ6Ibq+AB6ad1DQeK5J/4Opjo1Kkm3Lcvgz
+         iVvuFrmrUzu2wEetIfMeltoKRU51wOulrRzSwjg2u8DCiiS8JWwBOh+ga2WMJ0+XYHcY
+         ZVJle3XFSBUz4QZ5YcUSJJX8hsxzezqqICmUK2uTlI+q1gYUF7XnhydRIF2qk1xzNxHW
+         lFzeyRleQVS7SAL448rx6tNoPgUV4rqioNYbGNr+f3wOEljXWLLb8CgKjPZe4YBXCUR8
+         r25Q==
+X-Gm-Message-State: AOAM531jhARxpt9WZxPCJwt0Q+uoSJY19FEx6vkHjKs14gHpZ7iE2dVG
+	NzUsTEShSvSW3l4r1VZY9sp8hs25a7QABg==
+X-Google-Smtp-Source: ABdhPJzKbMVb93kc4MannAgbVXFVtple4LQSFPfXdEAxwgnsw7TkFeiOkwB8xfQrOEZdtR1MKL/yeg==
+X-Received: by 2002:a67:4341:: with SMTP id q62mr16125381vsa.17.1614102654349;
+        Tue, 23 Feb 2021 09:50:54 -0800 (PST)
+Return-Path: <hg@grid.is>
+Received: from localhost (0.92.231.35.bc.googleusercontent.com. [35.231.92.0])
+        by smtp.gmail.com with ESMTPSA id r129sm2543777vsr.21.2021.02.23.09.50.53
+        for <josh@josh.is>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 23 Feb 2021 09:50:53 -0800 (PST)
+Mime-Version: 1.0
+In-Reply-To: <CACNgykP+5GOTczEPq9fjw_eUZKn27qkB7FcVx3jNuuV4Z4dDUQ@mail.gmail.com>
+References: <CACNgykM8dOUp4V3w86RQRTc=OC5NKtzW83wgHsZHm5i3tFO+jQ@mail.gmail.com> <CACNgykNycJzhybxeTCtWZE5abz6rfp4wXkBq7AUrbCu2RFHzEw@mail.gmail.com>
+ <CACNgykMNVxYkR1dmCD1HbtTY70yYLTKkfjArWjoNSQNGUQyOLA@mail.gmail.com>
+ <ki5v1151.8df17e0b-63f9-4917-9f24-d1ccc778495f@we.are.superhuman.com>
+ <CACNgykP+5GOTczEPq9fjw_eUZKn27qkB7FcVx3jNuuV4Z4dDUQ@mail.gmail.com>
+From: "Hjalmar Gislason" <hg@grid.is>
+Date: Tue, 23 Feb 2021 17:50:51 +0000
+Message-ID: <kliawy52.121ff0f6-a69f-4497-a3dd-f936d8675860@we.are.superhuman.com>
+To: "Josh Klein" <josh@josh.is>
+X-Mailer: Superhuman Desktop (2021-02-19T23:05:52Z)
+X-Superhuman-ID: klib15hq.90b758bb-4462-4864-bebc-e38131e2cf0f
+X-Superhuman-Draft-ID: draft00346d1608ac7f45
+Subject: Re: I can help with that
+Content-Type: multipart/alternative;
+ boundary=5e8a3ba110e4c9d50693235632e00a229edf36f613f118a715e19a925c34
+
+--5e8a3ba110e4c9d50693235632e00a229edf36f613f118a715e19a925c34
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+
+Hi Josh,
+
+Sorry for the slow turnaround, as I just came back from a mini-break. Happy=
+ to discuss. In short I would wholeheartedly recommend, but I can add some =
+flavor.
+
+Next week is pretty open for me. Can also do Friday afternoon (GMT). What's=
+ convenient for you?
+
+*Hjalmar Gislason*
+
+Founder & CEO
+
+*GRID - the new face of spreadsheets*
+
+hg@grid.is | grid.is ( https://www.grid.is ) | @GRID_hq ( https://twitter.c=
+om/GRID_hq )
+
+On Mon, Feb 22, 2021 at 1:47 PM, Josh Klein < josh@josh.is > wrote:
+
+>=20
+> Hey, we're talking to Slack about funding for our startup ( Indigometrics=
+.
+> com ( http://indigometrics.com/ ) ). Do you have a second to advise
+> for/against it? Would love to talk to you about it briefly if you're up
+> for it - or if not just to know=C2=A0if you'd recommend!
+>=20
+> All best,
+> Josh
+>=20
+> =E1=90=A7
+>=20
+> On Tue, Dec 1, 2020 at 10:54 AM Hjalmar Gislason < hg@ grid. is (
+> hg@grid.is ) > wrote:
+>=20
+>=20
+>> Hi Josh,
+>>=20
+>>=20
+>>=20
+>> Hope you are well. GRID has grown and matured quite a bit since we last
+>> spoke. We're focusing our content strategy pretty narrowly on the
+>> spreadsheet/data/analytics space and we're well served on that front.
+>>=20
+>>=20
+>>=20
+>> However, if you happen upon some great opportunities for placements on
+>> anything from "the future of data" to "leadership principles", I'm all
+>> ears and would be happy to go with a similar arrangement as the one we h=
+ad
+>> back in early 2019.
+>>=20
+>> *Hjalmar Gislason*
+>>=20
+>>=20
+>>=20
+>> Founder & CEO
+>>=20
+>> *GRID - the new face of spreadsheets*
+>>=20
+>>=20
+>> hg@ grid. is ( hg@grid.is ) | grid. is ( https://www.grid.is ) | @ GRID_=
+hq
+>> ( https://twitter.com/GRID_hq )
+>>=20
+>>=20
+>>=20
+>> On Mon, Nov 30, 2020 at 7:58 PM, Josh Klein < josh@ josh. is ( josh@josh=
+.is
+>> ) > wrote:
+>>=20
+>>> Making sure this didn't fall through the cracks - since the pandemic al=
+l
+>>> the time we've saved on commuting seems to have been immediately absorb=
+ed
+>>> by zoom sessions. Let me know if you're game for one more!
+>>>=20
+>>> All best,
+>>> Josh
+>>>=20
+>>>=20
+>>> On Mon, Nov 23, 2020 at 7:52 PM "Josh Klein" < josh@ josh. is (
+>>> josh@josh.is ) > wrote:
+>>> Let me know if you have time for a brief call in the next couple weeks;
+>>> I'm curious to hear what you're working on and to see if I can help!
+>>>=20
+>>> All best,
+>>> Josh
+>>>=20
+>>> ###
+>>>=20
+>>> P.S. I don=E2=80=99t want to pester you if this isn=E2=80=99t of intere=
+st - let me know
+>>> and I won=E2=80=99t follow up!
+>>>=20
+>>> On Tue, Nov 17, 2020 at 4:19 PM "Josh Klein" < josh@ josh. is (
+>>> josh@josh.is ) > wrote:
+>>>=20
+>>>=20
+>>> Since the pandemic began everyone has been building their networks in a
+>>> newly virtualized world, but most of it has turned out to be spam. You =
+and
+>>> I have connected in the past; I wanted to invite you to reconnect to se=
+e
+>>> if we could help each other in the future.
+>>>=20
+>>>=20
+>>>=20
+>>> Below are a few of my current projects; let me know if any strike your
+>>> interest, or just hit me with an update on what you're working on. Or
+>>> let's set up a time to chat!
+>>>=20
+>>>=20
+>>>=20
+>>> All best wishes,
+>>> Josh
+>>>=20
+>>>=20
+>>>=20
+>>>=20
+>>> ###
+>>>=20
+>>>=20
+>>>=20
+>>> IndigoMetrics (
+>>> http://tracking.josh.is/prod/59af5d03-b674-4868-b100-d0680aa357b3/3163a=
+47b-53e1-4afb-b4e5-f7d150736677
+>>> ) ; an AI platform for autonomously managing behavior and beliefs in
+>>> employees. Super useful if you've got staff that are now remote!
+>>>=20
+>>>=20
+>>>=20
+>>> Continuous Glucose Monitor Testing (
+>>> http://tracking.josh.is/prod/59af5d03-b674-4868-b100-d0680aa357b3/bae0b=
+dfa-f659-4491-ab1d-1da9f8955be0
+>>> ) ; a project to understand how to use physically embedded sensors to
+>>> reduce the health impacts of obesity, heart disease, and diabetes (and
+>>> hence Covid!)
+>>>=20
+>>> Professional Services (
+>>> http://tracking.josh.is/prod/59af5d03-b674-4868-b100-d0680aa357b3/52353=
+506-a5f1-4a6f-9591-92d47adff5cc
+>>> ) : as ever, I continue to work with senior leaders and teams on techno=
+logy
+>>> transformation and new innovation / product development.
+>>>=20
+>>=20
+>>=20
+>=20
+>
+--5e8a3ba110e4c9d50693235632e00a229edf36f613f118a715e19a925c34
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/html; charset=UTF-8
+
+<html><head></head><body><div><div><div><div class=3D"">Hi Josh,<br/></div>=
+<div class=3D""><br/></div><div class=3D"">Sorry for the slow turnaround, a=
+s I just came back from a mini-break. Happy to discuss. In short I would wh=
+oleheartedly recommend, but I can add some flavor.=C2=A0<br/></div><div cla=
+ss=3D""><br/></div><div class=3D"">Next week is pretty open for me. Can als=
+o do <span class=3D"sh-date">Friday</span>=C2=A0afternoon (GMT). What&#39;s=
+ convenient for you?</div><div class=3D""><br/></div></div><div><div style=
+=3D"display: none; border: 0px; width: 0px; height: 0px; overflow: hidden; =
+visibility: hidden;"><img src=3D"https://r.superhuman.com/fTObvmpWAIyFJMOta=
+FKHkcLOSDlRRQbK9thrhaJX5shVUPVQQJo1zkSSloxk_8PGAOWtmcoOr7qWpm-teyr79QHVgcLh=
+UTqMk4aDamhmxlvameF_1jFZKISd9dhJ0e5NXWq9wDqkbX4yEu2hFq2kDROAMxzxRcenhVu6zWS=
+FKpU.gif" alt=3D" " width=3D"1" height=3D"0" style=3D"display: none; border=
+: 0px; width: 0px; height: 0px; overflow: hidden; visibility: hidden;"/><!-=
+-                                                                          =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                                           =
+                                                   --></div><br/><div class=
+=3D"gmail_signature"><div><div dir=3D"ltr"><div><div dir=3D"ltr"><div><div =
+dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div dir=3D"ltr"><div style=
+=3D"font-size:small"><b style=3D"font-family:Helvetica;">Hjalmar Gislason</=
+b><br/></div><div style=3D"font-size:small"><div style=3D"font-family:Helve=
+tica;"><br/></div><div style=3D"font-family:Helvetica;"><span style=3D"colo=
+r:rgb(34,34,34);font-family:Arial,Helvetica,sans-serif;font-size:small">Fou=
+nder &amp; CEO</span><br/></div><div style=3D"font-family:Helvetica;"><b>GR=
+ID - the new face of spreadsheets</b></div><div style=3D"font-family:Helvet=
+ica;"><br/></div><div style=3D"font-family:Helvetica;"><a rel=3D"noopener n=
+oreferrer" href=3D"mailto:hg@grid.is" target=3D"_blank">hg@grid.is</a>=C2=
+=A0|=C2=A0<a rel=3D"noopener noreferrer" href=3D"https://www.grid.is" targe=
+t=3D"_blank">grid.is</a>=C2=A0| <a href=3D"https://twitter.com/GRID_hq" tar=
+get=3D"_blank" rel=3D"noopener noreferrer">@GRID_hq</a></div></div></div></=
+div></div></div></div></div></div></div></div><br/></div></div><br/><div><d=
+iv class=3D"gmail_quote">On Mon, Feb 22, 2021 at 1:47 PM, Josh Klein <span =
+dir=3D"ltr">&lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh=
+.is</a>&gt;</span> wrote:<br/><blockquote class=3D"gmail_quote" style=3D"ma=
+rgin:0 0 0 .8ex;border-left:1px #ccc solid;padding-left:1ex"><div class=3D"=
+gmail_extra"><div class=3D"gmail_quote sh-color-black sh-color" style=3D"nu=
+ll" id=3D"null"><div dir=3D"ltr" class=3D"sh-color-black sh-color">Hey, we&=
+#39;re talking to Slack about funding for our startup (<a target=3D"_blank"=
+ rel=3D"noopener noreferrer" href=3D"http://indigometrics.com/">Indigometri=
+cs.<wbr/>com</a>). Do you have a second to advise for/against it? Would lov=
+e to talk to you about it briefly if you&#39;re up for it - or if not just =
+to know=C2=A0if you&#39;d recommend!<br/><br/>All best,<br/>Josh<br/></div>=
+<div style=3D"max-height:1px" class=3D"sh-color-black sh-color"><font size=
+=3D"1" color=3D"#ffffff">=E1=90=A7</font></div><br/><div class=3D"gmail_quo=
+te sh-color-black sh-color"><div class=3D"gmail_attr sh-color-black sh-colo=
+r" dir=3D"ltr">On Tue, Dec 1, 2020 at 10:54 AM Hjalmar Gislason &lt;<a href=
+=3D"mailto:hg@grid.is" target=3D"_blank" rel=3D"noopener noreferrer">hg@<wb=
+r/>grid.<wbr/>is</a>&gt; wrote:<br/></div><blockquote style=3D"margin:0px 0=
+px 0px 0.8ex;border-left:1px solid rgb(204,204,204);padding-left:1ex" class=
+=3D"gmail_quote sh-color-black sh-color"><div class=3D"sh-color-black sh-co=
+lor"><div class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh=
+-color"><div class=3D"sh-color-black sh-color"><div class=3D"sh-color-black=
+ sh-color">Hi Josh,<br/></div><div class=3D"sh-color-black sh-color"><br/><=
+/div><div class=3D"sh-color-black sh-color">Hope you are well. GRID has gro=
+wn and matured quite a bit since we last spoke. We&#39;re focusing our cont=
+ent strategy pretty narrowly on the spreadsheet/data/analytics space and we=
+&#39;re well served on that front.<br/></div><div class=3D"sh-color-black s=
+h-color"><br/></div><div class=3D"sh-color-black sh-color">However, if you =
+happen upon some great opportunities for placements on anything from &#34;t=
+he future of data&#34; to &#34;leadership principles&#34;, I&#39;m all ears=
+ and would be happy to go with a similar arrangement as the one we had back=
+ in early 2019.</div></div><div class=3D"sh-color-black sh-color"><br/><div=
+ class=3D"sh-color-black sh-color"><div class=3D"sh-color-black sh-color"><=
+div dir=3D"ltr" class=3D"sh-color-black sh-color"><div class=3D"sh-color-bl=
+ack sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div class=
+=3D"sh-color-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh-co=
+lor"><div dir=3D"ltr" class=3D"sh-color-black sh-color"><div dir=3D"ltr" cl=
+ass=3D"sh-color-black sh-color"><div dir=3D"ltr" class=3D"sh-color-black sh=
+-color"><div style=3D"font-size:small" class=3D"sh-color-black sh-color"><b=
+ style=3D"font-family:Helvetica" class=3D"sh-color-black sh-color">Hjalmar =
+Gislason</b><br/></div><div style=3D"font-size:small" class=3D"sh-color-bla=
+ck sh-color"><div style=3D"font-family:Helvetica" class=3D"sh-color-black s=
+h-color"><br/></div><div style=3D"font-family:Helvetica" class=3D"sh-color-=
+black sh-color"><span style=3D"color:rgb(34,34,34);font-family:Arial,Helvet=
+ica,sans-serif;font-size:small" class=3D"sh-color-black sh-color">Founder &=
+amp; CEO</span><br/></div><div style=3D"font-family:Helvetica" class=3D"sh-=
+color-black sh-color"><b class=3D"sh-color-black sh-color">GRID - the new f=
+ace of spreadsheets</b></div><div style=3D"font-family:Helvetica" class=3D"=
+sh-color-black sh-color"><br/></div><div style=3D"font-family:Helvetica" cl=
+ass=3D"sh-color-black sh-color"><a href=3D"mailto:hg@grid.is" rel=3D"noopen=
+er noreferrer" target=3D"_blank">hg@<wbr/>grid.<wbr/>is</a>=C2=A0|=C2=A0<a =
+href=3D"https://www.grid.is" rel=3D"noopener noreferrer" target=3D"_blank">=
+grid.<wbr/>is</a>=C2=A0| <a rel=3D"noopener noreferrer" href=3D"https://twi=
+tter.com/GRID_hq" target=3D"_blank">@<wbr/>GRID_hq</a></div></div></div></d=
+iv></div></div></div></div></div></div></div><br/></div></div><br/><div cla=
+ss=3D"sh-color-black sh-color"><div class=3D"gmail_quote sh-color-black sh-=
+color">On Mon, Nov 30, 2020 at 7:58 PM, Josh Klein <span dir=3D"ltr" class=
+=3D"sh-color-black sh-color">&lt;<a href=3D"mailto:josh@josh.is" target=3D"=
+_blank" rel=3D"noopener noreferrer">josh@<wbr/>josh.<wbr/>is</a>&gt;</span>=
+ wrote:<br/><blockquote style=3D"margin:0px 0px 0px 0.8ex;border-left:1px s=
+olid rgb(204,204,204);padding-left:1ex" class=3D"gmail_quote sh-color-black=
+ sh-color"><div class=3D"gmail_extra sh-color-black sh-color"><div id=3D"gm=
+ail-m_3049872689811067670null" class=3D"gmail_quote sh-color-black sh-color=
+">
+      Making sure this didn&#39;t fall through the cracks - since the pande=
+mic all the time we&#39;ve saved on commuting seems to have been immediatel=
+y absorbed by zoom sessions. Let me know if you&#39;re game for one more!<b=
+r/><br/>All best,<br/>Josh<div class=3D"sh-color-black sh-color"><br/><br/>=
+On Mon, Nov 23, 2020 at 7:52 PM &#34;Josh Klein&#34; &lt;<a rel=3D"noopener=
+ noreferrer" href=3D"mailto:josh@josh.is" target=3D"_blank">josh@<wbr/>josh=
+.<wbr/>is</a>&gt; wrote:<br/>Let me know if you have time for a brief call =
+in the next couple weeks; I&#39;m curious to hear what you&#39;re working o=
+n and to see if I can help!<br/><br/>All best,<br/>Josh<br/><br/>###<br/><b=
+r/>P.S. I don=E2=80=99t want to pester you if this isn=E2=80=99t of interes=
+t - let me know and I won=E2=80=99t follow up!<br/><br/>On Tue, Nov 17, 202=
+0 at 4:19 PM &#34;Josh Klein&#34; &lt;<a rel=3D"noopener noreferrer" href=
+=3D"mailto:josh@josh.is" target=3D"_blank">josh@<wbr/>josh.<wbr/>is</a>&gt;=
+ wrote:<br/><p class=3D"sh-color-black sh-color">Since the pandemic began e=
+veryone has been building their networks in a newly virtualized world, but =
+most of it has turned out to be spam. You and I have connected in the past;=
+ I wanted to invite you to reconnect to see if we could help each other in =
+the future.</p>
+<p class=3D"sh-color-black sh-color">Below are a few of my current projects=
+; let me know if any strike your interest, or just hit me with an update on=
+ what you&#39;re working on. Or let&#39;s set up a time to chat!</p>
+<p class=3D"sh-color-black sh-color">All best wishes,<br/>Josh</p>
+<p class=3D"sh-color-black sh-color"><br/>###</p>
+<p class=3D"sh-color-black sh-color"><a rel=3D"noopener noreferrer" href=3D=
+"http://tracking.josh.is/prod/59af5d03-b674-4868-b100-d0680aa357b3/3163a47b=
+-53e1-4afb-b4e5-f7d150736677" target=3D"_blank">IndigoMetrics</a>; an AI pl=
+atform for autonomously managing behavior and beliefs in employees. Super u=
+seful if you&#39;ve got staff that are now remote!</p>
+<p class=3D"sh-color-black sh-color"><a rel=3D"noopener noreferrer" href=3D=
+"http://tracking.josh.is/prod/59af5d03-b674-4868-b100-d0680aa357b3/bae0bdfa=
+-f659-4491-ab1d-1da9f8955be0" target=3D"_blank">Continuous Glucose Monitor =
+Testing</a>; a project to understand how to use physically embedded sensors=
+ to reduce the health impacts of obesity, heart disease, and diabetes (and =
+hence Covid!)</p>
+<a rel=3D"noopener noreferrer" href=3D"http://tracking.josh.is/prod/59af5d0=
+3-b674-4868-b100-d0680aa357b3/52353506-a5f1-4a6f-9591-92d47adff5cc" target=
+=3D"_blank">Professional Services</a>: as ever, I continue to work with sen=
+ior leaders and teams on technology transformation and new innovation / pro=
+duct development.</div></div></div></blockquote></div></div></div></div></d=
+iv></blockquote></div></div></div></blockquote></div></div><br/></div></div=
+></body></html>
+--5e8a3ba110e4c9d50693235632e00a229edf36f613f118a715e19a925c34--

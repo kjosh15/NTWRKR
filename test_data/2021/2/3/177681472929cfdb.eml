@@ -1,0 +1,759 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:8602:0:0:0:0:0 with SMTP id a2csp307479lji;
+        Wed, 3 Feb 2021 05:28:26 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJySo4deAmV7VWt0uUh99VZhffwf9o+uvC3jtppU65AYT+qdvnXwRmXnFhd4U0say4AfpyKz
+X-Received: by 2002:ac8:1c6a:: with SMTP id j39mr576747qtk.326.1612358906560;
+        Wed, 03 Feb 2021 05:28:26 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1612358906; cv=none;
+        d=google.com; s=arc-20160816;
+        b=FSpkzB6JmRlq9lRoTtFlkb5VCa7Zrqd9p/UrQui8btyvZlWGhPBCNIPAzbxuBebSHE
+         dGDaN6OZWi9iQor+VIutRM4+S/a2P6AwWa2VocHAeDtdN88v3M4PuvmzjWg36pDLvxA6
+         NAufgkM3PYL0BSHF+IPR+BhMdE466rv8WeadvORkItB/k3Yo3PlNcRZme+cB45gRGxFj
+         ywZ5PvZf0ne32p5Xj9b//8Sj8DHN8gY4aLvIYjjNLzUT/2OGAqirKkb+aifntZKGhgNw
+         LuFc5V9J7PZY3xaYc+dulRYL1JSqGVHntLlDaC/VlSGFWSuMA0+sVQaz4+Dduw+mCa0v
+         kMTg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:bounces-to:mime-version:subject:message-id:to:from
+         :dkim-signature:dkim-signature;
+        bh=MlciXLwvMeU9V3RPXWZ0anhbaXbKywiU/hrYe02BqSA=;
+        b=sN+nkk8yuN+GqkMVIlrKlkoreP/CEkFl4xt+rMeU5XxMB3Gk6QcFSnXFuBunuZ5pJT
+         It5f8PFDvgM5o4tqKupwJWqOp2axS6/7biDuaOMBBH8LTIqnrbgL2y5HBCIA3kF43AaB
+         7cA6Tr/pZ22mEpGoSYw9V3VqgMmsASHxqV3ZL7fRhpeQP5QC0BuZ9APcHmZflTk/nHI7
+         4WQkhgV+Bcdq1/qzw8jbJSnjyPDle3OghGuwfSvNiB1A2jS0FHQ9VRQMyuByD/6Tw8OM
+         tmu37TLH+mYlmAZUapD2DkecrluKzlSjJrNEG/U+ahcKtbaaCtljwAdER5N9y/c+/mHe
+         8Bcw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=yg4mwqurec7fkhzutopddd3ytuaqrvuz header.b=J90cREPY;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b="SyCel/jw";
+       spf=pass (google.com: domain of 2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) smtp.mailfrom=2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+Return-Path: <2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com>
+Received: from a13-57.smtp-out.amazonses.com (a13-57.smtp-out.amazonses.com. [54.240.13.57])
+        by mx.google.com with ESMTPS id w10si1053802qvj.54.2021.02.03.05.28.26
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Wed, 03 Feb 2021 05:28:26 -0800 (PST)
+Received-SPF: pass (google.com: domain of 2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) client-ip=54.240.13.57;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=yg4mwqurec7fkhzutopddd3ytuaqrvuz header.b=J90cREPY;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b="SyCel/jw";
+       spf=pass (google.com: domain of 2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) smtp.mailfrom=2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=yg4mwqurec7fkhzutopddd3ytuaqrvuz; d=amazon.com; t=1612358905;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date;
+	bh=jWsl6h4GmqgeGgU86B1P6G9amYB9qnnTj/zhJbC3/HE=;
+	b=J90cREPYY6BexPrP4vUIy1BQz2odpGR6wVFLsHeKL3PWzoKegcU/6L2YSVbZZO5X
+	+Qp6cuNFKugH329yZE7sEYY/SRW5azYrnEoHj/P6WaCnSXu9GYmjW1JcMCQYN+u+OXX
+	LX0QvrMhifWKjuE60aC8pHYxryu1crNqr8v6ClbE=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1612358905;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date:Feedback-ID;
+	bh=jWsl6h4GmqgeGgU86B1P6G9amYB9qnnTj/zhJbC3/HE=;
+	b=SyCel/jwWofwqEF8T+exgybOdPf92IhPfntZW8rpA2SIDCBR+asjX9M1Z0d2IP91
+	aZBIheGYRYdk4OhMgLBKsD7QbsOTz6ev/+1zN3FCsAJth28aXgrGu8Kud65aSC0gN9X
+	8OohW0Q6nxgyBf9Y5pIPtUoT7OBA1qGSu+KaHxcI=
+From: no-reply-aws@amazon.com
+To: josh@josh.is
+Message-ID: <0100017768146fb7-c82d5656-2c96-4374-8f31-ad8e20d1069e-000000@email.amazonses.com>
+Subject: AWS Support (Basic) Sign-Up Confirmation
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_48077559_777038111.1612358905774"
+X-AMAZON-MAIL-RELAY-TYPE: notification
+Bounces-to: 2021020313282595c0724ef5db4a309d28cb8589c0p0na@bounces.amazon.com
+X-AMAZON-METADATA: CA=C25JTG97PEVHQ5-CU=AE5QJ9WKYD9FZ
+X-Original-MessageID: <urn.rtn.msg.2021020313282595c0724ef5db4a309d28cb8589c0p0na@1612358905775.rtn-svc-na-back-c42xlb-45ff23f3.us-east-1.amazon.com>
+Date: Wed, 3 Feb 2021 13:28:25 +0000
+X-SES-Outgoing: 2021.02.03-54.240.13.57
+Feedback-ID: 1.us-east-1.ZHcGJK6s+x+i9lRHKog4RW3tECwWIf1xzTYCZyUaiec=:AmazonSES
+
+------=_Part_48077559_777038111.1612358905774
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Greetings from Amazon Web Services,
+
+Thank you for signing up for AWS Support (Basic). You now have access to AWS Support (Basic).
+
+If you interact with AWS programmatically using the SDKs, Command Line Interface (CLI), or APIs, you must provide access keys to verify who you are and whether you have permission to access the resources you're requesting. To manage your account's access keys, go to https://console.aws.amazon.com/iam/home?#security_credential .
+
+Documentation, sample code, articles, tutorials, and more can be found in the AWS Resource Center at http://aws.amazon.com/resources/ .
+
+For help and support, visit the AWS Support Center at https://aws.amazon.com/support .
+
+Usage will be billed to your account on a monthly basis. You can manage your account and review your account activity online at https://console.aws.amazon.com/billing/home.
+
+Thank you for your participation in the Amazon Web Services community. See http://aws.amazon.com for more information.
+
+Sincerely,
+
+Amazon Web Services
+
+This message was produced and distributed by Amazon Web Services, Inc. and affiliates, 410 Terry Ave. North, Seattle, WA 98109-5210.
+------=_Part_48077559_777038111.1612358905774
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html xmlns=3D"http://www.w3.=
+org/1999/xhtml" xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:sc=
+hemas-microsoft-com:office:office"><head>
+<title>Amazon Web Services</title>
+<link href=3D"https://fonts.googleapis.com/css?family=3DOpen Sans:300,400,6=
+00,700,800" rel=3D"stylesheet">
+<!-- Other Meta Tags -->
+    <!-- Marketo Variable Definitions -->
+   =20
+<meta mktomodulescope=3D"true" class=3D"mktoColor" id=3D"body-bg" mktoname=
+=3D"Main Body BG color" default=3D"#ffffff">
+
+<!--body section3-->
+   =20
+<meta mktomodulescope=3D"true" class=3D"mktoColor" id=3D"body_section3_bgco=
+lor" mktoname=3D"Body section3 BG color" default=3D"#ffffff">
+<meta mktomodulescope=3D"true" class=3D"mktoColor" id=3D"cta_btn_bgcolor" m=
+ktoname=3D"Body section3 CTA BG color" default=3D"#232F3E">
+<meta mktomodulescope=3D"true" class=3D"mktoColor" id=3D"cta_btn_textbgcolo=
+r" mktoname=3D"Body section3 CTA Button Text color" default=3D"#ffffff">
+<meta mktomodulescope=3D"true" class=3D"mktoString" id=3D"cta_btn_text" mkt=
+oname=3D"Body section3 Button Text" default=3D"Lorem Ipsum =C2=BB">
+<meta mktomodulescope=3D"true" class=3D"mktoString" id=3D"cta_btn_URL" mkto=
+name=3D"Body section3 Button URL" default=3D"#">
+
+
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DUTF-8">
+<meta name=3D"viewport" content=3D"width=3Ddevice-width, initial-scale=3D1,=
+ minimum-scale=3D1, maximum-scale=3D1">
+<meta name=3D"robots" content=3D"noindex,nofollow">
+<meta http-equiv=3D"X-UA-Compatible" content=3D"IE=3Dedge">
+<link href=3D"https://fonts.googleapis.com/css?family=3DOpen Sans:300,400,6=
+00,700" rel=3D"stylesheet">
+<!--[if gte mso 9]><xml>
+ <o:OfficeDocumentSettings>
+  <o:AllowPNG/>
+  <o:PixelsPerInch>96</o:PixelsPerInch>
+ </o:OfficeDocumentSettings>
+</xml><![endif]-->
+    <!--[if mso]>
+<style> body,table tr,table td,a, span,table.MsoNormalTable {  font-family:=
+Arial, Helvetica, sans-serif !important;  }</style>
+<![endif]-->
+<style media=3D"all">
+        /* CLIENT-SPECIFIC STYLES */
+       =20
+        #outlook a {
+            padding: 0;
+        }
+        /* Force Outlook to provide a "view in browser" message */
+       =20
+        .ReadMsgBody {
+            width: 100%;
+        }
+       =20
+        .ExternalClass {
+            width: 100%;
+        }
+        /* Force Hotmail to display emails at full width */
+       =20
+        .ExternalClass,
+        .ExternalClass p,
+        .ExternalClass span,
+        .ExternalClass font,
+        .ExternalClass td,
+        .ExternalClass div {
+            line-height: 100%;
+        }
+        /* Force Hotmail to display normal line spacing */
+        /* iOS BLUE LINKS */
+       =20
+        @-ms-viewport {
+            width: device-width;
+        }
+    </style>
+<style media=3D"all">
+        html {
+            -webkit-text-size-adjust: none;
+        }
+       =20
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+       =20
+        p,
+        .undoreset div p,
+        .undoreset p {
+            margin-top: 18px;
+            margin-bottom: 18px;
+        }
+       =20
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+       =20
+        .textColor {
+            color: #333333 !important;
+            outline: none !important;
+            text-decoration: none !important;
+        }
+       =20
+        a {
+            outline: none !important;
+            text-decoration: none !important;
+        }
+       =20
+        .phone-bg {
+            background-size: cover !important;
+        }
+       =20
+        @media only screen and (max-width: 640px) {
+            *[class].main {
+                width: 100% !important;
+                min-width: 100% !important;
+            }
+            *[class].inner_table {
+                width: 90% !important;
+            }
+            *[class].res {
+                width: 100% !important;
+                display: block !important;
+            }
+            *[class].left_align {
+                text-align: left !important;
+            }
+            *[class].center_align {
+                text-align: center !important;
+                margin: 0 auto;
+            }
+            *[class].full-width {
+                width: 100% !important;
+                height: auto !important;
+            }
+            *[class].phne_height {
+                height: 25px !important;
+            }
+            *[class].hidden {
+                display: none !important;
+            }
+            *[class].padding_top {
+                padding-top: 18px !important;
+            }
+            *[class].padding-btm {
+                padding-bottom: 18px !important;
+            }
+            *[class].iphoneHeight {
+                height: 20px !important;
+            }
+             *[class].iphoneHeight1 {
+                height: 15px !important;
+            }
+            *[class].iphoneHeight0 {
+                height: 0px !important;
+            }
+            *[class].iphoneSpace {
+                height: 25px !important;
+            }
+            *[class].iphoneSpace2 {
+                height: 22px !important;
+            }
+            *[class].noSpace {
+                height: 0px !important;
+            }
+            *[class].padLeft {
+                padding-left: 15px !important;
+            }
+            *[class].floatNone {
+                float: left !important;
+            }
+            *[class].tableWidth {
+                float: none !important;
+                width: 148px !important;
+                margin: 0 auto !important;
+            }
+            *[class].tableWidth1 {
+                width: 120px !important;
+                margin: 0 auto !important;
+                text-align: center !important;
+            }
+        }
+    </style>
+</head>
+<body style=3D"margin-bottom: 0; -webkit-text-size-adjust: 100%; padding-bo=
+ttom: 0;  margin-top: 0; margin-right: 0; -ms-text-size-adjust: 100%; margi=
+n-left: 0; padding-top: 0; padding-right: 0; padding-left: 0; width: 100%;"=
+><img width=3D"1" height=3D"1" src=3D"https://www.amazon.com/gp/r.html?C=3D=
+3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4=
+a309d28cb8589c0p0na&R=3D15OVHAHRH2E1B&T=3DO&U=3Dhttps%3A%2F%2Fimages-na.ssl=
+-images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3DLOEM5TGT7WZYOWH=
+WRYEFPACPGLQA&ref_=3Dpe_3594660_521512610_opens" />
+<!-- Outer table START -->
+   =20
+<table border=3D"0" cellpadding=3D"0" cellspacing=3D"0" width=3D"100%" styl=
+e=3D"-webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; mso-table-=
+lspace: 0pt; mso-table-rspace: 0pt;  border-spacing: 0; border-collapse: co=
+llapse;margin:0 auto;">
+<tbody><tr>
+<td class=3D"mktoContainer" id=3D"template-wrapper" style=3D"background-col=
+or:#ffffff;" bgcolor=3D"#ffffff">
+
+    <!-- Hidden Preheader section starts here-->
+               =20
+     <table class=3D"mktoModule" id=3D"Hidden-Pre-Header" mktoname=3D"Hidde=
+n-Pre-Header" cellpadding=3D"0" cellspacing=3D"0" align=3D"center" border=
+=3D"0" width=3D"100%" style=3D"border-collapse: collapse; margin:0 auto;min=
+-width:100%;">
+       <tbody><tr>
+            <td style=3D"display:none !important; visibility:hidden; mso-hi=
+de:all; font-size:1px; color:#ffffff; line-height:1px; max-height:0px; max-=
+width:0px; opacity:0; overflow:hidden;">
+           =20
+            <div class=3D"mktoText" id=3D"preheader_section" mktoname=3D"Pr=
+e-Header Text"><p>Thank you for signing up for AWS Support (Basic). You now=
+ have access to AWS Support (Basic).</p></div>
+            </td>
+            </tr>
+     </tbody></table>
+    =20
+  <!--header section starts here-->
+               =20
+<table class=3D"mktoModule" id=3D"header_sec" mktoname=3D"Header Section" c=
+ellpadding=3D"0" cellspacing=3D"0" align=3D"center" border=3D"0" width=3D"1=
+00%" style=3D"border-collapse: collapse; margin:0 auto;min-width:100%;">
+<tbody><tr>
+<td>
+<div class=3D"mktoText" id=3D"header_section" mktoname=3D"Header Image"><ta=
+ble width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" border=3D"0">
+<tbody>
+<tr>
+<td valign=3D"top" style=3D"vertical-align: top; background-color: #232f3e;=
+">
+<table class=3D"inner_table" cellpadding=3D"0" cellspacing=3D"0" align=3D"c=
+enter" border=3D"0" width=3D"600" style=3D"border-collapse: collapse; margi=
+n: 0 auto; width: 600px;">
+<tbody>
+<tr>
+<td height=3D"15" style=3D"line-height: 1px; font-size: 1px;">&nbsp;</td>
+</tr>
+<tr>
+<td class=3D"center_align" style=3D"text-align: center; vertical-align: top=
+;"><a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ1=
+1W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D=
+FLJCF455EBFS&T=3DC&U=3Dhttps%3A%2F%2Faws.amazon.com%2F%3Fref_%3Dpe_3594660_=
+521512610&H=3DGSY1EWWD38COK4E2GYW6NLJHACOA&ref_=3Dpe_3594660_521512610" tar=
+get=3D"_blank"> <img alt=3D"Amazon Web Services" src=3D"https://pages.awscl=
+oud.com/rs/112-TZM-766/images/AWS_logo_RGB_WHT_2017_200x120.png" style=3D"-=
+ms-interpolation-mode: bicubic; outline-style: none; border-style: none;" w=
+idth=3D"100" border=3D"0"> </a></td>
+</tr>
+<tr>
+<td height=3D"15" style=3D"line-height: 1px; font-size: 1px;">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></div>
+</td>
+</tr>
+</tbody></table>
+<!--header section starts here-->
+                <!--section starts from here-->
+                <!--body section1 starts here-->
+               =20
+
+<!--body section1 ends here-->
+                <!--body section2 starts here-->
+               =20
+<table class=3D"mktoModule" id=3D"body_section2" cellpadding=3D"0" cellspac=
+ing=3D"0" align=3D"center" border=3D"0" width=3D"100%" style=3D"border-coll=
+apse: collapse; margin:0 auto;min-width:100%;" mktoname=3D"Body w/ Headline=
+ Text">
+<tbody><tr>
+<td>
+                           =20
+<table class=3D"main" cellpadding=3D"0" cellspacing=3D"0" align=3D"center" =
+border=3D"0" width=3D"640" style=3D"border-collapse: collapse; margin:0 aut=
+o;width:640px;">
+<tbody><tr>
+<td bgcolor=3D"#ffffff" style=3D"background-color:#ffffff;">
+                                       =20
+<table class=3D"inner_table" cellpadding=3D"0" cellspacing=3D"0" align=3D"c=
+enter" border=3D"0" width=3D"600" style=3D"border-collapse: collapse; margi=
+n:0 auto;width:600px;">
+<tbody><tr>
+<td height=3D"25" style=3D"line-height:1px;font-size:1px;">&nbsp;
+                                                </td>
+</tr>
+ =20
+
+<tr>
+<td style=3D"font-size: 16px; font-family: Helvetica, Arial, sans-serif; co=
+lor: #333333; line-height:24px;" align=3D"left">
+<div class=3D"mktoText" id=3D"body_sec2_text" mktoname=3D"Body section2 Tex=
+t"><div>Greetings from Amazon Web Services,</div>
+<div><br></div>
+<div>Thank you for signing up for AWS Support (Basic). You now have access =
+to AWS Support (Basic).</div>
+<div><br></div>
+<div>If you interact with AWS programmatically using the SDKs, Command Line=
+ Interface (CLI), or APIs, you must provide access keys to verify who you a=
+re and whether you have permission to access the resources you're requestin=
+g. <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ1=
+1W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D=
+1UWLKVMC862U2&T=3DC&U=3Dhttps%3A%2F%2Fconsole.aws.amazon.com%2Fiam%2Fhome%3=
+Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem=
+_wlcm_2d%26sc_detail%3Dwlcm_2d%26sc_content%3Dother%26sc_country%3Dglobal%2=
+6sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610%23secur=
+ity_credential&H=3DKFPILKOE4CVS4P9T2KRXOHWL5ISA&ref_=3Dpe_3594660_521512610=
+" target=3D"_blank" title=3D"Manage your account's access keys&nbsp;=C2=BB"=
+ style=3D"color: #007eb9; text-decoration: none;">Manage your account's acc=
+ess keys&nbsp;=C2=BB</a></div>
+<div><br></div>
+<div>Find documentation, sample code, articles, tutorials, and more in the =
+<a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8=
+SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D3RA=
+6G3L15GT99&T=3DC&U=3Dhttps%3A%2F%2Faws.amazon.com%2Fgetting-started%2F%3Fsc=
+_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wl=
+cm_2d%26sc_detail%3Dwlcm_2d%26sc_content%3Dother%26sc_country%3Dglobal%26sc=
+_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&H=3D2RG4HK=
+XCUNHFV10RDQNI1UH7AY4A&ref_=3Dpe_3594660_521512610" target=3D"_blank" style=
+=3D"color: #007eb9; text-decoration: none; outline: none;">AWS Getting Star=
+ted Resource Center</a>. For help and support, visit the <a href=3D"https:/=
+/www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:m=
+sg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D35HV5W5010X4Q&T=3DC&U=
+=3Dhttps%3A%2F%2Faws.amazon.com%2Fsupport%3Fsc_channel%3Dem%26sc_campaign%3=
+Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_2d%26sc_detail%3Dwlcm_2d%2=
+6sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category%3=
+Dmult%26ref_%3Dpe_3594660_521512610&H=3DBCUHEPOHGFNA2N5UZCQLAUPHLRWA&ref_=
+=3Dpe_3594660_521512610" target=3D"_blank" style=3D"color: #007eb9; text-de=
+coration: none; outline: none;">AWS Support Center</a>.</div>
+<div><br></div>
+<div>Usage will be billed to your account on a monthly basis. <a href=3D"ht=
+tps://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:=
+rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D2IO75UAFFEYC8&T=
+=3DC&U=3Dhttps%3A%2F%2Fconsole.aws.amazon.com%2Fbilling%2Fhome%3Fsc_channel=
+%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_2d%26=
+sc_detail%3Dwlcm_2d%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dg=
+lobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&H=3DOHVX6IVHX2KFKC=
+RFLIXAXA5I7AYA&ref_=3Dpe_3594660_521512610" target=3D"_blank" style=3D"colo=
+r: #007eb9; text-decoration: none; outline: none;" title=3D"Manage your acc=
+ount and review your account activity online&nbsp;=C2=BB">Manage your accou=
+nt and review your account activity online&nbsp;=C2=BB</a></div>
+<div><br></div>
+<div>
+<div style=3D"color: #333333; font-family: Helvetica, Arial, sans-serif; fo=
+nt-size: 16px; font-style: normal; font-variant-ligatures: normal; font-var=
+iant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; te=
+xt-align: -webkit-left; text-indent: 0px; text-transform: none; white-space=
+: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; tex=
+t-decoration-style: initial; text-decoration-color: initial;">Welcome to th=
+e Amazon Web Services community!</div>
+<div style=3D"color: #333333; font-family: Helvetica, Arial, sans-serif; fo=
+nt-size: 16px; font-style: normal; font-variant-ligatures: normal; font-var=
+iant-caps: normal; font-weight: 400; letter-spacing: normal; orphans: 2; te=
+xt-align: -webkit-left; text-indent: 0px; text-transform: none; white-space=
+: normal; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; tex=
+t-decoration-style: initial; text-decoration-color: initial;"><br>=E2=80=94=
+The Amazon Web Services Team</div>
+</div>
+<div><br></div></div>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<!--body section2 ends here-->
+                <!--body section3 starts here-->
+               =20
+
+
+  =20
+           =20
+
+
+=20
+
+          =20
+              =20
+                <!--Footer starts here-->
+               =20
+<table class=3D"mktoModule" id=3D"body_section9" cellpadding=3D"0" cellspac=
+ing=3D"0" align=3D"center" border=3D"0" width=3D"100%" style=3D"border-coll=
+apse: collapse; margin:0 auto;min-width:100%;" mktoname=3D"Footer Section">
+<tbody><tr>
+<td>
+                           =20
+<table class=3D"main" cellpadding=3D"0" cellspacing=3D"0" align=3D"center" =
+border=3D"0" width=3D"640" style=3D"border-collapse: collapse; margin:0 aut=
+o;width:640px;">
+<tbody><tr>
+<td bgcolor=3D"#ffffff" style=3D"background-color:#ffffff;">
+                                       =20
+<table class=3D"inner_table" cellpadding=3D"0" cellspacing=3D"0" align=3D"c=
+enter" border=3D"0" width=3D"600" style=3D"border-collapse: collapse; margi=
+n:0 auto;width:600px;">
+<tbody><tr>
+<td height=3D"15" style=3D"line-height:1px;font-size:1px;    border-top: 1p=
+x solid #d7d7d7;">&nbsp;
+                                    </td>
+</tr>
+<tr>
+<td style=3D"font-family: Helvetica, Arial, Sans-serif; font-size: 10px; li=
+ne-height:14px; color: #333333;" align=3D"center">
+<div class=3D"mktoText" id=3D"Footer_Top_bar" mktoname=3D"Footer Top Bar">
+<table width=3D"100%" border=3D"0" cellspacing=3D"0" cellpadding=3D"10" ali=
+gn=3D"center" style=3D"max-width: 600px;" class=3D"responsive-table">
+<tbody>
+<tr>
+<td align=3D"center" style=3D"font-family: Helvetica, Arial, Sans-serif; fo=
+nt-size: 10px; line-height: 14px; color: #333333; border-top-color: #fefefe=
+; border-top-style: solid; border-top-width: 1px; padding-top: 10px;"><span=
+ class=3D"socialPod"><a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5G=
+SK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d2=
+8cb8589c0p0na&R=3D3GBAL7ZUAYKI1&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%2Fblo=
+gs%2Faws%2F%3Fref_%3Dpe_3594660_521512610&H=3DDJWMJKQLORU2BBLDUUSE5LKJQSOA&=
+ref_=3Dpe_3594660_521512610" target=3D"_blank"><img src=3D"http://na-sj23.m=
+arketo.com/rs/112-TZM-766/images/EM_SocialIcons_AWSBlog.png" alt=3D"AWS=20
+Blog" width=3D"25" height=3D"26" border=3D"0"></a></span> &nbsp;<span class=
+=3D"socialDivider">&nbsp;<img src=3D"http://na-sj23.marketo.com/rs/112-TZM-=
+766/images/greyline.png" alt=3D"ln brk" width=3D"8">&nbsp;</span>&nbsp; <sp=
+an class=3D"socialPod"><a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W=
+5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309=
+d28cb8589c0p0na&R=3D2I30B0OQFE94J&T=3DC&U=3Dhttp%3A%2F%2Fwww.facebook.com%2=
+Famazonwebservices&H=3DLDBAMEUJBVLN5ONA1KAMOETDDS0A"><img src=3D"http://na-=
+sj23.marketo.com/rs/112-TZM-766/images/EM_SocialIcons_Facebook.png" alt=3D"=
+Facebook" width=3D"25" height=3D"25" border=3D"0"></a></span>&nbsp;&nbsp; <=
+span class=3D"socialPod"><a href=3D"https://www.amazon.com/gp/f.html?C=3D3L=
+3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a3=
+09d28cb8589c0p0na&R=3D2AFXQR5R1MNAP&T=3DC&U=3Dhttps%3A%2F%2Fwww.linkedin.co=
+m%2Fcompany%2Famazon-web-services&H=3D9TKBRGYJXEN3KHDPVKHESGSC6CIA"><img sr=
+c=3D"http://na-sj23.marketo.com/rs/112-TZM-766/images/EM_SocialIcons_Linked=
+IN.png" alt=3D"LinkedIn" width=3D"25" height=3D"25" border=3D"0"></a></span=
+>&nbsp;&nbsp; <span class=3D"socialPod"><a href=3D"https://www.amazon.com/g=
+p/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:20210203132825=
+95c0724ef5db4a309d28cb8589c0p0na&R=3D4H0XMHAYP35O&T=3DC&U=3Dhttp%3A%2F%2Ftw=
+itter.com%2Fawscloud&H=3DZRHYAXYRYPMDZQCP8MJJAUI1KQQA"><img src=3D"http://n=
+a-sj23.marketo.com/rs/112-TZM-766/images/EM_SocialIcons_Twitter.png" alt=3D=
+"Twitter" width=3D"25" height=3D"25" border=3D"0"></a></span>&nbsp;&nbsp; <=
+span class=3D"socialPod"><a href=3D"https://www.amazon.com/gp/f.html?C=3D3L=
+3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a3=
+09d28cb8589c0p0na&R=3D1C6CXFK8JXBHL&T=3DC&U=3Dhttp%3A%2F%2Fwww.youtube.com%=
+2Fuser%2FAmazonWebServices&H=3DMRTKQ7FUI7NOYVEAOGZNXTEHA9OA"><img src=3D"ht=
+tp://na-sj23.marketo.com/rs/112-TZM-766/images/EM_SocialIcons_YouTube.png" =
+alt=3D"YouTube" width=3D"25" height=3D"25" border=3D"0"></a></span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</td>
+</tr>
+<tr>
+<td height=3D"15" style=3D"line-height:1px;font-size:1px;">&nbsp;
+                                    </td>
+</tr>
+<tr>
+<td style=3D"font-family: Helvetica,Arial,sans-serif; font-size: 9px; line-=
+height: 14px; color: rgb(51, 51, 51);  border-top: 1px solid #d7d7d7;paddin=
+g-top:15px;" align=3D"center">
+                         <div class=3D"mktoText" id=3D"Footer_Top_bar1" mkt=
+oname=3D"Footer Medium Bar">
+<table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" border=3D"0">
+<tbody>
+<tr>
+<td style=3D"padding: 10px 0px 10px 0px;">
+<table align=3D"center" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" =
+border=3D"0" style=3D"border-collapse: collapse;">
+<tbody>
+<tr>
+<td align=3D"center">
+<table align=3D"center" width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" =
+border=3D"0" style=3D"border-collapse: collapse;">
+<tbody>
+<tr>
+<td align=3D"center" style=3D"font-family: Helvetica, Arial, Sans-serif; fo=
+nt-size: 9px; color: #999999; line-height: 16px;"><a href=3D"https://www.am=
+azon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021=
+020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D1KAT711M7UZ6I&T=3DC&U=3Dhttp=
+s%3A%2F%2Fconsole.aws.amazon.com%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%=
+26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer=
+%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category=
+%3Dmult%26ref_%3Dpe_3594660_521512610&H=3DVL9BMFQ89IESMI6G2EH0TIBJO7SA&ref_=
+=3Dpe_3594660_521512610" style=3D"color: #146eb4; text-decoration:=20
+none;"> My Account </a>| <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L=
+3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a3=
+09d28cb8589c0p0na&R=3D3I0RYF11C7EO7&T=3DC&U=3Dhttps%3A%2F%2Faws.amazon.com%=
+2Fgetting-started%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%=
+3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3=
+Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%=
+3Dpe_3594660_521512610&H=3D4CXNYWBABEW83ZCYQTXFPVGAKC0A&ref_=3Dpe_3594660_5=
+21512610" style=3D"color: #146eb4; text-decoration: none;"> Getting Started=
+</a> | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29=
+EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&=
+R=3DSSNYM1FBB0QJ&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%2Fproducts%2F%3Fsc_c=
+hannel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm=
+_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26sc_country%3Dgloba=
+l%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&H=3D=
+GI4AMAFUCFGWQNEWAPFE40K2GLKA&ref_=3Dpe_3594660_521512610" style=3D"color: #=
+146eb4; text-decoration: none;"> Products</a> | <a href=3D"https://www.amaz=
+on.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:202102=
+0313282595c0724ef5db4a309d28cb8589c0p0na&R=3D2TXSTPS8040DN&T=3DC&U=3Dhttp%3=
+A%2F%2Faws.amazon.com%2Fsolutions%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm=
+%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_foote=
+r%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_categor=
+y%3Dmult%26ref_%3Dpe_3594660_521512610&H=3DO7AWHG0NHIYFGESM0TW5R356I6UA&ref=
+_=3Dpe_3594660_521512610" style=3D"color: #146eb4; text-decoration: none;">=
+ Solutions</a> | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A=
+6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8=
+589c0p0na&R=3D2B99UNBAC5Z8B&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%2Fpricing=
+%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium=
+%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26sc_count=
+ry%3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_5215=
+12610&H=3DANGAFNATYQZS6VRH0P8N7JUG3YQA&ref_=3Dpe_3594660_521512610" style=
+=3D"color: #146eb4; text-decoration: none;"> Pricing</a> | <a href=3D"https=
+://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn=
+:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D1XE983LS2RYFK&T=3DC=
+&U=3Dhttp%3A%2F%2Faws.amazon.com%2Fpartners%2F%3Fsc_channel%3Dem%26sc_campa=
+ign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3D=
+wlcm_footer%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26=
+sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&H=3D8QYLN8R9NIUZZFUEJUUNFY=
+0UQUWA&ref_=3Dpe_3594660_521512610" style=3D"color: #146eb4; text-decoratio=
+n: none;"> Partners</a> | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3=
+L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a=
+309d28cb8589c0p0na&R=3D2LUZIN0IN33VF&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%=
+2Fdocumentation%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3D=
+aws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Do=
+ther%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3D=
+pe_3594660_521512610&H=3DFN78LV83KRIXJNRYIAN4PUHAVGCA&ref_=3Dpe_3594660_521=
+512610" style=3D"color: #146eb4; text-decoration: none;"> Documentation</a>=
+ | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ1=
+1W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D=
+SAF7KXX22UAJ&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%2Ftraining%2F%3Fsc_chann=
+el%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_foo=
+ter%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26sc_country%3Dglobal%26=
+sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&H=3DBZZG=
+79EAECBEBABFWTY7TXNW4OMA&ref_=3Dpe_3594660_521512610" style=3D"color: #146e=
+b4; text-decoration: none;"> Training</a> | <a href=3D"https://www.amazon.c=
+om/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313=
+282595c0724ef5db4a309d28cb8589c0p0na&R=3D2VX9OL9NG9162&T=3DC&U=3Dhttp%3A%2F=
+%2Faws.amazon.com%2Fabout-aws%2Fevents%2F%3Fsc_channel%3Dem%26sc_campaign%3=
+Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_=
+footer%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_ca=
+tegory%3Dmult%26ref_%3Dpe_3594660_521512610&H=3D2CR7HIAB5FF2I475HR5V2FNZ0ZI=
+A&ref_=3Dpe_3594660_521512610" style=3D"color: #146eb4; text-decoration: no=
+ne;"> Events &amp; Webinars</a> | <a href=3D"https://www.amazon.com/gp/f.ht=
+ml?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c072=
+4ef5db4a309d28cb8589c0p0na&R=3D33KQ1X9PNNYRD&T=3DC&U=3Dhttp%3A%2F%2Faws.ama=
+zon.com%2Factivate%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher=
+%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%=
+3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_=
+%3Dpe_3594660_521512610&H=3DI5YFUZ7CTWMGRJRH0AIOGYES5ZOA&ref_=3Dpe_3594660_=
+521512610" style=3D"color: #146eb4; text-decoration: none;"> AWS Activate</=
+a> | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EY=
+Q11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=
+=3D158BWXCQLX0FV&T=3DC&U=3Dhttps%3A%2F%2Faws.amazon.com%2Fmarketplace%2F%3F=
+sc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3Dem_=
+wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26sc_country%3Dg=
+lobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_521512610&=
+H=3D9GEH5BWUPBRNSHU4ORHWZCFVQUSA&ref_=3Dpe_3594660_521512610" style=3D"colo=
+r: #146eb4; text-decoration: none;">Marketplace</a> | <a href=3D"https://ww=
+w.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:=
+2021020313282595c0724ef5db4a309d28cb8589c0p0na&R=3D1FN057OAAT2M8&T=3DC&U=3D=
+http%3A%2F%2Faws.amazon.com%2Fnew%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm=
+%26sc_publisher%3Daws%26sc_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_foote=
+r%26sc_content%3Dother%26sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_categor=
+y%3Dmult%26ref_%3Dpe_3594660_521512610&H=3DJZYAUAXW5NO7WJMWEGQAF6EPMAEA&ref=
+_=3Dpe_3594660_521512610" style=3D"color: #146eb4; text-decoration: none;">=
+ What's&nbsp;New</a> | <a href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W=
+5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309=
+d28cb8589c0p0na&R=3DUAPZ2AXB2ZA&T=3DC&U=3Dhttp%3A%2F%2Faws.amazon.com%2Fblo=
+gs%2Faws%2F%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26s=
+c_medium%3Dem_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26=
+sc_country%3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594=
+660_521512610&H=3DSVLIHUM3MOZHAHTYZWH0BLWAYCGA&ref_=3Dpe_3594660_521512610"=
+ style=3D"color: #146eb4; text-decoration: none;">Blog</a></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+                        </td>
+</tr>
+<tr>
+<td height=3D"15" style=3D"line-height:1px;font-size:1px;">&nbsp;
+                        </td>
+</tr>
+<tr>
+<td style=3D"font-size: 12px; line-height: 18px; font-family: Helvetica, Ar=
+ial, sans-serif; color:#666666;" align=3D"center">
+                           <div class=3D"mktoText" id=3D"Footer_Top_bar3" m=
+ktoname=3D"Footer Content"><table width=3D"100%" cellpadding=3D"0" cellspac=
+ing=3D"0" border=3D"0">
+<tbody>
+<tr>
+<td style=3D"padding: 10px 0px 10px 0px;">
+<table width=3D"100%" cellpadding=3D"0" cellspacing=3D"0" border=3D"0">
+<tbody>
+<tr>
+<td align=3D"center" width=3D"100%" style=3D"font-size: 9px; font-family: H=
+elvetica, Arial, sans-serif; color: #999999; line-height: 16px;">This messa=
+ge was produced and distributed by Amazon Web Services, Inc. and its affili=
+ates, 410 Terry Ave. North, Seattle, WA 98109.<br>=C2=A9 2018, Amazon Web S=
+ervices, Inc. and its affiliates. All rights reserved. AWS is a registered =
+trademark of Amazon.com, Inc. View our <a style=3D"color: #666666; text-dec=
+oration: none;" href=3D"https://www.amazon.com/gp/f.html?C=3D3L3W5GSK5A6O0&=
+K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a309d28cb8589c=
+0p0na&R=3D2C0OJNSR4WPQH&T=3DC&U=3Dhttps%3A%2F%2Faws.amazon.com%2Fprivacy%2F=
+%3Fsc_channel%3Dem%26sc_campaign%3Dwlcm%26sc_publisher%3Daws%26sc_medium%3D=
+em_wlcm_footer%26sc_detail%3Dwlcm_footer%26sc_content%3Dother%26sc_country%=
+3Dglobal%26sc_geo%3Dglobal%26sc_category%3Dmult%26ref_%3Dpe_3594660_5215126=
+10&H=3DJN4BZC0WFO0ZLA02GVVXI61OYEYA&ref_=3Dpe_3594660_521512610" target=3D"=
+_blank">privacy policy</a>.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table></div>=20
+                        </td>
+</tr>
+<tr>
+<td height=3D"15" style=3D"line-height:1px;font-size:1px;">&nbsp;
+                        </td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+</td>
+</tr>
+</tbody></table>
+<!-- Footer End -->
+            </td>
+</tr>
+</tbody></table>
+<!-- Outer table End -->
+
+<img width=3D"1" height=3D"1" src=3D"https://www.amazon.com/gp/r.html?C=3D3=
+L3W5GSK5A6O0&K=3D29EYQ11W8SYKW&M=3Durn:rtn:msg:2021020313282595c0724ef5db4a=
+309d28cb8589c0p0na&R=3D1VZOT8UPNYYWL&T=3DE&U=3Dhttps%3A%2F%2Fimages-na.ssl-=
+images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3D0BRINAHVLKDQXLNO=
+SG2RBAPJIJSA&ref_=3Dpe_3594660_521512610_open" /></body></html>
+------=_Part_48077559_777038111.1612358905774--

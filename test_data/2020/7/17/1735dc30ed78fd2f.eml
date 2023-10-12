@@ -1,0 +1,586 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:83cb:0:0:0:0:0 with SMTP id s11csp2394203ljh;
+        Fri, 17 Jul 2020 10:12:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxQl42MroF42joY8GmMwHzkrkbVQacT5YCA4/CL6PavjVl70tsBzGdfO4X9gzAL4FZ8uqar
+X-Received: by 2002:a17:90a:e602:: with SMTP id j2mr10475470pjy.200.1595005931468;
+        Fri, 17 Jul 2020 10:12:11 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1595005931; cv=none;
+        d=google.com; s=arc-20160816;
+        b=BV/PZ0/e0uEapZRB0DUjVLBs+q7Bpy1+VsxUJ1QGC0IIeMnkIouo2f3mqz+jVEkEc/
+         NqapKuAUdUARBBXz6bf4HixrN3bzR5BsZjBTMQDMx4AItz7TdQTD5ndHj0Hdhbvu4btd
+         zKqqKVv0peUZE0p9EaYqk43azGYLo17Wa2+11regcYzMw1Cxl6E3nAva5UgVhK8m8ZhZ
+         R76sEQB6uegd5mLlbc9sEfcvOdkYSdoPKRjjfsr4U4tRIyAhRAWNGLKFbctXGDzcm9To
+         LE+VjMe2JHbMhATVCirDasgPrs50CAYCy1XuW+lmnrPOebvaSdEeayv0tXLl4XuKmG7V
+         jEJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:content-transfer-encoding:mime-version:subject
+         :message-id:to:reply-to:from:date:dkim-signature:dkim-signature;
+        bh=mvb2IUblMOR+5PU6rsJxc/69fPX/NMB2tZyQF7NJSPo=;
+        b=pdoR7gZR7MlZ+xqIsheAVC76wrT6DGWZBFXK2QKy+koyuptrDiUIEhuEvGSXCeQsdy
+         U/mIqeIv+hjMnWbfoy96GJhaecgiLARLw0zvX6g1WHsXquIUV++fqe0xpsU4UeetQ3/3
+         mAP/hdAvBEJq3cEaJ8Epq02lD+FQH5hCfm40wXWeIDQw0lgp+u+GSJZAcFFruLHjL9GV
+         iE1SUDxtghmCD8NXzIZ3YadRhza2M+oJmiDFqlDj5Uj+ntj49mu2Slbg27DOT2dVU1HM
+         j0rGuHXVWFvL8mC3FsHlKbWT2CtHsxbc+NGuMsfTcKoqcaUlo/wqiNTyzLWWhsVrp7BF
+         Jj5g==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@stripe.com header.s=defbb7pxmacrmbwa3bemwsw7zotzvmwa header.b=QHQ4c9UW;
+       dkim=pass header.i=@amazonses.com header.s=hsbnp7p3ensaochzwyq5wwmceodymuwv header.b=IS8BIB5+;
+       spf=pass (google.com: domain of 010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com designates 54.240.62.28 as permitted sender) smtp.mailfrom=010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=stripe.com
+Return-Path: <010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com>
+Received: from a62-28.smtp-out.us-west-2.amazonses.com (a62-28.smtp-out.us-west-2.amazonses.com. [54.240.62.28])
+        by mx.google.com with ESMTPS id p22si2409399pjz.106.2020.07.17.10.12.11
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
+        Fri, 17 Jul 2020 10:12:11 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com designates 54.240.62.28 as permitted sender) client-ip=54.240.62.28;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@stripe.com header.s=defbb7pxmacrmbwa3bemwsw7zotzvmwa header.b=QHQ4c9UW;
+       dkim=pass header.i=@amazonses.com header.s=hsbnp7p3ensaochzwyq5wwmceodymuwv header.b=IS8BIB5+;
+       spf=pass (google.com: domain of 010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com designates 54.240.62.28 as permitted sender) smtp.mailfrom=010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@bounce.stripe.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=stripe.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=defbb7pxmacrmbwa3bemwsw7zotzvmwa; d=stripe.com; t=1595005930;
+	h=Date:From:Reply-To:To:Message-ID:Subject:Mime-Version:Content-Type:Content-Transfer-Encoding;
+	bh=vmYnSiIfnWk5NfNtLm4uag+7pmgMNNvoOqNKm93yBCM=;
+	b=QHQ4c9UW0fPG3o3n7PG7twX4C/qZvkC95ahawCnL5m6YoxJc7cBN8kHiH9Ey8UJf
+	3hpYq30dFqukawbTY/3N1ntjRmBfMM3o3iBtyW1/F8eQ+dFcxDbkjLIik9e/LdrGHoW
+	h6Oncx1H1Baex7vL5FdSTWV3zCKZus4ctF/COKe8=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=hsbnp7p3ensaochzwyq5wwmceodymuwv; d=amazonses.com; t=1595005930;
+	h=Date:From:Reply-To:To:Message-ID:Subject:Mime-Version:Content-Type:Content-Transfer-Encoding:Feedback-ID;
+	bh=vmYnSiIfnWk5NfNtLm4uag+7pmgMNNvoOqNKm93yBCM=;
+	b=IS8BIB5+M+DZ3AXqoNIkbWkzupjtc30/tYZCViRq9sSqtmV4bWkO8LLPyXne1xtb
+	RmsrvtEfa6cf+lK1vQoiY8W7fy0OazxpT94c3GgYwqJmVkSj4ej3SKRbaGZuM2p0u+Q
+	mWHv+qRy1ui0qwGOlnf5oJ83PFr3jmixDAn725y8=
+Date: Fri, 17 Jul 2020 17:12:10 +0000
+From: Fitbod <receipts+acct_1BOtOHJF5wYpOq1m@stripe.com>
+Reply-To: Fitbod <finance@fitbod.me>
+To: josh@josh.is
+Message-ID: <010101735dc30c4c-a685bb12-10c3-4c1d-827e-b8587cae075b-000000@us-west-2.amazonses.com>
+Subject: =?UTF-8?Q?Your_receipt_from_=E2=80=AAFitbod=E2=80=AC_#2071-5774?=
+Mime-Version: 1.0
+Content-Type: text/html;
+ charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Stripe-EID: em_kup1gokwybewiinwk83m2sedekjhkz
+X-SES-Outgoing: 2020.07.17-54.240.62.28
+Feedback-ID: 1.us-west-2.U9efwdPDLNZNk/S34uMIpcrlbDF6b3rs/s41tFWSWJ8=:AmazonSES
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en" style="margin: 0;padding: 0;border: 0;" >
+    <head>
+      <title>Your receipt from Fitbod #2071-5774</title>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+      <meta name="viewport" content="width=device-width">
+      <meta name="robots" content="noindex, nofollow">
+      <meta name="googlebot" content="noindex, nofollow, noarchive">
+      <style type="text/css">
+        img + div {
+          display: none !important; /* Hides image downloading in Gmail */
+        }
+        @media screen and (max-width: 600px) {
+          /** Gmail **/
+          *[class="Gmail"] {
+            display: none !important
+          }
+          /** Wrapper **/
+          .Wrapper {
+            max-width: 600px !important;
+            min-width: 320px !important;
+            width: 100% !important;
+            border-radius: 0 !important;
+          }
+          .Section {
+            width: 100% !important;
+          }
+          .Section--last {
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+          }
+          /** Notice **/
+          .Notice {
+            border-bottom-left-radius: 0 !important;
+            border-bottom-right-radius: 0 !important;
+          }
+          /** Header **/
+          .Header .Header-left,
+          .Header .Header-right {
+            border-top-left-radius: 0 !important;
+            border-top-right-radius: 0 !important;
+          }
+          /** Content **/
+          .Content {
+            width: auto !important;
+          }
+          /** Divider **/
+          .Divider--kill {
+            display: none !important;
+            height: 0 !important;
+            width: 0 !important;
+          }
+          /** Spacer **/
+          .Spacer--gutter {
+            width: 20px !important;
+          }
+          .Spacer--kill {
+            height: 0 !important;
+            width: 0 !important;
+          }
+          .Spacer--emailEnds {
+            height: 0 !important;
+          }
+          /** Target **/
+          .Target img {
+            display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            max-height: 0 !important;
+            min-height: 0 !important;
+            mso-hide: all !important;
+            padding: 0 !important;
+            width: 0 !important;
+            font-size: 0 !important;
+            line-height: 0 !important;
+          }
+          .Target::before {
+            content: '' !important;
+            display: block !important;
+          }
+          /** Header **/
+          .Header-area {
+            width: 100% !important;
+          }
+          .Header-left,
+          .Header-left::before,
+          .Header-right,
+          .Header-right::before {
+            height: 156px !important;
+            width: auto !important;
+            background-size: 252px 156px !important;
+          }
+          .Header-left {
+            background-image: url('https://stripe-images.s3.amazonaws.com/notifications/hosted/20180110/Header/Left.png') !important;
+            background-position: bottom right !important;
+          }
+          .Header-right {
+            background-image: url('https://stripe-images.s3.amazonaws.com/notifications/hosted/20180110/Header/Right.png') !important;
+            background-position: bottom left !important;
+          }
+          .Header-icon,
+          .Header-icon::before {
+            width: 96px !important;
+            height: 156px !important;
+            background-size: 96px 156px !important;
+          }
+          .Header-icon {
+            width: 96px !important;
+            height: 156px !important;
+            background-image: url('https://stripe-images.s3.amazonaws.com/emails/acct_1BOtOHJF5wYpOq1m/2/twelve_degree_icon@2x.png') !important;
+            background-position: bottom center !important;
+          }
+          /** Table **/
+          .Table-content {
+            width: auto !important;
+          }
+          .Table-rows {
+            width: 100% !important;
+          }
+        }
+        @media screen and (max-width: 599px) {
+          /** Data Blocks **/
+          .DataBlocks-item {
+            display: block !important;
+            width: 100% !important;
+          }
+          .DataBlocks-spacer {
+            display: block !important;
+            height: 12px !important;
+            width: auto !important;
+          }
+        }
+      </style>
+    </head>
+    <body class="Email" style="margin: 0;padding: 0;border: 0;background-color: #f1f5f9;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;-webkit-text-size-adjust: 100%;-ms-text-size-adjust: 100%;min-width: 100% !important;width: 100% !important;">
+    <div class="Preheader" style="display: none !important;max-height: 0;max-width: 0;mso-hide: all;overflow: hidden;color: #ffffff;font-size: 1px;line-height: 1px;opacity: 0;visibility: hidden;"></div>
+    <div class="Background" style="min-width: 100%;width: 100%;background-color: #f1f5f9;">
+      <table class="Wrapper" align="center" style="border: 0;border-collapse: collapse;margin: 0 auto !important;padding: 0;max-width: 600px;min-width: 600px;width: 600px;">
+        <tbody>
+        <tr>
+          <td style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;">
+
+
+            <table class="Divider Divider--small Divider--kill" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;"><tbody><tr><td class="Spacer Spacer--divider" height="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+                <div class="Shadow" style="border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;box-shadow: 0 7px 14px 0 rgba(50,50,93,0.10), 0 3px 6px 0 rgba(0,0,0,0.07);">
+                  <table dir="ltr" class="Section Header" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+            <tbody>
+            <tr>
+              <td class="Header-left Target" style="background-color: #313335;border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-size: 0;line-height: 0px;mso-line-height-rule: exactly;background-size: 100% 100%;border-top-left-radius: 5px;" align="right" height="156" valign="bottom" width="252">
+                <a href="#" style="pointer-events: none;">
+                  <img alt="" height="156" width="252" src="https://stripe-images.s3.amazonaws.com/notifications/hosted/20180110/Header/Left.png" style="display: block;border: 0;line-height: 100%;width: 100%;">
+                </a>
+              </td>
+              <td class="Header-icon Target" style="background-color: #313335;border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-size: 0;line-height: 0px;mso-line-height-rule: exactly;background-size: 100% 100%;" align="center" height="156" valign="bottom" width="96">
+                <a href="https://fitbod.me" style="-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;outline: 0;text-decoration: none;">
+                  <img alt="" height="156" width="96" src="https://stripe-images.s3.amazonaws.com/emails/acct_1BOtOHJF5wYpOq1m/2/twelve_degree_icon@2x.png" style="display: block;border: 0;line-height: 100%;width: 100%;" />
+                </a>
+              </td>
+              <td class="Header-right Target" style="background-color: #313335;border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-size: 0;line-height: 0px;mso-line-height-rule: exactly;background-size: 100% 100%;border-top-right-radius: 5px;" align="left" height="156" valign="bottom" width="252">
+                <a href="#" style="pointer-events: none;">
+                  <img alt="" height="156" width="252" src="https://stripe-images.s3.amazonaws.com/notifications/hosted/20180110/Header/Right.png" style="display: block;border: 0;line-height: 100%;width: 100%;">
+                </a>
+              </td>
+            </tr>
+            </tbody>
+            </table>
+
+            <table class="Section Title" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Content Title-copy Font Font--title" align="center" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #32325d;font-size: 24px;line-height: 32px;">
+                    Receipt from <span dir="ltr">Fitbod</span>
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+              <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="8" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+              <table class="Section Title" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+                <tbody>
+                <tr>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  <td  class="Content Title-copy Font Font--title" align="center" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 15px;line-height: 18px;">
+                      Invoice #B252E64F-0005
+
+                  </td>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                </tr>
+                </tbody>
+              </table>
+
+              <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="4" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+              <table class="Section Title" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+                <tbody>
+                <tr>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  <td  class="Content Title-copy Font Font--title" align="center" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 15px;line-height: 18px;">
+                    Receipt #2071-5774
+                  </td>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                </tr>
+                </tbody>
+              </table>
+
+            <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="24" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+            <table class="Section DataBlocks" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;width: 100%;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td class="Content" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;">
+                  <table  class="DataBlocks DataBlocks--three" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;width: 100%;">
+                    <tbody>
+                    <tr>
+                      <td class="DataBlocks-item" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;">
+                        <table style="border: 0;border-collapse: collapse;margin: 0;padding: 0;">
+                          <tbody>
+                          <tr>
+                            <td  class="Font Font--caption Font--uppercase Font--mute Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;white-space: nowrap;font-weight: bold;text-transform: uppercase;">
+                                Amount paid
+                            </td>
+                          </tr>
+                          <tr>
+                            <td  class="Font Font--body Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;white-space: nowrap;">
+                                $9.99
+                            </td>
+                          </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                        <td class="Spacer DataBlocks-spacer" width="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                        <td class="DataBlocks-item" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;">
+                          <table style="border: 0;border-collapse: collapse;margin: 0;padding: 0;">
+                            <tbody>
+                            <tr>
+                              <td  class="Font Font--caption Font--uppercase Font--mute Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;white-space: nowrap;font-weight: bold;text-transform: uppercase;">
+                                  Date paid
+                              </td>
+                            </tr>
+                            <tr>
+                              <td  class="Font Font--body Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;white-space: nowrap;">
+                                    July 17, 2020
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </td>
+                          <td class="Spacer DataBlocks-spacer" width="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                          <td class="DataBlocks-item" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;">
+                            <table style="border: 0;border-collapse: collapse;margin: 0;padding: 0;">
+                              <tbody>
+                              <tr>
+                                <td  class="Font Font--caption Font--uppercase Font--mute Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;white-space: nowrap;font-weight: bold;text-transform: uppercase;">
+                                    Payment method
+                                </td>
+                              </tr>
+                              <tr>
+                                <td  class="Font Font--body Font--noWrap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;white-space: nowrap;">
+                                    <span>
+                                      <img alt="Visa" height="16" src="https://stripe-images.s3.amazonaws.com/emails/receipt_assets/card/visa-dark@2x.png" style="border: 0; margin: 0; padding: 0; vertical-align: text-bottom;" width="36" />
+                                    </span>
+                                  <span> &ndash; 6507</span>
+                                </td>
+                              </tr>
+                              </tbody>
+                            </table>
+                          </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="32" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+
+
+            <table class="Section Copy" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Content Font Font--caption Font--uppercase Font--mute Delink" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;font-weight: bold;text-transform: uppercase;">
+                  Summary
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              <tr><td class="Spacer Spacer--divider" colspan="3" height="12" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr>
+              </tbody>
+            </table>
+
+            
+<table class="Section Table" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+  <tbody>
+  <tr>
+    <td class="Spacer Spacer--kill" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+    <td class="Content" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;">
+      <table class="Table-body invoice-line-items" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;width: 100%;background-color: #f6f9fc;border-radius: 4px;">
+        <tbody>
+        <tr><td class="Spacer Spacer--divider" colspan="3" height="4" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr>
+        <tr>
+          <td class="Spacer Spacer--gutter" width="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+          <td class="Table-content" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 432px;">
+            <table  class="Table-rows" width="432" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;">
+              <tbody>
+              <tr>
+                <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+                  <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+
+                    <tr>
+                      <td  class="Table-description Font Font--caption Font--uppercase Font--mute Delink" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;font-weight: bold;text-transform: uppercase;">
+                          Jul 17, 2020 &ndash; Aug 17, 2020
+                      </td>
+                      <td class="Spacer Table-gap" width="8" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                      <td class="Spacer Table-gap" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                    </tr>
+                    <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+
+                  <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+
+                    <tr>
+                      <td  class="Table-description Font Font--body" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;-ms-word-break: break-all;word-break: break-all;word-break: break-word;">
+                        Monthly ($10) [30 Day Trial]
+                        <span class="Content Font Font--mute Delink" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;color: #8898aa;font-size: 14px;line-height: 14px;">
+                          &times; 1
+                        </span>
+                      </td>
+                      <td class="Spacer Table-gap" width="8" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                      <td  class="Table-amount Font Font--body" align="right" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;">
+                        $9.99
+                      </td>
+                    </tr>
+                    <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+                  <tr>
+                    <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+
+
+              <tr>
+  <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+</tr>
+
+<tr>
+  <td class="Spacer" bgcolor="e6ebf1" colspan="3" height="1" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+</tr>
+
+<tr>
+  <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+</tr>
+
+
+              <tr>
+                <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              <tr class="invoice-line-items-subtotal">
+                <td  class="Table-description Font Font--body" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;font-weight: 500;">
+                  Subtotal
+                </td>
+                <td class="Spacer Table-gap" width="8" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Table-amount Font Font--body" align="right" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;font-weight: 500;">
+                  $9.99
+                </td>
+              </tr>
+              <tr>
+                <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+
+
+
+
+
+
+              <tr>
+                <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              <tr class="amount-due">
+                <td  class="Table-description Font Font--body Font--alt" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;font-weight: bold;">
+                    Amount paid
+                </td>
+                <td class="Spacer Table-gap" width="8" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Table-amount Font Font--body Font--alt" align="right" valign="top" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;font-weight: bold;">
+                    $9.99
+                </td>
+              </tr>
+              <tr>
+                <td class="Table-divider Spacer" colspan="3" height="6" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+
+              </tbody>
+            </table>
+          </td>
+          <td class="Spacer Spacer--gutter" width="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+        </tr>
+        <tr><td class="Spacer Spacer--divider" colspan="3" height="4" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr>
+        </tbody>
+      </table>
+    </td>
+    <td class="Spacer Spacer--kill" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+  </tr>
+  </tbody>
+</table>
+
+
+
+            <table class="Section Divider Divider--large" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="44" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+
+
+              <table class="Section Separator" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+                <tbody>
+                <tr>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  <td class="Spacer" bgcolor="e6ebf1" height="1" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                </tr>
+                </tbody>
+              </table>
+
+              <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="32" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+
+                <table class="Section Copy" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+                  <tbody>
+                  <tr>
+                    <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                    <td  class="Content Footer-help Font Font--body" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #525f7f;font-size: 15px;line-height: 24px;">
+                            If you have any questions, contact <span dir="ltr">Fitbod</span> at <a href="mailto:finance@fitbod.me" style="white-space: nowrap;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;outline: 0;text-decoration: none;color: #556cd6;">finance@fitbod.me</a> or call at <a href="tel:+14157276264" style="white-space: nowrap;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;outline: 0;text-decoration: none;color: #556cd6;">+1 415-727-6264</a>.
+                    </td>
+                    <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                  </tr>
+                  </tbody>
+                </table>
+
+                <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="16" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+              <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="16" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+            <table class="Section Separator" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td class="Spacer" bgcolor="e6ebf1" height="1" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <table class="Section Divider" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="32" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+            <table class="Section Copy" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Content Footer-legal Font Font--caption Font--mute" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;">
+                  <a href="https://dashboard.stripe.com/emails/receipts/invrc_1H5x6TJF5wYpOq1mEwezKe85/pdf" style="-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;outline: 0;text-decoration: none;color: #556cd6;">Download as PDF</a>
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <table class="Section Divider Divider--small" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;"><tbody><tr><td class="Spacer Spacer--divider" height="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+            <table class="Section Copy" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Content Footer-legal Font Font--caption Font--mute" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;">
+                  Something wrong with the email? <a class="browser-link" href="https://dashboard.stripe.com/emails/receipts/invrc_1H5x6TJF5wYpOq1mEwezKe85" style="border: 0; margin: 0; padding: 0; color: #556cd6; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif; text-decoration: none;" target="_blank" rel="noreferrer"><span style="border: 0; margin: 0; padding: 0; color: #556cd6; text-decoration: none;">View it in your browser.</span></a>
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <table class="Section Copy" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;">
+              <tbody>
+              <tr>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+                <td  class="Content Footer-legal Font Font--caption Font--mute" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;width: 472px;font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Ubuntu, sans-serif;mso-line-height-rule: exactly;vertical-align: middle;color: #8898aa;font-size: 12px;line-height: 16px;">
+                  You're receiving this email because you made a purchase at <a href="https://fitbod.me" style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; outline: 0; text-decoration: none; color: #556cd6;"><span dir="ltr">Fitbod</span></a>, which partners with <a href="https://stripe.com" style="-webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; outline: 0; text-decoration: none; color: #556cd6;">Stripe</a> to provide invoicing and payment processing.
+                </td>
+                <td class="Spacer Spacer--gutter" width="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td>
+              </tr>
+              </tbody>
+            </table>
+
+            <table class="Section Section--last Divider Divider--large" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;background-color: #ffffff;border-bottom-left-radius: 5px;border-bottom-right-radius: 5px;"><tbody><tr><td class="Spacer Spacer--divider" height="64" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+
+            </div>
+            </table></div></td>
+        </tr>
+        </tbody>
+      </table>
+      <table class="Divider Divider--small Divider--kill" width="100%" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;"><tbody><tr><td class="Spacer Spacer--divider" height="20" style="border: 0;border-collapse: collapse;margin: 0;padding: 0;-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;color: #ffffff;font-size: 1px;line-height: 1px;mso-line-height-rule: exactly;">&nbsp;</td></tr></tbody></table>
+    </div>
+    </body>
+    </html>

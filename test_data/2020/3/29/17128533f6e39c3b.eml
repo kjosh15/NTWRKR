@@ -1,0 +1,578 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9802:0:0:0:0:0 with SMTP id a2csp2079189ljj;
+        Sun, 29 Mar 2020 15:04:36 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vsAk1DWCCLqvcq0sSNlkCMzqoQWjPx2U1Pb7fbaFN0l3dyFErIBfhmEjgHvrfdw6IknqdMW
+X-Received: by 2002:ac8:7c8c:: with SMTP id y12mr9038801qtv.125.1585519476395;
+        Sun, 29 Mar 2020 15:04:36 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1585519476; cv=none;
+        d=google.com; s=arc-20160816;
+        b=XODe5JEAo2rRlOmRuOddPBhus/fzU91N1i+C7SXSauJ0DhFIOJFDkqjan/ZP+13OXA
+         cUhdiC5+LHJUs3fTNbAbP/E7NW1PkZoEAkRSKdoPNwuWT5FC+p85l99s4XCZNQsKsVJr
+         J8dkD5ZlG1kx0uWiKM1SuDDNg5a7C+sWgPt+Zspi/QhlttAmSYyEgGvTGkwK4gzsq7Y3
+         hkgVlAwuf7ow2L4IIKTbFQzydiAoBStpYW+abgLPC7Pl7CbbucYOQN07qOp0Pu0Is0IP
+         vfmpVOAz4nnqK9AJPNpqT4Ar9EygJz+MP6Ll5ZFcGFj5AMqB6DeVpybDviX0OZ/GnoZ/
+         m86g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:bounces-to:mime-version:subject:message-id:to:from
+         :dkim-signature:dkim-signature;
+        bh=Uy9f1iFsMtt18uDnsBqOnS5X83ZZlTZI/L+X8OKA6s4=;
+        b=020hEPRzOsxx1thQFQ7ob6fxJ8z3ICcW0Vge4NVvFYBk3k83wfYRtuMHJYb7GFYV/o
+         7Q2wUL6duim0OFAoewZEAr5J5N7JJqdSqcH6t7yokjYJhR5OQxGA6M1IWwMEUMFSLe2W
+         u5WwQZfQPeDn6QU0TkixvGYe95YPXDW9LodQdx2mtlOmkarSZIg69oBYsBQCW9NiM8gd
+         fW0LFoDC0Gb8s6Oes1Lvx5LalrgQ0rcBb5haZmlGDEkBpx9/YCwM8lutm5zq8THeibaU
+         EqThx7eo1Tv+90GqvkjZKEOHpUf7woc5spE5dojzSWvzVlikSN/FQeMd+vOCA9+8qEwy
+         WFGA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=jvxsykglqiaiibkijmhy37vqxh4mzqr6 header.b=hd7EVaaA;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=aA72ysBe;
+       spf=pass (google.com: domain of 202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com designates 54.240.13.53 as permitted sender) smtp.mailfrom=202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+Return-Path: <202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com>
+Received: from a13-53.smtp-out.amazonses.com (a13-53.smtp-out.amazonses.com. [54.240.13.53])
+        by mx.google.com with ESMTPS id d11si7469353qki.28.2020.03.29.15.04.36
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Sun, 29 Mar 2020 15:04:36 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com designates 54.240.13.53 as permitted sender) client-ip=54.240.13.53;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=jvxsykglqiaiibkijmhy37vqxh4mzqr6 header.b=hd7EVaaA;
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=aA72ysBe;
+       spf=pass (google.com: domain of 202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com designates 54.240.13.53 as permitted sender) smtp.mailfrom=202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=jvxsykglqiaiibkijmhy37vqxh4mzqr6; d=amazon.com; t=1585519475;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date;
+	bh=3VZKjmxkOujicr9q/Tai8aHxJk2ahZycNwqt7VPIu3k=;
+	b=hd7EVaaA/EeGROOR3CeU16/e5SolSxvsHD383kOOyZcL5jtKL9Xq9lE/CYyBZjZ8
+	utA7MQeCVOG+miiN4qtj6t0s13NnTvwzB/5JGjBDPNoq3O1a7oPWLsrvnPuR8k1UFtz
+	DMbhijtg4FBu+ckVKGEeb+UW2HfzKeOHPMUIpX6o=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1585519475;
+	h=From:To:Message-ID:Subject:MIME-Version:Content-Type:Date:Feedback-ID;
+	bh=3VZKjmxkOujicr9q/Tai8aHxJk2ahZycNwqt7VPIu3k=;
+	b=aA72ysBeDwY7PHshgQSET7AYPd0LrgOJGFNkrtIAX6q+pVPzqUVfFdy5HsWyCa4t
+	chtavOmweJkd0OJTZrbBT0SBriFPoe3yKTv7Ok5B0rwcsmlnMkvl8H6PdIa+uTyprX4
+	1hvn+im5YFpU0Pujsw2rVcVUB4SHB5ioZb/fmtBw=
+From: "Amazon.com" <store-news@amazon.com>
+To: josh@josh.is
+Message-ID: <0100017128533a09-0abf1533-e4d8-47ce-8443-3257447e12ca-000000@email.amazonses.com>
+Subject: Included with your Amazon order: Free 90 days of music
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_126453607_508983040.1585519475200"
+X-AMAZON-MAIL-RELAY-TYPE: notification
+Bounces-to: 202003292204359321dee31a164047a5a760e3a9d0p0na@bounces.amazon.com
+X-AMAZON-METADATA: CA=C30QIFL22DVQUK-CU=A3TT31TZCNFFF7
+X-Original-MessageID: <urn.rtn.msg.202003292204359321dee31a164047a5a760e3a9d0p0na@1585519475200.rtn-svc-na-back-c42xl1a-0ed69ce2.us-east-1.amazon.com>
+Date: Sun, 29 Mar 2020 22:04:35 +0000
+X-SES-Outgoing: 2020.03.29-54.240.13.53
+Feedback-ID: 1.us-east-1.ZHcGJK6s+x+i9lRHKog4RW3tECwWIf1xzTYCZyUaiec=:AmazonSES
+
+------=_Part_126453607_508983040.1585519475200
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Amazon.com
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+
+Dear Amazon Customer,
+
+
+As part of your recent Amazon.com order 112-6572655-0628240, you are eligib=
+le for a 90 day free trial of Amazon Music Unlimited.* Access to 50 million=
+ songs ad-free.
+
+To activate your Amazon Music Unlimited subscription, follow the link below=
+ and select the =E2=80=9CIndividual Plan=E2=80=9D on the signup page.
+
+https://www.amazon.com/gp/dmusic/full-catalog/signup
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+
+*This 90-day free trial offer of a monthly Amazon Music Unlimited Individua=
+l Plan is available only to new subscribers to Amazon Music Unlimited who p=
+urchase an eligible item shipped and sold by www.amazon.com. You will recei=
+ve an e-mail from Amazon with instructions on how to redeem this offer. You=
+ must sign up for Amazon Music Unlimited within 30 days after purchase of t=
+he eligible item. After the promotional trial, your subscription will autom=
+atically continue at the monthly price of $9.99 ($7.99 for Prime members), =
+until you cancel. Digital content and services may only be available to cus=
+tomers located in the U.S. and are subject to the terms and conditions of A=
+mazon.com Services LLC. Offer limited to one per customer and account. Amaz=
+on reserves the right to modify or cancel the offer at any time. Offer is n=
+on-transferable and may not be resold. If you violate any of these terms, t=
+he offer will be invalid. If any of the products or content related to this=
+ offer are returned, your refund will equal the amount you paid for the pro=
+duct or content, subject to applicable refund policies.
+
+(c) 2019 Amazon.com, Inc. or its affiliates. All rights reserved. Amazon,=
+=20
+Amazon.com, the Amazon.com logo, and Prime are registered trademarks of
+Amazon.com, Inc. or its affiliates.=20
+Amazon.com, 410 Terry Avenue N., Seattle, WA 98109-5210.
+------=_Part_126453607_508983040.1585519475200
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.=
+w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">=20
+<html>
+<head> =20
+<title>Amazon.com</title>
+
+<style type=3D"text/css">
+@charset "UTF-8";
+/* CSS Document */
+
+html {-webkit-text-size-adjust:none;}
+.ReadMsgBody {width: 100%;}
+.ExternalClass {width: 100%;}
+.ExternalClass * {line-height: 100%}
+.appleLinksWhite a {color:#ffffff; text-decoration:none;}
+body {padding:0;margin:0;width:100%;margin:0 auto;background-repeat:repeat-=
+x;}
+
+
+@media screen and (max-width: 620px) {
+*[class].block {display:block !important;}
+*[class].hide {display:none !important;}
+*[class].rel { position:relative !important; }
+*[class].abs { position:absolute !important; }
+*[class].show {display: block !important; width: auto !important; overflow:=
+ visible !important; float: none !important; max-height: inherit !important=
+; line-height: inherit !important;}
+
+/* ALIGNMENT */
+*[class].aligncenter {text-align:center !important;}
+*[class].alignleft {text-align:left !important;}
+
+/*** heights & widths ****/
+*[class].width1 {width:1px !important;}
+*[class].width2 {width:2px !important;}
+*[class].width3 {width:3px !important;}
+*[class].width4 {width:4px !important;}
+*[class].width5 {width:5px !important;}
+*[class].width6 {width:6px !important;}
+*[class].width7 {width:7px !important;}
+*[class].width8 {width:8px !important;}
+*[class].width9 {width:9px !important;}
+*[class].width10 {width:10px !important;}
+*[class].width11 {width:11px !important;}
+*[class].width12 {width:12px !important;}
+*[class].width13 {width:13px !important;}
+*[class].width14 {width:14px !important;}
+*[class].width15 {width:15px !important;}
+*[class].width20 {width:20px !important;}
+*[class].width22 {width:22px !important;}
+*[class].width25 {width:25px !important;}
+*[class].width30 {width:30px !important;}
+*[class].width35 {width:35px !important;}
+*[class].width40 {width:40px !important;}
+*[class].width45 {width:45px !important;}
+*[class].width50 {width:50px !important;}
+*[class].width138 {width:138px !important;}
+*[class].width139 {width:139px !important;}
+*[class].width194 {width:194px !important;}
+*[class].width210 {width:210px !important;}
+*[class].width242 {width:242px !important;}
+*[class].width245 {width:245px !important;}
+*[class].width250 {width:250px !important;}
+*[class].width298 {width:298px !important;}
+*[class].width300 {width:300px !important;}
+*[class].width320 {width:320px !important;}
+*[class].width340 {width:340px !important;}
+
+*[class].hauto   {height:auto !important;}
+
+*[class].height1 {height:1px !important;}
+*[class].height2 {height:2px !important;}
+*[class].height3 {height:3px !important;}
+*[class].height4 {height:4px !important;}
+*[class].height5 {height:5px !important;}
+*[class].height6 {height:6px !important;}
+*[class].height7 {height:7px !important;}
+*[class].height8 {height:8px !important;}
+*[class].height9 {height:9px !important;}
+*[class].height10 {height:10px !important;}
+*[class].height11 {height:11px !important;}
+*[class].height12 {height:12px !important;}
+*[class].height13 {height:13px !important;}
+*[class].height14 {height:14px !important;}
+*[class].height15 {height:15px !important;}
+*[class].height20 {height:20px !important;}
+*[class].height25 {height:25px !important;}
+*[class].height30 {height:30px !important;}
+*[class].height35 {height:35px !important;}
+*[class].height40 {height:40px !important;}
+*[class].height42 {height:42px !important;}
+*[class].height45 {height:45px !important;}
+*[class].height50 {height:50px !important;}
+
+
+/*** padding/margin ****/
+*[class].paddingr0 {padding-right:0px !important;}
+*[class].paddingr15 {padding-right:15px !important;}
+*[class].paddingr55 {padding-right:55px !important;}
+
+*[class].paddingl0 {padding-left:0px !important;}
+*[class].paddingl15 {padding-left:15px !important;}
+*[class].paddingl55 {padding-left:55px !important;}
+
+*[class].paddinglr55 {padding-left:60px !important; padding-right:60px !imp=
+ortant;}
+
+
+/*** fonts ****/
+*[class].font14 {font-size:14px !important;}
+*[class].font32 {font-size:32px !important;}
+
+*[class].line16 {line-height:16px !important;}
+*[class].line20 {line-height:20px !important;}
+*[class].line34 {line-height:34px !important;}
+
+/*** positioning ***/
+*[class].top21 {top:21px !important;}
+
+*[class].bggrey {background-color:#e3e3e3 !important;}
+*[class].bgwhite {background-color:#ffffff !important;}
+
+}
+</style>
+
+</head>
+<body width=3D"100%" style=3D"padding:0; margin:0;"><img width=3D"1" height=
+=3D"1" src=3D"https://www.amazon.com/gp/r.html?C=3DZUFOJ20314R0&K=3D2S78IYZ=
+YQPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3D2=
+PCILZYUX6OQ0&T=3DO&U=3Dhttps%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimag=
+es%2FG%2F01%2Fnav%2Ftransp.gif&H=3DQQIM5QAJBAIKXMZTW6ZWFPAF0L0A&ref_=3Dpe_2=
+242090_444597770_opens" />
+<!--[if gte mso 9]>
+<style>
+.mr15{ margin-right:15px !important;}
+.ml15{ margin-left:15px !important;}
+.mr5lr5 { margin-left:5px !important; margin-right:5px !important;}
+.mr20lr20 { margin-left:20px !important; margin-right:20px !important;}
+.mm1{ margin-left:30px !important; margin-right:30px !important;}
+.mm2{ margin-left:15px !important; margin-right:15px !important;}
+.mm3{ margin-left:50px !important; margin-right:50px !important;}
+.mm4{ margin-left:15px !important; margin-right:5px !important;}
+.mm5{ margin-left:10px !important; margin-right:10px !important;}
+</style>
+<![endif]-->
+<center>
+
+<table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%"><tr>
+  <td align=3D"center" bgcolor=3D"#e3e3e3">
+
+<table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"640" bgcol=
+or=3D"#e3e3e3" class=3D"width340">
+<tr>
+<td width=3D"14" class=3D"width10"></td>
+<td width=3D"640" bgcolor=3D"#ffffff" align=3D"center" class=3D"width320">
+<!--=20
+***************************
+HEADER OPTION:
+CONTROL
+***************************
+-->
+<!-- PREHEADER -->
+<table cellpadding=3D"0" cellspacing=3D"0" bgcolor=3D"#e3e3e3">
+<tr>
+<td width=3D"310" align=3D"left" valign=3D"bottom" class=3D"hide">
+<div style=3D"font-family:Arial, Helvetica, sans-serif; font-size:10px; lin=
+e-height:15px; color:#999999;" class=3D"hide">
+
+</td>
+<td width=3D"330" align=3D"right" class=3D"width320">&nbsp;</td>
+</tr>
+</table>
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"10" width=3D"6=
+40" class=3D"width320" bgcolor=3D"#e3e3e3" style=3D"line-height:10px;"><img=
+ src=3D"http://g-ec2.images-amazon.com/images/G/01/e-mail/img14/KDP/sp.gif"=
+ height=3D"1" width=3D"1" style=3D"display:block; border:0;" /></td></tr></=
+table>
+<!-- PREHEADER -->
+
+<!-- NAVIGATION -->
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td width=3D"640" class=3D"w=
+idth320" bgcolor=3D"#FF9900" height=3D"4" style=3D"line-height:4px;"><img s=
+rc=3D"http://g-ec2.images-amazon.com/images/G/01/e-mail/img14/KDP/sp.gif" h=
+eight=3D"1" width=3D"1" style=3D"display:block; border:0;" /></td></tr></ta=
+ble>
+<table border=3D"0" cellspacing=3D"0" cellpadding=3D"0" width=3D"640" class=
+=3D"width320">
+<tr>
+<td width=3D"145" align=3D"center" valign=3D"top" class=3D"width320 block">
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"18" style=3D"l=
+ine-height:18px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"display:block; bor=
+der:0;" /></td></tr></table>
+<a href=3D"https://smile.amazon.com/gp/r.html?C=3DZUFOJ20314R0&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3D3P=
+AHNH1VD7OMB&T=3DC&U=3Dhttp%3A%2F%2Fsmile.amazon.com%2Fref%3Dpe_2242090_4445=
+97770_pe_sef_logo&H=3DAYPQ86T2VIZUTBHPKX3VDIFGOTSA&ref_=3Dpe_2242090_444597=
+770_pe_sef_logo"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-m=
+ail/logos/amzn_logo_110x48.png" alt=3D"Amazon.com" style=3D"display:block; =
+border:0;" width=3D"110" height=3D"48" /></a>
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"9" class=3D"he=
+ight11" style=3D"line-height:9px;"><img src=3D"http://g-ec2.images-amazon.c=
+om/images/G/01/e-mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"d=
+isplay:block; border:0;" /></td></tr></table>
+</td>
+<td width=3D"480" align=3D"right" class=3D"width320 aligncenter block">
+<div style=3D"font-family:Arial, Helvetica, sans-serif; font-size:13px; lin=
+e-height:17px; color:#336699; font-weight:bold;">
+<a href=3D"https://smile.amazon.com/gp/f.html?C=3DZUFOJ20314R0&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3DTB=
+U1J6KH0YG5&T=3DC&U=3Dhttp%3A%2F%2Fsmile.amazon.com%2Fgp%2Fyourstore%2Fhome%=
+2Fref%3Dpe_2242090_444597770_pe_yourstore%2F&H=3D9AKQJ2BWBFQCBWU6I7ATJIUVZI=
+4A&ref_=3Dpe_2242090_444597770_pe_yourstore" style=3D"color:#336699; text-d=
+ecoration:underline;">Your Amazon</a>&nbsp;&nbsp;&nbsp;
+<a href=3D"https://smile.amazon.com/gp/f.html?C=3DZUFOJ20314R0&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3D29=
+ZU70XEKXS31&T=3DC&U=3Dhttp%3A%2F%2Fsmile.amazon.com%2Fgp%2Fgoldbox%2Fref%3D=
+pe_2242090_444597770_pe_todaysdeal%2F&H=3DAUPENVF65QNLMVZU23WWJDROW5KA&ref_=
+=3Dpe_2242090_444597770_pe_todaysdeal" style=3D"color:#336699; text-decorat=
+ion:underline;"><span class=3D"hide">Today's </span>Deals</a>&nbsp;&nbsp;&n=
+bsp;
+<a href=3D"https://smile.amazon.com/gp/f.html?C=3DZUFOJ20314R0&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3DI2=
+K5PRJ0TMHV&T=3DC&U=3Dhttp%3A%2F%2Fsmile.amazon.com%2Fgp%2Fsite-directory%2F=
+ref%3Dpe_2242090_444597770_pe_dir_gw%2F&H=3DACAONCY6CDFAQLTZT9COAI5RHMAA&re=
+f_=3Dpe_2242090_444597770_pe_dir_gw" style=3D"color:#336699; text-decoratio=
+n:underline;"><span class=3D"hide">All </span>Departments</a>
+</div>
+</td>
+<td width=3D"15" class=3D"hide"></td>
+</tr>
+</table>
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"1" class=3D"he=
+ight20" style=3D"line-height:1px;"><img src=3D"http://g-ec2.images-amazon.c=
+om/images/G/01/e-mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"d=
+isplay:block; border:0;" /></td></tr></table>
+
+
+<table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%"><tr><td align=3D"=
+center">
+<!-- shadow rule -->
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"10" style=3D"l=
+ine-height:10px;"><img src=3D"http://g-ecx.images-amazon.com/images/G/01/e-=
+mail/img14/welcome/shadow_rule.gif" style=3D"display:block;" width=3D"610" =
+class=3D"width298" /></td></tr></table>
+<!-- shadow rule -->
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"20" style=3D"l=
+ine-height:20px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"display:block; bor=
+der:0;" /></td></tr></table>
+</td></tr></table>
+
+<!-- headline --><!-- /headline -->
+
+<table cellpadding=3D"0" cellspacing=3D"0" width=3D"610" class=3D"width320"=
+>
+<tr><td width=3D"610" align=3D"center" class=3D"width320">
+
+<!-- body copy -->
+<table cellpadding=3D"0" cellspacing=3D"0">
+<tr>
+<td width=3D"50" class=3D"width35"></td>
+<td width=3D"495" align=3D"left" valign=3D"top" class=3D"width250">
+<div style=3D"font-family:Arial, Helvetica, sans-serif; font-size:16px; lin=
+e-height:22px; color:#333333;" class=3D"font14 line20">
+
+<strong>Dear Amazon Customer,</strong>
+
+<br /><br />
+As part of your recent Amazon.com order <u><a href=3D"https://smile.amazon.=
+com/gp/r.html?C=3DZUFOJ20314R0&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:2020032922=
+04359321dee31a164047a5a760e3a9d0p0na&R=3DE81YJBXL5MSC&T=3DC&U=3Dhttps%3A%2F=
+%2Fsmile.amazon.com%2Fgp%2Fyour-account%2Forder-details%3Fie%3DUTF8%26order=
+ID%3D112-6572655-0628240%26ref_%3Dpe_2242090_444597770&H=3DYOVVRPAFI3XLO0PX=
+09BTY5NZDW8A&ref_=3Dpe_2242090_444597770">112-6572655-0628240</a></u>, you =
+are eligible for a <b>90 day free trial of Amazon Music Unlimited</b>.* Acc=
+ess 50 million songs ad-free.
+<br><br>
+To activate your Amazon Music Unlimited subscription, click the button belo=
+w and select the =E2=80=9CIndividual Plan=E2=80=9D on the signup page.<br><=
+br><span class=3D"font14 line20" style=3D"font-family:Arial, Helvetica, san=
+s-serif; font-size:16px; line-height:22px; color:#333333;"><strong></strong=
+></span></div>
+</td>
+<td width=3D"65" class=3D"width35"></td>
+</tr>
+</table>
+   =20
+    <tr>
+                  <td align=3D"center" width=3D"250">
+                           <table border=3D"0" cellspacing=3D"0" cellpaddin=
+g=3D"0">
+                               <tr>
+                                  <td bgcolor=3D"#FFC435" style=3D"text-ali=
+gn:center;color:#FFC435;font-family:Helvetica,Arial,Sans-serif;color:#232f3=
+e;font-size:19px;font-weight:bold;padding:15px 0;border-radius:5px;" width=
+=3D"200"><a href=3D"https://music.amazon.com/gp/r.html?C=3DZUFOJ20314R0&K=
+=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0=
+p0na&R=3D2V4TMJSRLS02D&T=3DC&U=3Dhttps%3A%2F%2Fmusic.amazon.com%2Fsignup%2F=
+full-catalog%3FpromoType%3DBOUNCE_BACK%26ref_%3Dpe_2242090_444597770&H=3DIC=
+0IHCV46TVQD4DXUJEP7FZDUVSA&ref_=3Dpe_2242090_444597770" style=3D"color:#232=
+f3e;text-decoration:none;">Get started</a></td>
+                               </tr>
+=09=09=09=09=09=09   </table>
+                        </td>
+                </tr>
+
+<!-- /body copy -->
+</td></tr>
+</table>
+<br><br>
+
+<!-- headline --><!-- headline --><!-- /headline -->
+
+<!--=20
+***************************
+Control with two columns
+Image size: 245x245
+
+***************************
+-->
+<!--=20
+***************************
+Control with two columns
+***************************
+-->
+
+
+<table cellspacing=3D"0" cellpadding=3D"0" width=3D"100%"><tr><td align=3D"=
+center">
+<!-- shadow rule -->
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"10" style=3D"l=
+ine-height:10px;"><img src=3D"http://g-ecx.images-amazon.com/images/G/01/e-=
+mail/img14/welcome/shadow_rule.gif" style=3D"display:block;" width=3D"610" =
+class=3D"width298" /></td></tr></table>
+<!-- shadow rule -->
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"20" style=3D"l=
+ine-height:20px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"display:block; bor=
+der:0;" /></td></tr></table>
+</td></tr></table>
+
+    <!--=20
+    ***************************
+    Control with two columns
+    Image size: 245x245
+   =20
+    ***************************
+    --><!-- space -->
+
+    <table cellpadding=3D"0" cellspacing=3D"0">
+  <tr>
+<td align=3D"center" valign=3D"top" class=3D"width320 block">
+<a href=3D"https://smile.amazon.com/gp/r.html?C=3DZUFOJ20314R0&K=3D2S78IYZY=
+QPYO1&M=3Durn:rtn:msg:202003292204359321dee31a164047a5a760e3a9d0p0na&R=3D2R=
+88DC6LLQF2R&T=3DC&U=3Dhttp%3A%2F%2Fsmile.amazon.com%2Fref%3Dpe_2242090_4445=
+97770_pe_sef_logo&H=3DA1BLFAXOVAW2TMEBT7MSGAISQ8AA&ref_=3Dpe_2242090_444597=
+770_pe_sef_logo"><img src=3D"http://g-ecx.images-amazon.com/images/G/01/gno=
+/images/general/navAmazonLogoFooter.gif" alt=3D"Amazon.com" style=3D"displa=
+y:block; border:0; font-family:Arial, sans-serif; font-size:24px; color:#ff=
+9900; text-decoration:none; font-weight:bold" width=3D"126" height=3D"24" /=
+></a>
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"15" style=3D"l=
+ine-height:15px;" class=3D"height15"><img src=3D"http://g-ec2.images-amazon=
+.com/images/G/01/e-mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D=
+"display:block; border:0;" /></td></tr></table>
+</td>
+<td width=3D"350" class=3D"hide"></td>
+<td width=3D"126" align=3D"center" valign=3D"top" class=3D"width320 block">
+
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td height=3D"20" style=3D"l=
+ine-height:20px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"display:block; bor=
+der:0;" /></td></tr></table>
+</td>
+</tr>
+</table>
+<table cellspacing=3D"0" cellpadding=3D"0"><tr><td width=3D"640" class=3D"w=
+idth320" bgcolor=3D"#303942" height=3D"3" style=3D"line-height:3px;"><img s=
+rc=3D"http://g-ec2.images-amazon.com/images/G/01/e-mail/img14/KDP/sp.gif" h=
+eight=3D"1" width=3D"1" style=3D"display:block; border:0;" /></td></tr></ta=
+ble>
+
+
+<!-- FOOTER -->
+<table cellpadding=3D"0" cellspacing=3D"0">
+<tr><td width=3D"640" align=3D"left" bgcolor=3D"#e3e3e3" class=3D"width320"=
+><div style=3D"font-family:Arial, Helvetica, sans-serif; font-size:10px; li=
+ne-height:15px; color:#333333;">
+<div style=3D"font-size:11px; font-family:Arial, Helvetica, sans-serif; col=
+or:#333333; line-height:15px;">
+<table cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"18" style=3D"l=
+ine-height:18px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" width=3D"1" height=3D"18" style=3D"display:block;" /=
+></td></tr></table>
+
+
+<table cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"10" style=3D"l=
+ine-height:10px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" width=3D"1" height=3D"10" style=3D"display:block;" /=
+></td></tr></table>
+*This 90-day free trial offer of a monthly Amazon Music Unlimited Individua=
+l Plan is available only to new subscribers to Amazon Music Unlimited who p=
+urchase an eligible item shipped and sold by www.amazon.com. You will recei=
+ve an e-mail from Amazon with instructions on how to redeem this offer. You=
+ must sign up for Amazon Music Unlimited within 30 days after purchase of t=
+he eligible item. After the promotional trial, your subscription will autom=
+atically continue at the monthly price of $9.99 ($7.99 for Prime members), =
+until you cancel. Digital content and services may only be available to cus=
+tomers located in the U.S. and are subject to the terms and conditions of A=
+mazon.com Services LLC. Offer limited to one per customer and account. Amaz=
+on reserves the right to modify or cancel the offer at any time. Offer is n=
+on-transferable and may not be resold. If you violate any of these terms, t=
+he offer will be invalid. If any of the products or content related to this=
+ offer are returned, your refund will equal the amount you paid for the pro=
+duct or content, subject to applicable refund policies.
+
+<table cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"10" style=3D"l=
+ine-height:10px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" width=3D"1" height=3D"10" style=3D"display:block;" /=
+></td></tr></table>
+
+=C2=A9 2019 Amazon.com, Inc. or its affiliates. All rights reserved. Amazon=
+, Amazon.com, the Amazon.com logo, and Prime are registered trademarks of A=
+mazon.com, Inc. or its affiliates. Amazon.com, 410 Terry Avenue N., Seattle=
+, WA 98109-5210.
+
+<table cellpadding=3D"0" cellspacing=3D"0"><tr><td height=3D"10" style=3D"l=
+ine-height:10px;"><img src=3D"http://g-ec2.images-amazon.com/images/G/01/e-=
+mail/img14/KDP/sp.gif" width=3D"1" height=3D"10" style=3D"display:block;" /=
+></td></tr></table>
+<br /><br />
+</div>
+</div>
+
+<table cellspacing=3D"0" cellpadding=3D"0" class=3D"hide"><tr><td height=3D=
+"6" style=3D"line-height:6px;"><img src=3D"http://g-ec2.images-amazon.com/i=
+mages/G/01/e-mail/img14/KDP/sp.gif" height=3D"1" width=3D"1" style=3D"displ=
+ay:block; border:0;" /></td></tr></table>
+</td></tr>
+</table>
+<!-- FOOTER -->
+
+<!--=20
+***************************
+FOOTER - Control
+***************************
+-->
+</td>
+<td width=3D"14" class=3D"width10"></td>
+</tr></table>
+</td></tr></table>
+</center>
+
+<img width=3D"1" height=3D"1" src=3D"https://www.amazon.com/gp/r.html?C=3DZ=
+UFOJ20314R0&K=3D2S78IYZYQPYO1&M=3Durn:rtn:msg:202003292204359321dee31a16404=
+7a5a760e3a9d0p0na&R=3DISABAWLPKMGP&T=3DE&U=3Dhttps%3A%2F%2Fimages-na.ssl-im=
+ages-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=3DQI80OQMP9AIEZHWOXH=
+SFYJ0VZNYA&ref_=3Dpe_2242090_444597770_open" /></body>
+------=_Part_126453607_508983040.1585519475200--

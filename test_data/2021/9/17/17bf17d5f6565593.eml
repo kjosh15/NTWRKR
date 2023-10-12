@@ -1,0 +1,430 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:ba51:0:b0:20e:7da0:d862 with SMTP id p17csp1409031vqh;
+        Thu, 16 Sep 2021 19:02:10 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy8+96MNypffUjtwwojuuWOGO3atSHpbasDwxqIPr1Ie+goLMlP14ME19fcGD3vyxXuajpv
+X-Received: by 2002:a50:becb:: with SMTP id e11mr9049743edk.161.1631844130604;
+        Thu, 16 Sep 2021 19:02:10 -0700 (PDT)
+Return-Path: <Luis.F.Rojas@takeda.com>
+Received: from mx08-00297f01.pphosted.com (mx08-00297f01.pphosted.com. [91.207.212.250])
+        by mx.google.com with ESMTPS id m4si7017075eja.677.2021.09.16.19.02.10
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 16 Sep 2021 19:02:10 -0700 (PDT)
+Received-SPF: pass (google.com: domain of luis.f.rojas@takeda.com designates 91.207.212.250 as permitted sender) client-ip=91.207.212.250;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@takeda.com header.s=pp27022019 header.b="ALwWFV/f";
+       arc=fail (body hash mismatch);
+       spf=pass (google.com: domain of luis.f.rojas@takeda.com designates 91.207.212.250 as permitted sender) smtp.mailfrom=Luis.F.Rojas@takeda.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=takeda.com
+Received: from pps.filterd (m0215289.ppops.net [127.0.0.1])
+	by mx07-00297f01.pphosted.com (8.16.1.2/8.16.0.43) with SMTP id 18GFXkb0008179
+	for <josh@josh.is>; Fri, 17 Sep 2021 04:02:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=takeda.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ mime-version; s=pp27022019;
+ bh=bYpSUcdBiBIAQUtWTdMaKkLQfNXg121AE+HYtA989QY=;
+ b=ALwWFV/fOSi/rfBf/f7ID4/u9tOYlHbGDgrn8p2XwadQm9LVoensreNMPM8LlaTDHoQ/
+ Z/KmEZ7utLTSxq4iuBUFebCrlC22S9Rr9Q5dMaNvpn1l3gGKTMUkQdUsjSS5rGUJBWAH
+ ZcyTOMwDm0Pm1hpb3xdF0cNk1+wC2z3hXQbgJ3TTffr4Q+fdvSjZDk2qvUnEu/IZCl3/
+ maEaqeC3bhFVu9WJiAIdkGtkCbV7CY5KwW+OKHS5cUL4B7YTVfKNeyVWvzn++wts0QvF
+ LCPKTBm5Saqgxnk+RQdsWfqL8nUJAlu+Ar17sQw8nOJ4QSpBxtLN+4/l3z8ylRLintwY 5A== 
+Received: from eur05-vi1-obe.outbound.protection.outlook.com (mail-vi1eur05lp2169.outbound.protection.outlook.com [104.47.17.169])
+	by mx07-00297f01.pphosted.com with ESMTP id 3b48p4a3w0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Fri, 17 Sep 2021 04:02:09 +0200
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IV8B/vQ0v5HLju/UMm23qmB+L1mkWbE8GLJ9wyrduFGbBW1aaFWqK5ZVjWydMJPGF2yzqrRMczV1DbpHjDjy9NOKWvMrVg7AjitTtvd/4vEfRPG6nJZrxNDfgHCFIDby2omRcV8D3/a62BQ4UN5Wp+lK4sFZmnaf2+ghj8mtOJjXLO1WURPLm4JinPAlUQEr9v7nox42EaVDdxEb1yFSEVD2vERvRePryrMCIO5MROCjDTJ2GnFSAFsggl7uWcSPlSwuxJcJpskIKI1kJRQsyqgRQKnYiPvBUya8Es3M0vl1OgTj4omg9gB2g1y9e3GqZ5NPZ8iObkMZ0GuC0WO2qw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901; h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=DZRCCm0sGV+D8RW2nWSFU1nqquoB4cB9n08buPTPOWI=;
+ b=nGmEVE2hxMnqgsrkW9CyS/fAz1MzJfKBd33KDG3Gxp9OuZYNDhO7BVXSyXI40JH4PMeHjzhWBgyavA3QlrM90DSI6Ond0gX6ckdjs8nvnRApyLg1ul+otf2X/lfA2koIo4kKdNkkuUHzUYVzq+oYxZr5LmR3Lg/H4ibVvVWyZGUH1zxNpV7po3WAIiPTFYoWQxtW6D7MmqF7zsfDG53IRK/ciFwqz9CcRFNM72q7C1LrNjrQZkztqIMsN3GSB9dQR0G4mqeq6mqUjQQzTiqfas21vkSmZFp8K0cMXwwX6mXjAgxWBbyrIlQzgqrHt0J1P+0npnmBbNyjxRqMtm0DnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=takeda.com; dmarc=pass action=none header.from=takeda.com;
+ dkim=pass header.d=takeda.com; arc=none
+Received: from DB9PR08MB7147.eurprd08.prod.outlook.com (2603:10a6:10:2cb::13)
+ by DU2PR08MB7255.eurprd08.prod.outlook.com (2603:10a6:10:2d2::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4523.14; Fri, 17 Sep
+ 2021 02:02:08 +0000
+Received: from DB9PR08MB7147.eurprd08.prod.outlook.com
+ ([fe80::e17a:45cc:605d:1159]) by DB9PR08MB7147.eurprd08.prod.outlook.com
+ ([fe80::e17a:45cc:605d:1159%9]) with mapi id 15.20.4500.019; Fri, 17 Sep 2021
+ 02:02:08 +0000
+From: "Rojas, Luis" <Luis.F.Rojas@takeda.com>
+To: Josh Klein <josh@josh.is>
+CC: "Nestor, Lynn" <lynn.nestor@takeda.com>
+Subject: RE: RE: Material Impacts of ESG Event Follow-up (Introductory
+ Session) with Josh Klein
+Thread-Topic: RE: Material Impacts of ESG Event Follow-up (Introductory
+ Session) with Josh Klein
+Thread-Index: AdepW7AQtxhvZ6OlT6i+/qLOsS2DGQCDD4uA
+Date: Fri, 17 Sep 2021 02:02:08 +0000
+Message-ID: 
+ <DB9PR08MB7147AC000DB473CFE9F60EB0ABDD9@DB9PR08MB7147.eurprd08.prod.outlook.com>
+References: 
+ <DB9PR08MB714784A2CD11085C9E25098BABDA9@DB9PR08MB7147.eurprd08.prod.outlook.com>
+In-Reply-To: 
+ <DB9PR08MB714784A2CD11085C9E25098BABDA9@DB9PR08MB7147.eurprd08.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: josh.is; dkim=none (message not signed)
+ header.d=none;josh.is; dmarc=none action=none header.from=takeda.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: aaa20f25-516b-45bd-bbba-08d9797f27e9
+x-ms-traffictypediagnostic: DU2PR08MB7255:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: 
+ <DU2PR08MB72556A2104B89733311A737BABDD9@DU2PR08MB7255.eurprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1186;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ gNEvBcNJ0SgCiB8JqbpVlfZb0VhgF2lam86g4yBiV3tLIDcH3KsC25sSK+pI8wh4IxKMRjHnAA6GIhKsIv+vT5i8EAWmPrjelihL7UgWnoC0uqS8VXxTuq9ttpiOjPEeKyla5egTbqMvq7pF6Cacvf8ccTc/WF+n9ak0/m6qwVZVqLVJqKDAw8qTOb/YWCNor/XjmqBdU6xkd3Z1oW7OGcAdCKH6F1fROZCNTumYe63tDHpTTtFni17EewW+99+/FI44iy5xzXgVdt7+6ILJA8vLvmmmp+mqkzmvDZKKtYIIusm56Q+nBWcYmKdtv71hd+5yD8ragTG+Vord8cJYGk27iu3TWR66J50Ra7nl/WcRcIch+26uwhUlFXylzUmMx9xVRsYOUA4dJcM88vGnazOwT4O7B0u8KATpas4gQM9m0CiQ+4G22uxd62fGe2F7XtPm4hYw6xeJ7qzWUIjQYWE3+Hsj03WWSKcI46INOQWqMiYazgPCUVYmyIBZWgtvDJj3vY2SQJQ9UzCXcCIqNp+UTnhQcm4sf8Ju6Fyzq/MT1zToQ5JhA/Vjdtm4wrbPU596zRd8V25UEvwNz2CR5Um+hYhwfcduMPKUhCIWRE66hpb7SmklPQ3N+Zq71I11u1tDrzAyVRvMZJwslufRcaV49mtap2mNgn+vpQI6Pcy49E67gCKhmgo93PTAP0/kvvAC6YFvJFNO0yV0KiAsxMc8JZ/T0/mkCS8t/AMqgkH1d4WfruRaWMbFXVjYCZxfnd3HBsI6VNMyNrxIpErfBhwHvpChRMQc2yrQwrWda6f7G11Bt32/YilF522zW2xQH+iqBYoXMpmkRwGnmHpxWQYBd72+NKEejrujEDbcs4/hXd3c7TM9pOs4GvuSf8mp
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB9PR08MB7147.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(136003)(346002)(396003)(39860400002)(376002)(478600001)(45080400002)(107886003)(55016002)(33656002)(71200400001)(7066003)(26005)(5660300002)(9686003)(76116006)(66946007)(186003)(66476007)(64756008)(66556008)(66446008)(40140700001)(40265005)(9240055009)(4326008)(2906002)(86362001)(53546011)(122000001)(38100700002)(316002)(6916009)(38070700005)(8936002)(8676002)(166002)(7696005)(83380400001)(52536014)(6506007)(43620500001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?LYTnfaWutal76DMw2Govfc3YaHleecHfCzqR0UUr9YiRyGyeIjLPIS3Q8z2S?=
+ =?us-ascii?Q?7QKHo+MFe1adqhYI1JT4PYPiDFJu0WQawZloKNIjr6IwfvUqDyIW3/lP67wG?=
+ =?us-ascii?Q?sSiZhnmY+NRqq7jR6M5QYS5IiK08TBeGiAZLR+2uoLgxV8HuSZEhJ9DNhr5u?=
+ =?us-ascii?Q?FR09bWhaP4aP8YRqK3IbW3rOOQmwtFRWfRSTGGFhyys9lxK48d+xeR8uluFB?=
+ =?us-ascii?Q?OAus7Dtpx7QekMUIMLGhxTbhGQr/z9m22mBNQ7olKEKDV39xrxvsLzXX2Qc+?=
+ =?us-ascii?Q?AAZJokVHM7gBqypqB6j/Cfwe2+qhRNQpzHRlmcfWqcCJqrKuHGk8RXa13yOO?=
+ =?us-ascii?Q?Vk+HOGbeFzqq4zQp/F9UBbSVJwzjyQzA99LtE8CK2kR2t+lYzaFLh4c9uHip?=
+ =?us-ascii?Q?w0HWHHFSKNRu7lp6xGnd8jR/rkFaswS4UDMGXOZ9WS2b+gcjkldDoRFtU+HY?=
+ =?us-ascii?Q?e6+XVWH07jutexsxr2uV/PIRdo3OnTIdNfZ2BQhoRqTYP7IHfJKYArI7iMsE?=
+ =?us-ascii?Q?GbZ0b5NHcopEGVJpchncl3sNNCYPr9qj0/gPUg94QyKmsoZtkhK6jvXN6p4x?=
+ =?us-ascii?Q?Z94omIHu8ApgGLskPTb3tUTatXvs3d87nDtV+7ICUvtZ84E0QtdDVFJrhaWC?=
+ =?us-ascii?Q?gxaUSyTZcViAF5p+YdTdi+4Oxz9t+ew1ki2a3I7z1r8zHERebyeLfPwkxL1p?=
+ =?us-ascii?Q?th6ex5jr9v4u4rMz8sp5zXF498IgJgtcUI5evw+LrKsDNO5lxT4gG+fIEX1F?=
+ =?us-ascii?Q?RZRkFfFG0zBWu3pTThRfO5JdOa7e2NITRiiiF1GiXfSDdf9ocC48Ey3mA9eQ?=
+ =?us-ascii?Q?gfbcOfPRnC308+MND3TbGEv/LwCuPTvZtiulcSb3jdQa/hpYKOXYd4PQnvoC?=
+ =?us-ascii?Q?FjVpZQ9Vp2Md3naF7qyQfvTQ3S43hNbCk46EseX9xWUfDl3M/bn2YvUANOps?=
+ =?us-ascii?Q?RxJ0KRJBQfEdhJnXvJiy3TS+ZNxSl7OT1gnUqKfb25IyCtq5iPAt9f8mzCAc?=
+ =?us-ascii?Q?ONe47vxNdxMeOvd8XypqZw9mNE241Po5QmmDS1O43Qdq7gmNnSZzT36JCFl2?=
+ =?us-ascii?Q?M17ybqVsFWB1C0u8OwIJtxed+R9T3I6oapjJbJfM0r7Skmy0LdjkVzI4uV2U?=
+ =?us-ascii?Q?2gGkyR3AOutftSeZAissP89afoUITIutrI30PEgUVYF5VAMgfQrJZqaILsHt?=
+ =?us-ascii?Q?Yh9rxDcaKjLsJu3Abe2/FJn1Dfo6al3hIB0Pkup/rZ6JaJRZdHqnwcluVJdb?=
+ =?us-ascii?Q?MSecAcu7Y505d9fqJjAfjJgMF3kSNcA4P7ayWoWJzjJx5T9lIbGFnMsXJBBE?=
+ =?us-ascii?Q?Gd6RrV8R0GuAnIm+Soludek9?=
+Content-Type: multipart/alternative;
+	boundary="_000_DB9PR08MB7147AC000DB473CFE9F60EB0ABDD9DB9PR08MB7147eurp_"
+MIME-Version: 1.0
+X-OriginatorOrg: takeda.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR08MB7147.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: aaa20f25-516b-45bd-bbba-08d9797f27e9
+X-MS-Exchange-CrossTenant-originalarrivaltime: 17 Sep 2021 02:02:08.5798
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 57fdf63b-7e22-45a3-83dc-d37003163aae
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: PNrIIbhJsuCbCGHmbRG2JLbfCh4IpQoM0VdMUxdCeLdWL5i5KZd18DTcw1mpH3mm/j75A8+ixZkdV7BEmsPhIQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR08MB7255
+X-Proofpoint-ORIG-GUID: SkvEXWRtfQU9deNdLD96gtERh-z94Axy
+X-Proofpoint-GUID: SkvEXWRtfQU9deNdLD96gtERh-z94Axy
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.182.1,Aquarius:18.0.790,Hydra:6.0.391,FMLib:17.0.607.475
+ definitions=2021-09-16_07,2021-09-16_01,2020-04-07_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ lowpriorityscore=0 suspectscore=0 impostorscore=0 spamscore=0
+ malwarescore=0 mlxscore=0 adultscore=0 priorityscore=1501 bulkscore=0
+ phishscore=0 mlxlogscore=999 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2109030001 definitions=main-2109170011
+
+--_000_DB9PR08MB7147AC000DB473CFE9F60EB0ABDD9DB9PR08MB7147eurp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh - I hope you are well. I need to reschedule our call due to a confl=
+ict. Lynn will find a new date / time for us.
+
+Please stay safe and best regards,
+Chat with me on Teams<https://teams.microsoft.com/l/chat/0/0?users=3DLuis.F=
+.Rojas@takeda.com>
+Luis F. Rojas
+Head of Global People Insights and Analytics
+Human Resources
+Takeda Pharmaceuticals<http://www.takeda.com/>
+Office 45HA 2.114
+45 Hayden Avenue, Lexington, MA, 02421
+Mobile +1-617-699-3348
+email: Luis.F.Rojas@Takeda.com<mailto:Luis.F.Rojas@Takeda.com>
+WeLearn@Takeda<https://mytakeda.sharepoint.com/sites/WeLearnAtTakeda>
+
+-----Original Appointment-----
+From: Nestor, Lynn On Behalf Of Rojas, Luis
+Sent: Tuesday, September 14, 2021 7:29 AM
+To: Rojas, Luis; Josh Klein
+Subject: RE: Material Impacts of ESG Event Follow-up (Introductory Session)=
+ with Josh Klein
+When: Friday, September 17, 2021 8:30 AM-9:00 AM (UTC-05:00) Eastern Time (=
+US & Canada).
+Where: Microsoft Teams Meeting
+
+
+___________________________________________________________________________=
+_____
+Microsoft Teams meeting
+Join on your computer or mobile app
+Click here to join the meeting<https://teams.microsoft.com/l/meetup-join/19=
+%3ameeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh%40thread.v2/0?c=
+ontext=3D%7b%22Tid%22%3a%2257fdf63b-7e22-45a3-83dc-d37003163aae%22%2c%22Oid=
+%22%3a%22244aa894-f5b8-4493-aee9-e767c03b85c8%22%7d>
+Join with a video conferencing device
+takeda@m.webex.com<mailto:takeda@m.webex.com>
+Video Conference ID: 129 121 173 9
+Alternate VTC instructions<https://www.webex.com/msteams?confid=3D129121173=
+9&tenantkey=3Dtakeda&domain=3Dm.webex.com>
+Or call in (audio only)
++1 312-549-8473,,462031735#<tel:+13125498473,,462031735#>   United States, =
+Chicago
+Phone Conference ID: 462 031 735#
+Find a local number<https://dialin.teams.microsoft.com/3b37f231-b6be-494e-a=
+f9a-ccd3fe6544a5?id=3D462031735> | Reset PIN<https://mysettings.lync.com/ps=
+tnconferencing>
+Learn More<https://aka.ms/JoinTeamsMeeting> | Meeting options<https://teams=
+.microsoft.com/meetingOptions/?organizerId=3D244aa894-f5b8-4493-aee9-e767c0=
+3b85c8&tenantId=3D57fdf63b-7e22-45a3-83dc-d37003163aae&threadId=3D19_meetin=
+g_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh@thread.v2&messageId=3D0&=
+language=3Den-US>
+___________________________________________________________________________=
+_____
+
+The content of this email and of any files transmitted may contain confiden=
+tial, proprietary or legally privileged information and is intended solely =
+for the use of the person/s or entity/ies to whom it is addressed. If you h=
+ave received this email in error you have no permission whatsoever to use, =
+copy, disclose or forward all or any of its contents. Please immediately no=
+tify the sender and thereafter delete this email and any attachments.
+
+--_000_DB9PR08MB7147AC000DB473CFE9F60EB0ABDD9DB9PR08MB7147eurp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Segoe UI";
+	panose-1:2 11 5 2 4 2 4 2 2 3;}
+@font-face
+	{font-family:"Segoe UI Semibold";
+	panose-1:2 11 7 2 4 2 4 2 2 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0in;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:#0563C1;
+	text-decoration:underline;}
+span.EmailStyle20
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:8.5in 11.0in;
+	margin:1.0in 1.0in 1.0in 1.0in;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"#0563C1" vlink=3D"#954F72" style=3D"word-wrap:=
+break-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Josh &#8211; I hope you are well. I need to resch=
+edule our call due to a conflict. Lynn will find a new date / time for us.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal" style=3D"mso-margin-bottom-alt:auto">Please stay saf=
+e and best regards,
+<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-bottom-alt:auto"><span style=3D"=
+color:blue"><a href=3D"https://teams.microsoft.com/l/chat/0/0?users=3DLuis.=
+F.Rojas@takeda.com"><span style=3D"color:blue">Chat with me on Teams</span>=
+</a><o:p></o:p></span></p>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"fon=
+t-size:9.0pt;font-family:&quot;Arial&quot;,sans-serif;color:black">Luis F. =
+Rojas</span></b><span style=3D"font-size:9.0pt;font-family:&quot;Arial&quot=
+;,sans-serif;color:black">
+<br>
+Head of Global People Insights and Analytics<br>
+Human Resources <br>
+</span><span style=3D"font-size:10.5pt;color:#1F497D"><a href=3D"http://www=
+.takeda.com/"><span style=3D"color:blue">Takeda Pharmaceuticals</span></a><=
+/span><span style=3D"font-size:9.0pt;font-family:&quot;Arial&quot;,sans-ser=
+if;color:black"><br>
+Office 45HA 2.114 </span><span style=3D"font-size:9.0pt;font-family:&quot;A=
+rial&quot;,sans-serif"><br>
+<span style=3D"color:black">45 Hayden Avenue, Lexington, MA, 02421</span><b=
+r>
+<span style=3D"color:black">Mobile +1-617-699-3348</span><br>
+<span style=3D"color:black">email: </span><span style=3D"color:blue"><a hre=
+f=3D"mailto:Luis.F.Rojas@Takeda.com"><span style=3D"color:#0000EE">Luis.F.R=
+ojas@Takeda.com</span></a></span><span style=3D"color:black">
+</span><br>
+<span style=3D"color:blue"><a href=3D"https://mytakeda.sharepoint.com/sites=
+/WeLearnAtTakeda"><span style=3D"color:blue">WeLearn@Takeda</span></a></spa=
+n><span style=3D"color:black"><o:p></o:p></span></span></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal">-----Original Appointment-----<br>
+<b>From:</b> Nestor, Lynn <b>On Behalf Of </b>Rojas, Luis<br>
+<b>Sent:</b> Tuesday, September 14, 2021 7:29 AM<br>
+<b>To:</b> Rojas, Luis; Josh Klein<br>
+<b>Subject:</b> RE: Material Impacts of ESG Event Follow-up (Introductory S=
+ession) with Josh Klein<br>
+<b>When:</b> Friday, September 17, 2021 8:30 AM-9:00 AM (UTC-05:00) Eastern=
+ Time (US &amp; Canada).<br>
+<b>Where:</b> Microsoft Teams Meeting<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:#5F5F5F">______________________=
+__________________________________________________________</span>
+<o:p></o:p></p>
+</div>
+<div>
+<div style=3D"margin-top:.25in;margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-size:18.0pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Microsoft Teams meeting</span><span =
+style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#252424">
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:15.0pt">
+<div>
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Join on your computer or mobile a=
+pp</span></b><b><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;=
+color:#252424">
+<o:p></o:p></span></b></p>
+</div>
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://teams.microsoft.com/l/meetup-join/=
+19%3ameeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3ZGM1MzFh%40thread.v2/0=
+?context=3D%7b%22Tid%22%3a%2257fdf63b-7e22-45a3-83dc-d37003163aae%22%2c%22O=
+id%22%3a%22244aa894-f5b8-4493-aee9-e767c03b85c8%22%7d" target=3D"_blank"><s=
+pan style=3D"font-size:10.5pt;font-family:&quot;Segoe UI Semibold&quot;,san=
+s-serif;color:#6264A7">Click
+ here to join the meeting</span></a> <o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Join with a video conferencing de=
+vice</span></b><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;c=
+olor:#252424">
+<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424"><a href=3D"mailto:takeda@m.webex.com=
+">takeda@m.webex.com</a>
+<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Video Conference ID:
+</span><span style=3D"font-size:12.0pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">129 121 173 9
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424"><a href=3D"https://www.webex.com/mst=
+eams?confid=3D1291211739&amp;tenantkey=3Dtakeda&amp;domain=3Dm.webex.com"><=
+span style=3D"color:#6264A7">Alternate VTC instructions</span></a>
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><b><span style=3D"font-size:10.5pt;font-family:&quot=
+;Segoe UI&quot;,sans-serif;color:#252424">Or call in (audio only)</span></b=
+><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#252424">
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-bottom:3.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"tel:+13125498473,,462031735# "><span style=
+=3D"font-size:10.5pt;color:#6264A7">+1 312-549-8473,,462031735#</span></a>
+</span><span style=3D"font-size:10.5pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">&nbsp; United States, Chicago
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.5pt;font-family:&quot;Se=
+goe UI&quot;,sans-serif;color:#252424">Phone Conference ID:
+</span><span style=3D"font-size:12.0pt;font-family:&quot;Segoe UI&quot;,san=
+s-serif;color:#252424">462 031 735#
+</span><span style=3D"font-family:&quot;Segoe UI&quot;,sans-serif;color:#25=
+2424"><o:p></o:p></span></p>
+<div style=3D"margin-bottom:15.0pt">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://dialin.teams.microsoft.com/3b37f23=
+1-b6be-494e-af9a-ccd3fe6544a5?id=3D462031735" target=3D"_blank"><span style=
+=3D"font-size:10.5pt;color:#6264A7">Find a local number</span></a>
+ | <a href=3D"https://mysettings.lync.com/pstnconferencing" target=3D"_blan=
+k"><span style=3D"font-size:10.5pt;color:#6264A7">Reset PIN</span></a>
+<o:p></o:p></span></p>
+</div>
+<div style=3D"margin-top:15.0pt;margin-bottom:.25in">
+<p class=3D"MsoNormal"><span style=3D"font-family:&quot;Segoe UI&quot;,sans=
+-serif;color:#252424"><a href=3D"https://aka.ms/JoinTeamsMeeting" target=3D=
+"_blank"><span style=3D"font-size:10.5pt;color:#6264A7">Learn More</span></=
+a> |
+<a href=3D"https://teams.microsoft.com/meetingOptions/?organizerId=3D244aa8=
+94-f5b8-4493-aee9-e767c03b85c8&amp;tenantId=3D57fdf63b-7e22-45a3-83dc-d3700=
+3163aae&amp;threadId=3D19_meeting_MTNhMDA1YTEtYTQ4My00Nzg5LWEzNTMtOTliMWY3Z=
+GM1MzFh@thread.v2&amp;messageId=3D0&amp;language=3Den-US" target=3D"_blank">
+<span style=3D"font-size:10.5pt;color:#6264A7">Meeting options</span></a> <=
+o:p></o:p></span></p>
+</div>
+</div>
+<div>
+<p class=3D"MsoNormal"><span style=3D"color:#5F5F5F">______________________=
+__________________________________________________________</span>
+<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+
+<DIV>
+The content of this email and of any files transmitted may contain confiden=
+tial, proprietary or legally privileged information and is intended solely =
+for the use of the person/s or entity/ies to whom it is addressed. If you h=
+ave received this email in error you have no permission whatsoever to use, =
+copy, disclose or forward all or any of its contents. Please immediately no=
+tify the sender and thereafter delete this email and any attachments.<BR>
+</DIV></body>
+</html>
+
+--_000_DB9PR08MB7147AC000DB473CFE9F60EB0ABDD9DB9PR08MB7147eurp_--

@@ -1,0 +1,977 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a59:b786:0:b0:25e:ef80:4753 with SMTP id t6csp4571996vqh;
+        Tue, 16 Nov 2021 02:51:23 -0800 (PST)
+X-Google-Smtp-Source: ABdhPJz4Ve3EkP7kesxJMabqm/uFaENCf9pNxoH8t4q50x4TosUvsmV3rWJBJoAmfs6k7kXGCYmw
+X-Received: by 2002:a17:906:4792:: with SMTP id cw18mr8753062ejc.224.1637059883133;
+        Tue, 16 Nov 2021 02:51:23 -0800 (PST)
+ARC-Seal: i=2; a=rsa-sha256; t=1637059883; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=gvAUMQlFj4yS6lMWn5Kv2Ph3y/aT7iyxLSa4O6qnhA4jLTYyBxezEMA+50Y4zjcp4Z
+         /qCG4P/s1qdoQAF+/LFi/XYTnCAxUrOfqaziguZjzYI23DRwbRfVimXFW1FUtZfw5LAp
+         cAPy6Di5QiH2CX4+ftX+nWd4nr0ZSkC9V+EU4ZzIP4+dbWr19ywummEDrlMfaO5YE/3z
+         UpqJ5pxZeIf/PkO20/nctLQLdVgTEZ11HiMafDXkfovYbD3iy5QLNUQYHYLZe1DZj9a9
+         z+bNBFLeGM8DYPb7MtAKihfbH+UlRWTrFFgmVOQHtij7RfaRwqBzIb6NnGpEyBQ5g2UL
+         Q9JQ==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:cc:to
+         :from:dkim-signature;
+        bh=EP6n40b6Bjf699nwDYTgL8pN4tj/JJWfGUZsXiltl3s=;
+        b=F2MFDlkGaWSkGp9sr+dNO532TkO6Sg3jzP2RJ4s1mchtpbRDZJjJFpAx1GFFNqnzX6
+         NlTKixGucnqIsyX3bvSfv9FiAxw5OzBQZJEfqj7bKA2WJrChN3qYC4WPX82kpjVWtgdt
+         rdF1KCOYebcaAw9Cw109BWWKCUF3Ka1lKsquamJudJNVAuFdXHKUWTDfaTbOCTuRVrBS
+         iyR9nqXU+yq7lWpOlk5ZjXcstEhyHZ7aNU514Wmat0XUvrvU4xTSmvcULa46raiyxjoT
+         OzW1yvhtbjgrKk3mW6F7jA+uPwxEr+TIUb9qVDe22whpPBfV7FcnhF0OCf2YmDLIGmQE
+         0C1A==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@bplaunchpad.com header.s=selector1 header.b=jLAHREKM;
+       arc=pass (i=1 spf=pass spfdomain=bplaunchpad.com dkim=pass dkdomain=bplaunchpad.com dmarc=pass fromdomain=bplaunchpad.com);
+       spf=pass (google.com: domain of jon.wall@bplaunchpad.com designates 2a01:111:f400:fe15::709 as permitted sender) smtp.mailfrom=Jon.Wall@bplaunchpad.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=bplaunchpad.com
+Return-Path: <Jon.Wall@bplaunchpad.com>
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com (mail-lo2gbr01on0709.outbound.protection.outlook.com. [2a01:111:f400:fe15::709])
+        by mx.google.com with ESMTPS id b19si17583157edt.367.2021.11.16.02.51.22
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Nov 2021 02:51:23 -0800 (PST)
+Received-SPF: pass (google.com: domain of jon.wall@bplaunchpad.com designates 2a01:111:f400:fe15::709 as permitted sender) client-ip=2a01:111:f400:fe15::709;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@bplaunchpad.com header.s=selector1 header.b=jLAHREKM;
+       arc=pass (i=1 spf=pass spfdomain=bplaunchpad.com dkim=pass dkdomain=bplaunchpad.com dmarc=pass fromdomain=bplaunchpad.com);
+       spf=pass (google.com: domain of jon.wall@bplaunchpad.com designates 2a01:111:f400:fe15::709 as permitted sender) smtp.mailfrom=Jon.Wall@bplaunchpad.com;
+       dmarc=pass (p=NONE sp=NONE dis=NONE) header.from=bplaunchpad.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=M0ZWoXgLcfX5yNbqQe2K1Dwi4FCMGXQBMG7wp3AT2ieCarpVveF6n3MAYcSl78WLcZ0g8msaX9VcbNIdoFh0UygZ9Y0YNOdnifbX5NkkUTMX7Tpm1mRXmroYDUNZDUvOakrIM6ST27PbnYku8IV+GBvSNZ8XolX8r6POb8aI7ns+qbb4VdCPBRPIZ5wFtKR6sAzDHTjgEdQ3gU8M4+qfwBThuRM0I3GQhwaOfRdv/qTIWBBhgtL0mR84s5YI5F4E8Ht19YtBny3IdLChnQ8Fn5GuxapzJDcV8iezJ9unnoiM9YwG3PKoMY1MiYQWhEotgQyPkuC5QmtR4ulLmFS9yw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=EP6n40b6Bjf699nwDYTgL8pN4tj/JJWfGUZsXiltl3s=;
+ b=RofGwWVWLTynSbIphi2bP2i6iWhRB8TTaprsk2nLgZYNpCJeyfURFzr2a0rAWXMjNwhetAkP5BMCT24xDQmn0OEARAjWvrZtwNUXKvrqcCH1Fz4qRZdOoCZO0FvAco2AA9kJE0esZ1ISbVBheuc2SNC96J3esFmfxGqPd4/GHW0q41TqYxg8DJfKDbm49V3LxvJbVIGX7GgdOJyOaOg1MFqOqfaFqGvWmj4fglaBRfDv742+AP8kcWZU7pN8T7ozBjgHaphEDXvojtdLQwIDq6eb1Qozrlms6+df/IRPs9PrFbPlPEConICwId8mlEgkD0ROLxgHgAepizLURUJZOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=bplaunchpad.com; dmarc=pass action=none
+ header.from=bplaunchpad.com; dkim=pass header.d=bplaunchpad.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bplaunchpad.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=EP6n40b6Bjf699nwDYTgL8pN4tj/JJWfGUZsXiltl3s=;
+ b=jLAHREKM0iT6gSfGW0muIzoPXfY1A+UoCZBPOWsBBVrLac6kZeyduJo+hjZOrZEBiU2qdf9xenYOpXLaF6Jiac5Q/D0lcc2akiHqXgT621cFpe7KoXpX/m/yvxZMTOzL+LNWYQjYupXioXdPqKkOzvvnB41oUPBTI2Av30cxFa4=
+Received: from LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:2a2::11)
+ by LO2P123MB5814.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:251::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4690.27; Tue, 16 Nov
+ 2021 10:51:20 +0000
+Received: from LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::4cac:48a4:2888:12f8]) by LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::4cac:48a4:2888:12f8%7]) with mapi id 15.20.4690.027; Tue, 16 Nov 2021
+ 10:51:20 +0000
+From: Jon Wall <Jon.Wall@bplaunchpad.com>
+To: Josh Klein <josh@josh.is>
+CC: Josh Klein <josh@josh.is>
+Subject: Re: Advisory Board | Update
+Thread-Topic: Advisory Board | Update
+Thread-Index: AQHX0Y225PfNYGH4mEuXLIHghqYvaavzeTvegAALb4CADDhIAIAGT5IY
+Date: Tue, 16 Nov 2021 10:51:20 +0000
+Message-ID:
+ <LO6P123MB64219A2F783593672D14F4CC9C999@LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM>
+References:
+ <LO6P123MB6421B6890AD900FB8B7822529C8D9@LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM>
+ <LO6P123MB64219AADE1ECA89BB033A4869C8D9@LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM>
+ <CACNgykNWQG4dwv4UCkfYvbe_22EhM_h_LsB12No9YO99gimckg@mail.gmail.com>
+ <CACNgykMzd6FJQT9qC7ubav7Qy_6GRxY84U8445eeoJeEbq-2oA@mail.gmail.com>
+In-Reply-To:
+ <CACNgykMzd6FJQT9qC7ubav7Qy_6GRxY84U8445eeoJeEbq-2oA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=bplaunchpad.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c9ef3d11-2d62-42af-357f-08d9a8ef067f
+x-ms-traffictypediagnostic: LO2P123MB5814:
+x-microsoft-antispam-prvs:
+ <LO2P123MB5814B0F247ADB23EFCF4AC509C999@LO2P123MB5814.GBRP123.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:7691;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ BHuguccuoTXWs+/IkdPCjq64lQH234pkstGtXKZGNRL7J6+koS9xGsV+aAOL6tjswzC3EqU4UBtEfuOGTSPr/44d/rH39Pdm7AiAZu4vwiMzwC7z1gtkYttNNAHnGZwtqsV6D2rflkQOf5vhEZg2ASQS8ELnr0vcuJM6gvfAO6jaA60GYducknrU9pfVyOTfQis5xGLnRtsxhW5v1w3vCYSINlSmB17hMmqek4Vwj53o5CYLdwB0/LbLrEVojAj/1d++f0BRujdhuwk2b8Eu/oZrwpn9cMew7tXI4idsXaFhx+maM5EX+RAdTH7VPcHzxqMnx4D7DZTKSFD7c9vwLb2CQ7M+J0XCtEuvGWe/ePv7Axxt3kIIz/51x5bYlkhmhcLeD85Qyyc1mRBAj9+hA161FFm25AjYCuUajKIlFW7kQdcZXz47pxWN9PbNcqktxeiqBml9wGJUNVXTzNPIWhL+AE4vAtRW0mwMH21W1Cfh+JMZaHnjYb9PjsixPT8P9XFUHYgWPdzo2Tp2P5aq2GEK5v4xpfBh1GQvzgyafj1pfhmh7XCNLyG9PEnyw7RFdjLVDXj+/7yisvY2qF4rVHdVn/XxSaiqLhAFKCuV8l/csR6pUvBKwaQ/WQ4Z97pKbKwQklDOxl+ePE0OYrWRCCMr4H3tb2FqQMk3jxWzH9f1sSgo0IbGj7/s+cNenVf5I4hkdFLPj0VbiVBlLCjx9K7gU8BE+R/Wheauezb4lkD+alQ/aOCbWRKIcoWY6ssn7Y0a3QSMuQ0NAv/snTBC3yfsHLBZZtkPl79cx4S4Mw0=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(136003)(376002)(39840400004)(396003)(366004)(45080400002)(966005)(6916009)(15650500001)(316002)(86362001)(166002)(5660300002)(2906002)(8936002)(508600001)(8676002)(38100700002)(122000001)(26005)(76116006)(4326008)(66946007)(186003)(66446008)(33656002)(6506007)(99936003)(66556008)(9686003)(53546011)(66476007)(64756008)(83380400001)(9326002)(52536014)(38070700005)(55016002)(7696005)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?Windows-1252?Q?OpmWayLnRjbO586i31MsCYNuwdHCnDziYxGjkHmHxGS3hT1RbNgX9Z1b?=
+ =?Windows-1252?Q?mL9EKwRehdQXJY/C5fAx1abkYD+lE8cdzfvgj78QM2VmA1FJQFYbGs4U?=
+ =?Windows-1252?Q?X/H0IzuYhWfEa9yTNtJIchyoMOEVUCviYLaJS8fijxfCURs7FKLUhx7f?=
+ =?Windows-1252?Q?Up4IvSLDujo+HB1xkWCMqJCG1bccQW++DPFyQm9YeszebcjqwipHREfs?=
+ =?Windows-1252?Q?0AgFJUvO5R3aNnhkQdfkY6GCt5XkYAWWJbVBIVjwv2IJeHWhf1lAHaze?=
+ =?Windows-1252?Q?ju63Ni6nzNUgqZ9n/KKwrgcVfqHA3LaIqPVeQpUTOT8PnNJOcAQ3ZIFg?=
+ =?Windows-1252?Q?c6LZpfm0jrMiimm5qAdqSujscQc7xcWBpKeqElKGxbzMoV+hcOGiB/BU?=
+ =?Windows-1252?Q?4BM+lpIWRlMhhwM6QHfvPL1NhBSSR9ryyLd04CO6A3KkBo6Uah4SsYZQ?=
+ =?Windows-1252?Q?T3+h8pGgYRktbE8Z7FwCry0zErNfXhBhTzDzjwBKcxo01jCFHdBgdbil?=
+ =?Windows-1252?Q?cdp6u7oWWnR1WPONoLUQ+RBRCRyc4BH2Ox1wnfIFUwu3TdhkKNJKqUke?=
+ =?Windows-1252?Q?nJ7MXyDTdWzeRQN5RZ38RV9Yi93BnGzWWh12d123H72j118Vgl5uguwj?=
+ =?Windows-1252?Q?4uJrh9MWX2tT6kZuOOKSuNdPg4mn27ekRMWM5ruqMCAv0Mqtui38WwLu?=
+ =?Windows-1252?Q?5nhPL4hOkFp9b42kNZ7LUPJIyZ1EncEwi/mSdFOOd0OlT3KTBnQaA1wO?=
+ =?Windows-1252?Q?OCy8H6VyofDIpw8+n9Z0BOgh823/G+F1rLskhSOPuZZ6BlLeN56fbebC?=
+ =?Windows-1252?Q?gTbykmwlJNAJafCt4MXiDNcokpvMP3O/K5pMtkue0qZnCuwIB6qJYGxY?=
+ =?Windows-1252?Q?aHbgfJEN5mLxXpJY2ZusRyQ5rkVI3xVGb9vGRrS7L8hnhrPjK7L7qa5W?=
+ =?Windows-1252?Q?IZAE23cEveGtQU2Y2nVGaTpw5QZrcxZeSqD5PEqWrux5G9mogj/Ka6FW?=
+ =?Windows-1252?Q?xyt9zfzYcXnnUkoZu66DcGZXuP1uBhM7Bqo+Eh4mDgJmGJwB2YQ8KiBL?=
+ =?Windows-1252?Q?uhGID5DELkCJFcZuxPKXQCm0qkE84RnoT/0bSN0k5t/uKnhHEk2zAgq4?=
+ =?Windows-1252?Q?KJfm8drVLr29SWTiwwtULlrZxeZy4kix24VBPWPJA2nlMf+0QfIgLwYQ?=
+ =?Windows-1252?Q?ej6c6l8anZyxGf8SjICxxRO/dCgsIVE+qrpI5jHbIV3e3RLY4YJMH/vE?=
+ =?Windows-1252?Q?MV6B5ef6c5BHIsc+Y9EQTVK+jQmo9fKiED/LP/ckb86m4nullv75u7cw?=
+ =?Windows-1252?Q?mdu6qkV2/x987ElFYhCR1XEpqXj19z6/nAsz9Alt3KHn4yY63spD8ZJm?=
+ =?Windows-1252?Q?mAFXQdSFkWpZK7B/KmB6A9pE2BOtlwxGRaBW1RzXy42KdjJt7yyqH0m/?=
+ =?Windows-1252?Q?X3CT/4EInMYcm2IELP+3GVqVI7n7l0cF2MHEikA1D5KV3+V4jzaqgWP2?=
+ =?Windows-1252?Q?BgSTAa9Ipg+T89kuH9JDgw7xUOdFjKjq1J0xTI4njN65DEuwV1GAUasr?=
+ =?Windows-1252?Q?HmoKZ1KQ7mlWRDPxS9SOBG+x4KurczIPFPwL22ZCMHHNLGkJ+K03+m1H?=
+ =?Windows-1252?Q?sAiSxvIaKThUK2aOVAB3dSE75oUDhTmzdmjSgqhJxpZD4zBK1VyoIS4I?=
+ =?Windows-1252?Q?NN2VeGhfWsV3ktsGehcwekQ/T+or23C6PZQOgygcQJ1AT8qq6oBv41bv?=
+ =?Windows-1252?Q?2BMdyJun/o58GleEfydRcO1jMCGQX+SWUO4nbv0TMaIeurBnkIWaopXh?=
+ =?Windows-1252?Q?9VEMhNlaG0ie/0yXEeVrjGYSKJo=3D?=
+Content-Type: multipart/related;
+	boundary="_005_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: bplaunchpad.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: LO6P123MB6421.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c9ef3d11-2d62-42af-357f-08d9a8ef067f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Nov 2021 10:51:20.8857
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0f96d34b-44c1-47ce-af36-ab50b57defe4
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pfBOKSx3cGnl8IaLHJL5tr7edox0mUQhgG6c3Ez32ewqKvDrGCCo/x+F0g2gyblodJi6ahDcivY0xs57SQMRI4dfyjNKxL8ZrO2GkJaOsag=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P123MB5814
+
+--_005_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_
+Content-Type: multipart/alternative;
+	boundary="_000_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_"
+
+--_000_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+Hope you=92re doing well.
+
+We caught up last week on the Advisory Board and are still very much intere=
+sted in considering you for that and have further refined our shortlist.
+
+Confirmation of key points
+
+  *   Formal meetings 1 x quarter with time built in for flex to be on a ca=
+ll / allow for prep and follow up time with the sessions
+  *   Pause on Talent Advisor role / bucket and instead have 2 or more indi=
+viduals from CEO backgrounds given that=92s a key gap in experience
+  *   AB will focus on evolving Launchpad model rather than tackling indivi=
+dual portfolio companies, however, they are likely to be considered for con=
+sultancy work in the portfolio as appropriate and if their capacity allows =
+/ are interested
+
+Next steps are to regroup in a week or two (meeting to be scheduled) after =
+considering if there are any other individuals we might consider in our net=
+works now that the above has been agreed.
+
+Hope that makes sense? I can call if it=92d be helpful to try and clarify a=
+nything.
+
+Otherwise, I=92ll let you know when the meeting is diarised and when to hea=
+r from me next.
+
+
+Best, Jon
+
+
+
+Jon Wall
+Senior Talent Partner
+bp Launchpad<https://gbr01.safelinks.protection.outlook.com/?url=3Dhttps%3A=
+%2F%2Fwww.itslaunchpad.com%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7=
+Cbdda6c5b107d46ecb23808d94b9d5f60%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C=
+0%7C637623961537329853%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoi=
+V2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DkBRU6ljbRNyn9QhadmHFd=
+F6JwaQHjrVpKN8zCI4sedk%3D&reserved=3D0> | Follow us on LinkedIn<https://gbr=
+01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.linkedin.com%2=
+Fcompany%2Fbplaunchpad%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7Cbdd=
+a6c5b107d46ecb23808d94b9d5f60%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C=
+637623961537329853%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2lu=
+MzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3Du6c1NkMO6Ghgb7TFwdOI1CDD%=
+2BUX52I0vhNmEqmnqvIc%3D&reserved=3D0>
+Mobile: +44 (0) 7710 566 036
+
+https://calendly.com/jon-wall/30min
+
+[A picture containing text  Description automatically generated]<https://gb=
+r01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.itslaunchpad.=
+com%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7Cbdda6c5b107d46ecb23808=
+d94b9d5f60%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C637623961537339813%=
+7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWw=
+iLCJXVCI6Mn0%3D%7C1000&sdata=3D%2FGBigmKsgEXSSAe4k6FsFht3TbxiVO8aErC6MU%2B4=
+yO8%3D&reserved=3D0>
+
+
+The information in this e-mail is confidential and may be legally privilege=
+d. It is intended solely for the use of the addressee(s) only. Access to th=
+is e-mail by anyone else is unauthorised. If you are not the intended recip=
+ient any disclosure, copying, distribution or action taken or omitted to be=
+ taken in reliance on it is prohibited and may be unlawful. Within the boun=
+ds of law, electronic transmissions through internal and external networks =
+may be monitored to ensure compliance with internal policies and for legiti=
+mate business purposes.
+
+
+
+
+From: Josh Klein <josh@josh.is>
+Date: Friday, 12 November 2021 at 10:29
+To: Jon Wall <Jon.Wall@bplaunchpad.com>
+Cc: Josh Klein <josh@josh.is>
+Subject: Re: Advisory Board | Update
+Just following up - let me know if I can provide any further info.
+
+best,
+Josh
+
+On Thu, Nov 4, 2021 at 3:51 PM Josh Klein <josh@josh.is<mailto:josh@josh.is=
+>> wrote:
+Thanks for the update! Let me know if I can do anything to help in the mean=
+time.
+
+- J
+
+
+On Thu, Nov 4, 2021 at 15:11 Jon Wall <Jon.Wall@bplaunchpad.com<mailto:Jon.=
+Wall@bplaunchpad.com>> wrote:
+Hi Josh,
+
+Hope you=92re well.
+
+We caught up yesterday and we=92ve narrowed the shortlist down further and =
+still very much interested in working with you.
+
+The next step is to take our thinking to Sam Skerry, SVP, who Siobhan repor=
+ts to. Sam will be on the board and so we=92d like to update on where we ar=
+e, get her input & agree next steps.
+
+That=92s due to happen early next week so I will update as soon as I can af=
+ter that.
+
+Best, Jon
+
+Jon Wall
+Senior Talent Partner
+bp Launchpad<https://gbr01.safelinks.protection.outlook.com/?url=3Dhttps%3A=
+%2F%2Fwww.itslaunchpad.com%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7=
+C040d19e17b1c4080c11c08d9a5c74069%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C=
+0%7C637723097462541906%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoi=
+V2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3Dm05tt3kzUAhk0x12aja3x=
+CP%2FwDeICWDNUZz1CJy5IL4%3D&reserved=3D0> | Follow us on LinkedIn<https://g=
+br01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.linkedin.com=
+%2Fcompany%2Fbplaunchpad%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7C0=
+40d19e17b1c4080c11c08d9a5c74069%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%=
+7C637723097462541906%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2=
+luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&sdata=3DntAu2UcIp48BE7bMtSZFywd=
+4ZFSpef6naPbX7WCnnsg%3D&reserved=3D0>
+Mobile: +44 (0) 7710 566 036
+
+https://calendly.com/jon-wall/30min<https://gbr01.safelinks.protection.outl=
+ook.com/?url=3Dhttps%3A%2F%2Fcalendly.com%2Fjon-wall%2F30min&data=3D04%7C01=
+%7CJon.Wall%40bplaunchpad.com%7C040d19e17b1c4080c11c08d9a5c74069%7C0f96d34b=
+44c147ceaf36ab50b57defe4%7C1%7C0%7C637723097462551865%7CUnknown%7CTWFpbGZsb=
+3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C100=
+0&sdata=3DhI6%2BJQjZvzwkoE%2BLrqDyZ0Gavhju3y31BftSSesDFlQ%3D&reserved=3D0>
+
+[A picture containing text    Description automatically generated]<https://=
+gbr01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.itslaunchpa=
+d.com%2F&data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7C040d19e17b1c4080c11c=
+08d9a5c74069%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C63772309746255186=
+5%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1ha=
+WwiLCJXVCI6Mn0%3D%7C1000&sdata=3DaPymPq766WDQu5eAyLr5oF3bEQ6z1zEfjj5yZQ%2FZ=
+3ck%3D&reserved=3D0>
+
+
+The information in this e-mail is confidential and may be legally privilege=
+d. It is intended solely for the use of the addressee(s) only. Access to th=
+is e-mail by anyone else is unauthorised. If you are not the intended recip=
+ient any disclosure, copying, distribution or action taken or omitted to be=
+ taken in reliance on it is prohibited and may be unlawful. Within the boun=
+ds of law, electronic transmissions through internal and external networks =
+may be monitored to ensure compliance with internal policies and for legiti=
+mate business purposes.
+
+
+
+
+--_000_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]--><style><!--
+/* Font Definitions */
+@font-face
+	{font-family:Wingdings;
+	panose-1:5 0 0 0 0 0 0 0 0 0;}
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Helvetica Neue";
+	panose-1:2 0 5 3 0 0 0 2 0 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle18
+	{mso-style-type:personal-reply;
+	font-family:"Calibri",sans-serif;
+	color:windowtext;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+/* List Definitions */
+@list l0
+	{mso-list-id:981347677;
+	mso-list-template-ids:698759906;}
+@list l0:level1
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:36.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level2
+	{mso-level-number-format:bullet;
+	mso-level-text:o;
+	mso-level-tab-stop:72.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:"Courier New";
+	mso-bidi-font-family:"Times New Roman";}
+@list l0:level3
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0A7 ;
+	mso-level-tab-stop:108.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Wingdings;}
+@list l0:level4
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:144.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level5
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:180.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level6
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:216.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level7
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:252.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level8
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:288.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+@list l0:level9
+	{mso-level-number-format:bullet;
+	mso-level-text:\F0B7 ;
+	mso-level-tab-stop:324.0pt;
+	mso-level-number-position:left;
+	text-indent:-18.0pt;
+	mso-ansi-font-size:10.0pt;
+	font-family:Symbol;}
+ol
+	{margin-bottom:0cm;}
+ul
+	{margin-bottom:0cm;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-GB" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal">Hi Josh,<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Hope you=92re doing well.<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">We caught up last week on the Advisory Board and are=
+ still very much interested in considering you for that and have further re=
+fined our shortlist.
+<o:p></o:p></p>
+<p class=3D"MsoNormal"><b><span style=3D"color:black"><br>
+Confirmation of key points</span></b><span style=3D"color:black"><o:p></o:p=
+></span></p>
+<ul style=3D"margin-top:0cm" type=3D"disc">
+<li class=3D"MsoNormal" style=3D"color:black;mso-list:l0 level1 lfo1">Forma=
+l meetings 1 x quarter with time built in for flex to be on a call / allow =
+for prep and follow up time with the sessions<o:p></o:p></li><li class=3D"M=
+soNormal" style=3D"color:black;mso-list:l0 level1 lfo1">Pause on Talent Adv=
+isor role / bucket and instead have 2 or more individuals from CEO backgrou=
+nds given that=92s a key gap in experience<o:p></o:p></li><li class=3D"MsoN=
+ormal" style=3D"mso-list:l0 level1 lfo1"><span style=3D"color:black">AB wil=
+l focus on evolving Launchpad model rather than tackling individual portfol=
+io companies, however, they are likely to be considered for consultancy wor=
+k in the portfolio as
+ appropriate and if their capacity allows / are interested</span><span styl=
+e=3D"mso-fareast-language:EN-US"><o:p></o:p></span></li></ul>
+<p class=3D"MsoNormal"><span style=3D"color:black"><o:p>&nbsp;</o:p></span>=
+</p>
+<p class=3D"MsoNormal"><span style=3D"color:black">Next steps are to regrou=
+p in a week or two (meeting to be scheduled) after considering if there are=
+ any other individuals we might consider in our networks now that the above=
+ has been agreed.<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"color:black"><o:p>&nbsp;</o:p></span>=
+</p>
+<p class=3D"MsoNormal"><span style=3D"color:black">Hope that makes sense? I=
+ can call if it=92d be helpful to try and clarify anything.<o:p></o:p></spa=
+n></p>
+<p class=3D"MsoNormal"><span style=3D"color:black"><o:p>&nbsp;</o:p></span>=
+</p>
+<p class=3D"MsoNormal"><span style=3D"color:black">Otherwise, I=92ll let yo=
+u know when the meeting is diarised and when to hear from me next.<o:p></o:=
+p></span></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal">Best, Jon<o:p></o:p></p>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><o:p>&nbs=
+p;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><o:p>&nbs=
+p;</o:p></span></p>
+<div>
+<div>
+<div>
+<p class=3D"MsoNormal" style=3D"background:white"><span style=3D"font-size:=
+10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#595555">Jon Wall</sp=
+an><span style=3D"color:black"><o:p></o:p></span></p>
+<p class=3D"MsoNormal" style=3D"background:white"><span style=3D"font-size:=
+10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#595555">Senior Talen=
+t Partner<o:p></o:p></span></p>
+<p class=3D"MsoNormal" style=3D"background:white"><span style=3D"font-size:=
+10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#595555"><a href=3D"h=
+ttps://gbr01.safelinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.itsl=
+aunchpad.com%2F&amp;data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7Cbdda6c5b1=
+07d46ecb23808d94b9d5f60%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C637623=
+961537329853%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLC=
+JBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DkBRU6ljbRNyn9QhadmHFdF6JwaQ=
+HjrVpKN8zCI4sedk%3D&amp;reserved=3D0" title=3D"Original URL:=0A=
+https://www.itslaunchpad.com/=0A=
+=0A=
+Click to follow link."><span style=3D"color:#00006A">bp
+ Launchpad</span></a>&nbsp;| Follow us on&nbsp;<a href=3D"https://gbr01.saf=
+elinks.protection.outlook.com/?url=3Dhttps%3A%2F%2Fwww.linkedin.com%2Fcompa=
+ny%2Fbplaunchpad%2F&amp;data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7Cbdda6=
+c5b107d46ecb23808d94b9d5f60%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C63=
+7623961537329853%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMz=
+IiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3Du6c1NkMO6Ghgb7TFwdOI1CD=
+D%2BUX52I0vhNmEqmnqvIc%3D&amp;reserved=3D0"><span style=3D"color:#00006A">L=
+inkedIn</span></a><o:p></o:p></span></p>
+<p class=3D"MsoNormal" style=3D"background:white"><span style=3D"font-size:=
+10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#595555">Mobile: +44 =
+(0) 7710 566 036</span><span style=3D"color:black"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black">&nbsp;<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black"><a href=3D"https://calendly.com/jon-wall/=
+30min"><span style=3D"color:#0563C1">https://calendly.com/jon-wall/30min</s=
+pan></a>
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"color:black"><o:p>&nbsp;</o:p></span>=
+</p>
+<p class=3D"MsoNormal"><a href=3D"https://gbr01.safelinks.protection.outloo=
+k.com/?url=3Dhttps%3A%2F%2Fwww.itslaunchpad.com%2F&amp;data=3D04%7C01%7CJon=
+.Wall%40bplaunchpad.com%7Cbdda6c5b107d46ecb23808d94b9d5f60%7C0f96d34b44c147=
+ceaf36ab50b57defe4%7C1%7C0%7C637623961537339813%7CUnknown%7CTWFpbGZsb3d8eyJ=
+WIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;=
+sdata=3D%2FGBigmKsgEXSSAe4k6FsFht3TbxiVO8aErC6MU%2B4yO8%3D&amp;reserved=3D0=
+"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;=
+color:black;text-decoration:none"><img border=3D"0" width=3D"49" height=3D"=
+56" style=3D"width:.5104in;height:.5833in" id=3D"Picture_x0020_1" src=3D"ci=
+d:image001.png@01D7DAD7.E2EF8210" alt=3D"A picture containing text=0A=
+=0A=
+Description automatically generated"></span></a><span style=3D"color:black"=
+><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black">&nbsp;</span><span style=3D"color:black">=
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:black">&nbsp;</span><span style=3D"color:black">=
+<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:7.5pt;font-family:&quot;Hel=
+vetica Neue&quot;;color:black">The information in this e-mail is confidenti=
+al and may be legally privileged. It is intended solely for the use of the =
+addressee(s) only. Access to this e-mail by anyone
+ else is unauthorised. If you are not the intended recipient any disclosure=
+, copying, distribution or action taken or omitted to be taken in reliance =
+on it is prohibited and may be unlawful. Within the bounds of law, electron=
+ic transmissions through internal
+ and external networks may be monitored to ensure compliance with internal =
+policies and for legitimate business purposes.</span><span style=3D"color:b=
+lack"><o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"color:black">&nbsp;<o:p></o:p></span>=
+</p>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+</div>
+</div>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><o:p>&nbs=
+p;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US"><o:p>&nbs=
+p;</o:p></span></p>
+<div style=3D"border:none;border-top:solid #B5C4DF 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><b><span style=3D"fon=
+t-size:12.0pt;color:black">From:
+</span></b><span style=3D"font-size:12.0pt;color:black">Josh Klein &lt;josh=
+@josh.is&gt;<br>
+<b>Date: </b>Friday, 12 November 2021 at 10:29<br>
+<b>To: </b>Jon Wall &lt;Jon.Wall@bplaunchpad.com&gt;<br>
+<b>Cc: </b>Josh Klein &lt;josh@josh.is&gt;<br>
+<b>Subject: </b>Re: Advisory Board | Update<o:p></o:p></span></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Just following up - let me know if I can provide any=
+ further info.<br>
+<br>
+best,<br>
+Josh<o:p></o:p></p>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div>
+<p class=3D"MsoNormal">On Thu, Nov 4, 2021 at 3:51 PM Josh Klein &lt;<a hre=
+f=3D"mailto:josh@josh.is">josh@josh.is</a>&gt; wrote:<o:p></o:p></p>
+</div>
+<blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;padding:0c=
+m 0cm 0cm 6.0pt;margin-left:4.8pt;margin-right:0cm">
+<div>
+<p class=3D"MsoNormal">Thanks for the update! Let me know if I can do anyth=
+ing to help in the meantime.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">- J<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<div>
+<p class=3D"MsoNormal">On Thu, Nov 4, 2021 at 15:11 Jon Wall &lt;<a href=3D=
+"mailto:Jon.Wall@bplaunchpad.com" target=3D"_blank">Jon.Wall@bplaunchpad.co=
+m</a>&gt; wrote:<o:p></o:p></p>
+</div>
+<blockquote style=3D"border:none;border-left:solid #CCCCCC 1.0pt;padding:0c=
+m 0cm 0cm 6.0pt;margin-left:4.8pt;margin-right:0cm">
+<div>
+<div>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">Hi Josh,<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">Hope you=92re well.<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">We caught up yesterday and we=92ve narrowed the shortlist down fur=
+ther and still very much interested in working with you.<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">The next step is to take our thinking to Sam Skerry, SVP, who Siob=
+han reports to. Sam will be on the board and so we=92d like to update on wh=
+ere we are, get her input &amp; agree next
+ steps.<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">That=92s due to happen early next week so I will update as soon as=
+ I can after that.<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">Best, Jon<o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+<div>
+<div>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto;background:white">
+<span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;co=
+lor:#595555">Jon Wall</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto;background:white">
+<span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;co=
+lor:#595555">Senior Talent Partner</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto;background:white">
+<span style=3D"color:black"><a href=3D"https://gbr01.safelinks.protection.o=
+utlook.com/?url=3Dhttps%3A%2F%2Fwww.itslaunchpad.com%2F&amp;data=3D04%7C01%=
+7CJon.Wall%40bplaunchpad.com%7C040d19e17b1c4080c11c08d9a5c74069%7C0f96d34b4=
+4c147ceaf36ab50b57defe4%7C1%7C0%7C637723097462541906%7CUnknown%7CTWFpbGZsb3=
+d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000=
+&amp;sdata=3Dm05tt3kzUAhk0x12aja3xCP%2FwDeICWDNUZz1CJy5IL4%3D&amp;reserved=
+=3D0" target=3D"_blank" title=3D"Original URL:
+https://www.itslaunchpad.com/
+
+Click to follow link."><span style=3D"font-size:10.0pt;font-family:&quot;Ar=
+ial&quot;,sans-serif;color:#00006A">bp
+ Launchpad</span></a></span><span style=3D"font-size:10.0pt;font-family:&qu=
+ot;Arial&quot;,sans-serif;color:#595555">&nbsp;| Follow us on&nbsp;</span><=
+span style=3D"color:black"><a href=3D"https://gbr01.safelinks.protection.ou=
+tlook.com/?url=3Dhttps%3A%2F%2Fwww.linkedin.com%2Fcompany%2Fbplaunchpad%2F&=
+amp;data=3D04%7C01%7CJon.Wall%40bplaunchpad.com%7C040d19e17b1c4080c11c08d9a=
+5c74069%7C0f96d34b44c147ceaf36ab50b57defe4%7C1%7C0%7C637723097462541906%7CU=
+nknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLC=
+JXVCI6Mn0%3D%7C1000&amp;sdata=3DntAu2UcIp48BE7bMtSZFywd4ZFSpef6naPbX7WCnnsg=
+%3D&amp;reserved=3D0" target=3D"_blank"><span style=3D"font-size:10.0pt;fon=
+t-family:&quot;Arial&quot;,sans-serif;color:#00006A">LinkedIn</span></a></s=
+pan><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto;background:white">
+<span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;co=
+lor:#595555">Mobile: +44 (0) 7710 566 036</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans=
+-serif;color:black">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><a href=3D"https://gbr01.safelinks.protection.outlook.com/?url=3Dh=
+ttps%3A%2F%2Fcalendly.com%2Fjon-wall%2F30min&amp;data=3D04%7C01%7CJon.Wall%=
+40bplaunchpad.com%7C040d19e17b1c4080c11c08d9a5c74069%7C0f96d34b44c147ceaf36=
+ab50b57defe4%7C1%7C0%7C637723097462551865%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiM=
+C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=
+=3DhI6%2BJQjZvzwkoE%2BLrqDyZ0Gavhju3y31BftSSesDFlQ%3D&amp;reserved=3D0" tar=
+get=3D"_blank"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot=
+;,sans-serif">https://calendly.com/jon-wall/30min</span></a><span style=3D"=
+font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:black">
+</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"color:black">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><a href=3D"https://gbr01.safelinks.protection.outlook.com/?url=3Dh=
+ttps%3A%2F%2Fwww.itslaunchpad.com%2F&amp;data=3D04%7C01%7CJon.Wall%40bplaun=
+chpad.com%7C040d19e17b1c4080c11c08d9a5c74069%7C0f96d34b44c147ceaf36ab50b57d=
+efe4%7C1%7C0%7C637723097462551865%7CUnknown%7CTWFpbGZsb3d8eyJWIjoiMC4wLjAwM=
+DAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C1000&amp;sdata=3DaPymPq=
+766WDQu5eAyLr5oF3bEQ6z1zEfjj5yZQ%2FZ3ck%3D&amp;reserved=3D0" target=3D"_bla=
+nk"><span style=3D"color:windowtext;text-decoration:none"><span style=3D"fo=
+nt-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color:black"><img b=
+order=3D"0" width=3D"98" height=3D"110" style=3D"width:1.0208in;height:1.14=
+58in" id=3D"_x0000_i1025" src=3D"cid:image002.png@01D7DAD7.E2EF8210" alt=3D=
+"A picture containing text
+
+Description automatically generated"></span></span></a><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans=
+-serif;color:black">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans=
+-serif;color:black">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"font-size:7.5pt;font-family:&quot;Helvetica Neue&qu=
+ot;;color:black">The information in this e-mail is confidential and may be =
+legally privileged. It is intended solely for the
+ use of the addressee(s) only. Access to this e-mail by anyone else is unau=
+thorised. If you are not the intended recipient any disclosure, copying, di=
+stribution or action taken or omitted to be taken in reliance on it is proh=
+ibited and may be unlawful. Within
+ the bounds of law, electronic transmissions through internal and external =
+networks may be monitored to ensure compliance with internal policies and f=
+or legitimate business purposes.</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto"><span style=3D"color:black">&nbsp;</span><o:p></o:p></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;mso-margin-bottom-a=
+lt:auto">&nbsp;<o:p></o:p></p>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</blockquote>
+</div>
+</div>
+</body>
+</html>
+
+--_000_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_--
+
+--_005_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_
+Content-Type: image/png; name="image001.png"
+Content-Description: image001.png
+Content-Disposition: inline; filename="image001.png"; size=5391;
+	creation-date="Tue, 16 Nov 2021 10:51:20 GMT";
+	modification-date="Tue, 16 Nov 2021 10:51:20 GMT"
+Content-ID: <image001.png@01D7DAD7.E2EF8210>
+Content-Transfer-Encoding: base64
+
+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
+fYVhxt7Czkv2eruajaI7OJ3OiPz8/J+H9uli++2a4pifJpUcwrISA8mloS1BT8MSD9Ndiym8ufTe
+6JcXWI6+OL+vEcqe++D24D+SHz2btd1ZmZfzRbWiKEbdlms4nfmBjZterkpJva16WQqMZHvdtiwF
+RnJKt0PLUga+tXTp/abaTjudzqGKosi5ubkV9ft0seUpilH4aXb1iGhHFd5eFcSMVUa9Nn2VgRmr
+v8XszVNgdTZcP6jZccOHTYvtlT51Ua/TLy0KN6Yt7lunTV10hzFtSf/KlA22ik+zPw0qSm6IiX5u
+ZGWlVa5b/4uKtNVhwbTVMOqzlWtuqF61tkeGsKbP3Wbm4HA4whRFmasoymFFUUL8c1xu/85TgtNX
+Zv7Y4+8bg5i53sA7G0LYxgDe3ZoL6zamNx5MeCW255SXYnuVvBTbp/qlxfUREW48v7BncFbypMpt
+OzZU5Sp5DGrIC2zZ+urZVWu6B1asqp+EGgsrW72274sOx32mioJzcnJGKYoiKopy1iwJiqIYuxTF
+SN+RXTWYfnwWMzcGMCsUEesNzN50CO9tfxNUuvaG8TMT77/n9Tgivrw4/EcWNbwaNzAgbHy/Midb
+CSpKXr2Ty8nJN0QpK7jOcV8gbXWH6tBq6FC95qN+BevWDbzHzBxq1TBVUZTSq1HDOdudpwTnrckM
+hM/ZXI2ZoYjYYOCdDUHM3rQWszZarpmI52O7RE1ZdFPh1EW96yVh2uK+xtSFvYIzkx48I8tSID/3
+85ATy8n5d2DTlr98t3JNt8rQSoCRthon09Z0iYLJbseKokzMzc3dqyhK8GpJUBTF2LNTMdK2Sqc5
+fstJzNzAoIoNBuakn8S729+B1Xn1j12mJw0lb8Td/dnLsX1DLEk1y9ILS3oGVm75sCLn0zyGvWGn
+Ick5gbWOe6rZliQYaz8a6HU4fnnl8sk64HA4OuXm5j6nKErJtZCgKIqRqyhGgZJjvLEsI9hjzsYg
+Zm6oZlqi3tmwBLM2RwBX2Vri9aXcky8uurWIRQ0vLLrdeDtx9BlRzArsZFCDomjGxs3PnFq55idV
+bGroZKStuYWpKcqFkCRpsKIon12rGs7Z3p2KkbxJOjvYtqUyjImIDQbmbDkJ67ZpsGaY75JmdVg7
+/XVpuDP0Bl2jhqfmd6r4KD2pMi9nV3VoNew2srI2n1r70V1VLGpYsQrGOkf3/Rs29DH1m9Uul6tT
+bm7uP5Wak9I1k3BOFa6dOcYzSz45/ZN3NlZh1obq0HvFegP/2LoF1ozBplVBhT/OfnlJeNHUxb2P
+TVvc92h99sLi247wqU9955Q/PbYz94sjiqIcrdv2HsnLO1SycfNTvlVruh5euQZH67O01Ti0ai1O
+frSp89sOx82mSlcyMzMjc3JydimKcqJ+n8zZ3nzlyKp0+cQQmn68w6z1RzFr/VHM3li3zdp4FHO2
+fo856Y+YzkFFJ/2BvLKYDH0+tvvg52N712t/XthpUNo6fqgiKYN35ewapCjK4LosJ0cb9NVXf3r5
+q8Ju7kIVZwtVVNRrbvxYsAfzd+5Ef7M/BOt0Orvk5OQMyM7OHlKfT2ZtV07OoH3OnUNHz9s6BDM2
+DcKMTYPwjmNwnTZj0yDM3jYUM9Jb1u+nqho+qL2LvqxdQx3XoK8WFKP1PiZsiVA1PO3RsI+xMqNa
+1ZBYUoL2vqwNCZcL3d0qFqhsr30MVYPfo+F1lx8tp6yxLUDV8bDqZa5TCnp0fFRcjNCNdtvBjr1e
+hF/aXaze+wYd5Z5ivFJaiuun2WFTwKVhRG2dEltFt4Z9hV4MN3tSakc9KC7GLWoRkjw6vmMk4Yzb
+i1eL209KDYt9Htylaihgrczw6PC5vGj9jUhaGkzWKRmqFy+5XGj/pZOGhFvHA6oXXzGToCPfXYSG
+u9VqRw1UDakq+0tQw+3FcwUFYOrV1A5G1NYpuVTGOiVVR/plzUvace1Qa16Cfs+YUzJcXrzVHjc0
+MNxe/NGtYb/K1kHGUDV87CrFiAKjEcsnrzcUFOAWT83bN6YoWtVwSvVitteL1t/EsCXBZE7J8GhQ
+VB1RLlfo/t/tYITLhd6qFzEeDYcZ1fC9R8M899dofW3aWjLM5pTcGlyqiihT7RraUT8KCnCLV8cS
+Vcdx1r3Bq2O+xwem577tYERxMe701PTaY4uiNZS155QaAaZzSjre3dOYz66uR6hFuE/VsJeZBC++
+VXWMbG6/2xzcOtapGs6aIIK/qCFuO64dHh1PqBp0VhLcGsrcGsaxtJ5uhwm4NcSrjF0CaomY0743
+XIz/A22zUnAO+9zXAAAAAElFTkSuQmCCAAAAAAAAAAAA
+
+--_005_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_
+Content-Type: image/png; name="image002.png"
+Content-Description: image002.png
+Content-Disposition: inline; filename="image002.png"; size=5394;
+	creation-date="Tue, 16 Nov 2021 10:51:20 GMT";
+	modification-date="Tue, 16 Nov 2021 10:51:20 GMT"
+Content-ID: <image002.png@01D7DAD7.E2EF8210>
+Content-Transfer-Encoding: base64
+
+iVBORw0KGgoAAAANSUhEUgAAAGIAAABuCAYAAADcZ8Z1AAAUzUlEQVR4nO1daXgUVbp+IcoygxvC
+gAQk6VOgLDPieBFZg4COM86dGa+iM+o4qIjOdfSqVxYZxmlJ1wmOyBLIRkhXCKvNGsRAUlVpUwlB
+JYMg6a7uqiymO7ILKptJulP3R8JlTfoUZCfv83z/8pznO/XmPed83/nO10Arx4J8dJ3sQFhz+3Fd
+47UMdKYScVAp4g9WZ0SX5vbnugXN5n5HJW4Plbi9MSJ3b3P7c11ioTPiVptkWc5L3PdU5Cp4mcRa
+nVzf5vbruoNNtDxOJe5LKnFVVOKqY0Si0cyIEQA6NLdv1w2szoiIGJkkU4mcoBJn1FolL5G10Rn9
+SHP7d72gAy9aHuUl4rmAhHO2h2ZbfvOmo2/X5nayzWNBft/wGJkkUJkcvwIRRoxkSYnZQTjDaF+i
+Gg9WdKxHDQaVOIOXuBJejHzu/bweNzW3u20WVie6UJGz8xJ3si4ialTBraSZEXdbrejY3D63ScyT
+ya+pzKn1kUAlzqAyOW4TI37/WgY6N7fPbRK8SLbVHlfrJ0LiDF7mcuZmc0Oa2+c2BypxT1CR01lI
+OGdzRe7J1zK4dlU0FGak97jJlmXZRCVylpWEGJkctIkRDzS3720KVOb+zEucm0okwEqETeRmWXf0
+7d7cvrcZ2D7uG05FblWok9JFJnJOmxx5v9WJG5rb/zYDXrQ8bRMJuxpkrpKK3Cwqhd/e3L63GXyQ
+2T+SSiSRSleOouuw9XPF/ve2q6EBYRMtj1ORsJ+UZK6SZnEfWrP69Wlu39sMorMsA2Ikso39pESq
+qchl8plkKNrzTA0EKzrasshjvEg0VjXwEjlJRfLB++1qaDgsyEdXXiKbqMT9yKiGAJVIPp8VMQzt
+F0MNB1tN3FBiQg1neIlMs2ZwN4cau6cjrhus1vaNnAVUJp+w5pSoxBkxEvmClyJ/wTR4/IQPED+R
+7W+vZ9Bs7j0qc0fM5JRoNhfFMvYd60a80WnZ8DIkvikjcf7gxp5Lq4XV2bMbL5IdZtTAnGV1jOyK
+uHHzsXTct4h7wEDCxN+2L1F1wCaSt6lE/FQi1YxL0sF5ouVRqwOdQo19S+oDT964bKy7Q3xUEPGj
+DMT/cTvi/3pXU8yrVSE6yzKASsRBRe6UiQAuPlruR0LdxPVYe2+fzklj5neIH3cUcVEG4scbiB/z
+DRKfeRZxcd2aao6tAjES999U4oqpSIKMRBRTiXvCWtDnJ6HG7pI4cuINiWP31qhhfA0RCeMqkPDI
+Fiz9zcCmmF+rAO+MGEZlks6L5DT7kdWSEi33I6Gi6J7C8N43rxiV1jFx3A/n1TDeQPw4A3EP+ZHw
+yl8RH3NbU821RcMmk8eoSLysewOVuGJeJlOsn4WOGxA7imDpuM8RH1V9noTxBuKjDMSPDSJ+9HIs
+HdW/CabZshHjJBwVuXQqkTNMJIgkwEtkU3SWZUDIwR0ju96WNnLzDYlRP15MwjkbayD+dz7EvTIF
+sdbQpLZVvJaBzrxoeYFKpJQ9biClVCJ/YYmiu6SNmoD4ca6Ll6RLbbSBhF/FI+5ZDlbr9Vl+Y5P7
+hlOR5DFv0DJXSSWSGuOMiAg19mQDYZ2Xj8nukHjpknQlVUw6iPhHJmPB5OuzVJNK3LtU4g6biKJP
+8qLl0WlJuDHU2IEDeOzOuPEaYifUQ8J4oyam+I2BhNlW2O09m2LeLQpWZ0QXKhKniQ3aoPKAWJs8
+MJxl/Eoflv9ty72Hb00YX4W4+oi4N4Akvgr2/T6sOHh/Y8+7xSFGIgKVTARvEmfEyGQCGNLcqoY/
+aToKy0tvrBxlH1WB2InBuveH31dg+fYK2MuDEMrfgnDi1iaYfsuA1RnRm0pENpNTsknce1ThQi4d
++X50VTV8oGo4dqCoY7VNuvtMr6RxVYgff4Xj64gAkmZVIsUdhP0bA4LfQHLZQzCM6+JOo0OMRP5F
+JXKMfVkiRdFZkQ+z5JR0HU+oOvaoGiq9GgyXt2swKu2BirAlE4IXL1FjqpHwSCWSN1fA7gtCKK8h
+QvDHIPlwr6b4EM2KuZJlOC+RDFNxg2h50+qMCLlk7CvCz1w6PlQ1HFU1GKoGo1gLC1KJq7gjaVwV
+4i5UxegAEl86g5SvArAfOEeCAbuvFMllDyGpIOSBoNVisgNhVLTMohL5hlkNMifbRMsYRjVEqTp2
+qxoC54go0mFk7eleOWLlyLNhcQ9eoIoxQSxzVMLuv1ANBuz+00jxL0dCaUQTfJLmgU20jKk5KbHd
+RfMSV8VLZJE1Izzka9HPVdzu1rBQ1XDsHAmqBsOjwdC9YUFbJgnckTS2uoaIkQYSnz2J5YVVsB88
+T8L/W/mXWFY2CQ4jJPmtDpMdCONFy9O8RIpM3Dds47MGDGPpLKCVweLW8JmqofpCIlQNhq8IRupn
+4WcsqWPOIu7BIOL6GUjOCkI4XH05CX4Ddn8Adn8Skg7c2RTfpklBJW4klbgCE2nuCipz9pjtoaNo
+Zym6qEVIUjV8fykJ51RxqBjGjI/vqr49aXg1Ep48DrurAsKhK6jhHBnl2UgpfxCxRtsp67c60Ilm
+Rr7InlMiQSqTPD6TDGUZ3+3GULeGPVci4UJVLNvV98yAFQPOdEz+Igj7kbpJOL9ELcSqb9vOI3re
+SYbSmlYNrIm9szGyZSZrIbHbi5WqjtP1EaFqMI59DePFrU96OgveHyBcaW+4TBV7YP9mEmL1tqEK
+XiL/4iXuW2YiRE7lZe6XLGO7NUxya3CHIkHVYBwpw8Hlu5+Z0XlFcWFoNdRaavnfkXSgR2N/o0ZH
+7V30bjOpDF4mU1iuQAHA40Wy6sVJFiKKNMQeKEH/jqm+eAi+79nIKPdhub/156CoTNKoxH4FSmVu
+P2unGbUYT6s6Ci+MG+oyj44KTxFm+P3oDuHErRDK85hVIZT9D5KO39LY36rRwMvcL3mJ22XiyVUl
+L5NfOxiOq04nbnB5scSj4QSDGqpVDauKinC+I4HdvwmCv4KZDHv5hEb/YI2BKU50sUkklZp4csXL
+3GoqhQ9kKavXdTyherFP1VAVUg0ajqg63t2/H+dzSPaDg2H37Ybgv3Iscaml+D7EyqN3NOpHawzw
+EnmQyiSPSlwFIxGH+GzynNXZM2SdUW0UPU/VcIRFDR4dGS4dQy7qz2E/2BOp/iUQ/McZVXEYKb6H
+YTVaT3Wg1dmzGy9ZqJkaVl4iK+bu4IawRNFf6Yhya/icRQ2qhiMeDa+XleHykhnhwFjY/XvZVFF+
+BoIvAUnFrSfajpEsk6jMfUYlrpIxbiilsuV5lvIYtxt3qBoWX5pTqnNv0FGoFuG+Kw4mnLgVK775
+J+y+Q4wnqC+RcuDhVhFXWDO4m/ks8r+8xJUzq0EkW2jGnYNZ9ga1GD9XvfhC1RBkIOKUR8eTpaWo
+u/Fiqv8ZCH6NTRW+CgjlAoSDEQ35zRoFVIocS2Wy38SS9DUvRT47Iz10Wx9nKbp4dCxXNfzAEjeo
+XpR4ivEf9Q6aZNwIwT8Pgv8Y2+nJn18TbbfgHNQCB7ry2WQ6lbhv2EjgqqjEZUWL/QexjO9ygVO9
+2M1EggZD0/B0fj5Cl8gIvrcg+L+G4A8yn6AS/ExFDM0CPitiGBW5L00Eb0dsMnmMtWertwiCquEU
+IxH7NA3DmBwXSnvD7nfA7j/NeIL6HCnlD8Lhapn3FbxMYqlEvmMlIkbiVkZn9o9kGdtMTql2Wfqb
+roO9jNLufxaCr8RUDsp+sOXVQUVnkglU4lxmcko0i/sda4cAVUMi697g0SG7XLjfaab7QMrRm5Ba
+nstOhF9Hsm8sJjtaVjtsm2T5mDdRHkOz2TsEmMkpqRoMVcc/9+3Dz0xPIvXAw0gtdzOTkeKfheX+
+ltMBh4oD/itG4pgfp1OZHI+RLJNYgjeTOSXDo2NzoRfDCwpCl2VeEYJ/OwR/oNXloN7O7PVTKpI0
+ylq1J5IgL5LprL2UCjU87tHxJUsU7dZw2q3B5nKh91VPyO77FQS/ykyEUM4juaT566BsMnmMP98a
+mkURe22Zkf+5ID90k9x9RfiZW8P7jDklw60hV1UxyjCuoTPNCn84BFMnqObPQVk/iehNJbKYFxlv
+30QS4CVunjWdbW9wefCIqmO328uUUzqp6ljg9eLazvdWoxPsvqeQ6tfZiPCdgVC+CMnlzXe3TSXy
+B1pzF83WeVIku/jMyIesQui4YX8JeqkeLHZ78S3jkbXU5cXEa1LDOaSU3AW7fz0E/ynGfWIPUg9N
+bJY6KGt6vz68SGKZ1SCTM1Qmy2xyJNN7NZM5pQq3jrj9RejXIJNzGGGwl0+D4C9jVEXz5aDmZpHR
+vGgipySS3HmMfVidTnRx61im1lGndNne4MVJTxFGN+gEhdJhsPvXw+4/ybhXKLAfjGpSVdAMrieV
+yGITlRmnqETe55X+TDdcZnNKHg3zrumkVBfs/r9BKC+FUM6eg2rKvaK2htVMhtXDWh4DALUZVqbK
+DFVDuUvDiEaZaPLXg2D3fwLBf5Yx7ZELe9kkCKVN83tHNQ0PuR+Yc0oy+bv14z5MtUGqjvG1UTRr
+Tuk9XUfj5Xzsvrch+A6YCPCiEVfa8Oq8FDFOMoXKZp7jciUxkmU46/gena1qrzaV8W+3hnFXHUWz
+QCjtDcG/iz3A85dguW9co+egzDa14uXIqSwFAQDg0fFEbYaV5aRkuDXMuaqcklmk+pdC8H/HToav
+cd/iUdnyBjVxBUplLn3eDm4I6+84uDUsdLPmlDT4VA1/2ncIP220CV8Iwe80oQoDdj9TMy/TmB43
+vve72ziHNcNy+r3tFqM+s26PMKJ3RASWZT3+rujc+kBubu499VvhPV/uGzZ9v+tGdb8bVfvdMOqz
+fYVhxt7Czkv2eruajaI7OJ3OiPz8/J+H9uli++2a4pifJpUcwrISA8mloS1BT8MSD9Ndiym8ufTe
+6JcXWI6+OL+vEcqe++D24D+SHz2btd1ZmZfzRbWiKEbdlms4nfmBjZterkpJva16WQqMZHvdtiwF
+RnJKt0PLUga+tXTp/abaTjudzqGKosi5ubkV9ft0seUpilH4aXb1iGhHFd5eFcSMVUa9Nn2VgRmr
+v8XszVNgdTZcP6jZccOHTYvtlT51Ua/TLy0KN6Yt7lunTV10hzFtSf/KlA22ik+zPw0qSm6IiX5u
+ZGWlVa5b/4uKtNVhwbTVMOqzlWtuqF61tkeGsKbP3Wbm4HA4whRFmasoymFFUUL8c1xu/85TgtNX
+Zv7Y4+8bg5i53sA7G0LYxgDe3ZoL6zamNx5MeCW255SXYnuVvBTbp/qlxfUREW48v7BncFbypMpt
+OzZU5Sp5DGrIC2zZ+urZVWu6B1asqp+EGgsrW72274sOx32mioJzcnJGKYoiKopy1iwJiqIYuxTF
+SN+RXTWYfnwWMzcGMCsUEesNzN50CO9tfxNUuvaG8TMT77/n9Tgivrw4/EcWNbwaNzAgbHy/Midb
+CSpKXr2Ty8nJN0QpK7jOcV8gbXWH6tBq6FC95qN+BevWDbzHzBxq1TBVUZTSq1HDOdudpwTnrckM
+hM/ZXI2ZoYjYYOCdDUHM3rQWszZarpmI52O7RE1ZdFPh1EW96yVh2uK+xtSFvYIzkx48I8tSID/3
+85ATy8n5d2DTlr98t3JNt8rQSoCRthon09Z0iYLJbseKokzMzc3dqyhK8GpJUBTF2LNTMdK2Sqc5
+fstJzNzAoIoNBuakn8S729+B1Xn1j12mJw0lb8Td/dnLsX1DLEk1y9ILS3oGVm75sCLn0zyGvWGn
+Ick5gbWOe6rZliQYaz8a6HU4fnnl8sk64HA4OuXm5j6nKErJtZCgKIqRqyhGgZJjvLEsI9hjzsYg
+Zm6oZlqi3tmwBLM2RwBX2Vri9aXcky8uurWIRQ0vLLrdeDtx9BlRzArsZFCDomjGxs3PnFq55idV
+bGroZKStuYWpKcqFkCRpsKIon12rGs7Z3p2KkbxJOjvYtqUyjImIDQbmbDkJ67ZpsGaY75JmdVg7
+/XVpuDP0Bl2jhqfmd6r4KD2pMi9nV3VoNew2srI2n1r70V1VLGpYsQrGOkf3/Rs29DH1m9Uul6tT
+bm7uP5Wak9I1k3BOFa6dOcYzSz45/ZN3NlZh1obq0HvFegP/2LoF1ozBplVBhT/OfnlJeNHUxb2P
+TVvc92h99sLi247wqU9955Q/PbYz94sjiqIcrdv2HsnLO1SycfNTvlVruh5euQZH67O01Ti0ai1O
+frSp89sOx82mSlcyMzMjc3JydimKcqJ+n8zZ3nzlyKp0+cQQmn68w6z1RzFr/VHM3li3zdp4FHO2
+fo856Y+YzkFFJ/2BvLKYDH0+tvvg52N712t/XthpUNo6fqgiKYN35ewapCjK4LosJ0cb9NVXf3r5
+q8Ju7kIVZwtVVNRrbvxYsAfzd+5Ef7M/BOt0Orvk5OQMyM7OHlKfT2ZtV07OoH3OnUNHz9s6BDM2
+DcKMTYPwjmNwnTZj0yDM3jYUM9Jb1u+nqho+qL2LvqxdQx3XoK8WFKP1PiZsiVA1PO3RsI+xMqNa
+1ZBYUoL2vqwNCZcL3d0qFqhsr30MVYPfo+F1lx8tp6yxLUDV8bDqZa5TCnp0fFRcjNCNdtvBjr1e
+hF/aXaze+wYd5Z5ivFJaiuun2WFTwKVhRG2dEltFt4Z9hV4MN3tSakc9KC7GLWoRkjw6vmMk4Yzb
+i1eL209KDYt9Htylaihgrczw6PC5vGj9jUhaGkzWKRmqFy+5XGj/pZOGhFvHA6oXXzGToCPfXYSG
+u9VqRw1UDakq+0tQw+3FcwUFYOrV1A5G1NYpuVTGOiVVR/plzUvace1Qa16Cfs+YUzJcXrzVHjc0
+MNxe/NGtYb/K1kHGUDV87CrFiAKjEcsnrzcUFOAWT83bN6YoWtVwSvVitteL1t/EsCXBZE7J8GhQ
+VB1RLlfo/t/tYITLhd6qFzEeDYcZ1fC9R8M899dofW3aWjLM5pTcGlyqiihT7RraUT8KCnCLV8cS
+Vcdx1r3Bq2O+xwem577tYERxMe701PTaY4uiNZS155QaAaZzSjre3dOYz66uR6hFuE/VsJeZBC++
+VXWMbG6/2xzcOtapGs6aIIK/qCFuO64dHh1PqBp0VhLcGsrcGsaxtJ5uhwm4NcSrjF0CaomY0743
+XIz/A22zUnAO+9zXAAAAAElFTkSuQmCCAAAAAAAAAAAAAAAA
+
+--_005_LO6P123MB64219A2F783593672D14F4CC9C999LO6P123MB6421GBRP_--

@@ -1,0 +1,429 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a05:651c:1614:0:0:0:0 with SMTP id f20csp2278569ljq;
+        Mon, 2 Aug 2021 15:00:10 -0700 (PDT)
+X-Received: by 2002:ae9:ef54:: with SMTP id d81mr17529068qkg.234.1627941609871;
+        Mon, 02 Aug 2021 15:00:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwZqiu1CmbGKq3M2ZSiSSn1YAo6G+lNei4joh0st1qwfwv0cSrZBmMZmPZ6OlM/+coGotSl
+X-Received: by 2002:ae9:ef54:: with SMTP id d81mr17528959qkg.234.1627941608267;
+        Mon, 02 Aug 2021 15:00:08 -0700 (PDT)
+ARC-Seal: i=2; a=rsa-sha256; t=1627941608; cv=pass;
+        d=google.com; s=arc-20160816;
+        b=FEqIHtZhQil7/BnvZLljLuqjcatwa46FRSCWXDRQaynk7Mye4FzuwYojYlxdEVm5gV
+         2fpvyidezLaipJV4xb1h7PNkS3skY6fgzXHhVlfZ8ERdX3xw9mBrUvWvGaPJkbmy/RIV
+         dDlp7teF450mDEIU24e91qgzpqFxhPISjLkrcvApDxgsusZBDy2M20tvfRxtnE+Itj26
+         IeQwK5XnxlKtqwG0eBdSJuX052OxvqPlpaNHyC8u5PaG7pBClMgsCJ5JGGrajjNgdbrG
+         gFv022zmH7/8YQe9mQIX19oiCLIr5FpPKPYdkMgnPHb4VnD5QXzCWKyc0esxHsLbuah1
+         z4OA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:deferred-delivery:date:thread-index
+         :thread-topic:subject:to:from:dkim-signature;
+        bh=QnxzPowy/pFt09e1q+ZplCy/+xDCxZK7/P0eKrb+7do=;
+        b=ajWd08WAc5XyNsXiSQwPuNKbAjcqmn5+s1eU9c0y4W8NJo+EBp4lwTvFR15sWT01sL
+         NKxJfzrgK0LtgVs4njuGhpvUYMZrdqEIRy5Da00Kph3jUsR4xmMPiidn2K/LDpOzIL9Y
+         orxW5W/hricrwefpntktGHUb4sGXodisZlEmEiXApLkPkh9JYEeR8+ykZmpZn9Cdd6A2
+         FhEGnm/g+AaEh+jO4Q2mWQIMokal+a8bBuGYNaBiL9YgvfhsIBUDDdwDaFS9x2REmWPg
+         Bu3Mj44WzNJ7CPrOMZSQLhj/2rtqfXbGCYSc4CMwIBOZ9BrkUE9sDDI+cVOILQtwKUvK
+         qUMw==
+ARC-Authentication-Results: i=2; mx.google.com;
+       dkim=pass header.i=@sslevine.onmicrosoft.com header.s=selector2-sslevine-onmicrosoft-com header.b=b56Q6p26;
+       arc=pass (i=1 spf=pass spfdomain=sslevine.com dkim=pass dkdomain=sslevine.com dmarc=pass fromdomain=sslevine.com);
+       spf=pass (google.com: domain of sslevine@sslevine.com designates 40.107.92.96 as permitted sender) smtp.mailfrom=sslevine@sslevine.com
+Return-Path: <sslevine@sslevine.com>
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2096.outbound.protection.outlook.com. [40.107.92.96])
+        by mx.google.com with ESMTPS id d7si7176536qvh.91.2021.08.02.15.00.07
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 02 Aug 2021 15:00:08 -0700 (PDT)
+Received-SPF: pass (google.com: domain of sslevine@sslevine.com designates 40.107.92.96 as permitted sender) client-ip=40.107.92.96;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@sslevine.onmicrosoft.com header.s=selector2-sslevine-onmicrosoft-com header.b=b56Q6p26;
+       arc=pass (i=1 spf=pass spfdomain=sslevine.com dkim=pass dkdomain=sslevine.com dmarc=pass fromdomain=sslevine.com);
+       spf=pass (google.com: domain of sslevine@sslevine.com designates 40.107.92.96 as permitted sender) smtp.mailfrom=sslevine@sslevine.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=mYF7Ajfcw10qSCo1jo/2ASv2sSaZWaSFaM9jHr85Tv+D2aNsBwMbwm/0U5bt4qDdPGzMSBxZCZZ36P7RJecFMxw9bKawmDhlJiQx5zk2eWhjJDqsbQAScbykAaft3UtJpqw6WXx81EtwYTicxRYRe/+1VoOPcvMJmt3brpermrwvokX9dHpPdadCiq8ZFqaqxYxTsQCOKcuWy60KHx0R9aJwpLkuvBkoXa3/rnlCn+vEBfNPnxAQ1gTcSsXn19D9rZi9rqKWFpPV0bhHWfpIF9ffosweWd7FDdpaXYvAqiQhx+Q09xwpUr0wRL4qXXY+y5UybFXcMVzQgmQkPR6SMw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnxzPowy/pFt09e1q+ZplCy/+xDCxZK7/P0eKrb+7do=;
+ b=YQ8+ACjKVy5hbBZXUT/vZ8//pdwoLyXFzOUcDrhz0I5DLFNB0q4yazLaEyK7goaB7GJTLv/gkPsRV/TubBEgAsov6ewvjLC7aMdO946sZYCYcKeiShqpuFnsZiEGhJlJhBdNqRfh++bmFr0zar6chpKgiGipIKl407ikXAzXWu0jxvxLS0c3bk+NUtRTmawywBi417mg62GA0roIK0OivpVagOoEDsWjzIgt8+0J3hG/a3OnF2tsyFK2MI0vXioZoEuHz9QhrbsZOkkMNNbRpDI02Ul/M8Xu4aB2GOYUYEuTh+gPjiw1eJBPotbPmALqEmcWYqy8HRFzQzLA7if6Lw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=sslevine.com; dmarc=pass action=none header.from=sslevine.com;
+ dkim=pass header.d=sslevine.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sslevine.onmicrosoft.com; s=selector2-sslevine-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnxzPowy/pFt09e1q+ZplCy/+xDCxZK7/P0eKrb+7do=;
+ b=b56Q6p26FU4cvGhtmJHvh0rmDJ5DWZzY8GELr7ByM5Tp4YRunx9A5mtVNFv/l1+8LaPrqvPelNFlZsTpewT9J54L+qBk+J4TWljeqc0+NkXUtAXTVDgd2cRNCOPRi6HbpEWTYVsWu+DHsBvHDF4noRyzF1n4ylJam+mr79U0/T0=
+Received: from BL3PR08MB7364.namprd08.prod.outlook.com (2603:10b6:208:357::17)
+ by BL3PR08MB7498.namprd08.prod.outlook.com (2603:10b6:208:345::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4373.17; Mon, 2 Aug
+ 2021 22:00:06 +0000
+Received: from BL3PR08MB7364.namprd08.prod.outlook.com
+ ([fe80::f840:6424:3362:1420]) by BL3PR08MB7364.namprd08.prod.outlook.com
+ ([fe80::f840:6424:3362:1420%8]) with mapi id 15.20.4373.026; Mon, 2 Aug 2021
+ 22:00:06 +0000
+From: "Sheen S. Levine" <sslevine@sslevine.com>
+To: Josh Klein <josh@josh.is>
+Subject: RE: Hello from the future
+Thread-Topic: Hello from the future
+Thread-Index: AQHXhVcVdRMeZZ2UJ0irF4uJojwf96tbqNrg
+Date: Mon, 2 Aug 2021 22:00:04 +0000
+Deferred-Delivery: Mon, 2 Aug 2021 22:00:00 +0000
+Message-ID:
+ <BL3PR08MB7364F4E201A8735976BD10DEB5EF9@BL3PR08MB7364.namprd08.prod.outlook.com>
+References:
+ <CACNgykOdWkG7wLApbRFJ_SnMg70uM9vKXNWn19AYJD75989EhA@mail.gmail.com>
+In-Reply-To:
+ <CACNgykOdWkG7wLApbRFJ_SnMg70uM9vKXNWn19AYJD75989EhA@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+authentication-results: josh.is; dkim=none (message not signed)
+ header.d=none;josh.is; dmarc=none action=none header.from=sslevine.com;
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 6d58ca31-e761-47a4-de4d-08d95600e370
+x-ms-traffictypediagnostic: BL3PR08MB7498:
+x-microsoft-antispam-prvs:
+ <BL3PR08MB74989A668576A92B8C25E69CB5EF9@BL3PR08MB7498.namprd08.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ QVDQZHu0dxirYVbWh8Rgz9/xcdff+Pv+42lMxO0SSodfXe/7PsMgUZjDdEJQ9pcafI43vt/mXiItJ6S568jKXb6QYi5erofn8ek+6Z+OaOGJHCYNo5klUIt7yyqVwVRa6srYlFz2ZmjZItljljxIN3ha3Pb1RoP0mtdexVh+cXAu04zvOfH+367ArQP6ELrGNjdXe2cjGSbK0FBvFt+CVsehUhMHFXYjZY2aLnEheLQSuEwPOJCumxEwPF/vmektGWHPzuD9Sp4qAd2sOWjhO/1dhGXdfZHdF+GS1+mc5P5dAuv1m4CPdDoAkS9F/drHF5KvQOVJr7OWAYQNfPcplw3yNAEmOr1DrvghgJK+YF3eK4QPZ8fcSXKRPoFZbSAaTqZ+zjZaLKhUJ/iaKF7D8UHqCxyIrkGgyj0CCyTnLGwZ49P0ds8dGqfjgRXaZ5nUxO27J+lL5t5VO7/lz7haigld13TN8OgFhpHCF7kJH3L98xQP7IcLxzsvMwGxSgPdfn3OvqCuCmWnwPagGK+eujnZ6Nw1D9gRBZlkFtlvRW++Iuqy5CS+YtwZVgORHr30icEcpB0WIstYfNIZ7OvTHoYfaw9alNrYOIQq8hqVsUze3QND1v+yM/u2qOP8OjUBukN86JCEWg7SQM8/V0MSQ8QzHC11RCJ8jaNtQ/5hfjGqMt1Au8LUf180o/+qMoIkmyRkpbpZU0NOa8M/orevfl3LemYWeQjahFK2WtYryXjWFmd10s4JOn+Pyo3uo5NDUD8xLGmlvWRxuXet3sOVoA==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL3PR08MB7364.namprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39830400003)(376002)(136003)(366004)(346002)(52536014)(26005)(7696005)(6916009)(71200400001)(6506007)(66616009)(38100700002)(66946007)(316002)(55016002)(5660300002)(8936002)(53546011)(66556008)(66476007)(66446008)(64756008)(8676002)(83380400001)(122000001)(9686003)(7066003)(166002)(86362001)(99936003)(9326002)(76116006)(38070700005)(3480700007)(2906002)(508600001)(33656002)(186003);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?VEg9wGFSoQhPwtAk0Z0zblQ79rSkx7zfwXuiWj08QpQCPBV/A/ihgFq2qsvN?=
+ =?us-ascii?Q?BmAQ4KbD5Vk2ddW4axiB9GevsMoy8rL8nA/wnB0ARak6Y2n9mS9L22j+Htmq?=
+ =?us-ascii?Q?rhiC/OgvMPMxSyuA4oAg2R1xHISMIxajwD6pNGrwVhz2Ycas7jVp0le7pxyn?=
+ =?us-ascii?Q?oKqpJYUurrgJeiTX/cpRInnyGTinoOBXVCg8OYfpMlJLfND3yAi7TakqWm3d?=
+ =?us-ascii?Q?Gx6gk2Nsm1s5NvHYVzPbQPdZIOL0m5QpOymFs/w058Ps/WZ6jvavhfsn9A0L?=
+ =?us-ascii?Q?0C1Rba5nffGj/wc7rvySSNNnHG65cVeCQAyrWvbyUQ14fz2tdbN4VJK2H2Sa?=
+ =?us-ascii?Q?ef8TzoF8QbirpgB0Mf6BSSlYSt8o6zGqqvXh5HDLMotIHW3RqpLqEra/DMrl?=
+ =?us-ascii?Q?RjTzMCFGQXjyZvCPtSn65C1ZO19fnqpgGfo7Cnc70lwG7MT7TDtrvdp1ejoF?=
+ =?us-ascii?Q?zEQVPMDXp5/Von+mkdd679RQmpVGkfUJHJV9ckUSfXXPg9ObOahPU5rGwD0L?=
+ =?us-ascii?Q?DMZC40ifvFLts+mUWvFf9KGrdoRzWoTn4AF9CVtA/vIBdqQRLFS+PTdb2fBH?=
+ =?us-ascii?Q?KpdKInXVUzZt4a6fA5HmGmVSeS+xjw5QE/6MUU6eDwvuwWx8rrQbx2cdwAA7?=
+ =?us-ascii?Q?bJIF0XmNt3Hs+Ao88QRbSGtjwBBsZg9HAZGvMis6/sjm7vQF8BEUvqHAuM34?=
+ =?us-ascii?Q?VxCPvF5vnqFFN3V4CfwRJc3zUnpVywuEmuq3oXb3gJV+DzfZ1IYUQGOfdejE?=
+ =?us-ascii?Q?1zindpJR9v7o/HLG8NuSG58nSLhtKIhtwBunynh5tx2b4R2xXRi62FoBqS6Z?=
+ =?us-ascii?Q?FzP55x+5of5MjU1gAI9ThhAcqQw1zY71S9X7CcL4POOpgmxxlhWgbqb6Vhww?=
+ =?us-ascii?Q?Ls9TKQjuZ9/hdAHMod9CLsZNk4Vx2dtftZ1fpQr/CgNDHj9lniVj6uTTodWg?=
+ =?us-ascii?Q?QeO/DDHLzwI0z0ZJtWfRQf+hNqUKUHQEiXaK4QFSTm+1gGMJW000GQex6vZu?=
+ =?us-ascii?Q?yseW/GosksHuBJJebnTh9eEafNuLRLRsEQj7S1y80Mo2ISs63AU/ARUwfbFi?=
+ =?us-ascii?Q?i43ihB/GMm3aTXlTuhaA2TXhCVWJq85fbD1O83h7lwPPCijctZzkvbAyEjJg?=
+ =?us-ascii?Q?6tSK/3MlysW5XaHVlikor/IJHEh19UN0aokDkhJViZn9P+GF67oLllw4tjBF?=
+ =?us-ascii?Q?t5x15URVzAUpMEReJjjAEcZJzwmTyU84Xd1xRMJxCmVM4jeDqrUsluG6XT8g?=
+ =?us-ascii?Q?KtJxwGTvYTDDKbN06M0o4pfgL+xAeZjL7JJG4uA/bLUiutC119ZnJ75gcOLW?=
+ =?us-ascii?Q?GcBR/jUlZtUkPgDjyZRX7VDn?=
+x-ms-exchange-transport-forked: True
+Content-Type: multipart/related;
+	boundary="_004_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_";
+	type="multipart/alternative"
+MIME-Version: 1.0
+X-OriginatorOrg: sslevine.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BL3PR08MB7364.namprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6d58ca31-e761-47a4-de4d-08d95600e370
+X-MS-Exchange-CrossTenant-originalarrivaltime: 02 Aug 2021 22:00:06.4364
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 0c4584b1-eeaa-4ddf-b9ee-0ed68082dc46
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: mbffXgnYH0jfBN0tI6rhQcTEYTeCh0ymMoJyvxH7v2OQYITpCaE5wcUANs4vNr/0ldmaWyVqusPoXt59Qc+MDQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR08MB7498
+
+--_004_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_
+Content-Type: multipart/alternative;
+	boundary="_000_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_"
+
+--_000_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+Hello Josh,
+
+Thanks for the note. I'm curious about IndigoMetrics, even more so after re=
+ading the briefing. I wonder if it can be used to monitor aspects of divers=
+ity and inclusion (see our research below).
+
+Warmly,
+
+SSL
+
+Sheen S. Levine, PhD
+twitter.com/sslevine<http://twitter.com/sslevine>
+New Research: Racial Attention Deficit<http://bit.ly/RacialAttentionDeficit=
+>
+
+From: Josh Klein <josh@josh.is>
+Sent: Friday, July 30, 2021 10:25
+To: Sheen S. Levine <sslevine@sslevine.com>
+Subject: Hello from the future
+
+Since the pandemic began everyone has been building their networks in a new=
+ly virtualized world, but most of it has turned out to be spam. You and I h=
+ave connected in the past; I wanted to invite you to reconnect to see if we=
+ could help each other in the future.
+
+Below are a few of my current projects; let me know if any strike your inte=
+rest, or just hit me with an update on what you're working on. Or let's set=
+ up a time to chat!
+
+All best wishes,
+Josh
+
+###
+Current Projects:
+
+IndigoMetrics<http://tracking.josh.is/prod/b3a8e48e-6cda-4a16-a551-cf859610=
+9908/08771207-c108-4c14-bf26-cca823c53bc4>; a data analytics platform for a=
+utonomously measuring and managing employee behavior. If your distributed w=
+orkforce is starting to fray or you're looking for a data-led D&I solution,=
+ this is the answer.
+
+Continuous Glucose Monitor Testing<http://tracking.josh.is/prod/b3a8e48e-6c=
+da-4a16-a551-cf8596109908/a14bf688-e10d-4e72-9ff9-54228a484ff0>; a project =
+to understand how to use physically embedded sensors to reduce the health i=
+mpacts of obesity, heart disease, and diabetes (and hence Covid!)
+
+Innovation Consulting<http://tracking.josh.is/prod/b3a8e48e-6cda-4a16-a551-=
+cf8596109908/6ae867ee-50e0-40f7-821a-b9602c38bf4b>: as ever, I continue to =
+work with senior leaders and teams on technology strategy and new innovatio=
+n / product development. We've seen some radical changes in the last year -=
+ the winners are acting on it!
+
+
+
+
+
+
+
+
+--_000_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_
+Content-Type: text/html; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dus-ascii"=
+>
+<meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">
+<!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+<title>Hello from the future</title>
+<style><!--
+/* Font Definitions */
+@font-face
+	{font-family:"Cambria Math";
+	panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+	{font-family:Calibri;
+	panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:"Calibri Light";
+	panose-1:2 15 3 2 2 2 4 3 2 4;}
+@font-face
+	{font-family:Georgia;
+	panose-1:2 4 5 2 5 4 5 2 3 3;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+	{margin:0cm;
+	font-size:11.0pt;
+	font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+	{mso-style-priority:99;
+	color:blue;
+	text-decoration:underline;}
+span.EmailStyle20
+	{mso-style-type:personal-reply;
+	font-family:"Georgia",serif;
+	color:windowtext;
+	font-weight:normal;
+	font-style:normal;
+	text-decoration:none none;}
+.MsoChpDefault
+	{mso-style-type:export-only;
+	font-size:10.0pt;}
+@page WordSection1
+	{size:612.0pt 792.0pt;
+	margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+	{page:WordSection1;}
+--></style><!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]--><!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->
+</head>
+<body lang=3D"EN-US" link=3D"blue" vlink=3D"purple" style=3D"word-wrap:brea=
+k-word">
+<div class=3D"WordSection1">
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ge=
+orgia&quot;,serif">Hello Josh,<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ge=
+orgia&quot;,serif"><o:p>&nbsp;</o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ge=
+orgia&quot;,serif">Thanks for the note. I&#8217;m curious about IndigoMetri=
+cs, even more so after reading the briefing. I wonder if it can be used to =
+monitor aspects of diversity and inclusion (see our
+ research below).<o:p></o:p></span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ge=
+orgia&quot;,serif"><o:p>&nbsp;</o:p></span></p>
+<div>
+<p class=3D"MsoNormal" style=3D"line-height:115%"><span style=3D"font-size:=
+12.0pt;line-height:115%;font-family:&quot;Georgia&quot;,serif">Warmly,<o:p>=
+</o:p></span></p>
+<p class=3D"MsoNormal" style=3D"line-height:115%"><span style=3D"font-size:=
+12.0pt;line-height:115%;font-family:&quot;Georgia&quot;,serif"><o:p>&nbsp;<=
+/o:p></span></p>
+<p class=3D"MsoNormal" style=3D"line-height:115%"><span style=3D"font-size:=
+12.0pt;line-height:115%;font-family:&quot;Georgia&quot;,serif">SSL<o:p></o:=
+p></span></p>
+<p class=3D"MsoNormal" style=3D"line-height:115%"><b><span style=3D"color:#=
+003366"><o:p>&nbsp;</o:p></span></b></p>
+<p class=3D"MsoNormal" style=3D"line-height:115%"><b><span style=3D"font-si=
+ze:12.0pt;line-height:115%;color:#003366">Sheen S. Levine</span></b><span s=
+tyle=3D"font-size:12.0pt;line-height:115%;color:#003366">, PhD<o:p></o:p></=
+span></p>
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ca=
+libri Light&quot;,sans-serif"><a href=3D"http://twitter.com/sslevine"><span=
+ style=3D"text-decoration:none">twitter.com/sslevine</span></a><span style=
+=3D"color:blue"><o:p></o:p></span></span></p>
+<p class=3D"MsoNormal" style=3D"mso-margin-top-alt:auto;margin-bottom:6.0pt=
+"><span style=3D"font-size:12.0pt;font-family:&quot;Calibri Light&quot;,san=
+s-serif">New Research:
+</span><b><span style=3D"font-size:12.0pt;font-family:&quot;Calibri Light&q=
+uot;,sans-serif"><a href=3D"http://bit.ly/RacialAttentionDeficit">Racial At=
+tention Deficit</a></span></b><span style=3D"font-size:12.0pt;font-family:&=
+quot;Calibri Light&quot;,sans-serif">
+<o:p></o:p></span></p>
+</div>
+<p class=3D"MsoNormal"><span style=3D"font-size:12.0pt;font-family:&quot;Ge=
+orgia&quot;,serif"><o:p>&nbsp;</o:p></span></p>
+<div>
+<div style=3D"border:none;border-top:solid #E1E1E1 1.0pt;padding:3.0pt 0cm =
+0cm 0cm">
+<p class=3D"MsoNormal"><b>From:</b> Josh Klein &lt;josh@josh.is&gt; <br>
+<b>Sent:</b> Friday, July 30, 2021 10:25<br>
+<b>To:</b> Sheen S. Levine &lt;sslevine@sslevine.com&gt;<br>
+<b>Subject:</b> Hello from the future<o:p></o:p></p>
+</div>
+</div>
+<p class=3D"MsoNormal"><o:p>&nbsp;</o:p></p>
+<div>
+<p class=3D"MsoNormal">Since the pandemic began everyone has been building =
+their networks in a newly virtualized world, but most of it has turned out =
+to be spam. You and I have connected in the past; I wanted to invite you to=
+ reconnect to see if we could help
+ each other in the future.<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Below are a few of my current projects; let me know =
+if any strike your interest, or just hit me with an update on what you're w=
+orking on. Or let's set up a time&nbsp;to chat!<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">All best wishes,<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">Josh<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal" style=3D"margin-bottom:12.0pt"><br>
+###<o:p></o:p></p>
+<div>
+<p class=3D"MsoNormal"><strong><span style=3D"font-family:&quot;Calibri&quo=
+t;,sans-serif">Current Projects:</span></strong><o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"http://tracking.josh.is/prod/b3a8e48e-6cd=
+a-4a16-a551-cf8596109908/08771207-c108-4c14-bf26-cca823c53bc4">IndigoMetric=
+s</a>; a data analytics platform for autonomously measuring and managing em=
+ployee behavior. If your distributed
+ workforce is starting to fray or you're looking for a data-led D&amp;I sol=
+ution, this is the answer.&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"http://tracking.josh.is/prod/b3a8e48e-6cd=
+a-4a16-a551-cf8596109908/a14bf688-e10d-4e72-9ff9-54228a484ff0">Continuous G=
+lucose Monitor Testing</a>; a project to understand how to use physically e=
+mbedded sensors to reduce the health
+ impacts of obesity, heart disease, and diabetes (and hence Covid!)<o:p></o=
+:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal">&nbsp;<o:p></o:p></p>
+</div>
+<div>
+<p class=3D"MsoNormal"><a href=3D"http://tracking.josh.is/prod/b3a8e48e-6cd=
+a-4a16-a551-cf8596109908/6ae867ee-50e0-40f7-821a-b9602c38bf4b">Innovation C=
+onsulting</a>: as ever, I continue to work with senior leaders and teams on=
+ technology strategy and new innovation
+ / product development. We've seen some radical changes in the last year - =
+the winners are acting on it!<o:p></o:p></p>
+</div>
+</div>
+<p>&nbsp;<o:p></o:p></p>
+<p>&nbsp;<o:p></o:p></p>
+<p>&nbsp;<o:p></o:p></p>
+<p class=3D"MsoNormal"><span style=3D"border:solid windowtext 1.0pt;padding=
+:0cm"><img border=3D"0" width=3D"1" height=3D"1" style=3D"width:.0104in;hei=
+ght:.0104in" id=3D"Picture_x0020_1" src=3D"cid:~WRD3003.jpg" alt=3D"Image r=
+emoved by sender."></span><o:p></o:p></p>
+</div>
+</body>
+</html>
+
+--_000_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_--
+
+--_004_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_
+Content-Type: image/jpeg; name="~WRD3003.jpg"
+Content-Description: ~WRD3003.jpg
+Content-Disposition: inline; filename="~WRD3003.jpg"; size=823;
+	creation-date="Fri, 30 Jul 2021 15:44:23 GMT";
+	modification-date="Fri, 30 Jul 2021 15:44:23 GMT"
+Content-ID: <~WRD3003.jpg>
+Content-Transfer-Encoding: base64
+
+/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0a
+HBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIy
+MjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCABkAGQDASIA
+AhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQA
+AAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkaEII0KxwRVS0fAkM2JyggkKFhcYGRolJicoKSo0NTY3
+ODk6Q0RFRkdISUpTVFVWV1hZWmNkZWZnaGlqc3R1dnd4eXqDhIWGh4iJipKTlJWWl5iZmqKjpKWm
+p6ipqrKztLW2t7i5usLDxMXGx8jJytLT1NXW19jZ2uHi4+Tl5ufo6erx8vP09fb3+Pn6/8QAHwEA
+AwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAtREAAgECBAQDBAcFBAQAAQJ3AAECAxEEBSEx
+BhJBUQdhcRMiMoEIFEKRobHBCSMzUvAVYnLRChYkNOEl8RcYGRomJygpKjU2Nzg5OkNERUZHSElK
+U1RVVldYWVpjZGVmZ2hpanN0dXZ3eHl6goOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3
+uLm6wsPExcbHyMnK0tPU1dbX2Nna4uPk5ebn6Onq8vP09fb3+Pn6/9oADAMBAAIRAxEAPwD3+iii
+gAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKA
+CiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAK
+KKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAoo
+ooAKKKKACiiigAooooAKKKKACiiigD//2Q==
+
+--_004_BL3PR08MB7364F4E201A8735976BD10DEB5EF9BL3PR08MB7364namp_--

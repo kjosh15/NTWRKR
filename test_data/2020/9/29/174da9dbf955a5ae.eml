@@ -1,0 +1,876 @@
+Received: from 12717724459
+	named unknown
+	by gmailapi.google.com
+	with HTTPREST;
+	Thu, 29 Oct 2020 07:12:25 -0700
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:a173:0:0:0:0:0 with SMTP id u19csp4164390ljl;
+        Tue, 29 Sep 2020 09:07:08 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4aWer+vNs5Q0i+Ox25EJvwmb9qfWxVy3UCtc19nWIlRi4Caot7EYrL0lZIJ23D2yzL5V9
+X-Received: by 2002:a05:6638:1616:: with SMTP id x22mr3676375jas.110.1601395624376;
+        Tue, 29 Sep 2020 09:07:04 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1601395624; cv=none;
+        d=google.com; s=arc-20160816;
+        b=rcNKRSGrtIEBp9Mzn3ZLhxnqD3V0PVpcUBGAXBBiyocMpU8IYTOuCV50eLtj/EW5gi
+         ZrBcF0yBN7dGVQc5J2YFdC6HnlqWoTTyJ/jtRg5EI7f0xNITLBgooqvUJ2qR2Ro+9dme
+         H296c3dv7r3ePF6OdtwLJMnytGHuDsoE6ejE8vKbiBKSTYEccKc41PlhDfVWZNHXg8Ii
+         hXYu+0AHHatKFYz6nuV99xv/lW/ViMWgvmqY70n85qx3Ch4bpPNBQgHZPHwkuTOw8mdv
+         Qs3Dz9qJcpurES02l8eLz44J7juImpwcL2+IFYP6vkw3oI16BoJjXHP2aIecaFSm1ZxC
+         h+UA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:to
+         :from:ironport-sdr:ironport-sdr;
+        bh=fwp8gY5Ebb7SZ1+0CQPBVGiBgGXgSd/cL1Zhd6xbOn4=;
+        b=CqiV6adeJfoPRVF4m3yl5sH2vWf+cJ4GUbaH5R+ecpOxx5dvNuWANgvUQyeLSLc/fL
+         jKpU0eq/ify4TcJaEpnxQt0FUhkxk/rpM9A4ehlSy8e+6lBwfxSDtAZnLmdU4qegvYdh
+         JdJuWCR2CrNSZXeRTiwVy/EFdfyEu8m7DB+RKjoCXUyTNEZMtPz6bbV9FCvnh0LD6YaT
+         UL/XYc4q0yOy/iaON9r2dEVsN81gg6XAUSd3+VMirsi7zyixKalMwUyoQsHjCjXQMyzh
+         GUGft+UbEbmxw+GGrwUMfmXHKyoicuQWe2wYi6k7TKlX/MCg8gmHGqaPewQJmUQhohc9
+         HfBA==
+ARC-Authentication-Results: i=1; mx.google.com;
+       spf=pass (google.com: domain of aaron.sheridan@cigna.com designates 185.183.28.71 as permitted sender) smtp.mailfrom=Aaron.Sheridan@cigna.com;
+       dmarc=pass (p=NONE sp=REJECT dis=NONE) header.from=cigna.com
+Return-Path: <Aaron.Sheridan@cigna.com>
+Received: from mx08-000e5c011.pphosted.com (mx08-000e5c011.pphosted.com. [185.183.28.71])
+        by mx.google.com with ESMTPS id u11si1138725jap.125.2020.09.29.09.06.58
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 29 Sep 2020 09:07:04 -0700 (PDT)
+Received-SPF: pass (google.com: domain of aaron.sheridan@cigna.com designates 185.183.28.71 as permitted sender) client-ip=185.183.28.71;
+Authentication-Results: mx.google.com;
+       spf=pass (google.com: domain of aaron.sheridan@cigna.com designates 185.183.28.71 as permitted sender) smtp.mailfrom=Aaron.Sheridan@cigna.com;
+       dmarc=pass (p=NONE sp=REJECT dis=NONE) header.from=cigna.com
+Received: from pps.filterd (m0134347.ppops.net [127.0.0.1])
+	by mx08-000e5c011.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 08TFtZWs003963
+	for <josh@josh.is>; Tue, 29 Sep 2020 16:06:56 GMT
+Received: from uxbcip202.cigna.com ([170.48.65.4])
+	by mx08-000e5c011.pphosted.com with ESMTP id 33swehsk0s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT)
+	for <josh@josh.is>; Tue, 29 Sep 2020 16:06:52 +0000
+IronPort-SDR: h+bu59/Jzqt74BTMmEJHDI+jbWhY70YhZAGxDjrfSeFRbL6R6Q1fuMuAcnQeVWMFpabSC5rh7D
+ sw+CYX78mTzg==
+X-IronPort-AV: E=Sophos;i="5.77,319,1596495600"; 
+   d="gif'147?pdf'147?png'147,150?scan'147,150,208,217,147,150";a="10837202"
+Received: from uxbdlpeprev01.euro.intl.cigna.com (HELO uxbcip202.euro.intl.cigna.com) ([10.115.204.13])
+  by uxbcip202.euro.intl.cigna.com with ESMTP; 29 Sep 2020 13:54:12 +0100
+IronPort-SDR: TzqdERmryIoyMZ8L1RgTW+z03g82Kak3UWZTWIweh7qAfizgPNqEcB+2JTkVDinLFP7bfnKHc1
+ JDgX6xO/buGA==
+Received: from ciwx6mup0006.euro.intl.cigna.com ([10.115.52.22])
+  by uxbcip202.euro.intl.cigna.com with ESMTP; 29 Sep 2020 13:54:10 +0100
+Received: from CIWX6MUP0005.Euro.intl.cigna.com (10.115.52.21) by
+ CIWX6MUP0006.Euro.intl.cigna.com (10.115.52.22) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Tue, 29 Sep 2020 17:06:45 +0100
+Received: from CIWX6MUP0005.Euro.intl.cigna.com ([fe80::f1a9:66e3:af61:d7ac])
+ by CIWX6MUP0005.Euro.intl.cigna.com ([fe80::f1a9:66e3:af61:d7ac%4]) with mapi
+ id 15.01.1979.006; Tue, 29 Sep 2020 17:06:45 +0100
+From: "Sheridan, Aaron P      GLARC" <Aaron.Sheridan@Cigna.com>
+To: "josh@josh.is" <josh@josh.is>
+Subject: Cigna Global Health Options
+Thread-Topic: Cigna Global Health Options
+Thread-Index: AdWOkxj8dKIN0Pi2uEW+5l/G85LnQQPpHOIgAfPGnnAG1LHvIDU1ZTpA
+Date: Tue, 29 Sep 2020 16:06:45 +0000
+Message-ID: <1115998968.87.1603980745141@localhost>
+References: <63939CDB799D8145BFF6D994BAAD314E1EC1845CC6@gnie7m002.Euro.intl.cigna.com>
+ <63939CDB799D8145BFF6D994BAAD314E1EC1FBA6FF@gnie7m002.Euro.intl.cigna.com>
+ <63939CDB799D8145BFF6D994BAAD314E1EC1FBA741@gnie7m002.Euro.intl.cigna.com>
+ <5a08decccc4842dd8ac5f6cc6a472872@CIWX3MUP0003.Euro.intl.cigna.com>
+ <bce2da6fae3b45debed3919a71f7f30d@CIWX3MUP0003.Euro.intl.cigna.com>
+ <d67ccb581d024bd7854e62cbfc667e75@CIWX3MUP0003.Euro.intl.cigna.com>
+ <807e829a6962404a9689f454934d9671@CIWX3MUP0003.Euro.intl.cigna.com>
+ <ff2f8e97de964156a04091a5cfbf268d@CIWX3MUP0003.Euro.intl.cigna.com>
+ <ee2b55e8dcc84d0b812562171e6ee1f8@CIWX3MUP0003.Euro.intl.cigna.com>
+ <86142278503449d0a66aebe3aa12452d@CIWX3MUP0003.Euro.intl.cigna.com>
+ <637a8b7743b94d5d93792b5594f63567@CIWX3MUP0003.Euro.intl.cigna.com>
+ <2c520df89498457b9faddec65d9ea741@CIWX3MUP0003.Euro.intl.cigna.com>
+ <132d65e889ba424f89854ecf6fa9e02b@CIWX3MUP0003.Euro.intl.cigna.com>
+ <360e75dd74a34097bb0048ea444e55b6@CIWX3MUP0003.Euro.intl.cigna.com>
+ <b64f75f5975d43e3880216bb8ca3cccf@CIWX3MUP0003.Euro.intl.cigna.com>
+ <97fce230b44a40cea740b642da50d960@CIWX3MUP0003.Euro.intl.cigna.com>
+ <ec79107dec094a18a42b3c68e98bdace@CIWX3MDP0003.Euro.intl.cigna.com>
+ <c88ad9c0ecfd46cbb6b67035b83de21e@CIWX3MDP0003.Euro.intl.cigna.com>
+ <03e09b40546444859d8aff5d7670cce6@CIWX3MUP0003.Euro.intl.cigna.com>
+ <b2c6ea929e914e9ea41ad314031526b6@CIWX3MUP0003.Euro.intl.cigna.com>
+ <d6e0ae885a7c4b8598ca6746e7628508@CIWX3MUP0003.Euro.intl.cigna.com>
+ <b21f5c9acab041a7bda27a0686c82e80@Cigna.com>
+ <937bdd9dcc9f48de978f2f9e7a3f7cd3@Cigna.com>
+ <6776c36b46eb49c98c9c03a3f8584fc1@Cigna.com>
+ <94300011acab4be2aa90b0a6ae3a4135@Cigna.com>
+ <2a19073cbea74c97ad7bad96f3410657@Cigna.com>
+In-Reply-To: <2a19073cbea74c97ad7bad96f3410657@Cigna.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.115.52.4]
+Content-Type: multipart/mixed;
+	boundary="_009_36bc157501ce4017a2f69e238538262cCignacom_"
+MIME-Version: 1.0
+X-CFilter-Loop: Reflected
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.687
+ definitions=2020-09-29_07:2020-09-29,2020-09-29 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 spamscore=0 priorityscore=1501 bulkscore=0
+ impostorscore=0 suspectscore=0 classifier=parse_limit adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2006250000 definitions=main-2009290136
+
+--_009_36bc157501ce4017a2f69e238538262cCignacom_
+Content-Type: multipart/related;
+	boundary="_008_36bc157501ce4017a2f69e238538262cCignacom_";
+	type="multipart/alternative"
+
+--_008_36bc157501ce4017a2f69e238538262cCignacom_
+Content-Type: multipart/alternative;
+	boundary="_000_36bc157501ce4017a2f69e238538262cCignacom_"
+
+--_000_36bc157501ce4017a2f69e238538262cCignacom_
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi Josh,
+
+We have not spoken yet but you did a quote on our website to cover you all =
+in Iceland.
+
+Please see below the quotes we can offer your family.
+
+[cid:image001.png@01D69682.E00DE450]
+
+
+Summary: Worldwide
+
+Silver - $1M per year (No Maternity Cover)
+
+Outpatient $10,000 per year (No Maternity Cover)
+
+Evacuation - Paid in full
+
+Health and Wellness $225 per screening
+
+180 days cover in your home country
+
+Dental $1,250 per year (3 month preventative/routine waiting period) (*othe=
+r waiting periods apply)
+
+Cancer care in full following diagnosis
+
+
+All figures above are Monthly in US dollars.
+
+The deductibles are annual amounts and are only payable once per person per=
+ year, if you claim. You can change these if you wish to adjust the cost of=
+ the insurance. The Higher the deductible the lower the cost.
+
+I have attached the benefit guides of the plans quoted above. All options e=
+xcept the =E2=80=98International Medical Insurance=E2=80=99 are optional an=
+d can be removed.
+
+
+I hope this helps.
+
+Please let me know if you have any questions or once you have made a decisi=
+on and we can get the insurance finalised.
+
+
+
+Kind Regards,
+
+Aaron.
+
+Video Links Below
+
+Telehealth section
+View: https://vimeo.com/322058129/cbd929ecdd<https://urldefense.proofpoint.=
+com/v2/url?u=3Dhttps-3A__vimeo.com_322058129_cbd929ecdd&d=3DDwMFaQ&c=3DWlnX=
+FIBCT3pmNh_w8hYeLw&r=3DxvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&m=3DwzWR=
+AcZBwqMWpYjc1gBQ1WWr9nB7-M0hsPtb-g-9t1c&s=3DJ1Tf2MrlRDhQsL-bQEO1uydXu44qa5Q=
+f-kHsoT9yIyI&e=3D>
+
+Lifestyle section
+View: https://vimeo.com/322058272/b2f7d3dff3<https://urldefense.proofpoint.=
+com/v2/url?u=3Dhttps-3A__vimeo.com_322058272_b2f7d3dff3&d=3DDwMFaQ&c=3DWlnX=
+FIBCT3pmNh_w8hYeLw&r=3DxvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&m=3DwzWR=
+AcZBwqMWpYjc1gBQ1WWr9nB7-M0hsPtb-g-9t1c&s=3DqPSCxSJsVJ9-Co3K8WqaSqLfMV59JNp=
+th5TpyW45gl8&e=3D>
+
+Chronic Diseases section
+View: https://vimeo.com/322060930/0b376d03f5<https://urldefense.proofpoint.=
+com/v2/url?u=3Dhttps-3A__vimeo.com_322060930_0b376d03f5&d=3DDwMFaQ&c=3DWlnX=
+FIBCT3pmNh_w8hYeLw&r=3DxvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&m=3DwzWR=
+AcZBwqMWpYjc1gBQ1WWr9nB7-M0hsPtb-g-9t1c&s=3DOw9z_I9qMiTn_GRzCNk2mzac7g_TfDD=
+rRbm02_wDs5s&e=3D>
+
+
+[Description: autosignature_logo]
+Aaron Sheridan
+International Sales Executive
+Cigna Global Health Options
+Individual Private Medical Insurance
+
+Email: Aaron.sheridan@cigna.com<mailto:Aaron.sheridan@cigna.com>
+Phone: +44 (0)1475 492119
+Toll Free USA: 877 539 6295
+
+www.CignaGlobal.com<http://www.cignaglobal.com/> - your link to easy access=
+ to quality health care around the world.
+
+Confidential, unpublished property of Cigna.  Do not duplicate or distribut=
+e.  Use and distribution limited solely to authorised personnel.  =C2=A9 Co=
+pyright 2020 Cigna.
+There is no need to recycle if you don=E2=80=99t print this message.
+
+Data Privacy law is changing. Your privacy is important to us and we take c=
+are to protect your information. We have updated our Data Protection Notice=
+ (DPN) which can be viewed online  https://www.cignaglobal.com/privacy-stat=
+ement. The DPN explains how we collect, store and handle your personal data=
+. Any time you provide us with additional personal data, that personal data=
+ will also be processed in accordance with our DPN. If you provide us with =
+personal data about another individual, by providing that, you are confirmi=
+ng that you have obtained that individual=E2=80=99s consent for the process=
+ing of their personal data in accordance with our DPN and that you will inf=
+orm them of our
+
+
+
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Previous attachments:
+ - CGHO Application Form DTC 0919_EN.PDF (filename: 174da9e090ae12b5-4-CGHO=
+_Application_Form_DTC_0919_EN.PDF)
+ - Customer Guide 2019.pdf (filename: 174da9e090ae12b5-3-Customer_Guide_201=
+9.pdf)
+ - IPID Silver-CLICE_ EN_0918.pdf (filename: 174da9e090ae12b5-2-IPID_Silver=
+-CLICE__EN_0918.pdf)
+ - image001.png (filename: 174da9e090ae12b5-1-image001.png)
+ - image002.gif (filename: 174da9e090ae12b5-0-image002.gif)
+
+Information about the change:
+ - Made with:                 Unattach 2.3.0
+ - Date and time:             2020-10-29T14:12:25.093629Z
+ - Download target hostname:  Muninn-2.local
+ - Download target directory: /Users/josh/Desktop/ATTACHMENTS
+
+--_000_36bc157501ce4017a2f69e238538262cCignacom_
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+<html xmlns:v=3D"urn:schemas-microsoft-com:vml" xmlns:o=3D"urn:schemas-micr=
+osoft-com:office:office" xmlns:w=3D"urn:schemas-microsoft-com:office:word" =
+xmlns:m=3D"http://schemas.microsoft.com/office/2004/12/omml" xmlns=3D"http:=
+//www.w3.org/TR/REC-html40">
+ <head>=20
+  <meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3Dutf-8">=
+=20
+  <meta name=3D"Generator" content=3D"Microsoft Word 15 (filtered medium)">=
+=20
+  <!--[if !mso]><style>v\:* {behavior:url(#default#VML);}
+o\:* {behavior:url(#default#VML);}
+w\:* {behavior:url(#default#VML);}
+.shape {behavior:url(#default#VML);}
+</style><![endif]-->
+  <style><!--
+/* Font Definitions */
+@font-face
+=09{font-family:"Cambria Math";
+=09panose-1:2 4 5 3 5 4 6 3 2 4;}
+@font-face
+=09{font-family:Calibri;
+=09panose-1:2 15 5 2 2 2 4 3 2 4;}
+@font-face
+=09{font-family:Roboto;}
+@font-face
+=09{font-family:Tahoma;
+=09panose-1:2 11 6 4 3 5 4 4 2 4;}
+/* Style Definitions */
+p.MsoNormal, li.MsoNormal, div.MsoNormal
+=09{margin:0cm;
+=09margin-bottom:.0001pt;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+p.MsoHeader, li.MsoHeader, div.MsoHeader
+=09{mso-style-priority:99;
+=09mso-style-link:"Header Char";
+=09margin:0cm;
+=09margin-bottom:.0001pt;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+p.MsoFooter, li.MsoFooter, div.MsoFooter
+=09{mso-style-priority:99;
+=09mso-style-link:"Footer Char";
+=09margin:0cm;
+=09margin-bottom:.0001pt;
+=09font-size:11.0pt;
+=09font-family:"Calibri",sans-serif;}
+a:link, span.MsoHyperlink
+=09{mso-style-priority:99;
+=09color:#0563C1;
+=09text-decoration:underline;}
+a:visited, span.MsoHyperlinkFollowed
+=09{mso-style-priority:99;
+=09color:#954F72;
+=09text-decoration:underline;}
+p
+=09{mso-style-priority:99;
+=09mso-margin-top-alt:auto;
+=09margin-right:0cm;
+=09mso-margin-bottom-alt:auto;
+=09margin-left:0cm;
+=09font-size:12.0pt;
+=09font-family:"Times New Roman",serif;}
+p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
+=09{mso-style-priority:99;
+=09mso-style-link:"Balloon Text Char";
+=09margin:0cm;
+=09margin-bottom:.0001pt;
+=09font-size:8.0pt;
+=09font-family:"Tahoma",sans-serif;}
+p.MsoNoSpacing, li.MsoNoSpacing, div.MsoNoSpacing
+=09{mso-style-priority:1;
+=09margin:0cm;
+=09margin-bottom:.0001pt;
+=09font-size:10.0pt;
+=09font-family:"Times New Roman",serif;}
+span.HeaderChar
+=09{mso-style-name:"Header Char";
+=09mso-style-priority:99;
+=09mso-style-link:Header;}
+span.FooterChar
+=09{mso-style-name:"Footer Char";
+=09mso-style-priority:99;
+=09mso-style-link:Footer;}
+span.BalloonTextChar
+=09{mso-style-name:"Balloon Text Char";
+=09mso-style-priority:99;
+=09mso-style-link:"Balloon Text";
+=09font-family:"Tahoma",sans-serif;}
+span.EmailStyle25
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle26
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:#1F497D;}
+span.EmailStyle27
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle28
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:#1F497D;}
+span.EmailStyle29
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:#1F497D;}
+span.EmailStyle30
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:#1F497D;}
+span.EmailStyle31
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:#1F497D;}
+span.EmailStyle32
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle33
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;
+=09font-weight:normal;
+=09font-style:normal;
+=09text-decoration:none none;}
+span.EmailStyle34
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;
+=09font-weight:normal;
+=09font-style:normal;
+=09text-decoration:none none;}
+span.EmailStyle35
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;
+=09font-weight:normal;
+=09font-style:normal;
+=09text-decoration:none none;}
+span.EmailStyle36
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;
+=09font-weight:normal;
+=09font-style:normal;
+=09text-decoration:none none;}
+span.EmailStyle37
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:black;}
+span.EmailStyle38
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle39
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle40
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle41
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle42
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle43
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle44
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle45
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:black;}
+span.EmailStyle46
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:black;}
+span.EmailStyle47
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:black;}
+span.EmailStyle48
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:black;}
+span.EmailStyle49
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle50
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle51
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle52
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle53
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle54
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle55
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle56
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle57
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle58
+=09{mso-style-type:personal;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+span.EmailStyle59
+=09{mso-style-type:personal-reply;
+=09font-family:"Calibri",sans-serif;
+=09color:windowtext;}
+.MsoChpDefault
+=09{mso-style-type:export-only;
+=09font-size:10.0pt;}
+@page WordSection1
+=09{size:612.0pt 792.0pt;
+=09margin:72.0pt 72.0pt 72.0pt 72.0pt;}
+div.WordSection1
+=09{page:WordSection1;}
+--></style>
+  <!--[if gte mso 9]><xml>
+<o:shapedefaults v:ext=3D"edit" spidmax=3D"1026" />
+</xml><![endif]-->
+  <!--[if gte mso 9]><xml>
+<o:shapelayout v:ext=3D"edit">
+<o:idmap v:ext=3D"edit" data=3D"1" />
+</o:shapelayout></xml><![endif]-->=20
+ </head>=20
+ <body lang=3D"EN-GB" link=3D"#0563C1" vlink=3D"#954F72">=20
+  <div class=3D"WordSection1">=20
+   <p class=3D"MsoNormal">Hi Josh,
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#1F497D">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal">We have not spoken yet but you did a quote on our=
+ website to cover you all in Iceland.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">Please see below the quotes we can offer your fam=
+ily.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#1F497D">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><img width=3D"622" height=3D"756" id=3D"Picture_x=
+0020_2" src=3D"cid:image001.png@01D69682.E00DE450">
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <table class=3D"MsoNormalTable" border=3D"0" cellspacing=3D"0" cellpaddi=
+ng=3D"0" width=3D"0" style=3D"width:453.2pt;border-collapse:collapse">=20
+    <tbody>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;background:#BFBFBF;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> =
+<p class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><spa=
+n style=3D"font-size:10.0pt;line-height:115%;font-family:&quot;Times New Ro=
+man&quot;,serif">Summary: Worldwide</span><b><span style=3D"font-family:&qu=
+ot;Times New Roman&quot;,serif;color:white">
+          <o:p></o:p></span></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Silver - $1M per year (No Matern=
+ity Cover)</span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Outpatient $10,000 per year (No =
+Maternity Cover)</span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Evacuation - Paid in full</span>=
+<b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Health and Wellness $225 per scr=
+eening </span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">180 days cover in your home coun=
+try</span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Dental $1,250 per year (3 month<=
+span style=3D"color:#1F497D"> </span>preventative/routine waiting period) (=
+*other waiting periods apply)</span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+     <tr style=3D"height:13.8pt">=20
+      <td width=3D"604" valign=3D"top" style=3D"width:453.2pt;border:solid =
+black 1.0pt;border-top:none;padding:0cm 5.4pt 0cm 5.4pt;height:13.8pt"> <p =
+class=3D"MsoNormal" style=3D"margin-bottom:10.0pt;line-height:115%"><span s=
+tyle=3D"font-size:10.0pt;line-height:115%">Cancer care in full<span style=
+=3D"color:#1F497D"> </span>following diagnosis</span><b>
+         <o:p></o:p></b></p> </td>=20
+     </tr>=20
+    </tbody>=20
+   </table>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><b>All figures above are Monthly in US dollars.
+     <o:p></o:p></b></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">The deductibles are annual amounts and are only p=
+ayable once per person per year, if you claim. You can change these if you =
+wish to adjust the cost of the insurance. The Higher the deductible the low=
+er the cost.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">I have attached the benefit guides of the plans q=
+uoted above. All options except the =E2=80=98International Medical Insuranc=
+e=E2=80=99 are optional and can be removed.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:black">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal">I hope this helps.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">Please let me know if you have any questions or o=
+nce you have made a decision and we can get the insurance finalised.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"mso-fareast-language:EN-US">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal">Kind Regards,
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">Aaron.
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><b>Video Links Below
+     <o:p></o:p></b></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"color:black">Telehealth section=
+</span></b><span style=3D"color:black">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#0070C0">View:&nbsp;</span><=
+a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__vimeo.com_=
+322058129_cbd929ecdd&amp;d=3DDwMFaQ&amp;c=3DWlnXFIBCT3pmNh_w8hYeLw&amp;r=3D=
+xvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&amp;m=3DwzWRAcZBwqMWpYjc1gBQ1WW=
+r9nB7-M0hsPtb-g-9t1c&amp;s=3DJ1Tf2MrlRDhQsL-bQEO1uydXu44qa5Qf-kHsoT9yIyI&am=
+p;e=3D"><span style=3D"color:#0070C0">https://vimeo.com/322058129/cbd929ecd=
+d</span></a><span style=3D"color:#0070C0">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#002060">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"color:black">Lifestyle section<=
+/span></b><span style=3D"color:black">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#0070C0">View:&nbsp;</span><=
+a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__vimeo.com_=
+322058272_b2f7d3dff3&amp;d=3DDwMFaQ&amp;c=3DWlnXFIBCT3pmNh_w8hYeLw&amp;r=3D=
+xvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&amp;m=3DwzWRAcZBwqMWpYjc1gBQ1WW=
+r9nB7-M0hsPtb-g-9t1c&amp;s=3DqPSCxSJsVJ9-Co3K8WqaSqLfMV59JNpth5TpyW45gl8&am=
+p;e=3D"><span style=3D"color:#0070C0">https://vimeo.com/322058272/b2f7d3dff=
+3</span></a><span style=3D"color:#0070C0">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><b><span style=3D"color:black">Chronic Diseases s=
+ection</span></b><span style=3D"color:black">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#0070C0">View:&nbsp;</span><=
+a href=3D"https://urldefense.proofpoint.com/v2/url?u=3Dhttps-3A__vimeo.com_=
+322060930_0b376d03f5&amp;d=3DDwMFaQ&amp;c=3DWlnXFIBCT3pmNh_w8hYeLw&amp;r=3D=
+xvCWhr89i9-2tXPHLMU-oIs1FgiWyZ9mOP0LCySBX4A&amp;m=3DwzWRAcZBwqMWpYjc1gBQ1WW=
+r9nB7-M0hsPtb-g-9t1c&amp;s=3DOw9z_I9qMiTn_GRzCNk2mzac7g_TfDDrRbm02_wDs5s&am=
+p;e=3D"><span style=3D"color:#0070C0">https://vimeo.com/322060930/0b376d03f=
+5</span></a><span style=3D"color:#0070C0">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:#1F497D"><img border=3D"0" w=
+idth=3D"111" height=3D"37" id=3D"Picture_x0020_4" src=3D"cid:image002.gif@0=
+1D2AC6B.E8DB4CD0" alt=3D"Description: autosignature_logo"></span><span styl=
+e=3D"color:#1F497D">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"line-height:18.0pt"><span style=3D"font-=
+size:14.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#787878">Aaron S=
+heridan</span><span style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;=
+,sans-serif;color:#333333">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><b><span style=3D"f=
+ont-size:10.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#787878">Int=
+ernational Sales Executive&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&=
+nbsp;&nbsp;
+      <o:p></o:p></span></b></p>=20
+   <p class=3D"MsoNormal" style=3D"line-height:18.0pt"><span style=3D"font-=
+size:10.0pt;color:#7F7F7F">Cigna Global Health Options
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"line-height:18.0pt"><span style=3D"font-=
+size:10.0pt;color:#7F7F7F">Individual Private Medical Insurance=20
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><b><span style=3D"f=
+ont-size:10.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#787878">
+      <o:p>
+       &nbsp;
+      </o:p></span></b></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><span style=3D"font=
+-size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#00A89D">Email:<=
+/span><span style=3D"font-size:10.0pt;font-family:Roboto;color:#333333">&nb=
+sp;</span><a href=3D"mailto:Aaron.sheridan@cigna.com" target=3D"_blank"><sp=
+an style=3D"font-size:10.0pt;font-family:&quot;Arial&quot;,sans-serif;color=
+:blue">Aaron.sheridan@cigna.com</span></a><b><span style=3D"font-size:10.5p=
+t;font-family:&quot;Arial&quot;,sans-serif;color:#787878">
+      <o:p></o:p></span></b></p>=20
+   <p class=3D"MsoNormal" style=3D"line-height:18.0pt"><span style=3D"font-=
+size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#00A89D">Phone:</=
+span><span style=3D"font-size:10.0pt;font-family:Roboto;color:#333333">&nbs=
+p;</span><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quot;,sans-=
+serif;color:#787878">+44 (0)1475 492119</span><span style=3D"font-size:10.0=
+pt;font-family:Roboto;color:#333333">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"line-height:18.0pt"><span style=3D"font-=
+size:8.5pt;font-family:&quot;Arial&quot;,sans-serif;color:#00A89D">Toll Fre=
+e USA:</span><span style=3D"font-size:10.0pt;font-family:Roboto;color:#3333=
+33">&nbsp;</span><span style=3D"font-size:8.5pt;font-family:&quot;Arial&quo=
+t;,sans-serif;color:#787878">877 539 6295</span><span style=3D"font-size:10=
+.0pt;font-family:Roboto;color:#333333">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><span style=3D"font=
+-family:&quot;Arial&quot;,sans-serif;color:#1F497D">&nbsp;&nbsp;&nbsp;&nbsp=
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&n=
+bsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=20
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><a href=3D"http://w=
+ww.cignaglobal.com/"><span style=3D"font-size:8.0pt;font-family:&quot;Arial=
+&quot;,sans-serif;color:blue">www.CignaGlobal.com</span></a><span style=3D"=
+font-size:8.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1F497D"> - =
+your link to easy access to quality health care around the world.
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><span style=3D"font=
+-size:9.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1F497D">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal" style=3D"text-autospace:none"><span style=3D"font=
+-size:8.0pt;font-family:&quot;Arial&quot;,sans-serif;color:#1F497D">Confide=
+ntial, unpublished property of Cigna.&nbsp; Do not duplicate or distribute.=
+&nbsp; Use and distribution limited solely to authorised personnel.&nbsp; =
+=C2=A9 Copyright 20</span><span style=3D"font-size:8.0pt;font-family:&quot;=
+Arial&quot;,sans-serif">20<span style=3D"color:#1F497D"> Cigna.
+      <o:p></o:p></span></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"color:green">There is no need to r=
+ecycle if you don=E2=80=99t print this message.</span><span style=3D"color:=
+#1F497D">
+     <o:p></o:p></span></p>=20
+   <p class=3D"MsoNormal"><span style=3D"font-size:9.0pt;color:#1F497D">
+     <o:p>
+      &nbsp;
+     </o:p></span></p>=20
+   <p class=3D"MsoNormal">Data Privacy law is changing. Your privacy is imp=
+ortant to us and we take care to protect your information. We have updated =
+our Data Protection Notice (DPN) which can be viewed online&nbsp; <a href=
+=3D"https://www.cignaglobal.com/privacy-statement"><span style=3D"color:blu=
+e">https://www.cignaglobal.com/privacy-statement</span></a>. The DPN explai=
+ns how we collect, store and handle your personal data. Any time you provid=
+e us with additional personal data, that personal data will also be process=
+ed in accordance with our DPN. If you provide us with personal data about a=
+nother individual, by providing that, you are confirming that you have obta=
+ined that individual=E2=80=99s consent for the processing of their personal=
+ data in accordance with our DPN and that you will inform them of our
+    <o:p></o:p></p>=20
+   <p class=3D"MsoNormal">
+    <o:p>
+     &nbsp;
+    </o:p></p>=20
+  </div>  =20
+  <hr>
+  <p>Previous attachments:</p>
+  <ul>=20
+   <li>CGHO Application Form DTC 0919_EN.PDF (filename: /Users/josh/Desktop=
+/ATTACHMENTS/174da9e090ae12b5-4-CGHO_Application_Form_DTC_0919_EN.PDF, <a h=
+ref=3D"file:////Users/josh/Desktop/ATTACHMENTS/174da9e090ae12b5-4-CGHO_Appl=
+ication_Form_DTC_0919_EN.PDF">local link</a>)</li>=20
+   <li>Customer Guide 2019.pdf (filename: /Users/josh/Desktop/ATTACHMENTS/1=
+74da9e090ae12b5-3-Customer_Guide_2019.pdf, <a href=3D"file:////Users/josh/D=
+esktop/ATTACHMENTS/174da9e090ae12b5-3-Customer_Guide_2019.pdf">local link</=
+a>)</li>=20
+   <li>IPID Silver-CLICE_ EN_0918.pdf (filename: /Users/josh/Desktop/ATTACH=
+MENTS/174da9e090ae12b5-2-IPID_Silver-CLICE__EN_0918.pdf, <a href=3D"file://=
+//Users/josh/Desktop/ATTACHMENTS/174da9e090ae12b5-2-IPID_Silver-CLICE__EN_0=
+918.pdf">local link</a>)</li>=20
+   <li>image001.png (filename: /Users/josh/Desktop/ATTACHMENTS/174da9e090ae=
+12b5-1-image001.png, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/174=
+da9e090ae12b5-1-image001.png">local link</a>)</li>=20
+   <li>image002.gif (filename: /Users/josh/Desktop/ATTACHMENTS/174da9e090ae=
+12b5-0-image002.gif, <a href=3D"file:////Users/josh/Desktop/ATTACHMENTS/174=
+da9e090ae12b5-0-image002.gif">local link</a>)</li>=20
+  </ul>
+  <p></p>=20
+  <p>Information about the change:</p>
+  <ul>=20
+   <li>Made with: <a href=3D"https://unattach.app">Unattach</a> 2.3.0</li>=
+=20
+   <li>Date and time: 2020-10-29T14:12:25.093629Z</li>=20
+   <li>Download target host name: Muninn-2.local</li>=20
+   <li>Download target directory: /Users/josh/Desktop/ATTACHMENTS</li>=20
+   <li><i>File links only work in native email apps (e.g. Mail, Outlook) on=
+ the target host.</i></li>=20
+  </ul>
+  <p></p>=20
+ </body>
+</html>
+--_000_36bc157501ce4017a2f69e238538262cCignacom_--
+
+--_008_36bc157501ce4017a2f69e238538262cCignacom_--
+
+--_009_36bc157501ce4017a2f69e238538262cCignacom_--

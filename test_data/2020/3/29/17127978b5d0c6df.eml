@@ -1,0 +1,795 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:9802:0:0:0:0:0 with SMTP id a2csp1945377ljj;
+        Sun, 29 Mar 2020 11:39:35 -0700 (PDT)
+X-Google-Smtp-Source: ADFU+vviwkSU2eaLx//OabrVm/ejAWfqK25sEkCKsMbgRctAUl73xAzf9EdTfPe0/cwxzsM0mszT
+X-Received: by 2002:ac8:4641:: with SMTP id f1mr8137539qto.216.1585507175208;
+        Sun, 29 Mar 2020 11:39:35 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1585507175; cv=none;
+        d=google.com; s=arc-20160816;
+        b=OjzUuysfLsfYefVcz95TqHVDO7JzQKsoz0Floy0hmJVtTag06Za2znwAMFBAC0fNbx
+         x/ccBV1VM59t2IEGs/+qVID66e9Yw8wYcWkP1yVeOsCBRKT2O5HRzA49/F75EUre29S1
+         gI2Qmg5B5hoZ41gnXzsdZAo4v5aCFkv+MhdnTn5cXh4hzcXEI4tE+7wXlo/a2npWmnDM
+         5viBklFty1YHK0oapkyFjCM+C83FUwOzsEDQm4vGLlTCDVJsyrcVVqemw0FIphxErMRB
+         Bolq8NKglY97+6Eg8R3x7xZD7+REOkAnrCCyvEhs33J457AsyuQvqMG0zV/qgnDzERdJ
+         Vddw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=feedback-id:date:bounces-to:mime-version:subject:message-id:to
+         :reply-to:from:dkim-signature:dkim-signature;
+        bh=/VKI4SX8RnAp/LY7xVj0rySAM8Ee8dD4a2fUZbUDjME=;
+        b=n4ZvPrsWZr1TpSxuzpJJ6tdS2T+t8Qv46a6p4xlllCHWwZBf+jAGScCjvL0nJCJGwI
+         LJGEVrdFoxZ8qStdm3vEf+/20MGNbFsIsXqdr8vaZMKLVTjqYY+B0fiEoCbJvIpkksnI
+         aPSxpqDqhmIKuuDsPfhZ5NZngXFHwDbZKkzMpQJrdYYLIipLqlpps160KVbS04Vwj5vw
+         WaDH/ABrtuwDxWA/Q5LbUM2Mv7CXQgwmZVv8p3Y2dJphnGxW8dBodo/3jKgDGRJJjAZz
+         jbj7O72bQnxte8sa7crGYStAoNKL2HS2Y0Qo3lEZwJGO7Ac0sh/hwZUeuR3x7edp9ORx
+         Knmw==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=jvxsykglqiaiibkijmhy37vqxh4mzqr6 header.b="c/Fqo7ln";
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=GRFpWfl5;
+       spf=pass (google.com: domain of 2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) smtp.mailfrom=2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+Return-Path: <2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com>
+Received: from a13-57.smtp-out.amazonses.com (a13-57.smtp-out.amazonses.com. [54.240.13.57])
+        by mx.google.com with ESMTPS id r199si6717093qke.162.2020.03.29.11.39.34
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-SHA bits=128/128);
+        Sun, 29 Mar 2020 11:39:35 -0700 (PDT)
+Received-SPF: pass (google.com: domain of 2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) client-ip=54.240.13.57;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@amazon.com header.s=jvxsykglqiaiibkijmhy37vqxh4mzqr6 header.b="c/Fqo7ln";
+       dkim=pass header.i=@amazonses.com header.s=224i4yxa5dv7c2xz3womw6peuasteono header.b=GRFpWfl5;
+       spf=pass (google.com: domain of 2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com designates 54.240.13.57 as permitted sender) smtp.mailfrom=2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com;
+       dmarc=pass (p=QUARANTINE sp=QUARANTINE dis=NONE) header.from=amazon.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=jvxsykglqiaiibkijmhy37vqxh4mzqr6; d=amazon.com; t=1585507174;
+	h=From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Date;
+	bh=AlDVSx8CmOsAfemaG0dfJusP33aMdEmFDCWs9kA/Ww4=;
+	b=c/Fqo7ln/5yfrIn6sxWIRdqGI2nh4XYPiX8UDaKNBwSmz7KmzMt7GCxirSmGuVj1
+	5QTOLuvN05y5emzRVeQDV8r2QeVqDbPIcXXe6F3CXXv+PVjbXUE1bsVApdJRU2OQ07a
+	SMxvdkEDI3GrdMPKr0k6Q3xZCDQsq4aYA74VhJ2g=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=224i4yxa5dv7c2xz3womw6peuasteono; d=amazonses.com; t=1585507174;
+	h=From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type:Date:Feedback-ID;
+	bh=AlDVSx8CmOsAfemaG0dfJusP33aMdEmFDCWs9kA/Ww4=;
+	b=GRFpWfl5Fy4R8zITcm/HivMah33UrKqSUscWBcvx9yKIGXpEqi1PokwnNPO76xfo
+	60ibh1qmwZnh/DVAZu/84xAkRWZyzChO91elXVd98u06JA8NaCZaIsh+gZrtzCdne0e
+	+MnEmWwckZQc8NYmMdWPeM8mPLT1jKJPGj/dpvTA=
+From: "Amazon.com" <shipment-tracking@amazon.com>
+Reply-To: no-reply@amazon.com
+To: josh@josh.is
+Message-ID: <0100017127978769-632983d2-b8ab-49f4-96e0-910c6c0a2ab3-000000@email.amazonses.com>
+Subject: Your Amazon.com order #112-5964082-8310654 has shipped
+MIME-Version: 1.0
+Content-Type: multipart/alternative; 
+	boundary="----=_Part_21424873_429393591.1585507174238"
+X-AMAZON-MAIL-RELAY-TYPE: notification
+Bounces-to: 2020032918393351f125e9711b429791ff2821d970p0na@bounces.amazon.com
+X-AMAZON-METADATA: CA=C349EG1HO8RZ2C-CU=A3TT31TZCNFFF7
+X-Original-MessageID: <urn.rtn.msg.2020032918393351f125e9711b429791ff2821d970p0na@1585507174239.rtn-na-1bx-c42x1a-a2933f99.us-east-1.amazon.com>
+Date: Sun, 29 Mar 2020 18:39:34 +0000
+X-SES-Outgoing: 2020.03.29-54.240.13.57
+Feedback-ID: 1.us-east-1.ZHcGJK6s+x+i9lRHKog4RW3tECwWIf1xzTYCZyUaiec=:AmazonSES
+
+------=_Part_21424873_429393591.1585507174238
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Amazon Shipping Confirmation
+https://www.amazon.com?ie=UTF8&ref_=scr_home
+
+____________________________________________________________________
+
+Hi Joshua, your package will arrive:
+Thursday, April 2 - Wednesday, April 8
+
+Track your package:
+https://www.amazon.com/gp/your-account/ship-track?ie=UTF8&orderId=112-5964082-8310654&packageIndex=0&shipmentId=DHyFNjxYV&ref_=scr_pt_tp_t
+
+
+
+On the way:
+1 item
+Order #112-5964082-8310654
+
+
+
+Ship to:
+    JOSHUA KLEIN
+    3353 82ND ST APT B42...
+
+Shipment total:
+$72.89
+
+
+Return or replace items in Your Orders
+https://www.amazon.com/gp/css/order-history?ie=UTF8&ref_=scr_yo
+
+Learn how to recycle your packaging at Amazon Second Chance(https://www.amazon.com/amsc?ref_=ascyorn).
+
+
+
+____________________________________________________________________
+
+
+Unless otherwise noted, items sold by Amazon.com are subject to sales tax in select states in accordance with the applicable laws of that state. If your order contains one or more items from a seller other than Amazon.com, it may be subject to state and local sales tax, depending upon the sellers business policies and the location of their operations. Learn more about tax and seller information:
+http://www.amazon.com/gp/help/customer/display.html?ie=UTF8&nodeId=202029700&ref_-=scr_help_tax
+
+
+
+Your invoice can be accessed here:
+https://www.amazon.com/gp/css/summary/print.html?ie=UTF8&orderID=112-5964082-8310654&ref_=scr_od_invoice
+
+This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.
+------=_Part_21424873_429393591.1585507174238
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+<!DOCTYPE html>
+
+<html xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+ <head> 
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" /> 
+  <meta name="format-detection" content="telephone=no" /> 
+  <meta name="viewport" content="width=device-width, initial-scale=1.0; user-scalable=no;" /> 
+  <meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE" /> 
+  <title>Shipping Confirmation</title> 
+  <style type="text/css">
+    /* RESET STYLES */
+    body { width:100% !important; height:100% !important; margin:0; padding:0; }
+    table, table td { border-collapse:collapse !important; }
+    table th { margin:0 !important; padding:0 !important; font-weight:normal; }
+
+    /* CLIENT-SPECIFIC STYLES */
+    body, table, td, a {  -webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; }
+    /* Prevent WebKit and Windows mobile changing default text sizes */
+    .ReadMsgBody { width:100%; } .ExternalClass { width:100%; }
+    /* Force Hotmail to display emails at full width */
+    .ExternalClass { width:100%; }
+    /* Force Hotmail to display normal line spacing */
+    .ExternalClass, .ExternalClass p, .ExternalClass span, .ExternalClass font, .ExternalClass td, .ExternalClass div { line-height: 100%; }
+
+    /* PAGE STYLES */
+    h1 {display:block; font-size:26px; font-style:normal; font-weight:normal; line-height:100%;}
+    h2 {display:block; font-size:20px; font-style:normal; font-weight:normal; line-height:120%;}
+    h3 {display:block; font-size:16px; font-style:normal; font-weight:normal; line-height:110%;}
+    h4 {display:block; font-size:18px; font-style:italic; font-weight:normal; line-height:100%;}
+
+    /* iOS BLUE LINKS */
+    .appleBody a { color:#68440a; text-decoration: none; }
+    .appleFooter a { color:#999999; text-decoration: none; }
+
+    /* A nice and clean way to target phone numbers you want clickable and avoid a mobile phone from linking other numbers that look like, but are not phone numbers.  Use these two blocks of code to "unstyle" any numbers that may be linked.  The second block gives you a class to apply with a span tag to the numbers you would like linked and styled.
+    Inspired by Campaign Monitor's article on using phone numbers in email: http://www.campaignmonitor.com/blog/post/3571/using-phone-numbers-in-html-email/.
+    */
+
+    .a[href^="tel"], a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:none!important;cursor:default!important;}
+    .mobile_link a[href^="tel"], .mobile_link a[href^="sms"] {text-decoration:none!important;color:#606060!important;pointer-events:auto!important;cursor:default!important;}
+
+    @media only screen and (max-width: 680px){
+        *[class].deviceWidth { width:100% !important; }
+        *[class].container { width:90% !important; }
+        *[class].width_75 { width:75% !important; }
+        *[class].maxwidth200 { max-width:200px !important; }
+        *[class].full { width:100% !important; }
+    }
+
+    @media only screen and (max-width: 620px){
+        *[class].farm { display:none !important; }
+        *[class].height140 { height:140px !important; }
+        *[class].full { width:100% !important; }
+    }
+
+    @media screen and (max-width: 480px){
+
+        /* general classes */
+        *[class].hide { display:none !important; }
+        *[class].tdwrap { display:inline-block !important; }
+        *[class].block_wrap { display:block !important; padding:0 !important; margin:0 !important;}
+        *[class].block { display:block !important; }
+        *[class].valignbottom { vertical-align:bottom !important; }
+        *[class].valigncenter { vertical-align:middle !important; }
+        *[class].rel { position:relative !important; }
+        *[class].abs { position:absolute !important; }
+        *[class].show { display:block !important; width:auto !important; overflow:visible !important; float:none !important; max-height:inherit !important; line-height:inherit !important; }
+        img[class="img-max"] { width:100% !important; height:auto !important; }
+
+        *[class].bgHero { background-image: url('') !important; }
+
+        *[class].bgefefef { background-color:#efefef !important; }
+
+        *[class].marginr66 { margin-right:66px !important; }
+        *[class].marginl0 { margin-left:0px !important; }
+        *[class].marginl66 { margin-left:66px !important; }
+        *[class].font10{ font-size:10px !important; }
+        *[class].font11{ font-size:11px !important; line-height:11px !important; }
+        *[class].font12{ font-size:12px !important; }
+        *[class].font13{ font-size:13px !important; }
+        *[class].font14{ font-size:14px !important; }
+        *[class].font16{ font-size:16px !important; }
+        *[class].font20{ font-size:20px !important; }
+        *[class].font21{ font-size:21px !important; }
+        *[class].lineh16{ line-height:16px !important; }
+        *[class].line16{ font-size:16px !important; }
+        *[class].line17{ font-size:17px !important; }
+
+        /*widths*/
+        *[class].full { width:100% !important; }
+        *[class].deviceWidth { width:320px !important; }
+        *[class].width100 { width:100px !important; }
+        *[class].width300 { width:300px !important; }
+        *[class].width320 { width:320px !important; }
+        *[class].width_50 { width:50% !important; }
+        *[class].width_90 { width:90% !important; }
+
+        /*heights*/
+        *[class].hauto { height:auto !important; }
+        *[class].height0 { height:0px !important; }
+
+        /*padding*/
+        *[class].paddingt10 { padding-top:10px !important; }
+        *[class].paddingr0 {padding-right:0px !important; }
+        *[class].paddingr10 {padding-right:10px !important; }
+        *[class].paddingr20 {padding-right:20px !important; }
+        *[class].paddingb5 { padding-bottom:5px !important; }
+        *[class].paddingb10 { padding-bottom:10px !important; }
+        *[class].paddingb20 { padding-bottom:20px !important; }
+        *[class].paddingl0 {padding-left:0px !important; }
+        *[class].paddingl10 {padding-left:10px !important; }
+        *[class].paddingl20 {padding-left:20px !important; }
+        *[class].paddinglr60 {padding-left:60px !important; padding-right:60px !important; }
+
+        /*floats*/
+        *[class].fl { float:left !important; }
+        *[class].fr { float:right !important; }
+        *[class].wrap { float:block !important; }
+        *[class].clear { clear:both !important; }
+
+    }
+    @media screen and (device-width: 768px) and (device-height: 1024px) {
+        body {min-width: 701px !important;}
+    }
+
+    .amazonImageWidth { width: 110px; }
+    .smileImageWidth { width:200px; }
+    .conditionalCenter { text-align:left !important; }
+    .highVisibilityImpressionText { font-size: 16px !important; }
+    .highVisibilityImpressionTextEmphasized { font-size: 18px !important; font-style: italic !important; font-family: Georgia, serif !important; }
+
+    @media screen and (min-width: 651px) {
+        .consolidationTextAlignment { display: inline !important; }
+        .desktopDontShiftIconLeft { margin-left: 0px; }
+        .amazonImageWidth { width: 135px; }
+        .emailBody {
+            width: 640px !important;
+            text-align:center !important;
+            background-image: url('') !important;
+            background-color: #fafafa !important;
+        }
+        .greetingAndEta { width: 317px !important; max-width: 317px !important; }
+        .container { width: 530px !important; max-width: 530px !important; }
+        .trackPackageButton { width: 317px !important; max-width: 317px !important; }
+        .conditionalCenter { text-align:center !important; }
+        .conditionalLeft { text-align:left !important; }
+        .greetingText { text-align:center !important; font-size: 15px !important; }
+        .primeGreetingText { text-align:left !important; font-size: 15px !important; }
+        .consolidationText { font-size: 14px !important; }
+        .disclaimerText { font-size: 9px !important; width:400px !important; max-width:400px !important; }
+        .amazonImage { width: 135px !important; height: 39px !important; }
+        .informationText { font-size: 16px !important; }
+        .addressText { font-size: 15px !important; }
+        .marketingContent { width: 400px !important; max-width: 400px !important; }
+        .backupPaymentMethod {
+            width: 317px !important;
+            max-width: 317px !important;
+            border: 2px solid #cbcfd4 !important;
+            background-color:#f6f7f8;
+        }
+        .backupPaymentMethod td {
+            padding: 0px 18px 0px 18px;
+            line-height: 18px !important;
+        }
+
+        .p13n-te-widget-title {
+            font-size: 13px !important;
+        }
+        .p13n-te-asin-image img {
+            max-height: 127px !important
+        }
+        .p13n-te-widget-recs {
+            margin-bottom: 24px !important
+        }
+        .p13n-te-asin-cell:first-child {
+            padding-right: 69px !important
+        }
+    }
+    
+    @media screen and (max-width: 650px) {
+        .emailBody {
+            background-image: url('');
+        }
+    }
+        
+    .p13n-te-widget-title {
+        margin-left: 10px;
+        font-size: 15px;
+        line-height: 16px;
+    }
+    .p13n-te-asin-image img {
+        max-height: 116px;
+        width: auto
+    }
+    .p13n-te-widget-recs {
+        margin-bottom: 25px
+    }
+    .p13n-te-asin-cell {
+        padding: 6px 6px 0 16px;
+        max-width: 104px; 
+    }
+    .p13n-te-asin-cell:first-child {
+        padding-right: 56px
+    }
+
+</style> 
+  <!--[if gte mso 9]>
+<xml>
+    <o:OfficeDocumentSettings>
+    <o:AllowPNG/>
+    <o:PixelsPerInch>96</o:PixelsPerInch>
+    </o:OfficeDocumentSettings>
+</xml>
+
+<style type="text/css">
+    .mm15 { padding:0px !important; margin-left:15px !important; margin-right:15px !important; }
+    .ml10 { padding:0px !important; margin-left:10px !important; }
+    .mr10 { padding:0px !important; margin-right:10px !important; }
+    img   { display: block; }
+</style>
+<![endif]--> 
+  <style type="text/css">
+    .arrivalDate a {
+        color: #008a00; !important;
+        text-decoration: none; !important;
+    }
+</style> 
+ </head> 
+ <body style="-webkit-text-size-adjust:100%; -ms-text-size-adjust:100%; margin:0 auto; background:#ffffff;"><img width="1" height="1" src="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=1G4JR3H7W24A0&T=O&U=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=Y42WW0ANQVIKT5KUHDGUEYPJWQ0A&ref_=pe_2640190_232586610_opens" /> 
+  <div style="display:none;font-size:1px;color:#333333;line-height:1px;max-height:0px;max-width:0px;opacity:0;overflow:hidden;">
+    Hi Joshua, your package is on the way! You can track it and check out when your package will arrive.
+  </div> 
+  <table id="emailBodyOuter" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width:100%;"> 
+   <tbody>
+    <tr valign="top"> 
+     <td>&nbsp;</td> 
+     <td align="center"> 
+      <!--[if mso]>
+    <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 375px; background-color: #fafafa; background-image: url(''); background-size: 100%;" class="emailBody">
+  <![endif]--> 
+      <!--[if !mso]><!-- --> 
+      <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 375px; background-color: #fafafa" class="emailBody"> 
+       <!--<![endif]--> 
+       <tbody>
+        <tr> 
+         <td align="center" class="emailWidth"> <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=15UV69HTWNAPH&T=C&U=https%3A%2F%2Fwww.amazon.com%3Fie%3DUTF8%26ref_%3Dpe_2640190_232586610_scr_home&H=OBVOHUOLQBP93WWWX6VRM3YMGBYA&ref_=pe_2640190_232586610_scr_home" style="text-decoration: none;">
+           <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 340px;" class="container"> 
+            <tbody>
+             <tr> 
+              <td class="" colspan="1" height="22" style="min-width:1;  line-height: 22px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="22" style="display: block; border: none;" /> </td> 
+             </tr> 
+             <tr class="containerWidth"> 
+              <td align="center" class="brandImage"> 
+               <!--[if gte mso 9]>
+<a href=https://www.amazon.com/gp/f.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=2QSGSN5R8PIU0&T=C&U=http%3A%2F%2FdisplayLinks.home+style%3D&H=UCAHG4SGVGQPTNMR7DCOXWP6RZOA"text-decoration:none">
+<![endif]--> <img src="https://images-na.ssl-images-amazon.com/images/G/01/reading/images/amazon.png" width="110" alt="Amazon.com" border="0" style="display: block; border: none;" class="amazonImageWidth" /> 
+               <!--[if gte mso 9]>
+</a>
+<![endif]--> </td> 
+             </tr>
+             <tr> 
+              <td class="" colspan="1" height="22" style="min-width:1;  line-height: 22px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="22" style="display: block; border: none;" /> </td> 
+             </tr> 
+            </tbody>
+           </table> </a> 
+          <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 340px; max-width: 340px;border-top: 2px solid #cacaca; border-left: 1px solid #d6d6d6; border-right: 1px solid #d6d6d6; border-bottom: 1px solid #d6d6d6; background: #ffffff;" class="container"> 
+           <tbody>
+            <tr> 
+             <td align="center"> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center;" class="innerContainer"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="29" style="min-width:1;  line-height: 29px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="29" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" class="greetingAndEta"> 
+               <tbody>
+                <tr>
+                 <td> 
+                  <table style="width:100%;"> 
+                   <tbody>
+                    <tr> 
+                     <td> </td>
+                     <td>
+                      <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width:100%;"> 
+                       <tbody>
+                        <tr> 
+                         <td id="greetingSummary" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 18px; line-height: 18px;
+            ">
+                          <div class="greetingText">
+                           Hi Joshua, your package will arrive:
+                          </div></td> 
+                        </tr> 
+                        <tr> 
+                         <td class="" colspan="1" height="7" style="min-width:1;  line-height: 7px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="7" style="display: block; border: none;" /> </td> 
+                        </tr> 
+                        <tr> 
+                         <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #008a00; font-family: Arial, sans-serif;
+            font-size: 22px; line-height: 22px;
+            font-weight: bold;">
+                          <div class="arrivalDate conditionalCenter">
+                           Thursday, April 2 -
+                           <br /> Wednesday, April 8
+                          </div></td> 
+                        </tr> 
+                       </tbody>
+                      </table></td>  
+                    </tr> 
+                   </tbody>
+                  </table> </td> 
+                </tr>
+                <tr> 
+                 <td class="" colspan="1" height="25" style="min-width:1;  line-height: 25px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="25" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=MCQRSCAHWRXY&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_track&H=SCA7LIJSHAANXWWA4XFEM2S2OWQA&ref_=pe_2640190_232586610_scr_pt_track" style="text-decoration: none;">
+               <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" class="trackPackageButton"> 
+                <tbody>
+                 <tr> 
+                  <!--[if gte mso 9]>
+<td align="center" valign="middle" class="trackPackageButton"
+    width="296"
+    height="40"
+    bgcolor="#f1c65D" style="color: #111111; font-family: Arial, sans-serif; font-size: 15px; text-decoration: none; display: inline-block; border-bottom: 2px solid #cbcbcb;" 
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=3EOWNBSZZOL6D&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_track_mso&H=C1XUT5YGMO1JNEU75UN2LB5DEOSA&ref_=pe_2640190_232586610_scr_pt_track_mso"
+            style="color: #111111; font-family: Arial, sans-serif; font-size: 15px; text-decoration: none; display: inline-block;"
+            >Track package</a></td>
+
+<![endif]--> 
+                  <!--[if !gte mso 9]><!-- --> 
+                  <td align="center" valign="middle" class="trackPackageButton" width="296" height="40" bgcolor="#f1c65D" style="line-height: 40px; color: #111111; font-family: Arial, sans-serif; font-size: 15px; text-decoration: none; display: inline-block; border-bottom: 2px solid #cbcbcb;">Track package</td> 
+                  <!--<![endif]--> 
+                 </tr> 
+                 <!--@placeholder height=spacings.trackPackageShadow additionalStyle="background-color: #cbcbcb;" class="trackPackageButton" / --> 
+                </tbody>
+               </table> </a> 
+              <table class="InfoBlock" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="42" style="min-width:1;  line-height: 42px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="42" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" width="296px"> 
+               <tbody>
+                <tr>
+                 <td> <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=11XMDO2Q9GKR3&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_asin&H=LR0UQGWSNBKVENRQHHDGDIUDUA8A&ref_=pe_2640190_232586610_scr_pt_asin" style="text-decoration: none;">
+                   <table class="InfoBlock" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;"> 
+                    <tbody>
+                     <tr> 
+                      <td style="text-align: left; vertical-align: top; width: 27px; border: none; padding-right: 21px;" class=""> <img src="https://images-na.ssl-images-amazon.com/images/G/01/img16/email/truck_grey.png" alt="delivery" width="27" style="display: block; border: none;" /> </td> 
+                      <td align="left" valign="top"> 
+                       <table class="InfoBlockInner" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 100%; max-width: 100%;"> 
+                        <tbody>
+                         <tr> 
+                          <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="3" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            font-weight: bold;">ON THE WAY</td> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="8" style="min-width:1;  line-height: 8px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="8" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <!--[if gte mso 9]>
+<td class="LinkDisplay " valign="top" align="left"
+    style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px; "
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=27T342DVIVZPL&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_asin_mso&H=PTCDLOH614MFYGLWTGY0ALDEX6UA&ref_=pe_2640190_232586610_scr_pt_asin_mso"
+        style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px;  text-decoration: none;"
+        >1 item</a></td>
+            <![endif]--> 
+                          <!--[if !gte mso 9]><!-- --> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px;
+            ">
+                           <div class="informationText">
+                            1 item
+                           </div></td> 
+                          <!--<![endif]--> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="6" style="min-width:1;  line-height: 6px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="6" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <!--[if gte mso 9]>
+<td class="LinkDisplay " valign="top" align="left"
+    style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px; "
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=3FSUDYROIX95C&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_order_mso&H=KEKABXKMLVFRDYIXETSKCQM6MXMA&ref_=pe_2640190_232586610_scr_pt_order_mso"
+        style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px;  text-decoration: none;"
+        >Order #112-5964082-8310654</a></td>
+<![endif]--> 
+                          <!--[if !gte mso 9]><!-- --> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            ">Order #112-5964082-8310654</td> 
+                          <!--<![endif]--> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="3" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                        </tbody>
+                       </table> </td> 
+                     </tr> 
+                     <tr> 
+                      <td class="" colspan="1" height="35" style="min-width:1;  line-height: 35px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="35" style="display: block; border: none;" /> </td> 
+                     </tr> 
+                    </tbody>
+                   </table> </a> </td>
+                </tr> 
+                <tr>
+                 <td> <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=1YXB5JQ8UHF72&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_address&H=VF6XD72MUAW2OAZ6BOHADMN7Y7YA&ref_=pe_2640190_232586610_scr_pt_address" style="text-decoration: none;">
+                   <table class="InfoBlock" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;"> 
+                    <tbody>
+                     <tr> 
+                      <td style="text-align: left; vertical-align: top; width: 27px; border: none; padding-right: 21px;" class=""> <img src="https://images-na.ssl-images-amazon.com/images/G/01/img16/email/pin_grey.png" alt="location" width="23" style="display: block; border: none;" /> </td> 
+                      <td align="left" valign="top"> 
+                       <table class="InfoBlockInner" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 100%; max-width: 100%;"> 
+                        <tbody>
+                         <tr> 
+                          <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="3" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            font-weight: bold;">SHIP TO</td> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="8" style="min-width:1;  line-height: 8px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="8" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <!--[if gte mso 9]>
+<td class="LinkDisplay informationText" valign="top" align="left"
+    style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px; "
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=1XUHMQ42TEF53&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_name_mso&H=PQIJXO2AFSYPTLF4A2Q3ICZAX3EA&ref_=pe_2640190_232586610_scr_pt_name_mso"
+        style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px;  text-decoration: none;"
+        >JOSHUA KLEIN</a></td>
+
+    </tr>
+
+<tr>
+    <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px">
+        <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt=""
+             width="1" height="3" style="display: block; border: none;" />
+    </td>
+</tr>
+
+    <tr>
+<td class="LinkDisplay " valign="top" align="left"
+    style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 18px; line-height: 18px; "
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=34KCBCEE50W8A&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Fship-track%3Fie%3DUTF8%26orderId%3D112-5964082-8310654%26packageIndex%3D0%26shipmentId%3DDHyFNjxYV%26ref_%3Dpe_2640190_232586610_scr_pt_address_mso&H=WBLKTSALYWETPTPS0XAL8AHZK9YA&ref_=pe_2640190_232586610_scr_pt_address_mso"
+        style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 18px;  text-decoration: none;"
+        >3353 82ND ST APT B42...</a></td>
+
+
+    <![endif]--> 
+                          <!--[if !gte mso 9]><!-- --> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px;
+            ">
+                           <div class="informationText">
+                            JOSHUA KLEIN
+                           </div></td> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="3" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #111111; font-family: Arial, sans-serif;
+            font-size: 18px; line-height: 18px;
+            ">
+                           <div class="addressText">
+                            3353 82ND ST APT B42...
+                           </div></td> 
+                          <!--<![endif]--> 
+                         </tr> 
+                        </tbody>
+                       </table> </td> 
+                     </tr> 
+                     <tr> 
+                      <td class="" colspan="1" height="35" style="min-width:1;  line-height: 35px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="35" style="display: block; border: none;" /> </td> 
+                     </tr> 
+                    </tbody>
+                   </table> </a> </td>
+                </tr> 
+                <tr>
+                 <td> <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=35ALMHEVD8OV9&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Forder-details%3Fie%3DUTF8%26orderID%3D112-5964082-8310654%26ref_%3Dpe_2640190_232586610_scr_od_price&H=QAY9FXV9UADF8YDWJKOMVNXLGAYA&ref_=pe_2640190_232586610_scr_od_price" style="text-decoration: none;">
+                   <table class="InfoBlock" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;"> 
+                    <tbody>
+                     <tr> 
+                      <td style="text-align: left; vertical-align: top; width: 27px; border: none; padding-right: 21px;" class=""> <img src="https://images-na.ssl-images-amazon.com/images/G/01/img16/email/tag-grey.png" alt="price" width="23" style="display: block; border: none;" /> </td> 
+                      <td align="left" valign="top"> 
+                       <table class="InfoBlockInner" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 100%; max-width: 100%;"> 
+                        <tbody>
+                         <tr> 
+                          <td class="" colspan="1" height="3" style="min-width:1;  line-height: 3px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="3" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            font-weight: bold;">SHIPMENT TOTAL</td> 
+                         </tr> 
+                         <tr> 
+                          <td class="" colspan="1" height="8" style="min-width:1;  line-height: 8px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="8" style="display: block; border: none;" /> </td> 
+                         </tr> 
+                         <tr> 
+                          <!--[if gte mso 9]>
+<td class="LinkDisplay " valign="top" align="left"
+    style="color: #0066c0; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px; "
+    ><a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=21JNDJGTUEUAW&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fyour-account%2Forder-details%3Fie%3DUTF8%26orderID%3D112-5964082-8310654%26ref_%3Dpe_2640190_232586610_scr_od_price_mso&H=RBKDSXM6ISZGIEJL0K7EECAFTQ8A&ref_=pe_2640190_232586610_scr_od_price_mso"
+        style="color: #0066c0; font-family: Arial, sans-serif;
+            font-size: 20px;  text-decoration: none;"
+        >        $72.89
+</a></td>
+    <![endif]--> 
+                          <!--[if !gte mso 9]><!-- --> 
+                          <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #0066c0; font-family: Arial, sans-serif;
+            font-size: 20px; line-height: 20px;
+            ">
+                           <div class="informationText">
+                             $72.89 
+                           </div></td> 
+                          <!--<![endif]--> 
+                         </tr> 
+                        </tbody>
+                       </table> </td> 
+                     </tr> 
+                     <tr> 
+                      <td class="" colspan="1" height="35" style="min-width:1;  line-height: 35px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="35" style="display: block; border: none;" /> </td> 
+                     </tr> 
+                    </tbody>
+                   </table> </a> </td>
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" width="296px"> 
+               <tbody>
+                <tr> 
+                 <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            ">Return or replace items in <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=2TEWONHFR882Q&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fcss%2Forder-history%3Fie%3DUTF8%26ref_%3Dpe_2640190_232586610_scr_yo&H=QF73AI6CBD4XJYAZSKTJDNEWJLYA&ref_=pe_2640190_232586610_scr_yo" style="color: #0066c0; font-family: Arial, sans-serif; font-size: 15px; text-decoration: none;">Your Orders</a></td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" width="296px"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="20" style="min-width:1;  line-height: 20px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="20" style="display: block; border: none;" /> </td> 
+                </tr> 
+                <tr> 
+                 <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 15px; line-height: 15px;
+            ">Learn how to recycle your packaging at <a href="https://www.amazon.com/gp/f.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=FXPLG5422DJF&T=C&U=https%3A%2F%2Fwww.amazon.com%2Famsc%3Fref_%3Dpe_2640190_232586610_ascyorn&H=VWTC3PW8BAAMY4KWXD36YQYGGO0A&ref_=pe_2640190_232586610_ascyorn" style="color: #0066c0; font-family: Arial, sans-serif; font-size: 15px; text-decoration: none;">Amazon Second Chance</a>.</td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" width="296px"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="42" style="min-width:1;  line-height: 42px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="42" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 340px; border-top: 2px solid #d6d6d6; border-bottom: 2px solid #d6d6d6;" class="marketingContent"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="40" style="min-width:1;  line-height: 40px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="40" style="display: block; border: none;" /> </td> 
+                </tr> 
+                <tr>
+                 <td> 
+                  <table border="0" cellpadding="0" cellspacing="0" width="100%"> 
+                   <tbody> 
+                    <tr> 
+                     <td align="center"> <map name="amazon"> <area shape="rect" coords="0,0,296,242" alt="Shopping for work? Register a free account" href="https://www.amazon.com/gp/f.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=29QE4BN59HWXC&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fbb%2Fregistration%2Fstart%2Fref%3Dpe_2640190_232586610_b2b_et_BP_SCE%3F_encoding%3DUTF8%26pd_rd_r%3D1T1BSTT58JQ1TF3H9AMR%26pd_rd_w%3DkGgQL%26pd_rd_wg%3D3B2Qk%26pf_rd_p%3Da3e6f93b-b119-4dac-93ca-24f3523c0639%26pf_rd_r%3D1T1BSTT58JQ1TF3H9AMR&H=FHDPUKAL7TOAWWAEYOAHMSWGUTKA&ref_=pe_2640190_232586610_b2b_et_BP_SCE"></area> </map> <img src="https://images-na.ssl-images-amazon.com/images/G/01/AmazonBusiness/AB_BP_ROCE_296x242_newlogo._CB459235001_.jpg" width="296" align="middle" usemap="#amazon" alt="Shopping for work? Register a free account" height="242" border="0" /> </td> 
+                    </tr> 
+                   </tbody> 
+                  </table> </td>
+                </tr> 
+                <tr> 
+                 <td class="" colspan="1" height="25" style="min-width:1;  line-height: 25px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="25" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> 
+              <table id="disclaimer" style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center; width: 296px; max-width: 296px;" class="disclaimerText"> 
+               <tbody>
+                <tr> 
+                 <td class="" colspan="1" height="29" style="min-width:1;  line-height: 29px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="29" style="display: block; border: none;" /> </td> 
+                </tr> 
+                <tr> 
+                 <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 11px; line-height: 11px;
+            ">Unless otherwise noted, items sold by Amazon.com are subject to sales tax in select states in accordance with the applicable laws of that state. If your order contains one or more items from a seller other than Amazon.com, it may be subject to state and local sales tax, depending upon the sellers business policies and the location of their operations. Learn more about <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=2NPVV0EX9KS4W&T=C&U=http%3A%2F%2Fwww.amazon.com%2Fgp%2Fhelp%2Fcustomer%2Fdisplay.html%3Fie%3DUTF8%26nodeId%3D202029700%26ref_-%3Dscr_help_tax%26ref_%3Dpe_2640190_232586610&H=1XWLNXUAPDAT8KCOR9IJXPEHLXWA&ref_=pe_2640190_232586610" style="color: #0066c0; font-family: Arial, sans-serif; font-size: 11px; text-decoration: none;">tax and seller information</a>.</td> 
+                </tr> 
+                <tr> 
+                 <td class="" colspan="1" height="7" style="min-width:1;  line-height: 7px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="7" style="display: block; border: none;" /> </td> 
+                </tr> 
+                <tr> 
+                 <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 11px; line-height: 11px;
+            ">Your invoice can be accessed <a href="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=2SLBQLPDDZ6G7&T=C&U=https%3A%2F%2Fwww.amazon.com%2Fgp%2Fcss%2Fsummary%2Fprint.html%3Fie%3DUTF8%26orderID%3D112-5964082-8310654%26ref_%3Dpe_2640190_232586610_scr_od_invoice&H=A7VB8LQATWJZF0UAXISMAB3JRFAA&ref_=pe_2640190_232586610_scr_od_invoice" style="color: #0066c0; font-family: Arial, sans-serif; font-size: 11px; text-decoration: none;">here</a>.</td> 
+                </tr> 
+                <tr> 
+                 <td class="" colspan="1" height="7" style="min-width:1;  line-height: 7px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="7" style="display: block; border: none;" /> </td> 
+                </tr> 
+                <tr> 
+                 <td id="" colspan="1" class="DisplayComponents" valign="top" align="left" style="color: #868686; font-family: Arial, sans-serif;
+            font-size: 11px; line-height: 11px;
+            ">This email was sent from a notification-only address that cannot accept incoming email. Please do not reply to this message.</td> 
+                </tr> 
+                <tr> 
+                 <td class="" colspan="1" height="29" style="min-width:1;  line-height: 29px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="29" style="display: block; border: none;" /> </td> 
+                </tr> 
+               </tbody>
+              </table> </td> 
+            </tr> 
+           </tbody>
+          </table> 
+          <table style="border-collapse: collapse; border-spacing: 0; padding: 0; border: 0; text-align: center;" class="container"> 
+           <tbody>
+            <tr> 
+             <td class="" colspan="1" height="21" style="min-width:1;  line-height: 21px"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" alt="" width="1" height="21" style="display: block; border: none;" /> </td> 
+            </tr> 
+           </tbody>
+          </table> </td> 
+        </tr> 
+        <tr> 
+         <td class="hide"> 
+          <!-- Gmail min-width fix --> 
+          <div style="letter-spacing: 375px; line-height: 0; mso-hide: all">
+           &nbsp;
+          </div> 
+          <table cellpadding="0" cellspacing="0" border="0" align="center" width="375"> 
+           <tbody>
+            <tr> 
+             <td height="1" style="line-height:1px; min-width:375px;"> <img src="http://g-ecx.images-amazon.com/images/G/01/e-mail/img/softlines/sp.gif" height="1" width="375" style="max-height:1px; min-height:1px; display:block; width:375px; min-width:375px;" /> </td> 
+            </tr> 
+           </tbody>
+          </table> 
+          <!-- Gmail min-width fix --> </td> 
+        </tr> 
+        <tr> 
+         <td class="hide"> <img src="http://g-ec2.images-amazon.com/images/G/01/x-locale/cs/te/MagicPixel.png" height="1" width="375" style="max-height:1px; min-height:1px; display:block; width:375px; min-width:375px;" /> </td> 
+        </tr> 
+        <tr> 
+         <td class="hide"> 
+          <div style="display:none; white-space:nowrap; font:15px courier; line-height:0;">
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+          </div> </td> 
+        </tr> 
+       </tbody>
+      </table> </td> 
+     <td>&nbsp;</td> 
+    </tr> 
+   </tbody>
+  </table>  
+ <img width="1" height="1" src="https://www.amazon.com/gp/r.html?C=1TTJGNIAUG1LO&K=2S78IYZYQPYO1&M=urn:rtn:msg:2020032918393351f125e9711b429791ff2821d970p0na&R=2NLE2NBVIHJS4&T=E&U=https%3A%2F%2Fimages-na.ssl-images-amazon.com%2Fimages%2FG%2F01%2Fnav%2Ftransp.gif&H=8ZFZ5EKAAZHGRQCTELCM4UADSIGA&ref_=pe_2640190_232586610_open" /></body>
+</html>
+------=_Part_21424873_429393591.1585507174238--

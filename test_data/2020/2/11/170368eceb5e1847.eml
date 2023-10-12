@@ -1,0 +1,595 @@
+Delivered-To: josh@josh.is
+Received: by 2002:a2e:b54b:0:0:0:0:0 with SMTP id a11csp5822025ljn;
+        Tue, 11 Feb 2020 15:21:33 -0800 (PST)
+X-Received: by 2002:a7b:ca49:: with SMTP id m9mr8693193wml.50.1581463293733;
+        Tue, 11 Feb 2020 15:21:33 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1581463293; cv=none;
+        d=google.com; s=arc-20160816;
+        b=rqrl45ucKvrh+NK0kgi8izJK+pZZS7MbIZI5ZJOUYTaE1IVFhGu6+XroT9IDOagxuY
+         bY2u/uQ5KMuJ3ZjrWI8mn8vlwW/pApcjPL/WG5QInR7E0IrDzEFc/CZkfDR3MgD37jEk
+         CAMQSAfJfjIfUTGAdSnnTTuUlMosMDMFRxBcvwnHUubuhpnf50ctp4AT4bFjkdhsIZJE
+         S3yMfOQRMtUa71tVHNYn34aCc/xqp9q5CW1Cyi1ZvJouqPS0Q+GplxhTMWZ+RiG+F5oF
+         teEMsoPlr//RYgFgVwg7Te0PMT1MN0i47ImzwMSTaKqCOzfh3rxJ4WwLR1TDvdAWj3ka
+         nX/w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20160816;
+        h=mime-version:content-language:accept-language:in-reply-to
+         :references:message-id:date:thread-index:thread-topic:subject:to
+         :from:dkim-signature;
+        bh=vY+0V4rP2lKhOe/82oCIqnsUKcJ5gO+S6/ns03YzH6I=;
+        b=uHGzGiheNaN7FpaCGPc1sPPTEzKFYv5GTwn7Mxr/3DpwddWjN0LzKwMRW9wFhmGO/d
+         d7lmFdV+AUt1zvunNtR+Tf9deKof743W9i189nSkWiEeF+DpvLwxIreGteBwLecJ0Vnp
+         e6rzcmbYCgdN6fxlSk0XrlyYGNdJ8pptTnOZGON0rWkfWijZ3CjDCFg9y4Gn6255Pwl0
+         HZZLIveOg3ajYUV5q0C86RkMEZUQFvZ2EjqPF78w1xN5bgFSy1VdlvhsXC5jyOSoSB++
+         QgB+B4iJlYh3Ka6ZnvvwHikAEZEe/2Ho8V/hoI2jTmEgoGHmzSGt0Abd/0NJxzmcVnfy
+         o9CQ==
+ARC-Authentication-Results: i=1; mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=MPYnXrde;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+Return-Path: <gperez@ideo.com>
+Received: from mail-sor-f41.google.com (mail-sor-f41.google.com. [209.85.220.41])
+        by mx.google.com with SMTPS id a2sor2822434wmb.15.2020.02.11.15.21.33
+        for <josh@josh.is>
+        (Google Transport Security);
+        Tue, 11 Feb 2020 15:21:33 -0800 (PST)
+Received-SPF: pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) client-ip=209.85.220.41;
+Authentication-Results: mx.google.com;
+       dkim=pass header.i=@ideo.com header.s=google header.b=MPYnXrde;
+       spf=pass (google.com: domain of gperez@ideo.com designates 209.85.220.41 as permitted sender) smtp.mailfrom=gperez@ideo.com;
+       dmarc=pass (p=REJECT sp=REJECT dis=NONE) header.from=ideo.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ideo.com; s=google;
+        h=from:to:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :mime-version;
+        bh=vY+0V4rP2lKhOe/82oCIqnsUKcJ5gO+S6/ns03YzH6I=;
+        b=MPYnXrde0zFVj3dXGXeE9Lwrl4xCzD6bYCW3bCbNEQ1OQSjFiqlqzM/8knRk1kiWrs
+         GMLTAXcq9QjbdoZLu0yws1e1bbQMiGw14WI9kUVb3I8vizRykpBcrpCQ2rDVzqzVbxv7
+         F9sMtYQzC5B2p8XhV4K774Jnq7ED0auwFUbxU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:thread-topic:thread-index:date
+         :message-id:references:in-reply-to:accept-language:content-language
+         :mime-version;
+        bh=vY+0V4rP2lKhOe/82oCIqnsUKcJ5gO+S6/ns03YzH6I=;
+        b=Y4amTCSwVRuv7a8nFc6i5i9stKVhjgnxzcYZwf71QOPSICdw0kjU+P5QpHKmopWeqT
+         l48pUO4akFiXWmzY1S2+xTOcKbRf85a2zGm+TJSrV5FW5ZnXq5m5zKfSExetG0OxyMpS
+         fCBVXhJO3J05GBPsXa8YI+UFj++QQwN9NNMb4xv/ZazyBqYfVPovXXHOjuxia2H8WtY5
+         56IcQ2oGRPpyQrTabF8PobksyE62Vb0fku1/4otT2I6GIULU1iIO6WkRHKP8rKexRy+F
+         Pij1aOltKcaaROnUtF/ndyajGt50OlRv4FlKCKvqPDOQqJhI/FGFqUYIktVO+dTUOxvM
+         TfIw==
+X-Gm-Message-State: APjAAAXtY/igsjueeWqSp5XzdhNZUADae37k17RHib19v0i/qamBacK6
+	Z9EpjqLi2BgdofX2ewgccF9/PrKbVcw=
+X-Google-Smtp-Source: APXvYqwMLMjDEcTLvbHBCk5XIE0r/LoFH8DAA5cFaJRbb4mdcSqsMPvN2pvgidMsb+yR/sb/BstVGQ==
+X-Received: by 2002:a7b:ce18:: with SMTP id m24mr8297341wmc.123.1581463292652;
+        Tue, 11 Feb 2020 15:21:32 -0800 (PST)
+Return-Path: <gperez@ideo.com>
+Received: from DM6PR08MB5483.namprd08.prod.outlook.com ([2603:1036:301:2102::5])
+        by smtp.gmail.com with ESMTPSA id w7sm5378187wmi.9.2020.02.11.15.21.31
+        for <josh@josh.is>
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 11 Feb 2020 15:21:32 -0800 (PST)
+From: Gregory Perez <gperez@ideo.com>
+To: Josh Klein <josh@josh.is>
+Subject: Re: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 10am - 11am
+ (EST) (mnilchiani@ideo.com)
+Thread-Topic: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 10am -
+ 11am (EST) (mnilchiani@ideo.com)
+Thread-Index: AWMzMWYwnZMsHuLgBZekbNrz4AE4H1FqNVFId3J2QmTfFRvOPQ==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date: Tue, 11 Feb 2020 23:21:27 +0000
+Message-ID:
+	<DM6PR08MB5483FD27EB2801E67FA2737DF9180@DM6PR08MB5483.namprd08.prod.outlook.com>
+References: <000000000000f6c681059e3b674c@google.com>
+ <CALEjqb8EQHwCOAjADh4QuoV_mTmQ05Pa86RAFr_j9rG+s3DgtQ@mail.gmail.com>,<CACNgykPD-dYvb5-Z15hBsWy5M9FpFvKDdvz_nJcrX-NAkYcuTw@mail.gmail.com>
+In-Reply-To:
+	<CACNgykPD-dYvb5-Z15hBsWy5M9FpFvKDdvz_nJcrX-NAkYcuTw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator:
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: multipart/alternative;
+	boundary="_000_DM6PR08MB5483FD27EB2801E67FA2737DF9180DM6PR08MB5483namp_"
+MIME-Version: 1.0
+
+--_000_DM6PR08MB5483FD27EB2801E67FA2737DF9180DM6PR08MB5483namp_
+Content-Type: text/plain; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+Yes for sure.
+
+Get Outlook for iOS<https://aka.ms/o0ukef>
+________________________________
+From: Josh Klein <josh@josh.is>
+Sent: Tuesday, February 11, 2020 4:13:45 PM
+To: Gregory Perez <gperez@ideo.com>
+Subject: Fwd: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 10am - =
+11am (EST) (mnilchiani@ideo.com)
+
+Something to discuss thursday?
+
+- J
+
+
+---------- Forwarded message ---------
+From: Mani Nilchiani <mnilchiani@ideo.com<mailto:mnilchiani@ideo.com>>
+Date: Tue, Feb 11, 2020 at 10:19 AM
+Subject: Re: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 10am - 1=
+1am (EST) (mnilchiani@ideo.com<mailto:mnilchiani@ideo.com>)
+To: Josh Klein <josh@josh.is<mailto:josh@josh.is>>
+
+
+Hey Josh,
+
+Good morning. Hope this note finds you well.
+I've been full time on a project and it's been impossible for me to keep wo=
+rking on the site, despite my best efforts.
+To that end, unfortunately I won't be able to support this project anymore.=
+ I'm wrapping up a project today and heading to Mexico tomorrow for a much =
+needed vacation.
+I do understand the urgency of this task, and I've tried to support it but =
+it's simply not possible anymore.
+
+Feel free to reach out to Greg Perez [gperez@ideo.com<mailto:gperez@ideo.co=
+m>] if you have any questions or concerns.
+I sincerely hope you can get the site up and running ASAP.
+
+Thank you and have a great day.
+
+On Mon, Feb 10, 2020 at 11:41 AM Josh Klein <josh@josh.is<mailto:josh@josh.=
+is>> wrote:
+You have been invited to the following event.
+Mani and Josh work f2f
+When
+Thu Feb 13, 2020 10am =96 11am Eastern Time - New York
+Where
+IDEO Offices (map<https://www.google.com/maps/search/IDEO+Offices?hl=3Den>)
+Joining info
+Join Hangouts Meet
+meet.google.com/jmr-pmho-uqw<https://meet.google.com/jmr-pmho-uqw>
+Join by phone
++1 720-441-1601 (PIN: 789928044)
+Calendar
+mnilchiani@ideo.com<mailto:mnilchiani@ideo.com>
+Who
+=95
+Josh Klein - organizer
+=95
+mnilchiani@ideo.com<mailto:mnilchiani@ideo.com>
+more details =BB<https://www.google.com/calendar/event?action=3DVIEW&eid=3D=
+MzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&tok=3DMTIjam=
+9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&ctz=3D=
+America%2FNew_York&hl=3Den&es=3D1>
+I've got a mtg w/ Greg at 9; could we work f2f and maybe hash this all out =
+at once?
+
+Going (mnilchiani@ideo.com<mailto:mnilchiani@ideo.com>)?   Yes<https://www.=
+google.com/calendar/event?action=3DRESPOND&eid=3DMzcxNmdxaWFvdGNmYjIycnZyZj=
+N1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&rst=3D1&tok=3DMTIjam9zaEBqb3NoLmlzMjFj=
+MTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&ctz=3DAmerica%2FNew_York=
+&hl=3Den&es=3D1> - Maybe<https://www.google.com/calendar/event?action=3DRES=
+POND&eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&r=
+st=3D3&tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2Zm=
+I1YmYyMTIyZA&ctz=3DAmerica%2FNew_York&hl=3Den&es=3D1> - No<https://www.goog=
+le.com/calendar/event?action=3DRESPOND&eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bD=
+lqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&rst=3D2&tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4=
+MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&ctz=3DAmerica%2FNew_York&hl=
+=3Den&es=3D1>    more options =BB<https://www.google.com/calendar/event?act=
+ion=3DVIEW&eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLm=
+NvbQ&tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1=
+YmYyMTIyZA&ctz=3DAmerica%2FNew_York&hl=3Den&es=3D1>
+
+Invitation from Google Calendar<https://www.google.com/calendar/>
+
+You are receiving this email at the account mnilchiani@ideo.com<mailto:mnil=
+chiani@ideo.com> because you are subscribed for invitations on calendar mni=
+lchiani@ideo.com<mailto:mnilchiani@ideo.com>.
+
+To stop receiving these emails, please log in to https://www.google.com/cal=
+endar/ and change your notification settings for this calendar.
+
+Forwarding this invitation could allow any recipient to send a response to =
+the organizer and be added to the guest list, or invite others regardless o=
+f their own invitation status, or to modify your RSVP. Learn More<https://s=
+upport.google.com/calendar/answer/37135#forwarding>.
+
+
+--
+Mani Nilchiani | Design Lead
+
+IDEO | New York
+
+Pronouns: He, Him, His
+
+Email: mnilchiani@ideo.com
+<mailto:mnilchiani@ideo.com>
+
+--_000_DM6PR08MB5483FD27EB2801E67FA2737DF9180DM6PR08MB5483namp_
+Content-Type: text/html; charset="Windows-1252"
+Content-Transfer-Encoding: quoted-printable
+
+<html>
+<head>
+<meta http-equiv=3D"Content-Type" content=3D"text/html; charset=3DWindows-1=
+252">
+</head>
+<body>
+<div>
+<div>
+<div style=3D"direction: ltr;">Yes for sure.</div>
+</div>
+<div><br>
+</div>
+<div class=3D"ms-outlook-ios-signature">Get <a href=3D"https://aka.ms/o0uke=
+f">Outlook for iOS</a></div>
+</div>
+<hr style=3D"display:inline-block;width:98%" tabindex=3D"-1">
+<div id=3D"divRplyFwdMsg" dir=3D"ltr"><font face=3D"Calibri, sans-serif" st=
+yle=3D"font-size:11pt" color=3D"#000000"><b>From:</b> Josh Klein &lt;josh@j=
+osh.is&gt;<br>
+<b>Sent:</b> Tuesday, February 11, 2020 4:13:45 PM<br>
+<b>To:</b> Gregory Perez &lt;gperez@ideo.com&gt;<br>
+<b>Subject:</b> Fwd: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 =
+10am - 11am (EST) (mnilchiani@ideo.com)</font>
+<div>&nbsp;</div>
+</div>
+<div>
+<div>
+<div dir=3D"auto">Something to discuss thursday?</div>
+<div dir=3D"auto"><br>
+</div>
+<div dir=3D"auto">- J</div>
+<div dir=3D"auto"><br>
+</div>
+</div>
+<div><br>
+<div class=3D"x_gmail_quote">
+<div dir=3D"ltr" class=3D"x_gmail_attr">---------- Forwarded message ------=
+---<br>
+From: <strong class=3D"x_gmail_sendername" dir=3D"auto">Mani Nilchiani</str=
+ong> <span dir=3D"auto">
+&lt;<a href=3D"mailto:mnilchiani@ideo.com">mnilchiani@ideo.com</a>&gt;</spa=
+n><br>
+Date: Tue, Feb 11, 2020 at 10:19 AM<br>
+Subject: Re: Invitation: Mani and Josh work f2f @ Thu Feb 13, 2020 10am - 1=
+1am (EST) (<a href=3D"mailto:mnilchiani@ideo.com">mnilchiani@ideo.com</a>)<=
+br>
+To: Josh Klein &lt;<a href=3D"mailto:josh@josh.is">josh@josh.is</a>&gt;<br>
+</div>
+<br>
+<br>
+<div dir=3D"ltr">
+<div>Hey Josh,</div>
+<div><br>
+</div>
+<div>Good morning. Hope this note finds you well.</div>
+<div>I've been full time on a project and it's been impossible for me to ke=
+ep working on the site, despite my best efforts.</div>
+<div>To that end, unfortunately I won't be able to support this project any=
+more. I'm wrapping up a project today and heading to Mexico tomorrow for a =
+much needed vacation.</div>
+<div>I do understand the urgency of this task, and I've tried to support it=
+ but it's simply not possible anymore.</div>
+<div><br>
+</div>
+<div>Feel free to reach out to Greg Perez [<a href=3D"mailto:gperez@ideo.co=
+m" target=3D"_blank">gperez@ideo.com</a>] if you have any questions or conc=
+erns.</div>
+<div>I sincerely hope you can get the site up and running ASAP.</div>
+<div><br>
+</div>
+<div>Thank you and have a great day.<br>
+</div>
+</div>
+<br>
+<div class=3D"x_gmail_quote">
+<div dir=3D"ltr" class=3D"x_gmail_attr">On Mon, Feb 10, 2020 at 11:41 AM Jo=
+sh Klein &lt;<a href=3D"mailto:josh@josh.is" target=3D"_blank">josh@josh.is=
+</a>&gt; wrote:<br>
+</div>
+<blockquote class=3D"x_gmail_quote" style=3D"margin:0px 0px 0px 0.8ex; bord=
+er-left-width:1px; border-left-style:solid; padding-left:1ex; border-left-c=
+olor:rgb(204,204,204)">
+<span><span style=3D"display:none"></span><span>
+<div>
+<table summary=3D"" cellspacing=3D"0" cellpadding=3D"8" border=3D"0" style=
+=3D"width:100%; font-family:Arial,sans-serif; border-style:solid; border-wi=
+dth:1px 2px 2px 1px; background-color:rgb(255,255,255); border-color:rgb(20=
+4,204,204)">
+<tbody style=3D"font-family:Arial,sans-serif">
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"font-family:Arial,sans-serif">
+<h4 style=3D"padding:6px 10px; margin:0px 0px 4px; font-family:Arial,sans-s=
+erif; font-size:13px; line-height:1.4; border:1px solid rgb(217,242,219); b=
+ackground-image:none; font-weight:normal; background-color:rgb(217,242,219)=
+; color:rgb(34,34,34); background-position:0% 0%; background-repeat:repeat =
+repeat">
+<strong style=3D"font-family:Arial,sans-serif">You have been invited to the=
+ following event.</strong></h4>
+<div style=3D"padding:2px; font-family:Arial,sans-serif"><span style=3D"fon=
+t-family:Arial,sans-serif"></span>
+<h3 style=3D"padding:0px 0px 6px; margin:0px; font-family:Arial,sans-serif;=
+ font-size:16px; font-weight:bold; color:rgb(34,34,34)">
+<span style=3D"font-family:Arial,sans-serif">Mani and Josh work f2f</span><=
+/h3>
+<table summary=3D"Event details" cellspacing=3D"0" cellpadding=3D"0" border=
+=3D"0" style=3D"display:inline-table; font-family:Arial,sans-serif">
+<tbody style=3D"font-family:Arial,sans-serif">
+<tr style=3D"font-family:Arial,sans-serif">
+<td valign=3D"top" style=3D"padding:0px 1em 10px 0px; font-family:Arial,san=
+s-serif; font-size:13px; white-space:nowrap; color:rgb(136,136,136)">
+<div style=3D"font-family:Arial,sans-serif"><i style=3D"font-style:normal; =
+font-family:Arial,sans-serif">When</i></div>
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+Thu Feb 13, 2020 10am =96 11am <span style=3D"font-family:Arial,sans-serif;=
+ color:rgb(136,136,136)">
+Eastern Time - New York</span></td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td valign=3D"top" style=3D"padding:0px 1em 10px 0px; font-family:Arial,san=
+s-serif; font-size:13px; white-space:nowrap; color:rgb(136,136,136)">
+<div style=3D"font-family:Arial,sans-serif"><i style=3D"font-style:normal; =
+font-family:Arial,sans-serif">Where</i></div>
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+<span style=3D"font-family:Arial,sans-serif"><span style=3D"font-family:Ari=
+al,sans-serif">IDEO Offices</span><span dir=3D"ltr" style=3D"font-family:Ar=
+ial,sans-serif"> (<a href=3D"https://www.google.com/maps/search/IDEO&#43;Of=
+fices?hl=3Den" target=3D"_blank" style=3D"white-space:nowrap; font-family:A=
+rial,sans-serif; color:rgb(34,0,204)">map</a>)</span></span></td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td valign=3D"top" style=3D"padding:0px 1em 4px 0px; font-family:Arial,sans=
+-serif; font-size:13px; white-space:nowrap; color:rgb(136,136,136)">
+<div style=3D"font-family:Arial,sans-serif"><i style=3D"font-style:normal; =
+font-family:Arial,sans-serif">Joining info</i></div>
+</td>
+<td valign=3D"top" style=3D"padding-bottom:4px; font-family:Arial,sans-seri=
+f; font-size:13px; color:rgb(34,34,34)">
+Join Hangouts Meet</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding:0px 1em 10px 0px; font-family:Arial,sans-serif; font-s=
+ize:13px; white-space:nowrap; color:rgb(136,136,136)">
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+<span style=3D"font-family:Arial,sans-serif"><span style=3D"font-family:Ari=
+al,sans-serif"><span style=3D"font-family:Arial,sans-serif"><span style=3D"=
+font-family:Arial,sans-serif"><span style=3D"font-family:Arial,sans-serif">=
+<a href=3D"https://meet.google.com/jmr-pmho-uqw" target=3D"_blank" style=3D=
+"white-space:nowrap; font-family:Arial,sans-serif; color:rgb(34,0,204)">mee=
+t.google.com/jmr-pmho-uqw</a></span></span></span></span></span>
+</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding:0px 1em 10px 0px; font-family:Arial,sans-serif; font-s=
+ize:13px; white-space:nowrap; color:rgb(136,136,136)">
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding:0px 1em 4px 0px; font-family:Arial,sans-serif; font-si=
+ze:13px; white-space:nowrap; color:rgb(136,136,136)">
+</td>
+<td valign=3D"top" style=3D"padding-bottom:4px; font-family:Arial,sans-seri=
+f; font-size:13px; color:rgb(34,34,34)">
+Join by phone</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding:0px 1em 10px 0px; font-family:Arial,sans-serif; font-s=
+ize:13px; white-space:nowrap; color:rgb(136,136,136)">
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+<a style=3D"white-space:nowrap; font-family:Arial,sans-serif; color:rgb(34,=
+0,204)">&#43;1 720-441-1601</a>
+<span style=3D"font-family:Arial,sans-serif; color:rgb(136,136,136)">(PIN: =
+789928044)</span></td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td valign=3D"top" style=3D"padding:0px 1em 10px 0px; font-family:Arial,san=
+s-serif; font-size:13px; white-space:nowrap; color:rgb(136,136,136)">
+<div style=3D"font-family:Arial,sans-serif"><i style=3D"font-style:normal; =
+font-family:Arial,sans-serif">Calendar</i></div>
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+<a href=3D"mailto:mnilchiani@ideo.com" target=3D"_blank" style=3D"font-fami=
+ly:Arial,sans-serif">mnilchiani@ideo.com</a></td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td valign=3D"top" style=3D"padding:0px 1em 10px 0px; font-family:Arial,san=
+s-serif; font-size:13px; white-space:nowrap; color:rgb(136,136,136)">
+<div style=3D"font-family:Arial,sans-serif"><i style=3D"font-style:normal; =
+font-family:Arial,sans-serif">Who</i></div>
+</td>
+<td valign=3D"top" style=3D"padding-bottom:10px; font-family:Arial,sans-ser=
+if; font-size:13px; color:rgb(34,34,34)">
+<table cellspacing=3D"0" cellpadding=3D"0" style=3D"font-family:Arial,sans-=
+serif">
+<tbody style=3D"font-family:Arial,sans-serif">
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding-right:10px; font-family:Arial,sans-serif; font-size:13=
+px; color:rgb(34,34,34)">
+<span style=3D"font-family:&quot;Courier New&quot;,monospace">=95</span></t=
+d>
+<td style=3D"padding-right:10px; font-family:Arial,sans-serif; font-size:13=
+px; color:rgb(34,34,34)">
+<div style=3D"font-family:Arial,sans-serif">
+<div style=3D"margin:0px 0px 0.3em; font-family:Arial,sans-serif"><span sty=
+le=3D"font-family:Arial,sans-serif"><span style=3D"font-family:Arial,sans-s=
+erif">Josh Klein</span></span><span style=3D"font-family:Arial,sans-serif">=
+</span><span style=3D"font-size:11px; font-family:Arial,sans-serif; color:r=
+gb(136,136,136)">
+ - organizer</span></div>
+</div>
+</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"padding-right:10px; font-family:Arial,sans-serif; font-size:13=
+px; color:rgb(34,34,34)">
+<span style=3D"font-family:&quot;Courier New&quot;,monospace">=95</span></t=
+d>
+<td style=3D"padding-right:10px; font-family:Arial,sans-serif; font-size:13=
+px; color:rgb(34,34,34)">
+<div style=3D"font-family:Arial,sans-serif">
+<div style=3D"margin:0px 0px 0.3em; font-family:Arial,sans-serif"><span sty=
+le=3D"font-family:Arial,sans-serif"><span style=3D"font-family:Arial,sans-s=
+erif"><a href=3D"mailto:mnilchiani@ideo.com" target=3D"_blank" style=3D"fon=
+t-family:Arial,sans-serif">mnilchiani@ideo.com</a></span></span></div>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<div style=3D"float:right; font-weight:bold; font-size:13px; font-family:Ar=
+ial,sans-serif">
+<a href=3D"https://www.google.com/calendar/event?action=3DVIEW&amp;eid=3DMz=
+cxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&amp;tok=3DMTIj=
+am9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&amp;=
+ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" target=3D"_blank" style=3D=
+"white-space:nowrap; font-family:Arial,sans-serif; color:rgb(34,0,204)">mor=
+e
+ details =BB</a><br>
+</div>
+<div style=3D"padding-bottom:15px; font-family:Arial,sans-serif; font-size:=
+13px; white-space:pre-wrap; color:rgb(34,34,34)">
+<span style=3D"font-family:Arial,sans-serif">I've got a mtg w/ Greg at 9; c=
+ould we work f2f and maybe hash this all out at once?</span></div>
+</div>
+<p style=3D"font-size:13px; margin:0px; font-family:Arial,sans-serif; color=
+:rgb(34,34,34)">
+<span style=3D"font-family:Arial,sans-serif; color:rgb(136,136,136)">Going =
+(<a href=3D"mailto:mnilchiani@ideo.com" target=3D"_blank" style=3D"font-fam=
+ily:Arial,sans-serif">mnilchiani@ideo.com</a>)?&nbsp;&nbsp;&nbsp;</span><st=
+rong style=3D"font-family:Arial,sans-serif"><span style=3D"font-family:Aria=
+l,sans-serif"><span style=3D"font-family:Arial,sans-serif"><a href=3D"https=
+://www.google.com/calendar/event?action=3DRESPOND&amp;eid=3DMzcxNmdxaWFvdGN=
+mYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ&amp;rst=3D1&amp;tok=3DMTIja=
+m9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&amp;c=
+tz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" target=3D"_blank" style=3D"=
+white-space:nowrap; font-family:Arial,sans-serif; color:rgb(34,0,204)">Yes<=
+/a></span></span><span style=3D"margin:0px 0.4em; font-weight:normal; font-=
+family:Arial,sans-serif">
+ - </span><span style=3D"font-family:Arial,sans-serif"><span style=3D"font-=
+family:Arial,sans-serif"><a href=3D"https://www.google.com/calendar/event?a=
+ction=3DRESPOND&amp;eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFua=
+UBpZGVvLmNvbQ&amp;rst=3D3&amp;tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjE=
+wM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&amp;ctz=3DAmerica%2FNew_York&amp;hl=3De=
+n&amp;es=3D1" target=3D"_blank" style=3D"white-space:nowrap; font-family:Ar=
+ial,sans-serif; color:rgb(34,0,204)">Maybe</a></span></span><span style=3D"=
+margin:0px 0.4em; font-weight:normal; font-family:Arial,sans-serif">
+ - </span><span style=3D"font-family:Arial,sans-serif"><span style=3D"font-=
+family:Arial,sans-serif"><a href=3D"https://www.google.com/calendar/event?a=
+ction=3DRESPOND&amp;eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFua=
+UBpZGVvLmNvbQ&amp;rst=3D2&amp;tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjE=
+wM2UwNTAzOGU1ZDg5YWE2ZmI1YmYyMTIyZA&amp;ctz=3DAmerica%2FNew_York&amp;hl=3De=
+n&amp;es=3D1" target=3D"_blank" style=3D"white-space:nowrap; font-family:Ar=
+ial,sans-serif; color:rgb(34,0,204)">No</a></span></span></strong>&nbsp;&nb=
+sp;&nbsp;&nbsp;<a href=3D"https://www.google.com/calendar/event?action=3DVI=
+EW&amp;eid=3DMzcxNmdxaWFvdGNmYjIycnZyZjN1bDlqaWIgbW5pbGNoaWFuaUBpZGVvLmNvbQ=
+&amp;tok=3DMTIjam9zaEBqb3NoLmlzMjFjMTE4MDVhZGU4ZjEwM2UwNTAzOGU1ZDg5YWE2ZmI1=
+YmYyMTIyZA&amp;ctz=3DAmerica%2FNew_York&amp;hl=3Den&amp;es=3D1" target=3D"_=
+blank" style=3D"white-space:nowrap; font-family:Arial,sans-serif; color:rgb=
+(34,0,204)">more
+ options =BB</a></p>
+</td>
+</tr>
+<tr style=3D"font-family:Arial,sans-serif">
+<td style=3D"border-top-width:1px; border-top-style:solid; font-family:Aria=
+l,sans-serif; font-size:11px; background-color:rgb(246,246,246); border-top=
+-color:rgb(204,204,204); color:rgb(136,136,136)">
+<p style=3D"font-family:Arial,sans-serif">Invitation from <a href=3D"https:=
+//www.google.com/calendar/" target=3D"_blank" style=3D"font-family:Arial,sa=
+ns-serif">
+Google Calendar</a></p>
+<p style=3D"font-family:Arial,sans-serif">You are receiving this email at t=
+he account
+<a href=3D"mailto:mnilchiani@ideo.com" target=3D"_blank" style=3D"font-fami=
+ly:Arial,sans-serif">
+mnilchiani@ideo.com</a> because you are subscribed for invitations on calen=
+dar <a href=3D"mailto:mnilchiani@ideo.com" target=3D"_blank" style=3D"font-=
+family:Arial,sans-serif">
+mnilchiani@ideo.com</a>.</p>
+<p style=3D"font-family:Arial,sans-serif">To stop receiving these emails, p=
+lease log in to
+<a href=3D"https://www.google.com/calendar/" target=3D"_blank" style=3D"fon=
+t-family:Arial,sans-serif">
+https://www.google.com/calendar/</a> and change your notification settings =
+for this calendar.</p>
+<p style=3D"font-family:Arial,sans-serif">Forwarding this invitation could =
+allow any recipient to send a response to the organizer and be added to the=
+ guest list, or invite others regardless of their own invitation status, or=
+ to modify your RSVP.
+<a href=3D"https://support.google.com/calendar/answer/37135#forwarding" tar=
+get=3D"_blank" style=3D"font-family:Arial,sans-serif">
+Learn More</a>.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</span></span></blockquote>
+</div>
+<br clear=3D"all">
+<br>
+-- <br>
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div>
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div dir=3D"ltr"><span style=3D"font-size:12px; color:rgb(64,64,64)">Mani N=
+ilchiani</span><span style=3D"font-size:9pt; color:rgb(64,64,64)">&nbsp;|&n=
+bsp;</span><span style=3D"font-size:9pt; color:rgb(64,64,64)">Design Lead</=
+span><br>
+</div>
+</div>
+</div>
+<span>
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<div dir=3D"ltr">
+<p style=3D"font-size:12.8px; margin:0px; color:rgb(136,136,136)"><b><span =
+style=3D"font-size:9pt"><font style=3D"color:rgb(0,0,0)">IDEO</font></span>=
+<span style=3D"font-size:9pt; color:rgb(192,0,0)">&nbsp;</span></b><span st=
+yle=3D"font-size:9pt; color:rgb(64,64,64)">| New
+ York</span></p>
+<p style=3D"font-size:12.8px; margin:0px; color:rgb(136,136,136)"><span sty=
+le=3D"font-size:12px; color:rgb(64,64,64)">Pronouns: He, Him, His</span><sp=
+an style=3D"font-size:9pt; color:rgb(64,64,64)"><br>
+</span></p>
+<p style=3D"font-size:12.8px; margin:0px"><span style=3D"font-size:9pt"><fo=
+nt style=3D"color:rgb(64,64,64)">Email:&nbsp;</font><a href=3D"mailto:mnilc=
+hiani@ideo.com" target=3D"_blank"><font style=3D"color:rgb(61,133,198)"><fo=
+nt style=3D"color:rgb(61,133,198)">m</font>nilchiani@ideo.com<br>
+</font></a></span></p>
+</div>
+</div>
+</div>
+</span></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
+
+--_000_DM6PR08MB5483FD27EB2801E67FA2737DF9180DM6PR08MB5483namp_--
