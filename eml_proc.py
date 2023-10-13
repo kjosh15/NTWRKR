@@ -118,7 +118,7 @@ def parse_eml(eml_file_path):
             logging.warning(f"Email body empty or None in file {eml_file_path}. Skipping processing.")
             return None
 
-         if not validate_email_body(email_body):
+        if not validate_email_body(email_body):
             logging.error(f"Invalid email body in file {eml_file_path}. Skipping processing.")
             return None
 
@@ -127,7 +127,7 @@ def parse_eml(eml_file_path):
             if isinstance(entity, tuple):
                 continue
             name = ' '.join(e[0] for e in entity)
-            //relationship_scores[name] += 1        depreciated to allow fo concurrency controls
+            # relationship_scores[name] += 1        depreciated to allow fo concurrency controls
             update_relationship_scores(name, 1)
         topics = topic_modeling(tokens)
 
@@ -172,12 +172,27 @@ def extract_body(msg, eml_file_path):
         return msg.get_payload(decode=True).decode(charset, errors='ignore')
 
 def nlp_processing(email_body):
+    # Create a CountVectorizer object with the desired parameters
+    vectorizer = CountVectorizer(stop_words='english', min_df=0.01, max_df=0.95)
+
+    # Use the vectorizer to transform the email body text into a document-term matrix
+    X = vectorizer.fit_transform([email_body])
+
+    # Get the feature names from the vectorizer
+    feature_names = vectorizer.get_feature_names()
+
+    # Convert the document-term matrix to a pandas DataFrame
+    df = pd.DataFrame(X.toarray(), columns=feature_names)
+
+    # Get the tokens, sentiment, named entities, stemmed tokens, and keywords
     tokens = word_tokenize(email_body)
     sentiment = sia.polarity_scores(email_body)
     named_entities = ne_chunk(pos_tag(tokens))
     stemmed_tokens = [porter.stem(t) for t in tokens]
     keywords = [t for t in tokens if t.lower() not in stop_words]
-    return tokens, sentiment, named_entities, stemmed_tokens, keywords
+
+    # Return the DataFrame, tokens, sentiment, named entities, stemmed tokens, and keywords
+    return df, tokens, sentiment, named_entities, stemmed_tokens, keywords
 
 def validate_email_body(email_body: str) -> bool:
     """
